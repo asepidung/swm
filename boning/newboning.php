@@ -15,7 +15,8 @@ include "kodebatchboning.php";
 </head>
 
 <body>
-  <form method="POST" action="inputboning.php">
+  <h1>NEW BONING PROJECT</h1>
+  <form method="POST" action="prosesnewboning.php">
     <label for="batchboning">BATCH</label>
     <input type="text" name="batchboning" id="batchboning" value="<?= $kodeauto; ?>" readonly>
     <br>
@@ -44,7 +45,7 @@ include "kodebatchboning.php";
     <label for="qtysapi">Jumlah Sapi</label>
     <input type="number" name="qtysapi" id="qtysapi">
     <br>
-    <input type="submit" value="submit">
+    <button type="submit"> PROSES </button>
   </form>
 
 </body>
