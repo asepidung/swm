@@ -30,9 +30,8 @@ include "kodebatchboning.php";
     <select name="idpemasok" id="idpemasok">
       <option value="">--Pilih Supplier Sapi</option>
       <?php
-      $query = "SELECT * FROM pemasok";
+      $query = "SELECT * FROM pemasok ORDER BY nmpemasok ASC";
       $result = mysqli_query($conn, $query);
-
       // Generate options based on the retrieved data
       while ($row = mysqli_fetch_assoc($result)) {
         $idpemasok = $row['idpemasok'];
@@ -44,6 +43,9 @@ include "kodebatchboning.php";
     <br>
     <label for="qtysapi">Jumlah Sapi</label>
     <input type="number" name="qtysapi" id="qtysapi">
+    <br>
+    <label for="catatan">Catatan</label>
+    <textarea name="catatan" id="catatan" cols="30" rows="10"></textarea>
     <br>
     <button type="submit"> PROSES </button>
   </form>
