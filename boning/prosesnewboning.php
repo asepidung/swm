@@ -5,13 +5,13 @@ require "../konak/conn.php";
 $batchboning = $_POST['batchboning'];
 $tglkill = $_POST['tglkill'];
 $tglboning = $_POST['tglboning'];
-$idpemasok = $_POST['idpemasok'];
+$idsupplier = $_POST['idsupplier'];
 $qtysapi = $_POST['qtysapi'];
 $catatan = $_POST['catatan'];
 
 // membuat query untuk menyimpan data ke database
-$sql = "INSERT INTO boning (batchboning, idpemasok, tglkill, tglboning, qtysapi, catatan)
-            VALUES ('$batchboning', '$idpemasok', '$tglkill', '$tglboning', $qtysapi, '$catatan')";
+$sql = "INSERT INTO boning (batchboning, idsupplier, tglkill, tglboning, qtysapi, catatan)
+            VALUES ('$batchboning', '$idsupplier', '$tglkill', '$tglboning', $qtysapi, '$catatan')";
 
 // mengeksekusi query
 if (mysqli_query($conn, $sql)) {

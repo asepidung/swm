@@ -26,17 +26,17 @@ include "kodebatchboning.php";
     <label for="tglboning">Tanggal Boning</label>
     <input type="date" name="tglboning" id="tglboning">
     <br>
-    <label for="idpemasok">Supplier Sapi</label>
-    <select name="idpemasok" id="idpemasok">
+    <label for="idsupplier">Supplier Sapi</label>
+    <select name="idsupplier" id="idsupplier">
       <option value="">--Pilih Supplier Sapi</option>
       <?php
-      $query = "SELECT * FROM pemasok ORDER BY nmpemasok ASC";
+      $query = "SELECT * FROM supplier ORDER BY nmsupplier ASC";
       $result = mysqli_query($conn, $query);
       // Generate options based on the retrieved data
       while ($row = mysqli_fetch_assoc($result)) {
-        $idpemasok = $row['idpemasok'];
-        $nmpemasok = $row['nmpemasok'];
-        echo "<option value=\"$idpemasok\">$nmpemasok</option>";
+        $idsupplier = $row['idsupplier'];
+        $nmsupplier = $row['nmsupplier'];
+        echo "<option value=\"$idsupplier\">$nmsupplier</option>";
       }
       ?>
     </select>

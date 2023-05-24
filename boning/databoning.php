@@ -28,7 +28,7 @@ require "../konak/conn.php";
     </tr>
     <?php
     $no = 1;
-    $ambildata = mysqli_query($conn, "SELECT b.*, p.nmpemasok FROM boning b JOIN pemasok p ON b.idpemasok = p.idpemasok ORDER BY b.batchboning DESC");
+    $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier ORDER BY b.batchboning DESC");
     while ($tampil = mysqli_fetch_array($ambildata)) {
       $tglkill = date("d-M-Y", strtotime($tampil['tglkill']));
       $tglboning = date("d-M-Y", strtotime($tampil['tglboning']));
@@ -38,7 +38,7 @@ require "../konak/conn.php";
         <td><?= $tampil['batchboning']; ?></td>
         <td><?= $tglkill; ?></td>
         <td><?= $tglboning; ?></td>
-        <td><?= $tampil['nmpemasok']; ?></td>
+        <td><?= $tampil['nmsupplier']; ?></td>
         <td><?= $tampil['qtysapi']; ?></td>
         <td>1000 Kg</td>
         <td><?= $tampil['catatan']; ?></td>
