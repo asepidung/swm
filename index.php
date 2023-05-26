@@ -1,6 +1,8 @@
-<?php include 'assets/html/header.php' ?>
-<?php include "assets/html/navbar.php" ?>
-<?php include "assets/html/mainsidebar.php" ?>
+<?php
+include 'assets/html/header.php';
+include "assets/html/navbar.php";
+include "assets/html/mainsidebar.php";
+?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
