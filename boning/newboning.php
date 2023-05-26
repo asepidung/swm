@@ -20,12 +20,6 @@ include "kodebatchboning.php";
     <label for="batchboning">BATCH</label>
     <input type="text" name="batchboning" id="batchboning" value="<?= $kodeauto; ?>" readonly>
     <br>
-    <label for="tglkill">Tanggal Potong</label>
-    <input type="date" name="tglkill" id="tglkill">
-    <br>
-    <label for="tglboning">Tanggal Boning</label>
-    <input type="date" name="tglboning" id="tglboning">
-    <br>
     <label for="idsupplier">Supplier Sapi</label>
     <select name="idsupplier" id="idsupplier">
       <option value="">--Pilih Supplier Sapi</option>
@@ -41,6 +35,13 @@ include "kodebatchboning.php";
       ?>
     </select>
     <br>
+    <label for="tglkill">Tanggal Potong</label>
+    <input type="date" name="tglkill" id="tglkill">
+    <br>
+    <label for="tglboning">Tanggal Boning</label>
+    <input type="date" name="tglboning" id="tglboning">
+    <br>
+
     <label for="qtysapi">Jumlah Sapi</label>
     <input type="number" name="qtysapi" id="qtysapi">
     <br>

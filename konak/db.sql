@@ -30,6 +30,7 @@ CREATE TABLE boning (
   tglkill DATE,
   tglboning DATE,
   qtysapi INT,
+  catatan TEXT,
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
 );
