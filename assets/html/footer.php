@@ -8,7 +8,7 @@
 <footer class="main-footer">
   <strong>Copyright &copy; 2023 <a href="https://instagram.com/asep_idung">Asep Idung</a>.</strong>
   <div class="float-right d-none d-sm-inline-block">
-    <b>Version</b> 1.1.0
+    <b>Version</b> 1.0.0
   </div>
 </footer>
 </div>
@@ -33,6 +33,8 @@
 <!-- ChartJS -->
 <script src="../assets/plugins/chart.js/Chart.min.js"></script>
 
+<!-- date-range-picker -->
+<script src="../plugins/daterangepicker/daterangepicker.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../assets/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
@@ -76,6 +78,10 @@
       "autoWidth": false,
       "responsive": true,
     });
+  });
+  //Date picker
+  $('#reservationdate').datetimepicker({
+    format: 'L'
   });
 </script>
 </body>

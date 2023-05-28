@@ -1,8 +1,8 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="index3.html" class="brand-link">
-    <img src="../assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+  <a href="../index.php" class="brand-link">
+    <img src="../assets/dist/img/logoSWM.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
     <span class="brand-text font-weight-light">WIJAYA MEAT</span>
   </a>
   <!-- Sidebar -->
@@ -15,7 +15,7 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
             <p>
-              Charts
+              MASTER DATA
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
@@ -23,25 +23,90 @@
             <li class="nav-item">
               <a href="pages/charts/chartjs.html" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>ChartJS</p>
+                <p>Barang</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/flot.html" class="nav-link">
+              <a href="../../master/supplier.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Flot</p>
+                <p>Supplier</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="pages/charts/inline.html" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Inline</p>
+                <p>Customer</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-warehouse"></i>
+            <!-- <i class="nav-icon fas fa-chart-pie"></i> -->
+            <p>
+              PRODUKSI
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="newboning.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Boning</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/flot.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Repack Import</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/inline.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Repack Stock</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="pages/charts/uplot.html" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>uPlot</p>
+                <p>Barcode Ulang</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-chart-pie"></i>
+            <p>
+              PENJUALAN
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="pages/charts/chartjs.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Sales Quotations</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/chartjs.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Sales Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/flot.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Delivery Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/inline.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Receipt Order</p>
               </a>
             </li>
           </ul>
@@ -52,3 +117,5 @@
   </div>
   <!-- /.sidebar -->
 </aside>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">

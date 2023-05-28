@@ -4,14 +4,15 @@ include "../assets/html/header.php";
 include "../assets/html/navbar.php";
 include "../assets/html/mainsidebar.php";
 ?>
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">DATA BONING</h1>
+        <div class="col-sm-2">
+          <!-- <h1 class="m-0">DATA BONING</h1> -->
+          <button type="button" class="btn btn-info">Buat Data Boning Baru</button>
         </div><!-- /.col -->
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -73,9 +74,9 @@ include "../assets/html/mainsidebar.php";
                 <tfoot>
                   <tr>
                     <th>#</th>
-                    <th colspan="4">BATCH</th>
+                    <th colspan="4" class="text-right">TOTAL</th>
                     <th><?= $total_sapi; ?></th>
-                    <th colspan="3">Ttl Weight</th>
+                    <th colspan="3">xxx</th>
                   </tr>
                 </tfoot>
               </table>
@@ -91,7 +92,7 @@ include "../assets/html/mainsidebar.php";
     <!-- /.container-fluid -->
   </section>
   <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+  <!-- </div> -->
+  <!-- /.content-wrapper -->
 
-<?php include "../assets/html/footer.php" ?>
+  <?php include "../assets/html/footer.php" ?>
