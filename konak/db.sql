@@ -3,27 +3,28 @@ USE swm;
 CREATE TABLE supplier (
   idsupplier INT PRIMARY KEY AUTO_INCREMENT,
   nmsupplier VARCHAR(100),
+  jenis_usaha VARCHAR(100),
   alamat VARCHAR(200),
   telepon VARCHAR(20),
-  npwp VARCHAR(20),
-  jenis_usaha VARCHAR(100)
+  npwp VARCHAR(20)  
 );
 CREATE TABLE gudang (
   idgudang INT PRIMARY KEY AUTO_INCREMENT,
   nmgudang VARCHAR(10)
 );
+CREATE TABLE productioncategory (
+  idpc INT PRIMARY KEY AUTO_INCREMENT,
+  nmpc VARCHAR(30)
+);
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
   kdbarang VARCHAR(10),
-  nmbarang VARCHAR(30),
-  barcode VARCHAR(20),
-  idgudang INT
+  nmbarang VARCHAR(30)
 );
 CREATE TABLE boning (
   idboning INT PRIMARY KEY AUTO_INCREMENT,
   batchboning VARCHAR(10),
   idsupplier INT,
-  tglkill DATE,
   tglboning DATE,
   qtysapi INT,
   catatan TEXT,
@@ -38,8 +39,8 @@ CREATE TABLE boningdetail (
   FOREIGN KEY (idboning) REFERENCES boning (idboning),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-CREATE TABLE barcodeboning (
-  idbarcodeboning INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE label (
+  idlabel INT PRIMARY KEY AUTO_INCREMENT,
   idboningdetail INT,
   idbarang INT,
   pcs INT,

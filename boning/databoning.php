@@ -27,7 +27,7 @@ include "../assets/html/mainsidebar.php";
           <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped table-sm">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -64,7 +64,23 @@ include "../assets/html/mainsidebar.php";
                       <td><?= $tampil['qtysapi']; ?></td>
                       <td>1000 Kg</td>
                       <td><?= $tampil['catatan']; ?></td>
-                      <td class="text-center"><a href="#">LIHAT</a> | <a href="#">EDIT</a> | <a href="#">BARCODE</a></td>
+                      <td class="project-actions text-center">
+                        <a class="btn btn-primary btn-sm" href="#">
+                          <i class="fas fa-eye">
+                          </i>
+                          View
+                        </a>
+                        <a class="btn btn-info btn-sm" href="#">
+                          <i class="fas fa-pencil-alt">
+                          </i>
+                          Edit
+                        </a>
+                        <a class="btn btn-danger btn-sm" href="#">
+                          <i class="fas fa-trash">
+                          </i>
+                          Delete
+                        </a>
+                      </td>
                     </tr>
                   <?php
                     $no++;

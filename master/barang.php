@@ -35,7 +35,6 @@ include "../assets/html/mainsidebar.php";
                               <th rowspan="2">Nama Product</th>
                               <th colspan="2">G. Jonggol</th>
                               <th colspan="2">G. Perum</th>
-                              <th rowspan="2">Tinjau</th>
                            </tr>
                            <tr>
                               <th>Good</th>
@@ -63,26 +62,14 @@ include "../assets/html/mainsidebar.php";
                                  <td>stock gjb</td>
                                  <td>stock pja</td>
                                  <td>stock pjb</td>
-                                 <td class="text-center"><a href="#">EDIT</a> | <a href="#">HAPUS</a></td>
                               </tr>
                            <?php
                               $no++;
                            }
                            ?>
                         </tbody>
-                        <!-- <tfoot>
-                  <tr>
-                    <th>#</th>
-                    <th>#</th>
-                    <th>#</th>
-                    <th>#</th>
-                    <th class="text-right">TOTAL</th>
-                    <th><?= $total_sapi; ?></th>
-                    <th>xxx</th>
-                    <th>xxx</th>
-                    <th>xxx</th>
-                  </tr>
-                </tfoot> -->
+                        <tfoot>
+                        </tfoot>
                      </table>
                   </div>
                   <!-- /.card-body -->

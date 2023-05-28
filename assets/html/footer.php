@@ -3,10 +3,13 @@
   <!-- Control sidebar content goes here -->
 </aside>
 <!-- /.control-sidebar -->
+<?php
+$year = date('Y');
+?>
 
 <!-- Main Footer -->
 <footer class="main-footer">
-  <strong>Copyright &copy; 2023 <a href="https://instagram.com/asep_idung">Asep Idung</a>.</strong>
+  <strong>Copyright &copy; <?= $year ?> <a href="https://instagram.com/asep_idung">Idung</a>.</strong>
   <div class="float-right d-none d-sm-inline-block">
     <b>Version</b> 1.0.0
   </div>
