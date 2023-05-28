@@ -1,0 +1,73 @@
+<?php
+require "../konak/conn.php";
+include "../assets/html/header.php";
+include "../assets/html/navbar.php";
+include "../assets/html/mainsidebar.php";
+?>
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+   <!-- Content Header (Page header) -->
+   <!-- <div class="content-header">
+      <div class="container-fluid">
+         <div class="row mb-2">
+            <div class="col-sm-6">
+               <h1 class="m-0">NEW BONING PROJECT</h1>
+            </div>
+         </div>
+      </div>
+   </div> -->
+   <!-- /.content-header -->
+
+   <!-- Main content -->
+   <section class="content">
+      <div class="container-fluid">
+         <div class="row">
+            <!-- left column -->
+            <div class="col-md-6">
+               <!-- general form elements -->
+               <div class="card card-dark mt-3">
+                  <div class="card-header">
+                     <h3 class="card-title">Data Supplier Baru</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <!-- form start -->
+                  <form method="POST" action="prosesnewsupplier.php">
+                     <div class=" card-body">
+                        <div class="form-group">
+                           <label for="nmsupplier">Nama Supplier</label>
+                           <input type="text" class="form-control" name="nmsupplier" id="nmsupplier" autofocus>
+                           <div class="form-group">
+                              <label for="alamat">Alamat</label>
+                              <input type="text" class="form-control" name="alamat" id="alamat">
+                           </div>
+                           <div class="form-group">
+                              <label for="jenis_usaha">Barang Yang Disupplai</label>
+                              <input type="text" class="form-control" name="jenis_usaha" id="jenis_usaha">
+                           </div>
+                           <div class="form-group">
+                              <label for="telepon">No Telepon</label>
+                              <input type="text" class="form-control" name="telepon" id="telepon">
+                           </div>
+                           <div class="form-group">
+                              <label for="npwp">NPWP</label>
+                              <input type="text" class="form-control" name="npwp" id="npwp">
+                           </div>
+                        </div>
+                        <div class="form-group mr-3 text-right">
+                           <button type="submit" class="btn bg-gradient-primary">Submit</button>
+                        </div>
+                     </div>
+                     <!-- /.card-body -->
+
+                  </form>
+               </div>
+               <!-- /.card -->
+            </div>
+         </div>
+   </section>
+   </div><!-- /.container-fluid -->
+   <!-- /.content -->
+   <!-- </div> -->
+   <!-- /.content-wrapper -->
+
+   <?php include "../assets/html/footer.php" ?>

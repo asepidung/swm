@@ -5,11 +5,8 @@ CREATE TABLE supplier (
   nmsupplier VARCHAR(100),
   alamat VARCHAR(200),
   telepon VARCHAR(20),
-  email VARCHAR(100),
-  kontak VARCHAR(10),
   npwp VARCHAR(20),
-  jenis_usaha VARCHAR(100),
-  catatan TEXT
+  jenis_usaha VARCHAR(100)
 );
 CREATE TABLE gudang (
   idgudang INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,8 +17,7 @@ CREATE TABLE barang (
   kdbarang VARCHAR(10),
   nmbarang VARCHAR(30),
   barcode VARCHAR(20),
-  idgudang INT,
-  FOREIGN KEY (idgudang) REFERENCES gudang (idgudang)
+  idgudang INT
 );
 CREATE TABLE boning (
   idboning INT PRIMARY KEY AUTO_INCREMENT,

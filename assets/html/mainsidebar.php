@@ -21,13 +21,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="pages/charts/chartjs.html" class="nav-link">
+              <a href="../master/barang.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Barang</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="../../master/supplier.php" class="nav-link">
+              <a href="../master/supplier.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Supplier</p>
               </a>
@@ -51,7 +51,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="newboning.php" class="nav-link">
+              <a href="../boning/databoning.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Boning</p>
               </a>

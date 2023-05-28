@@ -1,45 +1,104 @@
-<body class="hold-transition lockscreen">
-  <!-- Automatic element centering -->
-  <div class="lockscreen-wrapper">
-    <div class="lockscreen-logo">
-      <a href="../../index2.html"><b>Admin</b>LTE</a>
-    </div>
-    <!-- User name -->
-    <div class="lockscreen-name">John Doe</div>
+<?php
+require "../konak/conn.php";
+include "../assets/html/header.php";
+include "../assets/html/navbar.php";
+include "../assets/html/mainsidebar.php";
+?>
 
-    <!-- START LOCK SCREEN ITEM -->
-    <div class="lockscreen-item">
-      <!-- lockscreen image -->
-      <div class="lockscreen-image">
-        <img src="../../dist/img/user1-128x128.jpg" alt="User Image">
-      </div>
-      <!-- /.lockscreen-image -->
-
-      <!-- lockscreen credentials (contains the form) -->
-      <form class="lockscreen-credentials">
-        <div class="input-group">
-          <input type="password" class="form-control" placeholder="password">
-
-          <div class="input-group-append">
-            <button type="button" class="btn">
-              <i class="fas fa-arrow-right text-muted"></i>
-            </button>
-          </div>
-        </div>
-      </form>
-      <!-- /.lockscreen credentials -->
-
-    </div>
-    <!-- /.lockscreen-item -->
-    <div class="help-block text-center">
-      Enter your password to retrieve your session
-    </div>
-    <div class="text-center">
-      <a href="login.html">Or sign in as a different user</a>
-    </div>
-    <div class="lockscreen-footer text-center">
-      Copyright &copy; 2014-2021 <b><a href="https://adminlte.io" class="text-black">AdminLTE.io</a></b><br>
-      All rights reserved
-    </div>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <!-- <h1 class="m-0">DATA BONING</h1> -->
+          <a href="newsupplier.php"><button type="button" class="btn btn-info"> Supplier Baru</button></a>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
   </div>
-  <!-- /.center -->
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nama Supplier</th>
+                    <th>Alamat</th>
+                    <th>Jenis Usaha</th>
+                    <th>Telepon</th>
+                    <!-- <th>Email</th> -->
+                    <th>NPWP</th>
+                    <th>Hutang</th>
+                    <!-- <th>Catatan</th> -->
+                    <th>Tinjau</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  </tr>
+                  <?php
+                  // $query_total_sapi = "SELECT SUM(qtysapi) AS total_sapi FROM boning";
+                  // $result_total_sapi = mysqli_query($conn, $query_total_sapi);
+                  // $row_total_sapi = mysqli_fetch_assoc($result_total_sapi);
+                  // $total_sapi = $row_total_sapi['total_sapi'];
+                  $no = 1;
+                  $ambildata = mysqli_query($conn, "SELECT * FROM supplier ORDER BY nmsupplier ASC");
+                  while ($tampil = mysqli_fetch_array($ambildata)) {
+                  ?>
+                    <tr>
+                      <td><?= $no; ?></td>
+                      <td><?= $tampil['nmsupplier']; ?></td>
+                      <td><?= $tampil['alamat']; ?></td>
+                      <td><?= $tampil['jenis_usaha']; ?></td>
+                      <td><?= $tampil['telepon']; ?></td>
+                      <!-- <td><?= $tampil['email']; ?></td> -->
+                      <td><?= $tampil['npwp']; ?></td>
+                      <td>
+                        <!-- <?= $tampil['ttlutang']; ?> -->
+                      </td>
+                      <!-- <td><?= $tampil['catatan']; ?></td> -->
+                      <td class="text-center"><a href="#">EDIT</a> | <a href="#">HAPUS</a></td>
+                    </tr>
+                  <?php
+                    $no++;
+                  }
+                  ?>
+                </tbody>
+                <!-- <tfoot>
+                  <tr>
+                    <th>#</th>
+                    <th>#</th>
+                    <th>#</th>
+                    <th>#</th>
+                    <th class="text-right">TOTAL</th>
+                    <th><?= $total_sapi; ?></th>
+                    <th>xxx</th>
+                    <th>xxx</th>
+                    <th>xxx</th>
+                  </tr>
+                </tfoot> -->
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+  <!-- </div> -->
+  <!-- /.content-wrapper -->
+
+  <?php include "../assets/html/footer.php" ?>

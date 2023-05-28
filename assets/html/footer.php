@@ -57,9 +57,9 @@
 <script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <!-- <script src="assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script> -->
 <!-- AdminLTE App -->
-<script src="assets/dist/js/adminlte.min.js"></script>
+<!-- <script src="assets/dist/js/adminlte.min.js"></script> -->
 <!-- AdminLTE for demo purposes -->
-<script src="assets/dist/js/demo.js"></script>
+<!-- <script src="assets/dist/js/demo.js"></script> -->
 <!-- Page specific script -->
 <script>
   $(function() {

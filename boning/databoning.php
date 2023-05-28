@@ -10,9 +10,9 @@ include "../assets/html/mainsidebar.php";
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-2">
+        <div class="col-sm-6">
           <!-- <h1 class="m-0">DATA BONING</h1> -->
-          <button type="button" class="btn btn-info">Buat Data Boning Baru</button>
+          <a href="newboning.php"><button type="button" class="btn btn-info"> Buat Data Boning Baru</button></a>
         </div><!-- /.col -->
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -64,7 +64,7 @@ include "../assets/html/mainsidebar.php";
                       <td><?= $tampil['qtysapi']; ?></td>
                       <td>1000 Kg</td>
                       <td><?= $tampil['catatan']; ?></td>
-                      <td><a href="#">LIHAT</a> | <a href="#">EDIT</a> | <a href="#">BARCODE</a></td>
+                      <td class="text-center"><a href="#">LIHAT</a> | <a href="#">EDIT</a> | <a href="#">BARCODE</a></td>
                     </tr>
                   <?php
                     $no++;
@@ -74,9 +74,14 @@ include "../assets/html/mainsidebar.php";
                 <tfoot>
                   <tr>
                     <th>#</th>
-                    <th colspan="4" class="text-right">TOTAL</th>
+                    <th>#</th>
+                    <th>#</th>
+                    <th>#</th>
+                    <th class="text-right">TOTAL</th>
                     <th><?= $total_sapi; ?></th>
-                    <th colspan="3">xxx</th>
+                    <th>xxx</th>
+                    <th>xxx</th>
+                    <th>xxx</th>
                   </tr>
                 </tfoot>
               </table>
