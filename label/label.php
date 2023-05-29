@@ -1,54 +1,93 @@
 <?php
 require "../konak/conn.php";
 include "../assets/html/header.php";
-include "../assets/html/navbar.php";
-include "../assets/html/mainsidebar.php";
+
 ?>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-  <section class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="card card-dark mt-3">
-            <div class="card-header">
-              <h3 class="card-title">Buat Label</h3>
-            </div>
-            <form method="POST" action="cetaklabel.php">
-              <div class="card-body">
-                <div class="form-group">
-                  <div class="form-group">
-                    <label for="tglproduksi">Production Date</label>
-                    <input type="date" class="form-control" name="tglproduksi" id="tglproduksi" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="expdate">Expiration Date</label>
-                    <input type="date" class="form-control" name="expdate" id="expdate">
-                  </div>
-                  <label for="product">Product Name</label>
-                  <select class="form-control" name="product" id="product" required>
-                    <option value="">-- Choose Product --</option>
-                    <?php
-                    $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                    $result = mysqli_query($conn, $query);
-                    while ($row = mysqli_fetch_assoc($result)) {
-                      $idbarang = $row['idbarang'];
-                      $nmbarang = $row['nmbarang'];
-                      echo "<option value=\"$idbarang\">$nmbarang</option>";
-                    }
-                    ?>
-                  </select>
-                  <div class="form-group">
-                    <label for="weight">Weight</label>
-                    <input type="text" class="form-control" name="weight" id="weight" required autofocus>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <span style="font-size: 14px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <strong>*YP*</strong>
+      </span>
     </div>
-  </section>
-
-  <?php include "../assets/html/footer.php" ?>
+    <div class="col-6"></div>
+    <div class="col-3 text-right">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <strong>#01</strong>
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <strong>Prod By: PT. SANTI WIJAYA MEAT</strong>
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        Jl. Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna<br>Kec. Jonggol Kab. Bogor
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <span style="font-size: 22px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <strong>TENDERLOIN BUTT</strong>
+      </span>
+    </div>
+    <div class="col-4">
+      <img src="../assets/dist/img/HalalIndonesia.png" alt="Halal Indonesia" width="66" height="120" class="mx-auto d-block">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <span style="font-size: 24px">
+          <strong>12.52</strong>
+        </span>
+      </span>
+    </div>
+    <div class="col-8">
+      <strong><i>Tenderstreatch</i></strong>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <strong>3-Pcs</strong>
+    </div>
+    <div class="col-8">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Packed Date: 29-May-2023</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date:</span>
+    </div>
+    <div class="col-8">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">30-May-2023</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <strong>KEEP CHILL/FROZEN</strong>
+      </span>
+    </div>
+    <div class="col-4 text-center">
+      <span style="font-size: 11px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        No. 01011263450821<br>
+        NKV CS-3201170-027
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <span style="color: #000000; font-size: 16px; font-family: Tahoma, Geneva, sans-serif">
+        1230500100001
+      </span>
+    </div>
+  </div>
+</div>

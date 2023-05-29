@@ -1,13 +1,18 @@
+<?php
+require "../konak/conn.php";
+include "../assets/html/header.php";
+?>
+
 <table border="0" cellpadding="0" cellspacing="0" style="height: 288px; width: 384px">
   <tbody>
     <tr>
-      <td style="width: 112px">
+      <td width="116" style="width: 112px">
         <span style="font-size: 14px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
           <strong>*YP*</strong>
         </span>
       </td>
-      <td style="width: 149px">&nbsp;</td>
-      <td colspan="2" rowspan="1" style="text-align: right; width: 114px">
+      <td width="149" style="width: 149px">&nbsp;</td>
+      <td width="122" colspan="2" rowspan="1" style="text-align: right; width: 114px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
           <strong>#01</strong>
         </span>
@@ -34,10 +39,7 @@
           <strong>TENDERLOIN BUTT</strong>
         </span>
       </td>
-      <td colspan="2" rowspan="5" style="width: 114px">
-        &nbsp; &nbsp;
-        <img alt="" src="https://ckeditor.com/apps/ckfinder/userfiles/files/download-removebg-preview.png" style="height: 120px; width: 68px" />
-      </td>
+      <td colspan="2" rowspan="5" style="width: 114px"><img src="../assets/dist/img/HalalIndonesia.png" alt="Halal Indonesia" width="66" height="120" align="middle"></td>
     </tr>
     <tr>
       <td colspan="1" rowspan="2" style="width: 112px">
@@ -63,7 +65,7 @@
       </td>
     </tr>
     <tr>
-      <td style="width: 112px">
+      <td height="29" style="width: 112px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
       </td>
       <td style="width: 149px">
