@@ -8,10 +8,6 @@ CREATE TABLE supplier (
   telepon VARCHAR(20),
   npwp VARCHAR(20)  
 );
-CREATE TABLE gudang (
-  idgudang INT PRIMARY KEY AUTO_INCREMENT,
-  nmgudang VARCHAR(10)
-);
 CREATE TABLE productioncategory (
   idpc INT PRIMARY KEY AUTO_INCREMENT,
   nmpc VARCHAR(30)
@@ -27,7 +23,6 @@ CREATE TABLE boning (
   idsupplier INT,
   tglboning DATE,
   qtysapi INT,
-  catatan TEXT,
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
 );
@@ -41,12 +36,13 @@ CREATE TABLE boningdetail (
 );
 CREATE TABLE label (
   idlabel INT PRIMARY KEY AUTO_INCREMENT,
-  idboningdetail INT,
+  idboning INT,
   idbarang INT,
-  pcs INT,
+  pcs CHAR(5),
   kdbarcode VARCHAR(20),
   packdate DATE,
   exp DATE,
+  dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
-  FOREIGN key (idboningdetail) REFERENCES boningdetail (idboningdetail)
+  FOREIGN key (idboning) REFERENCES boning (idboning)
 );

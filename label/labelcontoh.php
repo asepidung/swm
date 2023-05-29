@@ -1,41 +1,23 @@
-<!DOCTYPE html>
-<html>
+<?php
+require "../konak/conn.php";
+include "../assets/html/header.php";
+include "../assets/html/navbar.php";
+include "../assets/html/mainsidebar.php";
+?>
 
-<head>
-  <title>Cetak Label</title>
-  <style>
-    @page {
-      size: 4in 3in;
-      margin: 0;
-    }
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card card-dark mt-3">
+            <div class="card-header">
+              <h3 class="card-title">Buat Label</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    .label {
-      width: 100%;
-      height: 100%;
-      border: 1px solid #000;
-      padding: 10px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="label">
-    <p>Contoh Label</p>
-  </div>
-</body>
-
-</html>
+  <?php include "../assets/html/footer.php" ?>

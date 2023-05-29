@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
   <a href="../index.php" class="brand-link">
-    <img src="../assets/dist/img/logoSWM.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
+    <img src="../assets/dist/img/logoSWM.png" alt="SWM Logo" class="brand-image" style="opacity: .8">
     <span class="brand-text font-weight-light">WIJAYA MEAT</span>
   </a>
   <!-- Sidebar -->
@@ -69,9 +69,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/uplot.html" class="nav-link">
+              <a href="label/label.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Barcode Ulang</p>
+                <p>Buat Label</p>
               </a>
             </li>
           </ul>

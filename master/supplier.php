@@ -27,7 +27,7 @@ include "../assets/html/mainsidebar.php";
           <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped table-sm">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -35,10 +35,8 @@ include "../assets/html/mainsidebar.php";
                     <th>Alamat</th>
                     <th>Jenis Usaha</th>
                     <th>Telepon</th>
-                    <!-- <th>Email</th> -->
                     <th>NPWP</th>
                     <th>Hutang</th>
-                    <!-- <th>Catatan</th> -->
                     <th>Tinjau</th>
                   </tr>
                 </thead>
@@ -72,19 +70,6 @@ include "../assets/html/mainsidebar.php";
                   }
                   ?>
                 </tbody>
-                <!-- <tfoot>
-                  <tr>
-                    <th>#</th>
-                    <th>#</th>
-                    <th>#</th>
-                    <th>#</th>
-                    <th class="text-right">TOTAL</th>
-                    <th><?= $total_sapi; ?></th>
-                    <th>xxx</th>
-                    <th>xxx</th>
-                    <th>xxx</th>
-                  </tr>
-                </tfoot> -->
               </table>
             </div>
             <!-- /.card-body -->

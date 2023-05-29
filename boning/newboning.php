@@ -55,7 +55,7 @@ include "../assets/html/mainsidebar.php";
                                  ?>
                               </select>
                               <div class="input-group-append">
-                                 <a href="../master/supplier/newsupplier.php" class="btn btn-primary">Tambah Supplier</a>
+                                 <a href="../master/newsupplier.php" class="btn btn-primary">Tambah Supplier</a>
                               </div>
                            </div>
                         </div>
@@ -69,13 +69,6 @@ include "../assets/html/mainsidebar.php";
                            </div>
                         </div> -->
                         <div class="form-group">
-                           <label>Tanggal Potong</label>
-                           <div class="input-group date" id="tglkill" data-target-input="nearest">
-                              <input type="date" class="form-control" name="tglkill" id="tglkill">
-                              <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
-                           </div>
-                        </div>
-                        <div class="form-group">
                            <label>Tanggal Boning</label>
                            <div class="input-group date" id="tglboning" data-target-input="nearest">
                               <input type="date" class="form-control" name="tglboning" id="tglboning">
@@ -88,10 +81,6 @@ include "../assets/html/mainsidebar.php";
                               <input type="number" class="form-control" name="qtysapi" id="qtysapi">
                               <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                            </div>
-                        </div>
-                        <div class="form-group">
-                           <label>Catatan</label>
-                           <textarea class="form-control" rows="3" name="catatan" id="catatan" placeholder="Tulis disini bila ada yang penting ..."></textarea>
                         </div>
                      </div>
                      <div class="form-group mr-3 text-right">
