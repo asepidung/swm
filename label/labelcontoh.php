@@ -1,18 +1,18 @@
 <?php
 require "../konak/conn.php";
-include "../assets/html/header.php";
+// include "../assets/html/header.php";
 ?>
 
-<table border="0" cellpadding="0" cellspacing="0" style="height: 288px; width: 384px">
+<table width="380" border="0" cellpadding="0" cellspacing="0">
   <tbody>
     <tr>
-      <td width="116" style="width: 112px">
+      <td width="114" style="width: 112px">
         <span style="font-size: 14px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
           <strong>*YP*</strong>
         </span>
       </td>
       <td width="149" style="width: 149px">&nbsp;</td>
-      <td width="122" colspan="2" rowspan="1" style="text-align: right; width: 114px">
+      <td width="121" colspan="2" rowspan="1" style="text-align: right; width: 114px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
           <strong>#01</strong>
         </span>
@@ -28,7 +28,7 @@ include "../assets/html/header.php";
     <tr>
       <td colspan="4" style="white-space: nowrap; width: 373px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
-          Jl. Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna<br />
+          Jl. Perum Asabri Blok B No 20 Rt. 01/05<br> Ds. Sukasirna
           Kec. Jonggol Kab. Bogor
         </span>
       </td>
@@ -39,7 +39,7 @@ include "../assets/html/header.php";
           <strong>TENDERLOIN BUTT</strong>
         </span>
       </td>
-      <td colspan="2" rowspan="5" style="width: 114px"><img src="../assets/dist/img/HalalIndonesia.png" alt="Halal Indonesia" width="66" height="120" align="middle"></td>
+      <td colspan="2" rowspan="5"><img src="../assets/dist/img/HalalIndo.jpg" alt="HALAL" width="77" height="120" align="left"></td>
     </tr>
     <tr>
       <td colspan="1" rowspan="2" style="width: 112px">
@@ -49,12 +49,12 @@ include "../assets/html/header.php";
       </td>
       <td style="width: 149px">
         <p>
-          <strong><i>Tenderstreatch</i></strong>
+          <strong><i>3-Pcs</i></strong>
         </p>
       </td>
     </tr>
     <tr>
-      <td style="width: 149px"><strong>3-Pcs</strong></td>
+      <td style="width: 149px"><strong><i>Tenderstreatch</i></strong></td>
     </tr>
     <tr>
       <td style="width: 112px">
@@ -78,7 +78,7 @@ include "../assets/html/header.php";
           <strong>KEEP CHILL/FROZEN</strong>
         </span>
       </td>
-      <td colspan="2" rowspan="1" style="text-align: center; width: 114px">
+      <td colspan="2" rowspan="1" style="text-align: left; width: 114px">
         <span style="font-size: 11px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
           No. 01011263450821<br />
           NKV CS-3201170-027

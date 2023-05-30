@@ -38,9 +38,9 @@ include "../assets/html/header.php";
         <strong>TENDERLOIN BUTT</strong>
       </span>
     </div>
-    <div class="col-4">
-      <img src="../assets/dist/img/HalalIndonesia.png" alt="Halal Indonesia" width="66" height="120" class="mx-auto d-block">
-    </div>
+    <td colspan="2" rowspan="5" style="width: 114px" class="text-center">
+      <img src="../assets/dist/img/HalalIndonesia.png" alt="Halal Indonesia" width="80" height="120">
+    </td>
   </div>
   <div class="row">
     <div class="col-4">
