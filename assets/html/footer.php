@@ -35,15 +35,14 @@ $year = date('Y');
 <script src="../assets/plugins/jquery-mapael/maps/usa_states.min.js"></script>
 <!-- ChartJS -->
 <script src="../assets/plugins/chart.js/Chart.min.js"></script>
-
+<!-- Select2 -->
+<script src="../plugins/select2/js/select2.full.min.js"></script>
 <!-- date-range-picker -->
 <script src="../plugins/daterangepicker/daterangepicker.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../assets/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../assets/dist/js/pages/dashboard2.js"></script>
-<!-- jQuery -->
-<script src="../assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables  & Plugins -->
@@ -66,6 +65,12 @@ $year = date('Y');
 <!-- Page specific script -->
 <script>
   $(function() {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
     $("#example1").DataTable({
       "responsive": true,
       "lengthChange": false,
@@ -81,10 +86,6 @@ $year = date('Y');
       "autoWidth": false,
       "responsive": true,
     });
-  });
-  //Date picker
-  $('#reservationdate').datetimepicker({
-    format: 'L'
   });
 </script>
 

@@ -34,14 +34,14 @@ include "../assets/html/mainsidebar.php";
                   <form method="POST" action="prosesnewsupplier.php">
                      <div class=" card-body">
                         <div class="form-group">
-                           <label for="nmsupplier">Nama Supplier</label>
+                           <label for="nmsupplier">Nama Supplier <span class="text-danger">*</span></label>
                            <input type="text" class="form-control" name="nmsupplier" id="nmsupplier" autofocus required>
                            <div class="form-group">
                               <label for="alamat">Alamat</label>
                               <input type="text" class="form-control" name="alamat" id="alamat">
                            </div>
                            <div class="form-group">
-                              <label for="jenis_usaha">Barang Yang Disuplai</label>
+                              <label for="jenis_usaha">Barang Yang Disuplai <span class="text-danger">*</span></label>
                               <input type="text" class="form-control" name="jenis_usaha" id="jenis_usaha" required>
                            </div>
                            <div class="form-group">

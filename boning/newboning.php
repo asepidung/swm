@@ -39,9 +39,9 @@ include "../assets/html/mainsidebar.php";
                            <input type="text" class="form-control" name="batchboning" id="batchboning" value="<?= $kodeauto; ?>" readonly>
                         </div>
                         <div class="form-group">
-                           <label>Supplier</label>
+                           <label>Supplier <span class="text-danger">*</span></label>
                            <div class="input-group">
-                              <select class="form-control" name="idsupplier" id="idsupplier">
+                              <select class="form-control" name="idsupplier" id="idsupplier" required>
                                  <option value="">Pilih Disini</option>
                                  <?php
                                  $query = "SELECT * FROM supplier ORDER BY nmsupplier ASC";
@@ -55,30 +55,21 @@ include "../assets/html/mainsidebar.php";
                                  ?>
                               </select>
                               <div class="input-group-append">
-                                 <a href="../master/newsupplier.php" class="btn btn-primary">Tambah Supplier</a>
+                                 <a href="../master/newsupplier.php" class="btn btn-primary"><i class="fas fa-plus"></i> Supplier</a>
                               </div>
                            </div>
                         </div>
-                        <!-- <div class="form-group">
-                           <label>Date:</label>
-                           <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                              <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
-                              <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                              </div>
-                           </div>
-                        </div> -->
                         <div class="form-group">
-                           <label>Tanggal Boning</label>
+                           <label>Tanggal Boning <span class="text-danger">*</span></label>
                            <div class="input-group date" id="tglboning" data-target-input="nearest">
-                              <input type="date" class="form-control" name="tglboning" id="tglboning">
+                              <input type="date" class="form-control" name="tglboning" id="tglboning" required>
                               <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                            </div>
                         </div>
                         <div class="form-group">
-                           <label>Jumlah sapi</label>
+                           <label>Jumlah sapi <span class="text-danger">*</span></label>
                            <div class="input-group date" id="qtysapi" data-target-input="nearest">
-                              <input type="number" class="form-control" name="qtysapi" id="qtysapi">
+                              <input type="number" class="form-control" name="qtysapi" id="qtysapi" required>
                               <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                            </div>
                         </div>
@@ -86,16 +77,15 @@ include "../assets/html/mainsidebar.php";
                      <div class="form-group mr-3 text-right">
                         <button type="submit" class="btn bg-gradient-primary">Submit</button>
                      </div>
+                  </form>
                </div>
                <!-- /.card-body -->
-
-               </form>
             </div>
             <!-- /.card -->
          </div>
       </div>
    </section>
-   </div><!-- /.container-fluid -->
+   <!-- /.container-fluid -->
    <!-- /.content -->
    <!-- </div> -->
    <!-- /.content-wrapper -->
