@@ -1,6 +1,14 @@
 <?php
 require "../konak/conn.php";
+
 // include "../assets/html/header.php";
+$urutitem = "#01";
+$barang = "TENDERLOIN";
+$qty = "16.78";
+$pcs = "3";
+$pack = "29/Mei/2023";
+$exp = "29/Juni/2023";
+$barcode = "100100010001";
 ?>
 
 <table width="380" border="0" cellpadding="0" cellspacing="0">
@@ -14,7 +22,7 @@ require "../konak/conn.php";
       <td width="149" style="width: 149px">&nbsp;</td>
       <td width="121" colspan="2" rowspan="1" style="text-align: right; width: 114px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif; text-align: middle;">
-          <strong>#01</strong>
+          <strong><?= $urutitem ?></strong>
         </span>
       </td>
     </tr>
@@ -35,7 +43,7 @@ require "../konak/conn.php";
     <tr>
       <td height="38" colspan="2" style="width: 264px">
         <span style="font-size: 22px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
-          <strong>TENDERLOIN BUTT</strong>
+          <strong><?= $barang; ?></strong>
         </span>
       </td>
       <td colspan="2" rowspan="5" align="left"><img src="../assets/dist/img/hi.svg" alt="HALAL" width="70"></td>
@@ -43,12 +51,12 @@ require "../konak/conn.php";
     <tr>
       <td colspan="1" rowspan="2" style="width: 112px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
-          <span style="font-size: 24px"><strong>12.52</strong></span>
+          <span style="font-size: 24px"><strong><?= $qty; ?></strong></span>
         </span>
       </td>
       <td style="width: 149px">
         <p>
-          <strong><i>3-Pcs</i></strong>
+          <strong><i><?= $pcs . "-Pcs"; ?></i></strong>
         </p>
       </td>
     </tr>
@@ -60,7 +68,7 @@ require "../konak/conn.php";
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Packed Date&nbsp; :</span>
       </td>
       <td style="font-size: 12px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">29-May-2023</span>
+        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $pack; ?></span>
       </td>
     </tr>
     <tr>
@@ -68,7 +76,7 @@ require "../konak/conn.php";
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
       </td>
       <td style="font-size: 12px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">30-May-2023</span>
+        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $exp; ?></span>
       </td>
     </tr>
     <tr>
@@ -85,12 +93,12 @@ require "../konak/conn.php";
       </td>
     </tr>
     <tr>
-      <td colspan="4" style="text-align: center; width: 373px"><span style="color: #000000; font-size: 36px; font-family: '3 of 9 Barcode'">*1230500100001*</span></td>
+      <td colspan="4" style="text-align: center; width: 373px"><span style="color: #000000; font-size: 36px; font-family: '3 of 9 Barcode'"><?= "*" . $barcode . "*"; ?></span></td>
     </tr>
     <tr>
       <td colspan="4" style="text-align: center; width: 373px">
         <span style="color: #000000; font-size: 18px; font-family: Cambria, 'Hoefler Text', 'Liberation Serif', Times, 'Times New Roman', serif">
-          1230500100001</span>
+          <?= $barcode; ?></span>
       </td>
     </tr>
   </tbody>
