@@ -1,16 +1,28 @@
 <?php
 require "../konak/conn.php";
+if (isset($_GET['submit'])) {
+  // Query untuk mendapatkan nama barang
+  $product = $_GET['product'];
+  $query = "SELECT nmbarang FROM barang WHERE idbarang = $product";
+  $result = mysqli_query($conn, $query);
+  $row = mysqli_fetch_assoc($result);
+  $nmbarang = $row['nmbarang'];
+  $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? $_GET['exp'] : null;
+  $packdate = $_GET['packdate'];
+  $kdbarcode = $_GET['kdbarcode'];
+  // Memeriksa dan memecah nilai qty dan pcs
+  $qty = null;
+  $pcs = null;
+  $qtyPcsInput = $_GET['qty'];
 
-// include "../assets/html/header.php";
-$urutitem = "#01";
-$barang = "TENDERLOIN";
-$qty = "16.78";
-$pcs = "3";
-$pack = "29/Mei/2023";
-$exp = "29/Juni/2023";
-$barcode = "100100010001";
+  // Mengecek apakah input qty dan pcs terisi (misalnya "1250.25/4")
+  if (strpos($qtyPcsInput, "/") !== false) {
+    list($qty, $pcs) = explode("/", $qtyPcsInput);
+  } else {
+    $qty = $qtyPcsInput;
+  }
+}
 ?>
-
 <table width="380" border="0" cellpadding="0" cellspacing="0">
   <tbody>
     <tr>
@@ -20,11 +32,11 @@ $barcode = "100100010001";
         </span>
       </td>
       <td width="149" style="width: 149px">&nbsp;</td>
-      <td width="121" colspan="2" rowspan="1" style="text-align: right; width: 114px">
+      <!-- <td width="121" colspan="2" rowspan="1" style="text-align: right; width: 114px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif; text-align: middle;">
-          <strong><?= $urutitem ?></strong>
+          <strong></strong>
         </span>
-      </td>
+      </td> -->
     </tr>
     <tr>
       <td colspan="4" style="width: 264px">
@@ -43,7 +55,7 @@ $barcode = "100100010001";
     <tr>
       <td height="38" colspan="2" style="width: 264px">
         <span style="font-size: 22px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
-          <strong><?= $barang; ?></strong>
+          <strong><?= $nmbarang; ?></strong>
         </span>
       </td>
       <td colspan="2" rowspan="5" align="left"><img src="../assets/dist/img/hi.svg" alt="HALAL" width="70"></td>
@@ -68,7 +80,7 @@ $barcode = "100100010001";
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Packed Date&nbsp; :</span>
       </td>
       <td style="font-size: 12px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $pack; ?></span>
+        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdate; ?></span>
       </td>
     </tr>
     <tr>
@@ -93,12 +105,12 @@ $barcode = "100100010001";
       </td>
     </tr>
     <tr>
-      <td colspan="4" style="text-align: center; width: 373px"><span style="color: #000000; font-size: 36px; font-family: '3 of 9 Barcode'"><?= "*" . $barcode . "*"; ?></span></td>
+      <td colspan="4" style="text-align: center; width: 373px"><span style="color: #000000; font-size: 36px; font-family: '3 of 9 Barcode'"><?= "*" . $kdbarcode . "*"; ?></span></td>
     </tr>
     <tr>
       <td colspan="4" style="text-align: center; width: 373px">
         <span style="color: #000000; font-size: 18px; font-family: Cambria, 'Hoefler Text', 'Liberation Serif', Times, 'Times New Roman', serif">
-          <?= $barcode; ?></span>
+          <?= $kdbarcode; ?></span>
       </td>
     </tr>
   </tbody>
