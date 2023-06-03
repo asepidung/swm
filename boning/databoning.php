@@ -31,7 +31,7 @@ include "../assets/html/mainsidebar.php";
                 <thead class="text-center">
                   <tr>
                     <th>#</th>
-                    <th>BATCH</th>
+                    <th>Batch Number</th>
                     <th>Tgl Boning</th>
                     <th>Supplier</th>
                     <th>Jml Sapi</th>
@@ -81,6 +81,15 @@ include "../assets/html/mainsidebar.php";
                   }
                   ?>
                 </tbody>
+                <tfoot>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tfoot>
               </table>
             </div>
             <!-- /.card-body -->

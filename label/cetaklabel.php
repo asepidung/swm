@@ -7,8 +7,8 @@ if (isset($_GET['submit'])) {
   $result = mysqli_query($conn, $query);
   $row = mysqli_fetch_assoc($result);
   $nmbarang = $row['nmbarang'];
-  $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? $_GET['exp'] : null;
-  $packdate = $_GET['packdate'];
+  $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? date('d-M-Y', strtotime($_GET['exp'])) : null;
+  $packdate = date('d-M-Y', strtotime($_GET['packdate']));
   $kdbarcode = $_GET['kdbarcode'];
   // Memeriksa dan memecah nilai qty dan pcs
   $qty = null;
@@ -17,10 +17,12 @@ if (isset($_GET['submit'])) {
 
   // Mengecek apakah input qty dan pcs terisi (misalnya "1250.25/4")
   if (strpos($qtyPcsInput, "/") !== false) {
-    list($qty, $pcs) = explode("/", $qtyPcsInput);
+    list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
   } else {
     $qty = $qtyPcsInput;
   }
+  // Memformat qty menjadi 2 digit desimal di belakang koma
+  $qty = number_format($qty, 2);
 }
 ?>
 <table width="380" border="0" cellpadding="0" cellspacing="0">
@@ -32,11 +34,6 @@ if (isset($_GET['submit'])) {
         </span>
       </td>
       <td width="149" style="width: 149px">&nbsp;</td>
-      <!-- <td width="121" colspan="2" rowspan="1" style="text-align: right; width: 114px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif; text-align: middle;">
-          <strong></strong>
-        </span>
-      </td> -->
     </tr>
     <tr>
       <td colspan="4" style="width: 264px">
@@ -68,7 +65,7 @@ if (isset($_GET['submit'])) {
       </td>
       <td style="width: 149px">
         <p>
-          <strong><i><?= $pcs . "-Pcs"; ?></i></strong>
+          <strong><i><?= $pcs; ?></i></strong>
         </p>
       </td>
     </tr>
@@ -83,14 +80,16 @@ if (isset($_GET['submit'])) {
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdate; ?></span>
       </td>
     </tr>
-    <tr>
-      <td height="17" style="font-size: 12px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
-      </td>
-      <td style="font-size: 12px">
-        <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $exp; ?></span>
-      </td>
-    </tr>
+    <?php if ($exp !== null) : ?>
+      <tr>
+        <td height="17" style="font-size: 12px">
+          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
+        </td>
+        <td style="font-size: 12px">
+          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $exp; ?></span>
+        </td>
+      </tr>
+    <?php endif; ?>
     <tr>
       <td height="29" colspan="2" rowspan="1" style="width: 264px">
         <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">

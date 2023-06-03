@@ -46,27 +46,29 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
                 </div>
                 <div class="form-group">
                   <label>Packed Date<span class="text-danger">*</span></label>
-                  <div class="input-group date" id="packdate" data-target-input="nearest">
+                  <div class="input-group">
                     <input type="date" class="form-control" name="packdate" id="packdate" required>
                     <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Expired Date</span></label>
-                  <div class="input-group date" id="exp" data-target-input="nearest">
+                  <div class="input-group">
                     <input type="date" class="form-control" name="exp" id="exp">
-                    <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                   </div>
                 </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" checked name="tenderstreach" id="tenderstreach">
+                  <label class="form-check-label">Aktifkan Tenderstreatch</label>
+                </div>
                 <div class="form-group">
-                  <label>Barcode</label>
                   <div class="input-group" id="kdbarcode">
-                    <input type="text" class="form-control mb-1" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
+                    <input type="hidden" class="form-control mb-1" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Weight & Pcs <span class="text-danger">*</span></label>
-                  <div class="input-group" id="qty">
+                  <div class="input-group">
                     <div class="col-lg-4">
                       <input type="text" class="form-control mb-1" name="qty" id="qty" autofocus>
                     </div>
