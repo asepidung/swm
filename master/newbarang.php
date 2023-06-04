@@ -40,7 +40,7 @@ include "../assets/html/mainsidebar.php";
                         </div>
                         <div class="form-group">
                            <label for="nmbarang">Nama Product <span class="text-danger">*</span></label>
-                           <input type="text" class="form-control" name="nmbarang" id="nmbarang" required>
+                           <input type="text" class="form-control" name="nmbarang" id="nmbarang" placeholder="Mohon Gunakan Huruf BESAR" required>
                         </div>
                      </div>
                      <div class="form-group mr-3 text-right">

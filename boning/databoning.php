@@ -60,7 +60,7 @@ include "../assets/html/mainsidebar.php";
                       <td>1000 Kg</td>
                       </button>
                       <td class="text-center">
-                        <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='../label/label.php?id=<?php echo $tampil['idboning']; ?>'">
+                        <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
                           <i class="fas fa-barcode"></i>
                           Label
                         </a>

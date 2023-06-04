@@ -1,9 +1,9 @@
 <?php
 require "../konak/conn.php";
-include "seriallabel.php";
-include "../assets/html/header.php";
-include "../assets/html/navbar.php";
-include "../assets/html/mainsidebar.php";
+require "seriallabelboning.php";
+require "../assets/html/header.php";
+require "../assets/html/navbar.php";
+require "../assets/html/mainsidebar.php";
 
 // check if idboning is set in $_GET array
 if (!isset($_GET['id'])) {
@@ -11,7 +11,7 @@ if (!isset($_GET['id'])) {
 }
 
 $idboning = $_GET['id'];
-$idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
+$idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 
 ?>
 
@@ -23,7 +23,7 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
         <div class="col-lg-4 mt-3">
           <div class="card">
             <div class="card-body">
-              <form method="GET" action="cetaklabel.php">
+              <form method="GET" action="cetaklabelboning.php">
                 <div class="form-group">
                   <label>Product <span class="text-danger">*</span></label>
                   <div class="input-group">
@@ -61,13 +61,10 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
                   <input class="form-check-input" type="checkbox" checked name="tenderstreach" id="tenderstreach">
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
+                <input type="hidden" name="idboning" id="idboning" value="<?= $idboningWithPrefix; ?>" readonly>
+                <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
                 <div class="form-group">
-                  <div class="input-group" id="kdbarcode">
-                    <input type="hidden" class="form-control mb-1" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Weight & Pcs <span class="text-danger">*</span></label>
+                  <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                   <div class="input-group">
                     <div class="col-lg-4">
                       <input type="text" class="form-control mb-1" name="qty" id="qty" autofocus>
@@ -101,7 +98,7 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT * FROM label ORDER BY idlabel DESC");
+                  $ambildata = mysqli_query($conn, "SELECT * FROM labelboning ORDER BY idlabelboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                   ?>
                     <tr class="text-center">
@@ -110,7 +107,7 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
                       <td><?= $tampil['idbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['Pcs']; ?></td>
-                      <td class="text-danger"> x </td>
+                      <td class="text-danger"> <i class="far fa-times-circle"></i> </td>
                     </tr>
                   <?php
                     $no++;
@@ -128,4 +125,4 @@ $idboningWithPrefix = str_pad($idboning, 3, "0", STR_PAD_LEFT);
     </div>
     <!-- /.container-fluid -->
   </div>
-  <?php include "../assets/html/footer.php"; ?>
+  <?php require "../assets/html/footer.php"; ?>
