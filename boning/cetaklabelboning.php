@@ -27,8 +27,8 @@ if (isset($_GET['submit'])) {
   $qty = number_format($qty, 2);
 }
 echo $idbarang;
-// $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
-// VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
+$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
+VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
 ?>
 <!DOCTYPE html>
 <html lang="en">
