@@ -1,9 +1,9 @@
 <?php
 require "../konak/conn.php";
 require "kdbarangunik.php";
-include "../assets/html/header.php";
-include "../assets/html/navbar.php";
-include "../assets/html/mainsidebar.php";
+include "../header.php";
+include "../navbar.php";
+include "../mainsidebar.php";
 ?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -60,4 +60,4 @@ include "../assets/html/mainsidebar.php";
    <!-- </div> -->
    <!-- /.content-wrapper -->
 
-   <?php include "../assets/html/footer.php" ?>
+   <?php include "../footer.php" ?>

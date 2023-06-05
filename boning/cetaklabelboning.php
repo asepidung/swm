@@ -29,6 +29,12 @@ if (isset($_GET['submit'])) {
 }
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
 VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
+
+// Mencetak label
+echo '<script>
+  window.print();
+  window.location.href = "labelboning.php?idboning=' . $idboning . '";
+</script>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +78,7 @@ VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode
             <strong><?= $nmbarang; ?></strong>
           </span>
         </td>
-        <td colspan="2" rowspan="7" align="center"><img src="../assets/dist/img/hi.svg" alt="HALAL" height="145"></td>
+        <td colspan="2" rowspan="7" align="center"><img src="../dist/img/hi.svg" alt="HALAL" height="145"></td>
       </tr>
       <tr>
         <td colspan="1" rowspan="2" style="width: 112px">
@@ -138,4 +144,3 @@ VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode
 </body>
 
 </html>
-<S< /SCRipt>

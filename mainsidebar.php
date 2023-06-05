@@ -1,8 +1,8 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="../index.php" class="brand-link">
-    <img src="../assets/dist/img/logoSWM.png" alt="SWM Logo" class="brand-image" style="opacity: .8">
+  <a href="index.php" class="brand-link">
+    <img src="../dist/img/logoSWM.png" alt="SWM Logo" class="brand-image">
     <span class="brand-text font-weight-light">WIJAYA MEAT</span>
   </a>
   <!-- Sidebar -->
@@ -21,13 +21,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="../master/barang.php" class="nav-link">
+              <a href="barang/barang.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Barang</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="../master/supplier.php" class="nav-link">
+              <a href="../supplier.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Supplier</p>
               </a>

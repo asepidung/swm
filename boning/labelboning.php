@@ -1,9 +1,9 @@
 <?php
 require "../konak/conn.php";
 require "seriallabelboning.php";
-require "../assets/html/header.php";
-require "../assets/html/navbar.php";
-require "../assets/html/mainsidebar.php";
+require "../header.php";
+require "../navbar.php";
+require "../mainsidebar.php";
 
 // check if idboning is set in $_GET array
 if (!isset($_GET['id'])) {
@@ -40,7 +40,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                       ?>
                     </select>
                     <div class="input-group-append">
-                      <a href="../master/newbarang.php" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                      <a href="../barang/newbarang.php" class="btn btn-success"><i class="fas fa-plus"></i></a>
                     </div>
                   </div>
                 </div>
@@ -62,7 +62,6 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
                 <input type="hidden" name="idbarang" value="<?php echo isset($_GET['product']) ? $_GET['product'] : ''; ?>">
-
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboningWithPrefix; ?>" readonly>
                 <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
                 <div class="form-group">
@@ -110,7 +109,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td>
-                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>" class="text-danger" onclick="return confirm('Anda yakin ingin menghapus label ini?')">
+                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboningWithPrefix; ?>" class="text-danger" onclick="return confirm('Anda yakin ingin menghapus label ini?')">
                           <i class="far fa-times-circle"></i>
                         </a>
                       </td>
@@ -132,4 +131,4 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
     </div>
     <!-- /.container-fluid -->
   </div>
-  <?php require "../assets/html/footer.php"; ?>
+  <?php require "../footer.php"; ?>

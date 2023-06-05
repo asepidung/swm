@@ -2,7 +2,7 @@
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__wobble" src="../assets/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__wobble" src="../dist/img/logoSWM.png" alt="SWMLogo" height="150" width="200">
   </div>
 
   <!-- Navbar -->
@@ -46,7 +46,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="assets/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel
@@ -62,7 +62,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="assets/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   John Pierce
@@ -78,7 +78,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="assets/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Nora Silvester
