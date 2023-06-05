@@ -6,6 +6,7 @@ if (isset($_GET['submit'])) {
   $query = "SELECT nmbarang FROM barang WHERE idbarang = $product";
   $result = mysqli_query($conn, $query);
   $row = mysqli_fetch_assoc($result);
+  $idbarang = $_GET['product'];
 
   $nmbarang = $row['nmbarang'];
   $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? date('d-M-Y', strtotime($_GET['exp'])) : null;
@@ -26,7 +27,6 @@ if (isset($_GET['submit'])) {
   // Memformat qty menjadi 2 digit desimal di belakang koma
   $qty = number_format($qty, 2);
 }
-echo $idbarang;
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
 VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
 ?>
@@ -138,3 +138,4 @@ VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode
 </body>
 
 </html>
+<S< /SCRipt>

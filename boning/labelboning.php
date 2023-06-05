@@ -61,6 +61,8 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                   <input class="form-check-input" type="checkbox" checked name="tenderstreach" id="tenderstreach">
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
+                <input type="hidden" name="idbarang" value="<?php echo isset($_GET['product']) ? $_GET['product'] : ''; ?>">
+
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboningWithPrefix; ?>" readonly>
                 <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>" readonly>
                 <div class="form-group">
@@ -98,21 +100,26 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT * FROM labelboning ORDER BY idlabelboning DESC");
+                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang ORDER BY l.idlabelboning DESC LIMIT 10");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
                       <td><?= $tampil['kdbarcode']; ?></td>
-                      <td><?= $tampil['idbarang']; ?></td>
+                      <td><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
-                      <td><?= $tampil['Pcs']; ?></td>
-                      <td class="text-danger"> <i class="far fa-times-circle"></i> </td>
+                      <td><?= $tampil['pcs']; ?></td>
+                      <td>
+                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>" class="text-danger" onclick="return confirm('Anda yakin ingin menghapus label ini?')">
+                          <i class="far fa-times-circle"></i>
+                        </a>
+                      </td>
                     </tr>
                   <?php
                     $no++;
                   }
                   ?>
+
                 </tbody>
               </table>
             </div>

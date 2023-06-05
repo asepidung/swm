@@ -38,7 +38,7 @@ CREATE TABLE labelboning (
   pcs CHAR(5),
   packdate DATE,
   exp DATE,
-  kdbarcode VARCHAR(20),
+  kdbarcode VARCHAR(20) UNIQUE,
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (idboning) REFERENCES boning (idboning)
