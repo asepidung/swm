@@ -16,7 +16,6 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 ?>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-
   <div class="content">
     <div class="container-fluid">
       <div class="row">
@@ -48,7 +47,6 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                   <label>Packed Date<span class="text-danger">*</span></label>
                   <div class="input-group">
                     <input type="date" class="form-control" name="packdate" id="packdate" required>
-                    <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
                   </div>
                 </div>
                 <div class="form-group">
@@ -99,13 +97,13 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang ORDER BY l.idlabelboning DESC LIMIT 10");
+                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang ORDER BY l.idlabelboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
                       <td><?= $tampil['kdbarcode']; ?></td>
-                      <td><?= $tampil['nmbarang']; ?></td>
+                      <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td>
