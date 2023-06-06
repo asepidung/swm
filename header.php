@@ -24,7 +24,8 @@
 </head>
 <div class="wrapper">
 
-  <!-- Preloader -->
-  <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__wobble" src="../dist/img/logoSWM.png" alt="SWMLogo" height="60" width="60">
-  </div>
+  <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="../dist/img/logoSWM.png" alt="SWMLogo" height="75" width="100">
+    </div>

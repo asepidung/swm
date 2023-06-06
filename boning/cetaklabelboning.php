@@ -12,6 +12,7 @@ if (isset($_GET['submit'])) {
   $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? date('d-M-Y', strtotime($_GET['exp'])) : null;
   $packdate = date('d-M-Y', strtotime($_GET['packdate']));
   $idboning = $_GET['idboning'];
+  $idboningWithPrefix = $_GET['idboningWithPrefix'];
   $kdbarcode = $_GET['kdbarcode'];
   $tenderstreachActive = isset($_GET['tenderstreach']) && $_GET['tenderstreach'] === 'on';
   // Memeriksa dan memecah nilai qty dan pcs
@@ -28,7 +29,7 @@ if (isset($_GET['submit'])) {
   $qty = number_format($qty, 2);
 }
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
-VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
+VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
 
 // Mencetak label
 // echo '<script>
