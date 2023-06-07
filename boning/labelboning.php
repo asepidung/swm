@@ -1,5 +1,7 @@
 <?php
 require "../konak/conn.php";
+session_start();
+include 'sessionboning.php';
 require "seriallabelboning.php";
 require "../header.php";
 require "../navbar.php";
@@ -114,7 +116,6 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                   $no++;
                 }
                 ?>
-
               </tbody>
             </table>
           </div>
@@ -127,6 +128,11 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
   </div>
   <!-- /.container-fluid -->
 </div>
+
+<script>
+  // Mengubah judul halaman web
+  document.title = "Print Label";
+</script>
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

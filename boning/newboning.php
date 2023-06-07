@@ -55,7 +55,7 @@ include "../mainsidebar.php";
                                  ?>
                               </select>
                               <div class="input-group-append">
-                                 <a href="../supplier/newsupplier.php" class="btn btn-primary"><i class="fas fa-plus"></i> Supplier</a>
+                                 <a href="../supplier/newsupplier.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                               </div>
                            </div>
                         </div>
@@ -89,5 +89,8 @@ include "../mainsidebar.php";
    <!-- /.content -->
    <!-- </div> -->
    <!-- /.content-wrapper -->
-
+   <script>
+      // Mengubah judul halaman web
+      document.title = "Boningan Baru";
+   </script>
    <?php include "../footer.php" ?>

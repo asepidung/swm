@@ -193,5 +193,8 @@ include "../assets/html/mainsidebar.php";
 <!-- /.content -->
 <!-- </div> -->
 <!-- /.content-wrapper -->
-
+<script>
+  // Mengubah judul halaman web
+  document.title = "Detail Hasil Boning";
+</script>
 <?php include "../assets/html/footer.php" ?>
