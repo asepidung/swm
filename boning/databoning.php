@@ -45,7 +45,6 @@ include "../mainsidebar.php";
                   $result_total_sapi = mysqli_query($conn, $query_total_sapi);
                   $row_total_sapi = mysqli_fetch_assoc($result_total_sapi);
                   $total_sapi = $row_total_sapi['total_sapi'];
-
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier ORDER BY b.batchboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
@@ -57,7 +56,7 @@ include "../mainsidebar.php";
                       <td><?= $tglboning; ?></td>
                       <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
                       <td><?= $tampil['qtysapi']; ?></td>
-                      <td>1000 Kg</td>
+                      <td><?= "EWIGHT TOAL"; ?></td>
                       </button>
                       <td class="text-center">
                         <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
@@ -86,7 +85,7 @@ include "../mainsidebar.php";
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td class="text-center"><?= $total_sapi . " " . "Sapi"; ?> </td>
                   <td></td>
                   <td></td>
                 </tfoot>

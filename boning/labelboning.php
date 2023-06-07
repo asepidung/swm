@@ -14,8 +14,6 @@ $idboning = $_GET['id'];
 $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 
 ?>
-
-
 <div class="content">
   <div class="container-fluid">
     <div class="row">

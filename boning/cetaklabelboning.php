@@ -31,11 +31,10 @@ if (isset($_GET['submit'])) {
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
 VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
 
-// Mencetak label
-// echo '<script>
-//   window.print();
-//   window.location.href = "labelboning.php?idboning=' . $idboning . '";
-// </script>';
+echo '<script>
+  window.print();
+  window.location.href = "labelboning.php?id=' . $idboning . '";
+</script>';
 ?>
 <table width="380" border="0" cellpadding="0" cellspacing="0">
   <tbody>
