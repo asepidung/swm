@@ -26,8 +26,8 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
               <div class="form-group">
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
-                  <select class="form-control" name="product" id="product" required>
-                    <option value="">--Pilih--</option>
+                  <select class="form-control" name=" product" id="product" required>
+                    <option value=""></option>
                     <?php
                     $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                     $result = mysqli_query($conn, $query);
@@ -38,9 +38,9 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                     }
                     ?>
                   </select>
-                  <div class="input-group-append">
+                  <!-- <div class="input-group-append">
                     <a href="../barang/newbarang.php" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="form-group">
@@ -67,12 +67,12 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                 <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <div class="col-lg-4">
-                    <input type="text" class="form-control mb-1" name="qty" id="qty" autofocus>
+                    <input type="text" class="form-control mb-1" name="qty" id="qty" autofocus required>
                   </div>
                 </div>
               </div>
               <div class="form-group text-right">
-                <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
+                <button type="submit" class="btn bg-gradient-primary" name="submit" onclick="printLabel()">Print</button>
               </div>
             </form>
           </div>
@@ -128,13 +128,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
   </div>
   <!-- /.container-fluid -->
 </div>
-
-<script>
-  // Mengubah judul halaman web
-  document.title = "Print Label";
-</script>
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
 require "../footer.php"; ?>

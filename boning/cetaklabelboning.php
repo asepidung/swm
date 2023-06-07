@@ -1,5 +1,6 @@
 <?php
 require "../konak/conn.php";
+require "../dist/vendor/autoload.php";
 if (isset($_GET['submit'])) {
   // Query untuk mendapatkan nama barang
   $product = $_GET['product'];
@@ -30,10 +31,6 @@ if (isset($_GET['submit'])) {
 }
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
 VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
-// echo '<script>
-// window.print();
-// window.location.href = "labelboning.php?id=' . $idboning . '";
-// </script>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +56,7 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
       </tr>
       <tr>
         <td colspan="4" style="width: 264px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+          <span style="color: #000000; font-family: Tahoma">
             <strong>Prod By: PT. SANTI WIJAYA MEAT</strong>
           </span>
         </td>
@@ -77,10 +74,12 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
             <strong><?= $nmbarang; ?></strong>
           </span>
         </td>
-        <td colspan="2" rowspan="7" align="center"><img src="../dist/img/hi.svg" alt="HALAL" height="145"></td>
+        <td colspan="2" rowspan="7" align="center">
+          <img src=" ../dist/img/hi.svg" alt="HALAL" height="145">
+        </td>
       </tr>
       <tr>
-        <td colspan="1" rowspan="2" style="width: 112px">
+        <td colspan=" 1" rowspan="2" style="width: 112px">
           <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
             <span style="font-size: 24px"><strong><?= $qty; ?></strong></span>
           </span>
@@ -130,19 +129,28 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
         </td>
       </tr>
       <tr>
-        <td colspan="4" align="center" style="width: 350px"><span style="color: #000000; font-size: 36px; font-family: '3 of 9 Barcode'"><?= "*" . $kdbarcode . "*"; ?></span></td>
-      </tr>
-      <tr>
-        <td colspan="4" align="center" style="text-align: center; width: 373px">
-          <span style="color: #000000; font-size: 18px; font-family: Cambria, 'Hoefler Text', 'Liberation Serif', Times, 'Times New Roman', serif">
-            <?= $kdbarcode; ?></span>
+        <td colspan="4" align="center">
+          <?php
+          $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+          $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
+          echo '<img src="data:image/jpeg;base64,' . base64_encode($barcode) . '" alt="Barcode">';
+          // echo $kdbarcode;
+          ?>
         </td>
       </tr>
+      <tr>
+        <td colspan="4" align="center">
+          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+            <?= $kdbarcode; ?>
+          </span>
+        </td>
+      </tr>
+
     </tbody>
   </table>
   <script>
-    window.print();
-    window.location.href = "labelboning.php?id=' . $idboning . '";
+    // window.print();
+    //  window.location.href = "labelboning.php?id=<?= $idboning ?> ";
   </script>
 </body>
 
