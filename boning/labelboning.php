@@ -1,7 +1,7 @@
 <?php
 require "../konak/conn.php";
-session_start();
-include 'sessionboning.php';
+// session_start();
+// include 'sessionboning.php';
 require "seriallabelboning.php";
 require "../header.php";
 require "../navbar.php";
@@ -27,7 +27,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <select class="form-control" name=" product" id="product" required>
-                    <option value=""></option>
+                    <option value="">--Pilih Item--</option>
                     <?php
                     $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                     $result = mysqli_query($conn, $query);
