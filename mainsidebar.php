@@ -21,19 +21,19 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="barang/barang.php" class="nav-link">
+              <a href="../barang/barang.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Barang</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="../supplier.php" class="nav-link">
+              <a href="../supplier/supplier.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Supplier</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/inline.html" class="nav-link">
+              <a href="../customer/customer.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Customer</p>
               </a>

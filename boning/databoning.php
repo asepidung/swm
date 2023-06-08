@@ -109,4 +109,5 @@ include "../mainsidebar.php";
     document.title = "Data Boning";
   </script>
   <?php
+  require "../footnote.php";
   include "../footer.php" ?>

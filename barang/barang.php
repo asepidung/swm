@@ -86,4 +86,7 @@ include "../mainsidebar.php";
    <!-- </div> -->
    <!-- /.content-wrapper -->
 
-   <?php include "../footer.php" ?>
+   <?php
+   include "../footer.php";
+   include "../footnote.php";
+   ?>

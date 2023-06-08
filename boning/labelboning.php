@@ -61,13 +61,10 @@ while ($row = mysqli_fetch_assoc($result)) {
               <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>">
               <div class="form-group">
                 <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <div class="col-lg-4">
-                    <input type="text" class="form-control" name="qty" id="qty" placeholder="Qty" required>
-                  </div>
-                  <div class="col-lg-4">
-                    <input type="text" class="form-control" name="pcs" id="pcs" placeholder="Pcs" required>
-                  </div>
+                <div class="input-group col-lg-4">
+                  <!-- <div class="col-lg-4"> -->
+                  <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required autofocus>
+                  <!-- </div> -->
                 </div>
               </div>
               <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
@@ -125,7 +122,9 @@ while ($row = mysqli_fetch_assoc($result)) {
   </div>
   <!-- /.container-fluid -->
 </div>
-
+<script>
+  document.title = "Data Boning <?= "BN" . $idboningWithPrefix ?>";
+</script>
 <?php
 require "../footnote.php";
 require "../footer.php";

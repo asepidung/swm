@@ -93,4 +93,8 @@ include "../mainsidebar.php";
       // Mengubah judul halaman web
       document.title = "Boningan Baru";
    </script>
-   <?php include "../footer.php" ?>
+
+   <?php
+   include "../footer.php";
+   require "../footnote.php";
+   ?>

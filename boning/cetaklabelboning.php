@@ -10,8 +10,10 @@ if (isset($_POST['submit'])) {
   $idbarang = $_POST['product'];
 
   $nmbarang = $row['nmbarang'];
-  $exp = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
-  $packdate = date('d-M-Y', strtotime($_POST['packdate']));
+  $exp = $_POST['exp'];
+  $expadd = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
+  $packdate = $_POST['packdate'];
+  $packdateadd = date('d-M-Y', strtotime($_POST['packdate']));
   $idboning = $_POST['idboning'];
   $idboningWithPrefix = $_POST['idboningWithPrefix'];
   $kdbarcode = $_POST['kdbarcode'];
@@ -102,7 +104,7 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
           <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Packed Date&nbsp; :</span>
         </td>
         <td style="font-size: 12px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdate; ?></span>
+          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdateadd; ?></span>
         </td>
       </tr>
       <?php if ($exp !== null) { ?>
@@ -111,7 +113,7 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
             <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
           </td>
           <td style="font-size: 12px">
-            <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $exp; ?></span>
+            <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $expadd; ?></span>
           </td>
         </tr>
       <?php } else { ?>
@@ -145,7 +147,6 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
           </span>
         </td>
       </tr>
-
     </tbody>
   </table>
   <script>
