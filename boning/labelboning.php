@@ -1,7 +1,5 @@
 <?php
 require "../konak/conn.php";
-// session_start();
-// include 'sessionboning.php';
 require "seriallabelboning.php";
 require "../header.php";
 require "../navbar.php";
@@ -15,6 +13,15 @@ if (!isset($_GET['id'])) {
 $idboning = $_GET['id'];
 $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 
+// Mengambil daftar barang
+$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+$result = mysqli_query($conn, $query);
+$barangOptions = "";
+while ($row = mysqli_fetch_assoc($result)) {
+  $idbarang = $row['idbarang'];
+  $nmbarang = $row['nmbarang'];
+  $barangOptions .= "<option value=\"$idbarang\">$nmbarang</option>";
+}
 ?>
 <div class="content">
   <div class="container-fluid">
@@ -22,25 +29,14 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
       <div class="col-lg-4 mt-3">
         <div class="card">
           <div class="card-body">
-            <form method="GET" action="cetaklabelboning.php">
+            <form method="POST" action="cetaklabelboning.php" target="_blank">
               <div class="form-group">
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
-                  <select class="form-control" name=" product" id="product" required>
+                  <select class="form-control" name="product" id="product" required>
                     <option value="">--Pilih Item--</option>
-                    <?php
-                    $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                    $result = mysqli_query($conn, $query);
-                    while ($row = mysqli_fetch_assoc($result)) {
-                      $idbarang = $row['idbarang'];
-                      $nmbarang = $row['nmbarang'];
-                      echo "<option value=\"$idbarang\">$nmbarang</option>";
-                    }
-                    ?>
+                    <?= $barangOptions; ?>
                   </select>
-                  <!-- <div class="input-group-append">
-                    <a href="../barang/newbarang.php" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                  </div> -->
                 </div>
               </div>
               <div class="form-group">
@@ -67,13 +63,14 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
                 <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <div class="col-lg-4">
-                    <input type="text" class="form-control mb-1" name="qty" id="qty" autofocus required>
+                    <input type="text" class="form-control" name="qty" id="qty" placeholder="Qty" required>
+                  </div>
+                  <div class="col-lg-4">
+                    <input type="text" class="form-control" name="pcs" id="pcs" placeholder="Pcs" required>
                   </div>
                 </div>
               </div>
-              <div class="form-group text-right">
-                <button type="submit" class="btn bg-gradient-primary" name="submit" onclick="printLabel()">Print</button>
-              </div>
+              <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
             </form>
           </div>
         </div>
@@ -97,7 +94,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
               <tbody>
                 <?php
                 $no = 1;
-                $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang ORDER BY l.idlabelboning DESC");
+                $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang WHERE idboning = $idboning ORDER BY l.idlabelboning DESC");
                 while ($tampil = mysqli_fetch_array($ambildata)) {
                 ?>
                   <tr class="text-center">
@@ -128,7 +125,8 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
   </div>
   <!-- /.container-fluid -->
 </div>
+
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-require "../footer.php"; ?>
+require "../footnote.php";
+require "../footer.php";
+?>

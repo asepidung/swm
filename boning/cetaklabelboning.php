@@ -1,25 +1,25 @@
 <?php
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
-if (isset($_GET['submit'])) {
+if (isset($_POST['submit'])) {
   // Query untuk mendapatkan nama barang
-  $product = $_GET['product'];
+  $product = $_POST['product'];
   $query = "SELECT nmbarang FROM barang WHERE idbarang = $product";
   $result = mysqli_query($conn, $query);
   $row = mysqli_fetch_assoc($result);
-  $idbarang = $_GET['product'];
+  $idbarang = $_POST['product'];
 
   $nmbarang = $row['nmbarang'];
-  $exp = isset($_GET['exp']) && !empty($_GET['exp']) ? date('d-M-Y', strtotime($_GET['exp'])) : null;
-  $packdate = date('d-M-Y', strtotime($_GET['packdate']));
-  $idboning = $_GET['idboning'];
-  $idboningWithPrefix = $_GET['idboningWithPrefix'];
-  $kdbarcode = $_GET['kdbarcode'];
-  $tenderstreachActive = isset($_GET['tenderstreach']) && $_GET['tenderstreach'] === 'on';
+  $exp = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
+  $packdate = date('d-M-Y', strtotime($_POST['packdate']));
+  $idboning = $_POST['idboning'];
+  $idboningWithPrefix = $_POST['idboningWithPrefix'];
+  $kdbarcode = $_POST['kdbarcode'];
+  $tenderstreachActive = isset($_POST['tenderstreach']) && $_POST['tenderstreach'] === 'on';
   // Memeriksa dan memecah nilai qty dan pcs
   $qty = null;
   $pcs = null;
-  $qtyPcsInput = $_GET['qty'];
+  $qtyPcsInput = $_POST['qty'];
 
   if (strpos($qtyPcsInput, "/") !== false) {
     list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
@@ -149,8 +149,12 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
     </tbody>
   </table>
   <script>
-    // window.print();
-    //  window.location.href = "labelboning.php?id=<?= $idboning ?> ";
+    window.onload = function() {
+      window.print();
+      window.onafterprint = function() {
+        window.close();
+      };
+    };
   </script>
 </body>
 
