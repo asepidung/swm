@@ -153,8 +153,11 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
     window.onload = function() {
       window.print();
       window.onafterprint = function() {
-        window.close();
+        window.location.href = 'labelboning.php?id=<?php echo $idboning; ?>';
       };
+      setTimeout(function() {
+        window.close();
+      }, 500); // Menunda penutupan jendela setelah 0,5 detik
     };
   </script>
 </body>

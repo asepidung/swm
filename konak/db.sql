@@ -1,5 +1,10 @@
 CREATE DATABASE swm;
 USE swm;
+CREATE TABLE users (
+  idusers INT PRIMARY KEY AUTO_INCREMENT,
+  userid VARCHAR(100),
+  passuser VARCHAR(100)
+);
 CREATE TABLE supplier (
   idsupplier INT PRIMARY KEY AUTO_INCREMENT,
   nmsupplier VARCHAR(100),

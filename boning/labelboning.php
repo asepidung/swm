@@ -29,7 +29,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       <div class="col-lg-4 mt-3">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action="cetaklabelboning.php" target="_blank">
+            <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
               <div class="form-group">
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -38,6 +38,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <?= $barangOptions; ?>
                   </select>
                 </div>
+                <!-- <div class="input-group-append">
+                  <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                </div> -->
               </div>
               <div class="form-group">
                 <label>Packed Date<span class="text-danger">*</span></label>

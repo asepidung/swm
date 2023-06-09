@@ -29,5 +29,5 @@
   <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-      <img class="animation__wobble img-circle" src="../dist/img/ipin.jpg" alt="SWMLogo" height="200" width="200">
+      <img class="animation__wobble img-circle" src="../dist/img/ipin.jpg" alt="SWMLogo" height="400" width="400">
     </div>
