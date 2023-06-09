@@ -123,7 +123,7 @@ while ($row = mysqli_fetch_assoc($result)) {
   <!-- /.container-fluid -->
 </div>
 <script>
-  document.title = "Data Boning <?= "BN" . $idboningWithPrefix ?>";
+  document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
 </script>
 <?php
 require "../footnote.php";
