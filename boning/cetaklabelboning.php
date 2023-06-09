@@ -1,4 +1,5 @@
 <?php
+session_start();
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 if (isset($_POST['submit'])) {
@@ -8,7 +9,6 @@ if (isset($_POST['submit'])) {
   $result = mysqli_query($conn, $query);
   $row = mysqli_fetch_assoc($result);
   $idbarang = $_POST['product'];
-
   $nmbarang = $row['nmbarang'];
   $exp = $_POST['exp'];
   $expadd = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
@@ -22,7 +22,9 @@ if (isset($_POST['submit'])) {
   $qty = null;
   $pcs = null;
   $qtyPcsInput = $_POST['qty'];
-
+  $_SESSION['product'] = $idbarang;
+  $_SESSION['packdate'] = $packdate;
+  $_SESSION['exp'] = $exp;
   if (strpos($qtyPcsInput, "/") !== false) {
     list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
   } else {

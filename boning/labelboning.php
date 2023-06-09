@@ -1,4 +1,5 @@
 <?php
+session_start();
 require "../konak/conn.php";
 require "seriallabelboning.php";
 require "../header.php";
@@ -34,24 +35,24 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <select class="form-control" name="product" id="product" required>
-                    <option value="">--Pilih Item--</option>
+                    <option value="" <?php echo ($_SESSION['product'] == '') ? 'selected' : ''; ?>>--Pilih Item--</option>
                     <?= $barangOptions; ?>
                   </select>
+                  <div class="input-group-append">
+                    <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                  </div>
                 </div>
-                <!-- <div class="input-group-append">
-                  <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-                </div> -->
               </div>
               <div class="form-group">
                 <label>Packed Date<span class="text-danger">*</span></label>
                 <div class="input-group">
-                  <input type="date" class="form-control" name="packdate" id="packdate" required>
+                  <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                 </div>
               </div>
               <div class="form-group">
                 <label>Expired Date</span></label>
                 <div class="input-group">
-                  <input type="date" class="form-control" name="exp" id="exp">
+                  <input type="date" class="form-control" name="exp" id="exp" value="<?php echo $_SESSION['exp']; ?>">
                 </div>
               </div>
               <div class="form-check">
