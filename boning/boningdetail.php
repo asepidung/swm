@@ -1,200 +1,104 @@
 <?php
+session_start();
 require "../konak/conn.php";
-include "../assets/html/header.php";
-include "../assets/html/navbar.php";
-include "../assets/html/mainsidebar.php";
-?>
-<!-- Content Header (Page header) -->
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0">DATA BONING</h1>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
-</div>
-<!-- /.content-header -->
+require "../header.php";
+require "../navbar.php";
+require "../mainsidebar.php";
+// check if idboning is set in $_GET array
+if (!isset($_GET['id'])) {
+  die("Jalankan Dari Modul Produksi");
+}
 
-<!-- Main content -->
-<section class="content">
+$idboning = $_GET['id'];
+$query = "SELECT l.idlabelboning, b.nmbarang, l.qty
+          FROM labelboning l
+          INNER JOIN barang b ON l.idbarang = b.idbarang
+          WHERE l.idboning = $idboning";
+$result = mysqli_query($conn, $query);
+if (!$result) {
+  die("Query error: " . mysqli_error($conn));
+}
+require "boningtotal.php";
+?>
+<div class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12">
+      <div class="col mt-3">
         <div class="card">
-          <!-- /.card-header -->
           <div class="card-body">
             <table id="example1" class="table table-bordered table-striped table-sm">
-              <thead>
+              <thead class="text-center">
                 <tr>
                   <th>#</th>
-                  <th>Products</th>
-                  <th>Qty</th>
-                  <th>Actual</th>
-                  <th>Net Price</th>
-                  <th>Gross Price</th>
-                  <th>Ttl Price</th>
-                  <th>Buying Price</th>
-                  <th>Ttl Buying Price</th>
+                  <th>Product</th>
+                  <th>Box Total</th>
+                  <th>Qty Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>TENDERLOIN</td>
-                  <td>1000</td>
-                  <td>5%</td>
-                  <td>100000</td>
-                  <td>120000</td>
-                  <td>130000</td>
-                  <td>90000</td>
-                  <td>95000</td>
-                </tr>
+                <?php
+                $counter = 1;
+                $previousItem = ""; // untuk melacak item sebelumnya
+                $totalQty = 0; // total qty barang
 
-                <!-- </tbody> -->
+                while ($row = mysqli_fetch_assoc($result)) {
+                  $currentItem = $row['nmbarang'];
+                  $currentQty = $row['qty'];
+
+                  if ($previousItem != $currentItem) {
+                    // Menampilkan nama barang hanya sekali dengan total qty
+                    if ($previousItem != "") { // mengecualikan item pertama
+                ?>
+                      <tr>
+                        <td class="text-center"><?= $counter++; ?></td>
+                        <td><?= $previousItem; ?></td>
+                        <td class="text-center"><?php echo $counter - 2; ?></td>
+                        <td class="text-right"><?= $totalQty; ?></td>
+                      </tr>
+                <?php
+                    }
+
+                    // Mengatur ulang total qty untuk item baru
+                    $totalQty = $currentQty;
+                  } else {
+                    // Menambahkan qty item saat ini ke total qty
+                    $totalQty += $currentQty;
+                  }
+
+                  $previousItem = $currentItem;
+                }
+
+                // Menampilkan data untuk item terakhir
+                ?>
+                <tr>
+                  <td class="text-center"><?= $counter++; ?></td>
+                  <td><?= $previousItem; ?></td>
+                  <td class="text-center"><?php echo $counter - 2; ?></td>
+                  <td class="text-right"><?= $totalQty; ?></td>
+                </tr>
+              </tbody>
+              <?php
+
+              ?>
               <tfoot>
-                <tr>
-                  <th colspan="2" class="text-right">Load Weight</th>
-                  <th>?</th>
-                  <th></th>
-                  <th colspan="2" class="text-right">Total</th>
-                  <th>?</th>
-                  <th colspan="2"></th>
-                </tr>
-                <tr>
-                  <th colspan="2" class="text-right">Average</th>
-                  <th>?</th>
-                  <th></th>
-                  <th colspan="2" class="text-right">Purchase Cost</th>
-                  <th>?</th>
-                  <th colspan="2"></th>
-                </tr>
-                <tr>
-                  <th colspan="2" class="text-right"> Price/Head</th>
-                  <th>?</th>
-                  <th></th>
-                  <th colspan="2" class="text-right">Gross Profit</th>
-                  <th>?</th>
-                  <th colspan="2"></th>
-                </tr>
-                <tr>
-                  <th colspan="6" class="text-right"> Gross Profit/kg</th>
-                  <th colspan="3">?</th>
-                </tr>
-                <tr>
-                  <th colspan="6" class="text-right"> Over Head/kg</th>
-                  <th colspan="3">?</th>
-                </tr>
-                <tr>
-                  <th colspan="6" class="text-right"> Net Profit/kg</th>
-                  <th colspan="3">?</th>
-                </tr>
+                <th colspan="2" class="text-right">GRAND TOTAL</th>
+                <th class="text-center"><?= $total_box . " Box"; ?></th>
+                <th class="text-right"><?= $total_weight; ?></th>
               </tfoot>
             </table>
           </div>
-          <!-- /.card-body -->
         </div>
         <!-- /.card -->
       </div>
-      <!-- /.col -->
+      <!-- /.col-md-6 -->
     </div>
     <!-- /.row -->
   </div>
   <!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
+</div>
 <script>
-  // Mengubah judul halaman web
-  document.title = "Detail Hasil Boning";
+  document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
 </script>
-<?php include "../assets/html/footer.php" ?>
+<?php
+require "../footnote.php";
+include "../footer.php" ?>

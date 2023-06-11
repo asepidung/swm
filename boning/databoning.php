@@ -45,10 +45,21 @@ include "../mainsidebar.php";
                   $result_total_sapi = mysqli_query($conn, $query_total_sapi);
                   $row_total_sapi = mysqli_fetch_assoc($result_total_sapi);
                   $total_sapi = $row_total_sapi['total_sapi'];
+
+                  $query_total_berat_keseluruhan = "SELECT SUM(qty) AS total_berat_keseluruhan FROM labelboning";
+                  $result_total_berat_keseluruhan = mysqli_query($conn, $query_total_berat_keseluruhan);
+                  $row_total_berat_keseluruhan = mysqli_fetch_assoc($result_total_berat_keseluruhan);
+                  $total_berat_keseluruhan = $row_total_berat_keseluruhan['total_berat_keseluruhan'];
+
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier ORDER BY b.batchboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $tglboning = date("d-M-Y", strtotime($tampil['tglboning']));
+
+                    $query_total_weight = "SELECT SUM(qty) AS total_weight FROM labelboning WHERE idboning = " . $tampil['idboning'];
+                    $result_total_weight = mysqli_query($conn, $query_total_weight);
+                    $row_total_weight = mysqli_fetch_assoc($result_total_weight);
+                    $total_weight = $row_total_weight['total_weight'];
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -56,22 +67,22 @@ include "../mainsidebar.php";
                       <td><?= $tglboning; ?></td>
                       <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
                       <td><?= $tampil['qtysapi']; ?></td>
-                      <td><?= "EWIGHT TOAL"; ?></td>
+                      <td class="text-right"><?= $total_weight; ?></td>
                       </button>
                       <td class="text-center">
                         <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
                           <i class="fas fa-barcode"></i>
-                          Label
+
                         </a>
-                        <a class="btn btn-primary btn-sm" href="#">
+                        <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Hasil Boning" onclick="window.location.href='boningdetail.php?id=<?php echo $tampil['idboning']; ?>'">
                           <i class="fas fa-eye">
                           </i>
-                          View
+
                         </a>
                         <a class="btn btn-info btn-sm" href="#">
                           <i class="fas fa-pencil-alt">
                           </i>
-                          Edit
+
                         </a>
                       </td>
                     </tr>
@@ -81,13 +92,13 @@ include "../mainsidebar.php";
                   ?>
                 </tbody>
                 <tfoot>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td class="text-center"><?= $total_sapi . " " . "Sapi"; ?> </td>
-                  <td></td>
-                  <td></td>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th class="text-center"><?= $total_sapi; ?> </td>
+                  <th class="text-right"><?= $total_berat_keseluruhan; ?></td>
+                  <th></th>
                 </tfoot>
               </table>
             </div>
