@@ -10,6 +10,7 @@ if (!isset($_GET['id'])) {
 }
 
 $idboning = $_GET['id'];
+$idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 $query = "SELECT l.idlabelboning, b.nmbarang, l.qty
           FROM labelboning l
           INNER JOIN barang b ON l.idbarang = b.idbarang
@@ -57,7 +58,6 @@ require "boningtotal.php";
                       </tr>
                 <?php
                     }
-
                     // Mengatur ulang total qty untuk item baru
                     $totalQty = $currentQty;
                   } else {
@@ -67,7 +67,6 @@ require "boningtotal.php";
 
                   $previousItem = $currentItem;
                 }
-
                 // Menampilkan data untuk item terakhir
                 ?>
                 <tr>
@@ -97,7 +96,7 @@ require "boningtotal.php";
   <!-- /.container-fluid -->
 </div>
 <script>
-  document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
+  document.title = "Detail Boning <?= "BN" . $idboningWithPrefix ?>";
 </script>
 <?php
 require "../footnote.php";

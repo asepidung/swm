@@ -12,13 +12,15 @@ CREATE TABLE supplier (
   alamat VARCHAR(200),
   telepon VARCHAR(20),
   npwp VARCHAR(20),
-  iduser INT
+  iduser INT,
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
   kdbarang VARCHAR(10),
   nmbarang VARCHAR(30),
-  iduser INT
+  iduser INT,
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
 CREATE TABLE boning (
   idboning INT PRIMARY KEY AUTO_INCREMENT,
@@ -27,17 +29,9 @@ CREATE TABLE boning (
   tglboning DATE,
   qtysapi INT,
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier),
-  iduser INT
-);
-CREATE TABLE boningdetail (
-  idboningdetail INT PRIMARY KEY AUTO_INCREMENT,
-  idboning INT,
-  idbarang INT,
-  qty DECIMAL(10,2),
-  FOREIGN KEY (idboning) REFERENCES boning (idboning),
-  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
-  iduser INT
+  iduser INT,
+  FOREIGN KEY (iduser) REFERENCES users (idusers),
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
 );
 CREATE TABLE labelboning (
   idlabelboning INT PRIMARY KEY AUTO_INCREMENT,
@@ -49,7 +43,8 @@ CREATE TABLE labelboning (
   exp DATE,
   kdbarcode VARCHAR(20) UNIQUE,
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  iduser INT,
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
-  FOREIGN KEY (idboning) REFERENCES boning (idboning),
-  iduser INT
+  FOREIGN KEY (iduser) REFERENCES users (idusers),
+  FOREIGN KEY (idboning) REFERENCES boning (idboning)
 );

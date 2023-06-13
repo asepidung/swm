@@ -13,35 +13,6 @@
         <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chart-pie"></i>
-            <p>
-              MASTER DATA
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="../barang/barang.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Barang</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../supplier/supplier.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Supplier</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../customer/customer.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Customer</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
             <i class="nav-icon fas fa-warehouse"></i>
             <!-- <i class="nav-icon fas fa-chart-pie"></i> -->
             <p>
@@ -107,6 +78,35 @@
               <a href="pages/charts/inline.html" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Receipt Order</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-chart-pie"></i>
+            <p>
+              MASTER DATA
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../barang/barang.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Barang</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../supplier/supplier.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Supplier</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../customer/customer.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Customer</p>
               </a>
             </li>
           </ul>
