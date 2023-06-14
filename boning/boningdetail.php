@@ -28,7 +28,7 @@ require "boningtotal.php";
     <div class="row">
       <div class="col-sm-6">
         <!-- <h1 class="m-0">DATA BONING</h1> -->
-        <a href="databoning.php"><button type="button" class="btn btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
+        <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> BONING</button></a>
       </div><!-- /.col -->
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->

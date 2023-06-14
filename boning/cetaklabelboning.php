@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
   $qty = null;
   $pcs = null;
   $qtyPcsInput = $_POST['qty'];
-  $_SESSION['product'] = $idbarang;
+  $_SESSION['product'] = $product;
   $_SESSION['packdate'] = $packdate;
   $_SESSION['exp'] = $exp;
   if (strpos($qtyPcsInput, "/") !== false) {

@@ -30,7 +30,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div class="row">
       <div class="col-sm-6">
         <!-- <h1 class="m-0">DATA BONING</h1> -->
-        <a href="databoning.php"><button type="button" class="btn btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
+        <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
       </div><!-- /.col -->
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
@@ -47,7 +47,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <label>Product <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <select class="form-control" name="product" id="product" required>
-                    <option value="" <?php echo ($_SESSION['product'] == '') ? 'selected' : ''; ?>>--Pilih Item--</option>
+                    <option value="" <?php echo (!isset($_SESSION['product']) || $_SESSION['product'] == '') ? 'selected' : ''; ?>>--Pilih Item--</option>
                     <?= $barangOptions; ?>
                   </select>
                   <div class="input-group-append">
@@ -58,13 +58,19 @@ while ($row = mysqli_fetch_assoc($result)) {
               <div class="form-group">
                 <label>Packed Date<span class="text-danger">*</span></label>
                 <div class="input-group">
+                  <?php
+                  // Set the default value of $_SESSION['packdate'] to today's date
+                  if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
+                    $_SESSION['packdate'] = date('Y-m-d'); // Set the format according to your needs
+                  }
+                  ?>
                   <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                 </div>
               </div>
               <div class="form-group">
                 <label>Expired Date</span></label>
                 <div class="input-group">
-                  <input type="date" class="form-control" name="exp" id="exp" value="<?php echo $_SESSION['exp']; ?>">
+                  <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
                 </div>
               </div>
               <div class="form-check">
@@ -90,7 +96,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         <!-- /.card -->
       </div>
       <!-- /.col-md-6 -->
-      <div class="col-lg-8 mt-3">
+      <div class="col-lg-8">
         <div class="card">
           <div class="card-body">
             <table id="example1" class="table table-bordered table-striped table-sm">
