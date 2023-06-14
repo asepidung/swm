@@ -24,10 +24,22 @@ while ($row = mysqli_fetch_assoc($result)) {
   $barangOptions .= "<option value=\"$idbarang\">$nmbarang</option>";
 }
 ?>
+<!-- Content Header (Page header) -->
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <!-- <h1 class="m-0">DATA BONING</h1> -->
+        <a href="databoning.php"><button type="button" class="btn btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-4 mt-3">
+      <div class="col-lg-4">
         <div class="card">
           <div class="card-body">
             <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
