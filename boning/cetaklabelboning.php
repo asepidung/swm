@@ -24,6 +24,7 @@ if (isset($_POST['submit'])) {
   $qtyPcsInput = $_POST['qty'];
   $_SESSION['product'] = $product;
   $_SESSION['packdate'] = $packdate;
+  $_SESSION['tenderstreach'] = $tenderstreach;
   $_SESSION['exp'] = $exp;
   if (strpos($qtyPcsInput, "/") !== false) {
     list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");

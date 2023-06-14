@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="index.php" class="brand-link">
+  <a href="../index.php" class="brand-link">
     <img src="../dist/img/logoSWM.png" alt="SWM Logo" class="brand-image">
     <span class="brand-text font-weight-light">WIJAYA MEAT</span>
   </a>
@@ -43,6 +43,41 @@
               <a href="label/label.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Buat Label</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-shopping-bag"></i>
+            <p>
+              PEMBELIAN
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="pages/charts/chartjs.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Sales Quotations</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/chartjs.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Sales Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/flot.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Delivery Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/charts/inline.html" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Receipt Order</p>
               </a>
             </li>
           </ul>

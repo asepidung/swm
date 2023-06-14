@@ -2,7 +2,6 @@ CREATE DATABASE swm;
 USE swm;
 CREATE TABLE users (
   idusers INT PRIMARY KEY AUTO_INCREMENT,
-  nmuser VARCHAR (50),
   userid VARCHAR(100),
   passuser VARCHAR(100)
 );
