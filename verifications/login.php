@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +6,7 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>CMS-SWM | Log in</title>
-
+   <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <!-- Google Font: Source Sans Pro -->
    <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
    <!-- Font Awesome -->
@@ -19,24 +20,23 @@
 <body class="hold-transition login-page">
    <div class="login-box">
       <div class="login-logo">
-         <a href="../../index2.html"><b>SWM</b> | Apps</a>
+         <a href="../dist/img/logoSWM.png"><b>SWM</b> | Apps</a>
       </div>
       <!-- /.login-logo -->
       <div class="card">
          <div class="card-body login-card-body">
             <p class="login-box-msg">Sign in to start your session</p>
-
-            <form action="../../index3.html" method="post">
+            <form action="proseslogin.php" method="post">
                <div class="input-group mb-3">
-                  <input type="email" class="form-control" placeholder="Email">
+                  <input type="text" class="form-control" name="userid" id="userid" placeholder="Username" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
-                        <span class="fas fa-envelope"></span>
+                        <span class="fas fa-user"></span>
                      </div>
                   </div>
                </div>
                <div class="input-group mb-3">
-                  <input type="password" class="form-control" placeholder="Password">
+                  <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
                         <span class="fas fa-lock"></span>

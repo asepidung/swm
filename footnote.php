@@ -8,11 +8,11 @@ $year = date('Y');
 ?>
 
 <!-- Main Footer -->
-<footer class="main-footer">
+<!-- <footer class="main-footer">
    <strong>Copyright &copy; <?= $year ?> <a href="https://instagram.com/asep_idung">idung</a>.</strong>
    <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 1.0.0 || Template By adminLTE
    </div>
-</footer>
+</footer> -->
 </div>
 <!-- ./wrapper -->

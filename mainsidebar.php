@@ -49,7 +49,7 @@
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chart-pie"></i>
+            <i class="nav-icon fas fa-cart-plus"></i>
             <p>
               PENJUALAN
               <i class="right fas fa-angle-left"></i>
@@ -84,7 +84,7 @@
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-chart-pie"></i>
+            <i class="nav-icon fas fa-database"></i>
             <p>
               MASTER DATA
               <i class="right fas fa-angle-left"></i>

@@ -4,8 +4,7 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 ?>
-
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="content-wrapper">
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">

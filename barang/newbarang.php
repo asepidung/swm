@@ -6,19 +6,7 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-   <!-- Content Header (Page header) -->
-   <!-- <div class="content-header">
-      <div class="container-fluid">
-         <div class="row mb-2">
-            <div class="col-sm-6">
-               <h1 class="m-0">NEW BONING PROJECT</h1>
-            </div>
-         </div>
-      </div>
-   </div> -->
-   <!-- /.content-header -->
-
+<div class="content-wrapper">
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
@@ -55,12 +43,12 @@ include "../mainsidebar.php";
          </div>
       </div>
    </section>
-   </div><!-- /.container-fluid -->
-   <!-- /.content -->
-   <!-- </div> -->
-   <!-- /.content-wrapper -->
+</div><!-- /.container-fluid -->
+<!-- /.content -->
+<!-- </div> -->
+<!-- /.content-wrapper -->
 
-   <?php
-   include "../footer.php";
-   include "../footnote.php";
-   ?>
+<?php
+include "../footer.php";
+include "../footnote.php";
+?>

@@ -5,7 +5,7 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Daftar User</title>
-
+   <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <!-- Google Font: Source Sans Pro -->
    <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
    <!-- Font Awesome -->
@@ -27,19 +27,19 @@
             <p class="login-box-msg">Regist New User/Employee</p>
 
             <form action="newuser.php" method="post">
-               <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full name" required>
+               <!-- <div class="input-group mb-3">
+                  <input type="text" class="form-control" name="nmuser" id="nmuser" placeholder="Full name" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
                         <span class="fas fa-user"></span>
                      </div>
                   </div>
-               </div>
+               </div> -->
                <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="username" id="username" placeholder="username" required>
+                  <input type="text" class="form-control" name="userid" id="userid" placeholder="username" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
-                        <span class="fas fa-user-shield"></span>
+                        <span class="fas fa-user"></span>
                      </div>
                   </div>
                </div>
