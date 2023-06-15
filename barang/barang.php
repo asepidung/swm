@@ -53,10 +53,10 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT * FROM barang ORDER BY nmbarang ASC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
-                              <tr>
+                              <tr class="text-center">
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['kdbarang']; ?></td>
-                                 <td><?= $tampil['nmbarang']; ?></td>
+                                 <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                                  <td>stock gja</td>
                                  <td>stock gjb</td>
                                  <td>stock pja</td>

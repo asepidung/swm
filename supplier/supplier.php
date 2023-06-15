@@ -63,7 +63,7 @@ include "../mainsidebar.php";
                         <!-- <?= $tampil['ttlutang']; ?> -->
                       </td>
                       <!-- <td><?= $tampil['catatan']; ?></td> -->
-                      <td class="text-center"><a href="#">EDIT</a> | <a href="#">HAPUS</a></td>
+                      <td class="text-center"><a href="#"><i class="fas fa-pen"></i></a> | <a href="#"><i class="fas fa-trash-alt text-danger"></i></a></td>
                     </tr>
                   <?php
                     $no++;

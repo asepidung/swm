@@ -10,8 +10,8 @@ if (isset($_POST['submit'])) {
   $row = mysqli_fetch_assoc($result);
   $idbarang = $_POST['product'];
   $nmbarang = $row['nmbarang'];
-  $exp = $_POST['exp'];
-  $expadd = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
+  // $exp = $_POST['exp'];
+  // $expadd = isset($_POST['exp']) && !empty($_POST['exp']) ? date('d-M-Y', strtotime($_POST['exp'])) : null;
   $packdate = $_POST['packdate'];
   $packdateadd = date('d-M-Y', strtotime($_POST['packdate']));
   $idboning = $_POST['idboning'];
@@ -24,8 +24,7 @@ if (isset($_POST['submit'])) {
   $qtyPcsInput = $_POST['qty'];
   $_SESSION['product'] = $product;
   $_SESSION['packdate'] = $packdate;
-  $_SESSION['tenderstreach'] = $tenderstreach;
-  $_SESSION['exp'] = $exp;
+  // $_SESSION['exp'] = $exp;
   if (strpos($qtyPcsInput, "/") !== false) {
     list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
   } else {
@@ -34,8 +33,8 @@ if (isset($_POST['submit'])) {
   // Memformat qty menjadi 2 digit desimal di belakang koma
   $qty = number_format($qty, 2);
 }
-$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode)
-VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '$kdbarcode')");
+$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode)
+VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode')");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,21 +109,21 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$exp', '
           <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdateadd; ?></span>
         </td>
       </tr>
-      <?php if ($exp !== null) { ?>
-        <tr>
+      <!-- <?php if ($exp !== null) { ?> -->
+      <!-- <tr>
           <td style="font-size: 12px">
             <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
           </td>
           <td style="font-size: 12px">
             <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $expadd; ?></span>
           </td>
-        </tr>
-      <?php } else { ?>
-        <tr>
-          <td style="font-size: 12px; height: 15px;">&nbsp;</td>
-          <td style="font-size: 12px; height: 15px;">&nbsp;</td>
-        </tr>
-      <?php } ?>
+        </tr> -->
+      <!-- <?php } else { ?> -->
+      <tr>
+        <td style="font-size: 12px; height: 15px;">&nbsp;</td>
+        <td style="font-size: 12px; height: 15px;">&nbsp;</td>
+      </tr>
+      <!-- <?php } ?> -->
       <tr>
       <tr>
         <td colspan="2" rowspan="1" style="width: 264px">
