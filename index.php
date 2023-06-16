@@ -1,3 +1,9 @@
+<?php
+session_start();
+if (!isset($_SESSION['login'])) {
+   header("location: verifications/login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -142,14 +148,13 @@
                </a>
             </li>
             <li class="nav-item">
-               <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                  <i class="fas fa-th-large"></i>
+               <a class="nav-link" href="verifications/logout.php" role="button" data-toggle="tooltip" data-placement="bottom" title="LOGOUT">
+                  <i class="fas fa-power-off"></i>
                </a>
             </li>
          </ul>
       </nav>
       <!-- /.navbar -->
-
       <!-- Main Sidebar Container -->
       <aside class="main-sidebar sidebar-dark-primary elevation-4">
          <!-- Brand Logo -->

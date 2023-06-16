@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php
+session_start();
+if (isset($_SESSION['login'])) {
+   header("location: ../index.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,7 +59,7 @@
                   </div>
                   <!-- /.col -->
                   <div class="col-4">
-                     <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                     <button type="submit" name="login" class="btn btn-primary btn-block">Sign In</button>
                   </div>
                   <!-- /.col -->
                </div>

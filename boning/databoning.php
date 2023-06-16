@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+  header("location: ../verifications/login.php");
+}
 require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";

@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['login'])) {
+  header("location: ../verifications/login.php");
+}
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 if (isset($_POST['submit'])) {
