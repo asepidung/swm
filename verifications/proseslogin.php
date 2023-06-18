@@ -17,8 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if (password_verify($password, $hashedPassword)) {
          // Jika password cocok, buat session dan redirect ke halaman dashboard
          session_start();
+         $idusers = $row['idusers']; // Memindahkan baris ini sebelum penggunaan variabel $idusers
          $_SESSION['login'] = true;
          $_SESSION['userid'] = $userid;
+         $_SESSION['idusers'] = $idusers;
          header("Location: ../index.php");
          exit();
       } else {

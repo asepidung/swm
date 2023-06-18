@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION['login'])) {
    header("location: verifications/login.php");
 }
+$userid = $_SESSION['userid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +40,7 @@ if (!isset($_SESSION['login'])) {
 
       <!-- Preloader -->
       <div class="preloader flex-column justify-content-center align-items-center">
-         <img class="animation__shake" src="dist/img/logoSWM.png" alt="AdminLTELogo" height="60" width="60">
+         <img class="animation__shake" src="dist/img/ipin.jpg" alt="AdminLTELogo" height="100" width="100">
       </div>
 
       <!-- Navbar -->
@@ -149,7 +150,7 @@ if (!isset($_SESSION['login'])) {
             </li>
             <li class="nav-item">
                <a class="nav-link" href="verifications/logout.php" role="button" data-toggle="tooltip" data-placement="bottom" title="LOGOUT">
-                  <i class="fas fa-power-off"></i>
+                  <i class="fas fa-power-off text-danger"></i>
                </a>
             </li>
          </ul>
@@ -164,6 +165,14 @@ if (!isset($_SESSION['login'])) {
          </a>
          <!-- Sidebar -->
          <div class="sidebar">
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+               <div class="image">
+                  <img src="dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+               </div>
+               <div class="info">
+                  <a href="#" class="d-block"><?= $userid; ?></a>
+               </div>
+            </div>
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -302,6 +311,14 @@ if (!isset($_SESSION['login'])) {
                            </a>
                         </li>
                      </ul>
+                  </li>
+                  <li class="nav-item">
+                     <a href="verifications/logout.php" class="nav-link">
+                        <i class="nav-icon fas fa-power-off text-danger"></i>
+                        <p class="text-danger">
+                           LOGOUT
+                        </p>
+                     </a>
                   </li>
                </ul>
             </nav>

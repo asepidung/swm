@@ -6,10 +6,10 @@ $batchboning = $_POST['batchboning'];
 $tglboning = $_POST['tglboning'];
 $idsupplier = $_POST['idsupplier'];
 $qtysapi = $_POST['qtysapi'];
-
+$idusers = $_POST['idusers'];
 // membuat query untuk menyimpan data ke database
-$sql = "INSERT INTO boning (batchboning, idsupplier, tglboning, qtysapi)
-            VALUES ('$batchboning', '$idsupplier', '$tglboning', $qtysapi)";
+$sql = "INSERT INTO boning (batchboning, idsupplier, tglboning, qtysapi, iduser)
+            VALUES ('$batchboning', '$idsupplier', '$tglboning', $qtysapi, '$idusers')";
 
 // mengeksekusi query
 if (mysqli_query($conn, $sql)) {

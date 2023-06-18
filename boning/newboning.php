@@ -8,6 +8,7 @@ require "kodebatchboning.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$idusers = $_SESSION['idusers'];
 ?>
 
 <div class="content-wrapper">
@@ -37,6 +38,7 @@ include "../mainsidebar.php";
                   <!-- /.card-header -->
                   <!-- form start -->
                   <form method="POST" action="prosesnewboning.php">
+                     <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
                      <div class=" card-body">
                         <div class="form-group">
                            <label for="batchboning">BATCH</label>

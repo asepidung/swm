@@ -7,6 +7,7 @@ require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 if (isset($_POST['submit'])) {
   // Query untuk mendapatkan nama barang
+  $idusers = $_POST['idusers'];
   $product = $_POST['product'];
   $query = "SELECT nmbarang FROM barang WHERE idbarang = $product";
   $result = mysqli_query($conn, $query);
@@ -36,8 +37,8 @@ if (isset($_POST['submit'])) {
   // Memformat qty menjadi 2 digit desimal di belakang koma
   $qty = number_format($qty, 2);
 }
-$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode)
-VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode')");
+$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser)
+VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
 ?>
 <!DOCTYPE html>
 <html lang="en">

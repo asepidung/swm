@@ -157,6 +157,14 @@
             </li>
           </ul>
         </li>
+        <li class="nav-item">
+          <a href="../verifications/logout.php" class="nav-link">
+            <i class="nav-icon fas fa-power-off text-danger"></i>
+            <p class="text-danger">
+              LOGOUT
+            </p>
+          </a>
+        </li>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

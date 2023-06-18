@@ -48,6 +48,18 @@ CREATE TABLE labelboning (
   FOREIGN KEY (iduser) REFERENCES users (idusers),
   FOREIGN KEY (idboning) REFERENCES boning (idboning)
 );
+CREATE TABLE segment (
+  idsegment INT PRIMARY KEY AUTO_INCREMENT,
+  nmsegment VARCHAR(50) UNIQUE,
+  banksegment VARCHAR(50),
+  accname VARCHAR (50),
+  accnumber VARCHAR (50)
+);
+INSERT INTO segment (nmsegment, banksegment, accname, accnumber)
+VALUES
+('HOREKA', 'BNI (BANK NEGARA INDONESIA)', 'PT. SANTI WIJAYA MEAT', '8585889991'),
+('WK', 'BCA (BANK CENTRAL ASIA)', 'SANTI WIJAYA L', '7115407007'),
+('SPECIAL', 'BNI (BANK NEGARA INDONESIA)', 'SANTI WIJAYA L', '0335163001');
 INSERT INTO barang (kdbarang, nmbarang)
 VALUES
 ('0001', 'TOPSIDE'),

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
-   header("location: verifications/login.php");
+   header("location: ../verifications/login.php");
 }
 // Koneksi ke database
 require "../konak/conn.php";

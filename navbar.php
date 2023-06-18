@@ -105,7 +105,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" href="../verifications/logout.php" role="button" data-toggle="tooltip" data-placement="bottom" title="LOGOUT">
-        <i class="fas fa-power-off"></i>
+        <i class="fas fa-power-off text-danger"></i>
       </a>
     </li>
   </ul>

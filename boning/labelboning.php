@@ -10,6 +10,8 @@ require "../navbar.php";
 require "../mainsidebar.php";
 
 // check if idboning is set in $_GET array
+$idusers = $_SESSION['idusers'];
+$userid = $_SESSION['userid'];
 if (!isset($_GET['id'])) {
   die("Jalankan Dari Modul Produksi");
 }
@@ -72,7 +74,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Expired Date</span></label>
+                  <label>Expired Date</label>
                   <div class="input-group">
                     <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
                   </div>
@@ -81,6 +83,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach">
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
+                <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
                 <input type="hidden" name="idbarang" value="<?php echo isset($_GET['product']) ? $_GET['product'] : ''; ?>">
                 <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
