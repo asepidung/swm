@@ -117,6 +117,7 @@ include "../mainsidebar.php";
   <!-- /.content -->
   <!-- </div> -->
   <!-- /.content-wrapper -->
+
   <script>
     // Mengubah judul halaman web
     document.title = "Data Boning";
