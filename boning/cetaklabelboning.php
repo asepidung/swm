@@ -52,92 +52,96 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarco
 
 <body>
 
-  <table width="380" border="0" cellpadding="0" cellspacing="0">
+  <table width="365" height="270" cellpadding="0">
     <tbody>
       <tr>
-        <td width="114" style="width: 112px">
-          <span style="font-size: 18px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <td height="23" colspan="4">
+          <span style="font-size: 18px; color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
             <strong>*YP*</strong>
           </span>
         </td>
-        <td width="149" style="width: 149px">&nbsp;</td>
       </tr>
       <tr>
-        <td colspan="4" style="width: 264px">
-          <span style="color: #000000; font-family: Tahoma">
+        <td height="21" colspan="4">
+          <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif; font-size: 14px;">
             <strong>Prod By: PT. SANTI WIJAYA MEAT</strong>
           </span>
         </td>
       </tr>
       <tr>
-        <td colspan="4" style="white-space: nowrap; width: 373px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif; font-size: 12px;">
-            Jl. Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna<br>Kec. Jonggol Kab. Bogor
+        <td height="20" colspan="4">
+          <span style="color: #000000; font-size: 10px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+            Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna Kec. Jonggol Kab. Bogor
           </span>
         </td>
       </tr>
       <tr>
-        <td colspan="2" style="width: 264px">
-          <span style="font-size: 22px; color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <td height="20" colspan="2">
+          <span style="font-size: 18px; color: #000000;  font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
             <strong><?= $nmbarang; ?></strong>
           </span>
         </td>
-        <td colspan="2" rowspan="7" align="center">
-          <img src=" ../dist/img/hi.svg" alt="HALAL" height="145">
+        <td colspan="2" rowspan="5" align="center" valign="middle">
+          <img src=" ../dist/img/hi2.svg" alt="HALAL" height="100" align="absmiddle">
         </td>
       </tr>
       <tr>
-        <td colspan=" 1" rowspan="2" style="width: 112px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+        <td colspan=" 1" rowspan="2">
+          <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
             <span style="font-size: 24px"><strong><?= $qty; ?></strong></span>
           </span>
         </td>
-        <td>
+        <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
           <strong><i><?= $pcs; ?></i></strong>
         </td>
       </tr>
       <tr>
-        <td style="width: 149px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px;">
-          <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'Cube roll') !== false || strpos($nmbarang, 'Operib') !== false)) { ?>
-            &#9733;<strong><i>Tenderstreach</i></strong>
+        <td height="20" style="font-style: normal; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+          <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'Cube roll') !== false || strpos($nmbarang, 'Operib') !== false)) { ?><strong><i>Tenderstreach</i></strong>
           <?php } else { ?>
             &nbsp;
           <?php } ?>
         </td>
       </tr>
       <tr>
-        <td style="font-size: 12px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Packed Date&nbsp; :</span>
+        <td height="20" style="font-size: 11px">
+          <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">Packed Date&nbsp; :</span>
         </td>
-        <td style="font-size: 12px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $packdateadd; ?></span>
+        <td style="font-size: 11px">
+          <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;"><?= $packdateadd; ?></span>
         </td>
       </tr>
       <!-- <?php if ($exp !== null) { ?> -->
       <!-- <tr>
-          <td style="font-size: 12px">
-            <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">Expired Date :</span>
+          <td style="font-size: 11px">
+            <span style="color: #000000; ">Expired Date :</span>
           </td>
-          <td style="font-size: 12px">
-            <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif"><?= $expadd; ?></span>
+          <td style="font-size: 11px">
+            <span style="color: #000000; "><?= $expadd; ?></span>
           </td>
         </tr> -->
       <!-- <?php } else { ?> -->
       <tr>
-        <td style="font-size: 12px; height: 15px;">&nbsp;</td>
-        <td style="font-size: 12px; height: 15px;">&nbsp;</td>
+        <td height="21" style="font-size: 11px;">&nbsp;</td>
+        <td style="font-size: 11px;">&nbsp;</td>
       </tr>
       <!-- <?php } ?> -->
       <tr>
       <tr>
-        <td colspan="2" rowspan="1" style="width: 264px">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
-            <strong>KEEP CHILL/FROZEN</strong>
+        <td height="20" colspan="2">
+          <span style="color: #000000; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+            <strong>KEEP CHILL / FROZEN</strong>
           </span>
+        </td>
+        <td style="font-size: 10px; text-align: center; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+          NO. 01011263450821<br>NKV CS-3201170-027
         </td>
       </tr>
       <tr>
-        <td colspan="4" align="center">
+        <!-- <td colspan="3">&nbsp;</td> -->
+      </tr>
+      <tr>
+        <td height="20" colspan="4" align="center" valign="middle">
           <?php
           $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
           $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
@@ -148,7 +152,7 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarco
       </tr>
       <tr>
         <td colspan="4" align="center">
-          <span style="color: #000000; font-family: Tahoma, Geneva, sans-serif">
+          <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
             <?= $kdbarcode; ?>
           </span>
         </td>
