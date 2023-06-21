@@ -114,13 +114,14 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <th>Product</th>
                     <th>Qty</th>
                     <th>Pcs</th>
+                    <th>Author</th>
                     <th>Hapus</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang WHERE idboning = $idboning ORDER BY l.idlabelboning DESC");
+                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.userid FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang JOIN boning bo ON l.idboning = bo.idboning JOIN users u ON bo.iduser = u.idusers WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                   ?>
                     <tr class="text-center">
@@ -129,6 +130,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
+                      <td><?= $tampil['userid']; ?></td>
                       <td>
                         <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                           <i class="far fa-times-circle"></i>
@@ -139,6 +141,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     $no++;
                   }
                   ?>
+
                 </tbody>
               </table>
             </div>

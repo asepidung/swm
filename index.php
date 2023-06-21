@@ -316,7 +316,7 @@ $userid = $_SESSION['userid'];
                      <a href="verifications/logout.php" class="nav-link">
                         <i class="nav-icon fas fa-power-off text-danger"></i>
                         <p class="text-danger">
-                           LOGOUT
+                           <strong>LOGOUT</strong>
                         </p>
                      </a>
                   </li>
