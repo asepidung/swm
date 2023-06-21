@@ -15,6 +15,9 @@ CREATE TABLE supplier (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
+INSERT INTO supplier (nmsupplier, jenis_usaha, alamat, telepon)
+VALUES
+('H. DONI', 'SAPI', 'RPH TAPOS JL. RAYA TAPOS DEPOK CITY 16457', '081225834627');
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
   kdbarang VARCHAR(10),
