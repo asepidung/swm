@@ -35,7 +35,6 @@ if (isset($_POST['submit'])) {
     $qty = $qtyPcsInput;
   }
   // Memformat qty menjadi 2 digit desimal di belakang koma
-  $qty = number_format($qty, 2);
 }
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser)
 VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
@@ -88,7 +87,7 @@ VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarco
       <tr>
         <td colspan=" 1" rowspan="2">
           <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-            <span style="font-size: 24px"><strong><?= $qty; ?></strong></span>
+            <span style="font-size: 24px"><strong><?= number_format($qty, 2); ?></strong></span>
           </span>
         </td>
         <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
