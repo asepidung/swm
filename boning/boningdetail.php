@@ -32,13 +32,15 @@ while ($row = mysqli_fetch_assoc($result)) {
   $currentQty = $row['qty'];
 
   if (array_key_exists($currentItem, $items)) {
-    // Jika item sudah ada dalam array, tambahkan qty
+    // Jika item sudah ada dalam array, tambahkan qty dan totalBox
     $items[$currentItem]['qty'] += $currentQty;
+    $items[$currentItem]['totalBox'] += 1;
   } else {
     // Jika item belum ada dalam array, tambahkan item baru
     $items[$currentItem] = array(
       'name' => $currentItem,
-      'qty' => $currentQty
+      'qty' => $currentQty,
+      'totalBox' => 1 // Set totalBox awal menjadi 1
     );
   }
 }
@@ -77,21 +79,20 @@ require "boningtotal.php";
                 <tbody>
                   <?php
                   $counter = 1;
-                  $totalBox = 0; // total box barang
                   $totalQty = 0; // total qty barang
 
                   foreach ($items as $item) {
                     $itemName = $item['name'];
                     $itemQty = $item['qty'];
+                    $itemTotalBox = $item['totalBox'];
 
                     echo '<tr>
                             <td class="text-center">' . $counter++ . '</td>
                             <td>' . $itemName . '</td>
-                            <td class="text-center">' . $totalBox . '</td>
-                            <td class="text-right">' . $itemQty . '</td>
+                            <td class="text-center">' . $itemTotalBox . '</td>
+                            <td class="text-right">' . number_format($itemQty, 2) . '</td>
                           </tr>';
 
-                    $totalBox += 1;
                     $totalQty += $itemQty;
                   }
                   ?>
@@ -99,7 +100,7 @@ require "boningtotal.php";
                 <tfoot>
                   <th colspan="2" class="text-right">GRAND TOTAL</th>
                   <th class="text-center"><?= $total_box . " Box"; ?></th>
-                  <th class="text-right"><?= $total_weight; ?></th>
+                  <th class="text-right"><?= number_format($total_weight, 2); ?></th>
                 </tfoot>
               </table>
             </div>
