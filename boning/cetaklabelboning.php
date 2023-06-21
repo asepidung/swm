@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
   }
   // Memformat qty menjadi 2 digit desimal di belakang koma
 }
-$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, idusers)
+$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser)
 VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
 ?>
 <!DOCTYPE html>
