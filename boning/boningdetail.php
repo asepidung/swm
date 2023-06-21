@@ -23,6 +23,26 @@ $result = mysqli_query($conn, $query);
 if (!$result) {
   die("Query error: " . mysqli_error($conn));
 }
+
+// Buat array untuk menyimpan data barang dengan nama yang sama
+$items = array();
+
+while ($row = mysqli_fetch_assoc($result)) {
+  $currentItem = $row['nmbarang'];
+  $currentQty = $row['qty'];
+
+  if (array_key_exists($currentItem, $items)) {
+    // Jika item sudah ada dalam array, tambahkan qty
+    $items[$currentItem]['qty'] += $currentQty;
+  } else {
+    // Jika item belum ada dalam array, tambahkan item baru
+    $items[$currentItem] = array(
+      'name' => $currentItem,
+      'qty' => $currentQty
+    );
+  }
+}
+
 require "boningtotal.php";
 ?>
 <div class="content-wrapper">
@@ -57,47 +77,25 @@ require "boningtotal.php";
                 <tbody>
                   <?php
                   $counter = 1;
-                  $previousItem = ""; // untuk melacak item sebelumnya
                   $totalBox = 0; // total box barang
                   $totalQty = 0; // total qty barang
 
-                  while ($row = mysqli_fetch_assoc($result)) {
-                    $currentItem = $row['nmbarang'];
-                    $currentQty = $row['qty'];
+                  foreach ($items as $item) {
+                    $itemName = $item['name'];
+                    $itemQty = $item['qty'];
 
-                    if ($previousItem != $currentItem) {
-                      // Menampilkan nama barang hanya sekali dengan total box dan total qty
-                      if ($previousItem != "") { // mengecualikan item pertama
-                        echo '<tr>
-                              <td class="text-center">' . $counter++ . '</td>
-                              <td>' . $previousItem . '</td>
-                              <td class="text-center">' . $totalBox . '</td>
-                              <td class="text-right">' . $totalQty . '</td>
-                            </tr>';
-                      }
-                      // Mengatur ulang total box dan total qty untuk item baru
-                      $totalBox = 1;
-                      $totalQty = $currentQty;
-                    } else {
-                      // Menambahkan 1 ke total box dan qty saat ini
-                      $totalBox += 1;
-                      $totalQty += $currentQty;
-                    }
+                    echo '<tr>
+                            <td class="text-center">' . $counter++ . '</td>
+                            <td>' . $itemName . '</td>
+                            <td class="text-center">' . $totalBox . '</td>
+                            <td class="text-right">' . $itemQty . '</td>
+                          </tr>';
 
-                    $previousItem = $currentItem;
+                    $totalBox += 1;
+                    $totalQty += $itemQty;
                   }
-                  // Menampilkan data untuk item terakhir
-                  echo '<tr>
-                        <td class="text-center">' . $counter++ . '</td>
-                        <td>' . $previousItem . '</td>
-                        <td class="text-center">' . $totalBox . '</td>
-                        <td class="text-right">' . $totalQty . '</td>
-                      </tr>';
                   ?>
                 </tbody>
-                <?php
-
-                ?>
                 <tfoot>
                   <th colspan="2" class="text-right">GRAND TOTAL</th>
                   <th class="text-center"><?= $total_box . " Box"; ?></th>
