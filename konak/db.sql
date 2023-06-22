@@ -71,9 +71,9 @@ CREATE TABLE customers (
   top INT,
   sales_referensi VARCHAR(50),
   pajak BOOLEAN,
-  telepon VARCHAR(20),
-  email VARCHAR(100),
-  catatan TEXT,
+  telepon VARCHAR(20) DEFAULT '-',
+  email VARCHAR(100) DEFAULT '-',
+  catatan VARCHAR(255) DEFAULT '-',
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );

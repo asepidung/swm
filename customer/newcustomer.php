@@ -10,24 +10,12 @@ include "../mainsidebar.php";
 ?>
 
 <div class="content-wrapper">
-   <!-- Content Header (Page header) -->
-   <!-- <div class="content-header">
-      <div class="container-fluid">
-         <div class="row mb-2">
-            <div class="col-sm-6">
-               <h1 class="m-0">NEW BONING PROJECT</h1>
-            </div>
-         </div>
-      </div>
-   </div> -->
-   <!-- /.content-header -->
-
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
             <!-- left column -->
-            <div class="col-md-6">
+            <div class="col">
                <!-- general form elements -->
                <div class="card card-dark mt-3">
                   <div class="card-header">
@@ -45,16 +33,49 @@ include "../mainsidebar.php";
                               <input type="text" class="form-control" name="alamat" id="alamat">
                            </div>
                            <div class="form-group">
-                              <label for="idsegment">Segment<span class="text-danger">*</span></label>
-                              <input type="text" class="form-control" name="idsegment" id="idsegment" required>
+                              <label for="idsegment">Segment <span class="text-danger">*</span></label>
+                              <div class="input-group">
+                                 <select class="form-control" name="idsegment" id="idsegment" required>
+                                    <option value="">Pilih Segment</option>
+                                    <?php
+                                    $query = "SELECT * FROM segment";
+                                    $result = mysqli_query($conn, $query);
+                                    // Generate options based on the retrieved data
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                       $idsegment = $row['idsegment'];
+                                       $nmsegment = $row['nmsegment'];
+                                       echo "<option value=\"$idsegment\">$nmsegment</option>";
+                                    }
+                                    ?>
+                                 </select>
+                                 <div class="input-group-append">
+                                    <a href="../segment/segment.php" class="btn btn-warning"><i class="fas fa-plus"></i></a>
+                                 </div>
+                              </div>
                            </div>
                            <div class="form-group">
-                              <label for="telepon">No Telepon</label>
-                              <input type="text" class="form-control" name="telepon" id="telepon">
+                              <label for="top">T.O.P</label>
+                              <input type="number" class="form-control" name="top" id="top">
                            </div>
                            <div class="form-group">
-                              <label for="npwp">NPWP</label>
-                              <input type="text" class="form-control" name="npwp" id="npwp">
+                              <label for="pajak">Customer Dikenakan Pajak</label>
+                              <select class="form-control" name="pajak" id="pajak">
+                                 <option>--Pilih Satu</option>
+                                 <option value="1">Yes</option>
+                                 <option value="0">No</option>
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label for="telepon">Telepon</label>
+                              <input type="tel" class="form-control" name="telepon" id="telepon">
+                           </div>
+                           <div class="form-group">
+                              <label for="email">Email</label>
+                              <input type="email" class="form-control" name="email" id="email">
+                           </div>
+                           <div class="form-group">
+                              <label for="catatan">Catatan</label>
+                              <textarea name="catatan" id="catatan" rows="2" class="form-control"></textarea>
                            </div>
                         </div>
                         <div class="form-group mr-3 text-right">
@@ -73,5 +94,5 @@ include "../mainsidebar.php";
 <!-- /.content -->
 <!-- </div> -->
 <!-- /.content-wrapper -->
-
+<?php include "../footnote.php" ?>
 <?php include "../footer.php" ?>

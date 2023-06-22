@@ -33,13 +33,13 @@ include "../mainsidebar.php";
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead>
-                           <tr>
+                           <tr class="text-center">
                               <th>#</th>
                               <th>Nama Customer</th>
                               <th>Alamat</th>
                               <th>Segment</th>
                               <th>T.O.P</th>
-                              <th>Sales Ref</th>
+                              <th>Sales</th>
                               <th>Pajak</th>
                               <th>Telepon</th>
                               <th>Email</th>
@@ -50,30 +50,35 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT * FROM customers ORDER BY nama_customer ASC");
+                           $ambildata = mysqli_query($conn, "SELECT c.*, s.nmsegment
+                                  FROM customers c
+                                  JOIN segment s ON c.idsegment = s.idsegment
+                                  ORDER BY c.nama_customer ASC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
-                              <tr class="text-center">
+                              <tr>
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['alamat']; ?></td>
-                                 <td><?= $tampil['idsegment']; ?></td>
-                                 <td><?= $tampil['top']; ?></td>
-                                 <td><?= $tampil['sales_referensi']; ?></td>
-                                 <td><?= $tampil['pajak']; ?></td>
+                                 <td><?= $tampil['nmsegment']; ?></td>
+                                 <td><?= $tampil['top'] . " Hari"; ?></td>
+                                 <td>Muryani</td>
+                                 <!-- <td><?= $tampil['sales_referensi']; ?></td> -->
+                                 <td><?= $tampil['pajak'] ? 'YES' : 'NO'; ?></td>
                                  <td><?= $tampil['telepon']; ?></td>
                                  <td><?= $tampil['email']; ?></td>
                                  <td><?= $tampil['catatan']; ?></td>
                                  <td class="text-center">
-                                    <a href="#"><i class="fas fa-pen"></i></a>
+                                    <a href="editcustomer.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-pen"></i></a>
                                     |
-                                    <a href="#"><i class="fas fa-trash-alt text-danger"></i></a>
+                                    <a href="deletecustomer.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-trash-alt text-danger"></i></a>
                                  </td>
                               </tr>
                            <?php
                               $no++;
                            }
                            ?>
+
                         </tbody>
                      </table>
                   </div>
