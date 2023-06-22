@@ -155,11 +155,18 @@
                 <p>Customer</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="../segment/segment.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Segment</p>
+              </a>
+            </li>
           </ul>
         </li>
+
         <li class="nav-item">
           <a href="../verifications/logout.php" class="nav-link">
-            <i class="nav-icon fas fa-power-off text-danger"></i>
+            <i class="nav-icon fas fa-power-off fa-spin text-danger"></i>
             <p class="text-danger">
               <strong>LOGOUT</strong>
             </p>

@@ -63,6 +63,21 @@ VALUES
 ('HOREKA', 'BNI (BANK NEGARA INDONESIA)', 'PT. SANTI WIJAYA MEAT', '8585889991'),
 ('WK', 'BCA (BANK CENTRAL ASIA)', 'SANTI WIJAYA L', '7115407007'),
 ('SPECIAL', 'BNI (BANK NEGARA INDONESIA)', 'SANTI WIJAYA L', '0335163001');
+CREATE TABLE customers (
+  idcustomer INT PRIMARY KEY AUTO_INCREMENT,
+  nama_customer VARCHAR(100),
+  alamat VARCHAR(200),
+  idsegment INT,
+  top INT,
+  sales_referensi VARCHAR(50),
+  pajak BOOLEAN,
+  telepon VARCHAR(20),
+  email VARCHAR(100),
+  catatan TEXT,
+  tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
+);
+
 INSERT INTO barang (kdbarang, nmbarang)
 VALUES
 ('0001', 'TOPSIDE'),
@@ -96,7 +111,7 @@ VALUES
 ('0029', 'MBT'),
 ('0030', 'SHORTRIB'),
 ('0031', 'RIBS'),
-('0032', 'SAPRERIB'),
+('0032', 'SPARERIB'),
 ('0033', 'SCAPULAR'),
 ('0034', 'BRISKETBONE'),
 ('0035', 'BACKBONE'),
