@@ -8,8 +8,6 @@ require "../dist/vendor/autoload.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idusers = $_SESSION['idusers'];
-   $userid = $_SESSION['userid'];
-
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
    $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";

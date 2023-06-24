@@ -4,10 +4,10 @@ $sql = mysqli_query($conn, "SELECT MAX(idlabelboning) as maxID from labelboning"
 $data = mysqli_fetch_array($sql);
 $kode = $data['maxID'];
 $kode++;
-$seriallabel = sprintf("%08s", $kode);
+$seriallabel = sprintf("%09s", $kode);
+$currentYear = date("y");  // Mendapatkan dua digit tahun saat ini (misalnya 23 untuk tahun 2023)
+$currentMonth = date("m");  // Mendapatkan dua digit bulan saat ini
+$currentDay = date("d");  // Mendapatkan dua digit tanggal saat ini
 
-$currentYear = date("Y");  // Mendapatkan tahun saat ini (misalnya 2023)
-$twoDigitYear = substr($currentYear, -2);  // Mengambil dua digit terakhir dari tahun
-
-$kodeauto = $twoDigitYear . $seriallabel;
+$kodeauto = $currentYear . $currentMonth . $currentDay . $seriallabel;
 // echo $kodeauto;

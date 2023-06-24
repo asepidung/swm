@@ -11,7 +11,6 @@ require "../mainsidebar.php";
 
 // check if idboning is set in $_GET array
 $idusers = $_SESSION['idusers'];
-$userid = $_SESSION['userid'];
 if (!isset($_GET['id'])) {
   die("Jalankan Dari Modul Produksi");
 }
@@ -48,7 +47,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <form method="POST" action="clbtest.php" onsubmit="submitForm(event)">
+              <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
                 <div class="form-group">
                   <label>Product <span class="text-danger">*</span></label>
                   <div class="input-group">
@@ -138,8 +137,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.userid FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang JOIN boning bo ON l.idboning = bo.idboning JOIN users u ON bo.iduser = u.idusers WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.userid FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang JOIN boning bo ON l.idboning = bo.idboning JOIN users u ON l.iduser = u.idusers WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
+                    $userid = $tampil['userid'];
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -147,7 +147,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
-                      <td><?= $tampil['userid']; ?></td>
+                      <td><?= $userid; ?></td>
                       <td>
                         <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                           <i class="far fa-times-circle"></i>
