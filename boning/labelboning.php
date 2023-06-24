@@ -48,13 +48,28 @@ while ($row = mysqli_fetch_assoc($result)) {
         <div class="col-lg-4">
           <div class="card">
             <div class="card-body">
-              <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
+              <form method="POST" action="clbtest.php" onsubmit="submitForm(event)">
                 <div class="form-group">
                   <label>Product <span class="text-danger">*</span></label>
                   <div class="input-group">
-                    <select class="form-control" name="product" id="product" required>
-                      <option value="" <?php echo (!isset($_SESSION['product']) || $_SESSION['product'] == '') ? 'selected' : ''; ?>>--Pilih Item--</option>
-                      <?= $barangOptions; ?>
+                    <select class="form-control" name="idbarang" id="idbarang" required>
+                      <?php
+                      if (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] != '') {
+                        $selectedIdbarang = $_SESSION['idbarang'];
+                        echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
+                      } else {
+                        echo '<option value="" selected>--Pilih Item--</option>';
+                      }
+
+                      $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                      $result = mysqli_query($conn, $query);
+                      while ($row = mysqli_fetch_assoc($result)) {
+                        $idbarang = $row['idbarang'];
+                        $nmbarang = $row['nmbarang'];
+                        $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
+                        echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                      }
+                      ?>
                     </select>
                     <div class="input-group-append">
                       <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -79,12 +94,14 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
                   </div>
                 </div>
+                <!-- ... -->
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach">
+                  <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
+                <!-- ... -->
                 <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
-                <input type="hidden" name="idbarang" value="<?php echo isset($_GET['product']) ? $_GET['product'] : ''; ?>">
+                <input type="hidden" name="product" id="product">
                 <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
                 <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>">
