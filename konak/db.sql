@@ -51,6 +51,19 @@ CREATE TABLE labelboning (
   FOREIGN KEY (iduser) REFERENCES users (idusers),
   FOREIGN KEY (idboning) REFERENCES boning (idboning)
 );
+CREATE TABLE relabel (
+  idrelabel INT PRIMARY KEY AUTO_INCREMENT,
+  idbarang INT,
+  qty DECIMAL(10,2),
+  pcs CHAR(5),
+  packdate DATE,
+  exp DATE,
+  kdbarcode VARCHAR(20) UNIQUE,
+  dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  iduser INT,
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
+);
 CREATE TABLE segment (
   idsegment INT PRIMARY KEY AUTO_INCREMENT,
   nmsegment VARCHAR(50) UNIQUE,
