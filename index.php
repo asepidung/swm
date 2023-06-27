@@ -40,7 +40,7 @@ $userid = $_SESSION['userid'];
 
       <!-- Preloader -->
       <div class="preloader flex-column justify-content-center align-items-center">
-         <img class="animation__shake" src="dist/img/ipin.jpg" alt="AdminLTELogo" height="100" width="100">
+         <img class="animation__shake" src="dist/img/logoSWM.png" alt="AdminLTELogo" height="150" width="200">
       </div>
 
       <!-- Navbar -->
@@ -270,7 +270,7 @@ $userid = $_SESSION['userid'];
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="pages/charts/flot.html" class="nav-link">
+                           <a href="do/do.php" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Delivery Order</p>
                            </a>

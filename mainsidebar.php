@@ -115,7 +115,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/flot.html" class="nav-link">
+              <a href="../do/do.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Delivery Order</p>
               </a>
