@@ -74,7 +74,7 @@ CREATE TABLE segment (
 INSERT INTO segment (nmsegment, banksegment, accname, accnumber)
 VALUES
 ('HOREKA', 'BNI (BANK NEGARA INDONESIA)', 'PT. SANTI WIJAYA MEAT', '8585889991'),
-('WK', 'BCA (BANK CENTRAL ASIA)', 'SANTI WIJAYA L', '7115407007'),
+('WARGA/KARYAWAN', 'BCA (BANK CENTRAL ASIA)', 'SANTI WIJAYA L', '7115407007'),
 ('SPECIAL', 'BNI (BANK NEGARA INDONESIA)', 'SANTI WIJAYA L', '0335163001');
 CREATE TABLE customers (
   idcustomer INT PRIMARY KEY AUTO_INCREMENT,
@@ -90,7 +90,13 @@ CREATE TABLE customers (
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );
-
+CREATE TABLE grade (
+  idgrade INT PRIMARY KEY AUTO_INCREMENT,
+  nmgrade CHAR(3)
+);
+INSERT INTO grade (nmgrade)
+VALUES
+("J01"),  ("J02"), ("P01"), ("P02");
 INSERT INTO barang (kdbarang, nmbarang)
 VALUES
 ('0001', 'TOPSIDE'),

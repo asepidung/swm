@@ -14,11 +14,11 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="cetakdo.php" onsubmit="submitForm(event)">
+               <form method="POST" action="prosesinputdo.php" onsubmit="submitForm(event)">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
-                           <div class="col-3">
+                           <div class="col-2">
                               <div class="form-group">
                                  <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                                  <div class="input-group">
@@ -26,7 +26,7 @@ include "../mainsidebar.php";
                                  </div>
                               </div>
                            </div>
-                           <div class="col-3">
+                           <div class="col-4">
                               <div class="form-group">
                                  <label for="customer">Customer <span class="text-danger">*</span></label>
                                  <div class="input-group">
@@ -44,7 +44,7 @@ include "../mainsidebar.php";
                                        ?>
                                     </select>
                                     <div class="input-group-append">
-                                       <a href="../customer/newcustomer.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                                       <a href="../customer/newcustomer.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
                                     </div>
                                  </div>
                               </div>
@@ -78,73 +78,97 @@ include "../mainsidebar.php";
                   </div>
                   <div class="card">
                      <div class="card-body">
+                        <div id="items-container">
+                           <!-- Baris item pertama -->
+                           <div class="row">
+                              <div class="col-1">
+                                 <div class="form-group">
+                                    <label for="kdarea">Code</label>
+                                    <div class="input-group">
+                                       <select class="form-control" name="kdarea[]" id="kdarea">
+                                          <?php
+                                          // Query untuk mengambil data dari tabel grade
+                                          $sql = "SELECT * FROM grade";
+                                          $result = $conn->query($sql);
+
+                                          // Membuat pilihan dalam select box berdasarkan data yang diambil
+                                          if ($result->num_rows > 0) {
+                                             while ($row = $result->fetch_assoc()) {
+                                                echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+                                             }
+                                          }
+                                          ?>
+                                       </select>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-4">
+                                 <div class="form-group">
+                                    <label for="idbarang">Product</label>
+                                    <div class="input-group">
+                                       <select class="form-control" name="idbarang[]" id="idbarang">
+                                          <option value="">--Pilih--</option>
+                                          <?php
+                                          $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                                          $result = mysqli_query($conn, $query);
+                                          while ($row = mysqli_fetch_assoc($result)) {
+                                             $idbarang = $row['idbarang'];
+                                             $nmbarang = $row['nmbarang'];
+                                             echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                                          }
+                                          ?>
+                                       </select>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-1">
+                                 <div class="form-group">
+                                    <label for="box">Box</label>
+                                    <div class="input-group">
+                                       <input type="number" name="box[]" class="form-control">
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-2">
+                                 <div class="form-group">
+                                    <label for="qty">Weight</label>
+                                    <div class="input-group">
+                                       <input type="text" name="qty[]" class="form-control">
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-3">
+                                 <div class="form-group">
+                                    <label for="note">Notes</label>
+                                    <div class="input-group">
+                                       <input type="text" name="note[]" class="form-control">
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col"></div>
+                           </div>
+                        </div>
                         <div class="row">
                            <div class="col-1">
-                              <div class="form-group">
-                                 <label for="kdarea">Code</label>
-                                 <div class="input-group">
-                                    <select class="form-control" name="kdarea" id="kdarea">
-                                       <option value="">J01</option>
-                                       <option value="">J02</option>
-                                       <option value="">P01</option>
-                                       <option value="">P01</option>
-                                    </select>
-                                 </div>
-                              </div>
+                              <button type="button" class="btn btn-link text-success" onclick="addItem()"><i class="fas fa-plus-circle"></i></button>
                            </div>
-                           <div class="col-3">
-                              <div class="form-group">
-                                 <label for="idbarang">Product</label>
-                                 <div class="input-group">
-                                    <select class="form-control" name="idbarang" id="idbarang">
-                                       <option value="">--Pilih--</option>
-                                       <?php
-                                       $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                       $result = mysqli_query($conn, $query);
-                                       while ($row = mysqli_fetch_assoc($result)) {
-                                          $idbarang = $row['idbarang'];
-                                          $nmbarang = $row['nmbarang'];
-                                          echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                                       }
-                                       ?>
-                                    </select>
-                                 </div>
-                              </div>
+                           <div class="col-4"></div>
+                           <div class="col-1">
+                              <input type="text" name="xbox" id="xbox" class="form-control" readonly>
                            </div>
                            <div class="col-2">
-                              <div class="form-group">
-                                 <label for="box">Box</label>
-                                 <div class="input-group">
-                                    <div class="form-group">
-                                       <input type="number" name="box" id="box" class="form-control">
-                                    </div>
-                                 </div>
-                              </div>
+                              <input type="text" name="xweight" id="xweight" class="form-control" readonly>
                            </div>
-                           <div class="col-2">
-                              <div class="form-group">
-                                 <label for="qty">Weight</label>
-                                 <div class="input-group">
-                                    <div class="form-group">
-                                       <input type="number" name="qty" id="qty" class="form-control">
-                                    </div>
-                                 </div>
-                              </div>
+                           <div class="col-1">
+                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Confirm</button>
                            </div>
-                           <div class="col-4">
-                              <div class="form-group">
-                                 <label for="note">Notes</label>
-                                 <div class="input-group">
-                                    <div class="form-group">
-                                       <input type="text" name="note" id="note" class="form-control">
-                                    </div>
-                                 </div>
-                              </div>
+                           <div class="col">
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Submit & Preview</button>
                            </div>
+                           <div class="col-1"></div>
                         </div>
                      </div>
                   </div>
-                  <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
                </form>
             </div>
             <!-- /.card -->
@@ -160,9 +184,113 @@ include "../mainsidebar.php";
 <!-- /.content-wrapper -->
 
 <script>
+   function calculateTotals() {
+      var boxes = document.getElementsByName("box[]");
+      var weights = document.getElementsByName("qty[]");
+      var xbox = 0;
+      var xweight = 0;
+
+      for (var i = 0; i < boxes.length; i++) {
+         xbox += parseInt(boxes[i].value) || 0;
+         xweight += parseFloat(weights[i].value) || 0;
+      }
+
+      document.getElementById("xbox").value = xbox;
+      document.getElementById("xweight").value = xweight.toFixed(2);
+   }
+
    // Mengubah judul halaman web
-   document.title = "Data Boning";
+   document.title = "Delivery Order";
+
+   function addItem() {
+      var itemsContainer = document.getElementById('items-container');
+
+      // Baris item baru
+      var newItemRow = document.createElement('div');
+      newItemRow.className = 'item-row';
+
+      // Konten baris item baru
+      newItemRow.innerHTML = `
+         <div class="row">
+            <div class="col-1">
+               <div class="form-group">
+                  <div class="input-group">
+                     <select class="form-control" name="kdarea[]" id="kdarea">
+                     <?php
+                     // Query untuk mengambil data dari tabel grade
+                     $sql = "SELECT * FROM grade";
+                     $result = $conn->query($sql);
+
+                     // Membuat pilihan dalam select box berdasarkan data yang diambil
+                     if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                           echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+                        }
+                     }
+                     ?>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="col-4">
+               <div class="form-group">
+                  <div class="input-group">
+                     <select class="form-control" name="idbarang[]" id="idbarang">
+                        <option value="">--Pilih--</option>
+                        <?php
+                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                        $result = mysqli_query($conn, $query);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                           $idbarang = $row['idbarang'];
+                           $nmbarang = $row['nmbarang'];
+                           echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                        }
+                        ?>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="col-1">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="number" name="box[]" class="form-control">
+                  </div>
+               </div>
+            </div>
+            <div class="col-2">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" name="qty[]" class="form-control">
+                  </div>
+               </div>
+            </div>
+            <div class="col">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" name="note[]" class="form-control">
+                  </div>
+               </div>
+            </div>
+            <div class="col-1">        
+               <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+                  <i class="fas fa-minus-circle"></i>
+               </button>
+            </div>
+         </div>
+      `;
+
+      // Tambahkan baris item baru ke dalam container
+      itemsContainer.appendChild(newItemRow);
+   }
+
+   function removeItem(button) {
+      var itemRow = button.closest('.item-row');
+
+      // Hapus baris item
+      itemRow.remove();
+   }
 </script>
 <?php
 // require "../footnote.php";
-include "../footer.php" ?>
+include "../footer.php";
+?>

@@ -25,7 +25,7 @@ if (isset($_SESSION['login'])) {
 <body class="hold-transition login-page">
    <div class="login-box">
       <div class="login-logo">
-         <a href="../dist/img/logoSWM.png"><b>SWM</b> | Apps</a>
+         <a href="../dist/img/logoSWM.png"><b>Silahkan Login</b></a>
       </div>
       <!-- /.login-logo -->
       <div class="card">
