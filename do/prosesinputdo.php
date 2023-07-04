@@ -21,11 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Proses penyimpanan data atau cetak DO
 
    // Contoh akses data yang dikirim dari form
-   echo "Tgl Kirim: " . $deliverydate . "<br>";
-   echo "Customer: " . $customer . "<br>";
-   echo "Cust PO: " . $po . "<br>";
-   echo "Driver: " . $driver . "<br>";
-   echo "Plat Number: " . $policenumb . "<br>";
+   // echo "Tgl Kirim: " . $deliverydate . "<br>";
+   // echo "Customer: " . $customer . "<br>";
+   // echo "Cust PO: " . $po . "<br>";
+   // echo "Driver: " . $driver . "<br>";
+   // echo "Plat Number: " . $policenumb . "<br>";
 
    // Contoh akses data item
    for ($i = 0; $i < count($kdarea); $i++) {
@@ -35,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $itemQty = $qty[$i];
       $itemNote = $note[$i];
 
-      echo "Item " . ($i + 1) . ":<br>";
-      echo "Kode Area: " . $itemKdArea . "<br>";
-      echo "ID Barang: " . $itemIdBarang . "<br>";
-      echo "Box: " . $itemBox . "<br>";
-      echo "Weight: " . $itemQty . "<br>";
-      echo "Notes: " . $itemNote . "<br>";
-      echo "<br>";
+      // echo "Item " . ($i + 1) . ":<br>";
+      // echo "Kode Area: " . $itemKdArea . "<br>";
+      // echo "ID Barang: " . $itemIdBarang . "<br>";
+      // echo "Box: " . $itemBox . "<br>";
+      // echo "Weight: " . $itemQty . "<br>";
+      // echo "Notes: " . $itemNote . "<br>";
+      // echo "<br>";
    }
 }

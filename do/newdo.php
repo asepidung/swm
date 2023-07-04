@@ -7,6 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+include "donumber.php";
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -14,7 +15,9 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosesinputdo.php" onsubmit="submitForm(event)">
+               <form method="POST" action="doprint.php" onsubmit="submitForm(event)">
+                  <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber">
+                  <input type="hidden" value="note" name="note" id="note">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -28,9 +31,9 @@ include "../mainsidebar.php";
                            </div>
                            <div class="col-4">
                               <div class="form-group">
-                                 <label for="customer">Customer <span class="text-danger">*</span></label>
+                                 <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <select class="form-control" name="customer" id="customer" required>
+                                    <select class="form-control" name="idcustomer" id="idcustomer" required>
                                        <option value="">Pilih Customer</option>
                                        <?php
                                        $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
@@ -67,9 +70,9 @@ include "../mainsidebar.php";
                            </div>
                            <div class="col-2">
                               <div class="form-group">
-                                 <label for="policenumb">Plat Number</label>
+                                 <label for="plat">Plat Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="policenumb" id="policenumb" value="-">
+                                    <input type="text" class="form-control" name="plat" id="plat" value="-">
                                  </div>
                               </div>
                            </div>
@@ -83,9 +86,9 @@ include "../mainsidebar.php";
                            <div class="row">
                               <div class="col-1">
                                  <div class="form-group">
-                                    <label for="kdarea">Code</label>
+                                    <label for="idgrade">Code</label>
                                     <div class="input-group">
-                                       <select class="form-control" name="kdarea[]" id="kdarea">
+                                       <select class="form-control" name="idgrade[]" id="idgrade">
                                           <?php
                                           // Query untuk mengambil data dari tabel grade
                                           $sql = "SELECT * FROM grade";
@@ -106,7 +109,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="idbarang">Product</label>
                                     <div class="input-group">
-                                       <select class="form-control" name="idbarang[]" id="idbarang">
+                                       <select class="form-control" name="idbarang[]" id="idbarang" required>
                                           <option value="">--Pilih--</option>
                                           <?php
                                           $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
@@ -125,23 +128,23 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="box">Box</label>
                                     <div class="input-group">
-                                       <input type="number" name="box[]" class="form-control">
+                                       <input type="number" name="box[]" class="form-control" required>
                                     </div>
                                  </div>
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
-                                    <label for="qty">Weight</label>
+                                    <label for="weight">Weight</label>
                                     <div class="input-group">
-                                       <input type="text" name="qty[]" class="form-control">
+                                       <input type="text" name="weight[]" class="form-control text-right" required>
                                     </div>
                                  </div>
                               </div>
                               <div class="col-3">
                                  <div class="form-group">
-                                    <label for="note">Notes</label>
+                                    <label for="notes">Notes</label>
                                     <div class="input-group">
-                                       <input type="text" name="note[]" class="form-control">
+                                       <input type="text" name="notes[]" class="form-control">
                                     </div>
                                  </div>
                               </div>
@@ -157,7 +160,7 @@ include "../mainsidebar.php";
                               <input type="text" name="xbox" id="xbox" class="form-control" readonly>
                            </div>
                            <div class="col-2">
-                              <input type="text" name="xweight" id="xweight" class="form-control" readonly>
+                              <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
                            <div class="col-1">
                               <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Confirm</button>
@@ -186,7 +189,7 @@ include "../mainsidebar.php";
 <script>
    function calculateTotals() {
       var boxes = document.getElementsByName("box[]");
-      var weights = document.getElementsByName("qty[]");
+      var weights = document.getElementsByName("weight[]");
       var xbox = 0;
       var xweight = 0;
 
@@ -215,7 +218,7 @@ include "../mainsidebar.php";
             <div class="col-1">
                <div class="form-group">
                   <div class="input-group">
-                     <select class="form-control" name="kdarea[]" id="kdarea">
+                     <select class="form-control" name="idgrade[]" id="idgrade">
                      <?php
                      // Query untuk mengambil data dari tabel grade
                      $sql = "SELECT * FROM grade";
@@ -235,7 +238,7 @@ include "../mainsidebar.php";
             <div class="col-4">
                <div class="form-group">
                   <div class="input-group">
-                     <select class="form-control" name="idbarang[]" id="idbarang">
+                     <select class="form-control" name="idbarang[]" id="idbarang" required>
                         <option value="">--Pilih--</option>
                         <?php
                         $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
@@ -253,21 +256,21 @@ include "../mainsidebar.php";
             <div class="col-1">
                <div class="form-group">
                   <div class="input-group">
-                     <input type="number" name="box[]" class="form-control">
+                     <input type="number" name="box[]" class="form-control" required>
                   </div>
                </div>
             </div>
             <div class="col-2">
                <div class="form-group">
                   <div class="input-group">
-                     <input type="text" name="qty[]" class="form-control">
+                     <input type="text" name="weight[]" class="form-control text-right" required>
                   </div>
                </div>
             </div>
             <div class="col">
                <div class="form-group">
                   <div class="input-group">
-                     <input type="text" name="note[]" class="form-control">
+                     <input type="text" name="notes[]" class="form-control">
                   </div>
                </div>
             </div>
@@ -291,6 +294,6 @@ include "../mainsidebar.php";
    }
 </script>
 <?php
-// require "../footnote.php";
+// require "../footnotes.php";
 include "../footer.php";
 ?>

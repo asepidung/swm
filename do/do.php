@@ -12,7 +12,7 @@ include "../mainsidebar.php";
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
-         <div class="row mb-2">
+         <div class="row">
             <div class="col-sm-6">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
                <a href="newdo.php"><button type="button" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Baru</button></a>
@@ -43,31 +43,54 @@ include "../mainsidebar.php";
                               <th>Actions</th>
                            </tr>
                         </thead>
+                        <?php
+                        $query_total_weight_keseluruhan = "SELECT SUM(xweight) AS total_weight_keseluruhan FROM do";
+                        $result_total_weight_keseluruhan = mysqli_query($conn, $query_total_weight_keseluruhan);
+                        $row_total_weight_keseluruhan = mysqli_fetch_assoc($result_total_weight_keseluruhan);
+                        $total_weight_keseluruhan = $row_total_weight_keseluruhan['total_weight_keseluruhan'];
+                        ?>
                         <tbody>
-                           <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                           </tr>
+                           <?php
+                           $no = 1;
+                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
+                                   JOIN customers ON do.idcustomer = customers.idcustomer
+                                   ORDER BY do.donumber DESC");
+
+                           while ($tampil = mysqli_fetch_array($ambildata)) {
+                           ?>
+                              <tr>
+                                 <td class="text-center"><?= $no; ?></td>
+                                 <td class="text-center"><?= $tampil['donumber']; ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
+                                 <td><?= $tampil['nama_customer']; ?></td>
+                                 <td><?= $tampil['po']; ?></td>
+                                 <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
+                                 <td><?= $tampil['note']; ?></td>
+                                 <td>
+                                    <div class="row">
+                                       <div class="col"></div>
+                                       <div class="col-3">
+                                          <span class="text-info"><i class="fas fa-eye"></i></span>
+                                       </div>
+                                       <div class="col-3">
+                                          <span class="text-success"><i class="fas fa-edit"></i></span>
+                                       </div>
+                                       <div class="col-3">
+                                          <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
+                                       </div>
+                                       <div class="col"></div>
+                                    </div>
+                                 </td>
+                              </tr>
+                           <?php $no++;
+                           } ?>
                         </tbody>
                         <tfoot>
                            <tr>
-                              <th></th>
-                              <th></th>
-                              <th></th>
-                              <th></th>
-                              <th></th>
-                              <th></th>
-                              <th></th>
-                              <th></th>
+                              <th class="text-right" colspan="5">SUBTOTAL</th>
+                              <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
+                              <th colspan="2"></th>
                            </tr>
-                           <!-- <th class="text-center"><?= $total_sapi; ?> </td>
-                           <th class="text-right"><?= $total_berat_keseluruhan; ?></td> -->
                         </tfoot>
                      </table>
                   </div>
@@ -87,8 +110,8 @@ include "../mainsidebar.php";
 
    <script>
       // Mengubah judul halaman web
-      document.title = "Data Boning";
+      document.title = "Delivery Order";
    </script>
    <?php
-   require "../footnote.php";
+   // require "../footnote.php";
    include "../footer.php" ?>

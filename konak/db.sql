@@ -40,7 +40,7 @@ CREATE TABLE labelboning (
   idlabelboning INT PRIMARY KEY AUTO_INCREMENT,
   idboning INT,
   idbarang INT,
-  qty DECIMAL(10,2),
+  qty DECIMAL(12,2),
   pcs CHAR(5),
   packdate DATE,
   exp DATE,
@@ -54,7 +54,7 @@ CREATE TABLE labelboning (
 CREATE TABLE relabel (
   idrelabel INT PRIMARY KEY AUTO_INCREMENT,
   idbarang INT,
-  qty DECIMAL(10,2),
+  qty DECIMAL(12,2),
   pcs CHAR(5),
   packdate DATE,
   exp DATE,
@@ -97,6 +97,34 @@ CREATE TABLE grade (
 INSERT INTO grade (nmgrade)
 VALUES
 ("J01"),  ("J02"), ("P01"), ("P02");
+CREATE TABLE do (
+  iddo INT PRIMARY KEY AUTO_INCREMENT,
+  donumber VARCHAR(30) UNIQUE,
+  deliverydate DATE,
+  idcustomer INT,
+  po VARCHAR (50),
+  driver VARCHAR(20),
+  plat VARCHAR (12),
+  note VARCHAR (255),
+  xbox INT,
+  xweight DECIMAL(12.2),
+  idusers INT,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE dodetail (
+  iddodetail INT PRIMARY KEY AUTO_INCREMENT,
+  iddo INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight DECIMAL(12, 2),
+  notes VARCHAR(255),
+  FOREIGN KEY (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
 INSERT INTO barang (kdbarang, nmbarang)
 VALUES
 ('0001', 'TOPSIDE'),

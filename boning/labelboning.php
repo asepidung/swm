@@ -59,7 +59,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                       } else {
                         echo '<option value="" selected>--Pilih Item--</option>';
                       }
-
                       $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                       $result = mysqli_query($conn, $query);
                       while ($row = mysqli_fetch_assoc($result)) {

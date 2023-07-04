@@ -1,105 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+session_start();
+if (!isset($_SESSION['login'])) {
+   header("location: ../verifications/login.php");
+}
+require "../konak/conn.php";
 
-<head>
-   <meta charset="utf-8">
-   <title>Example 2</title>
-   <link rel="stylesheet" href="../dist/css/styledo.css" media="all" />
-</head>
+if (isset($_POST['submit'])) {
+   $donumber = $_POST['donumber'];
+   $deliverydate = $_POST['deliverydate'];
+   $idcustomer = $_POST['idcustomer'];
+   $po = $_POST['po'];
+   $driver = $_POST['driver'];
+   $plat = $_POST['plat'];
+   $xbox = $_POST['xbox'];
+   $xweight = $_POST['xweight'];
+   $note = $_POST['note'];
+   $idusers = $_SESSION['idusers'];
 
-<body>
-   <header class="clearfix">
-      <div id="logo">
-         <img src="../dist/img/logoSWM.png">
-      </div>
-      <div id="company">
-         <h2 class="name">PT. SANTI WIJAYA MEAT</h2>
-         <div>455 Foggy Heights, AZ 85004, US</div>
-         <div>(602) 519-0450</div>
-         <div><a href="mailto:company@example.com">company@example.com</a></div>
-      </div>
-      </div>
-   </header>
-   <main>
-      <div id="details" class="clearfix">
-         <div id="client">
-            <div class="to">INVOICE TO:</div>
-            <h2 class="name">John Doe</h2>
-            <div class="address">796 Silver Harbour, TX 79273, US</div>
-            <div class="email"><a href="mailto:john@example.com">john@example.com</a></div>
-         </div>
-         <div id="invoice">
-            <h1>INVOICE 3-2-1</h1>
-            <div class="date">Date of Invoice: 01/06/2014</div>
-            <div class="date">Due Date: 30/06/2014</div>
-         </div>
-      </div>
-      <table border="0" cellspacing="0" cellpadding="0">
-         <thead>
-            <tr>
-               <th class="no">#</th>
-               <th class="desc">DESCRIPTION</th>
-               <th class="unit">UNIT PRICE</th>
-               <th class="qty">QUANTITY</th>
-               <th class="total">TOTAL</th>
-            </tr>
-         </thead>
-         <tbody>
-            <tr>
-               <td class="no">01</td>
-               <td class="desc">
-                  <h3>Website Design</h3>Creating a recognizable design solution based on the company's existing visual identity
-               </td>
-               <td class="unit">$40.00</td>
-               <td class="qty">30</td>
-               <td class="total">$1,200.00</td>
-            </tr>
-            <tr>
-               <td class="no">02</td>
-               <td class="desc">
-                  <h3>Website Development</h3>Developing a Content Management System-based Website
-               </td>
-               <td class="unit">$40.00</td>
-               <td class="qty">80</td>
-               <td class="total">$3,200.00</td>
-            </tr>
-            <tr>
-               <td class="no">03</td>
-               <td class="desc">
-                  <h3>Search Engines Optimization</h3>Optimize the site for search engines (SEO)
-               </td>
-               <td class="unit">$40.00</td>
-               <td class="qty">20</td>
-               <td class="total">$800.00</td>
-            </tr>
-         </tbody>
-         <tfoot>
-            <tr>
-               <td colspan="2"></td>
-               <td colspan="2">SUBTOTAL</td>
-               <td>$5,200.00</td>
-            </tr>
-            <tr>
-               <td colspan="2"></td>
-               <td colspan="2">TAX 25%</td>
-               <td>$1,300.00</td>
-            </tr>
-            <tr>
-               <td colspan="2"></td>
-               <td colspan="2">GRAND TOTAL</td>
-               <td>$6,500.00</td>
-            </tr>
-         </tfoot>
-      </table>
-      <div id="thanks">Thank you!</div>
-      <div id="notices">
-         <div>NOTICE:</div>
-         <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
-      </div>
-   </main>
-   <footer>
-      Invoice was created on a computer and is valid without the signature and seal.
-   </footer>
-</body>
+   // Query INSERT ke tabel "do"
+   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, idusers) VALUES (?,?,?,?,?,?,?,?,?,?)";
+   $stmt_do = $conn->prepare($query_do);
+   $stmt_do->bind_param("ssissssidi", $donumber, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $idusers);
+   $stmt_do->execute();
 
-</html>
+   // Mendapatkan ID terakhir yang di-generate dalam tabel "do"
+   $last_id = $stmt_do->insert_id;
+
+   // Query INSERT ke tabel "dodetail"
+   $idgrade = $_POST['idgrade'];
+   $idbarang = $_POST['idbarang'];
+   $box = $_POST['box'];
+   $weight = $_POST['weight'];
+   $notes = $_POST['notes'];
+
+   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?,?,?,?,?,?)";
+   $stmt_dodetail = $conn->prepare($query_dodetail);
+
+   // Bind parameter dan eksekusi query INSERT sebanyak item yang ada
+   for ($i = 0; $i < count($idgrade); $i++) {
+      $stmt_dodetail->bind_param("iiiids", $last_id, $idgrade[$i], $idbarang[$i], $box[$i], $weight[$i], $notes[$i]);
+      $stmt_dodetail->execute();
+   }
+
+   $stmt_dodetail->close();
+   $stmt_do->close();
+   $conn->close();
+
+   // Redirect ke halaman lain setelah proses INSERT selesai
+   header("location: do.php");
+   exit();
+}
