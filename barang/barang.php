@@ -30,50 +30,49 @@ include "../mainsidebar.php";
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
-                     <table id="example1" class="table table-bordered table-striped table-sm">
-                        <thead class="text-center">
-                           <tr>
-                              <th rowspan="2">#</th>
-                              <th rowspan="2">Kode Product</th>
-                              <th rowspan="2">Nama Product</th>
-                              <th colspan="2">G. Jonggol</th>
-                              <th colspan="2">G. Perum</th>
-                           </tr>
-                           <tr>
-                              <th>Good</th>
-                              <th>Grade</th>
-                              <th>Good</th>
-                              <th>Grade</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           </tr>
-                           <?php
-                           // $query_total_sapi = "SELECT SUM(qtysapi) AS total_sapi FROM boning";
-                           // $result_total_sapi = mysqli_query($conn, $query_total_sapi);
-                           // $row_total_sapi = mysqli_fetch_assoc($result_total_sapi);
-                           // $total_sapi = $row_total_sapi['total_sapi'];
-                           $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT * FROM barang ORDER BY nmbarang ASC");
-                           while ($tampil = mysqli_fetch_array($ambildata)) {
-                           ?>
-                              <tr class="text-center">
-                                 <td><?= $no; ?></td>
-                                 <td><?= $tampil['kdbarang']; ?></td>
-                                 <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                 <td>stock gja</td>
-                                 <td>stock gjb</td>
-                                 <td>stock pja</td>
-                                 <td>stock pjb</td>
+                     <div class="col-6">
+                        <table id="example1" class="table table-bordered table-striped table-sm">
+                           <thead class="text-center">
+                              <tr>
+                                 <th>#</th>
+                                 <th>Kode Product</th>
+                                 <th>Nama Product</th>
+                                 <th>Action</th>
                               </tr>
-                           <?php
-                              $no++;
-                           }
-                           ?>
-                        </tbody>
-                        <tfoot>
-                        </tfoot>
-                     </table>
+                           </thead>
+                           <tbody>
+                              </tr>
+                              <?php
+                              $no = 1;
+                              $ambildata = mysqli_query($conn, "SELECT * FROM barang ORDER BY nmbarang ASC");
+                              while ($tampil = mysqli_fetch_array($ambildata)) {
+                              ?>
+                                 <tr class="text-center">
+                                    <td><?= $no; ?></td>
+                                    <td><?= $tampil['kdbarang']; ?></td>
+                                    <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                                    <td>
+                                       <div class="row">
+                                          <div class="col"></div>
+                                          <div class="col-3">
+                                             <a href="editbarang.php?idbarang=<?= $tampil['idbarang'] ?>"><span class="text-success"><i class="fas fa-edit"></i></span></a>
+                                          </div>
+                                          <div class="col-3">
+                                             <a href="deletebarang.php?idbarang=<?= $tampil['idbarang'] ?>" onclick="return confirm('Apakah kamu yakin? Ingat! Segala aktivitasmu akan terekam oleh sistem.');"><span class="text-danger"><i class="fas fa-trash"></i></span></a>
+                                          </div>
+                                          <div class="col"></div>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              <?php
+                                 $no++;
+                              }
+                              ?>
+                           </tbody>
+                           <tfoot>
+                           </tfoot>
+                        </table>
+                     </div>
                   </div>
                   <!-- /.card-body -->
                </div>

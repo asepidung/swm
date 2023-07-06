@@ -26,7 +26,7 @@ include "../mainsidebar.php";
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-12">
+        <div class="col">
           <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
@@ -72,20 +72,29 @@ include "../mainsidebar.php";
                       <td><?= $tampil['qtysapi']; ?></td>
                       <td class="text-right"><?= $total_weight; ?></td>
                       </button>
-                      <td class="text-center">
-                        <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
-                          <i class="fas fa-barcode"></i>
-
-                        </a>
-                        <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Hasil Boning" onclick="window.location.href='boningdetail.php?id=<?php echo $tampil['idboning']; ?>'">
-                          <i class="fas fa-eye">
-                          </i>
-                        </a>
-                        <a class="btn btn-info btn-sm" href="#">
-                          <i class="fas fa-pencil-alt">
-                          </i>
-
-                        </a>
+                      <td>
+                        <div class="row">
+                          <div class="col"></div>
+                          <div class="col-2">
+                            <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
+                              <i class="fas fa-barcode"></i>
+                            </a>
+                          </div>
+                          <div class="col-1"></div>
+                          <div class="col-2">
+                            <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Hasil Boning" onclick="window.location.href='boningdetail.php?id=<?php echo $tampil['idboning']; ?>'">
+                              <i class="fas fa-eye">
+                              </i>
+                            </a>
+                          </div>
+                          <div class="col-1"></div>
+                          <div class="col-2">
+                            <a class="btn btn-info btn-sm" href="editdataboning.php?idboning=<?= $tampil['idboning'] ?>">
+                              <i class="fas fa-pencil-alt"></i>
+                            </a>
+                          </div>
+                          <div class="col"></div>
+                        </div>
                       </td>
                     </tr>
                   <?php

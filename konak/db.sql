@@ -2,12 +2,12 @@ CREATE DATABASE swm;
 USE swm;
 CREATE TABLE users (
   idusers INT PRIMARY KEY AUTO_INCREMENT,
-  userid VARCHAR(100),
+  userid VARCHAR(100) UNIQUE,
   passuser VARCHAR(100)
 );
 CREATE TABLE supplier (
   idsupplier INT PRIMARY KEY AUTO_INCREMENT,
-  nmsupplier VARCHAR(100),
+  nmsupplier VARCHAR(100) UNIQUE,
   jenis_usaha VARCHAR(100),
   alamat VARCHAR(200),
   telepon VARCHAR(20),
@@ -21,7 +21,7 @@ VALUES
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
   kdbarang VARCHAR(10),
-  nmbarang VARCHAR(30),
+  nmbarang VARCHAR(30) UNIQUE,
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
@@ -78,7 +78,7 @@ VALUES
 ('SPECIAL', 'BNI (BANK NEGARA INDONESIA)', 'SANTI WIJAYA L', '0335163001');
 CREATE TABLE customers (
   idcustomer INT PRIMARY KEY AUTO_INCREMENT,
-  nama_customer VARCHAR(100),
+  nama_customer VARCHAR(100) UNIQUE,
   alamat VARCHAR(200),
   idsegment INT,
   top INT,
@@ -92,7 +92,7 @@ CREATE TABLE customers (
 );
 CREATE TABLE grade (
   idgrade INT PRIMARY KEY AUTO_INCREMENT,
-  nmgrade CHAR(3)
+  nmgrade CHAR(3) UNIQUE
 );
 INSERT INTO grade (nmgrade)
 VALUES
