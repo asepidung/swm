@@ -17,7 +17,7 @@ include "donumber.php";
             <div class="col mt-3">
                <form method="POST" action="doprint.php" onsubmit="submitForm(event)">
                   <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber">
-                  <input type="hidden" value="note" name="note" id="note">
+                  <!-- <input type="hidden" value="note" name="note" id="note"> -->
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -73,6 +73,16 @@ include "donumber.php";
                                  <label for="plat">Plat Number</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="plat" id="plat" value="-">
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col">
+                              <div class="form-group">
+                                 <!-- <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label> -->
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
                                  </div>
                               </div>
                            </div>
@@ -163,10 +173,10 @@ include "donumber.php";
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
                            <div class="col-1">
-                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Confirm</button>
+                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Check</button>
                            </div>
                            <div class="col">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Submit & Preview</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Submit & Print</button>
                            </div>
                            <div class="col-1"></div>
                         </div>

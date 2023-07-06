@@ -47,6 +47,61 @@ if (isset($_POST['submit'])) {
    $conn->close();
 
    // Redirect ke halaman lain setelah proses INSERT selesai
-   header("location: do.php");
+   // header("location: do.php");
    exit();
 }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<body>
+   <p>Delivery Order<br />
+      <strong>PT. SANTI WIJAYA MEAT</strong><br />
+      Jl. Perum Asabri Blok B Desa Sukasirna Kec. Jonggol Kab. Bogor Telp. 021-89935103
+   </p>
+
+   <hr />
+   <table border="0" cellpadding="0" cellspacing="0">
+      <tbody>
+         <tr>
+            <td style="width:137px">DO Numb</td>
+            <td style="width:383px">: DO-SWM/23/VII/00001</td>
+            <td style="width:155px">Delivery Date</td>
+            <td style="width:513px">: Wed, 06 Juli 2023</td>
+         </tr>
+         <tr>
+            <td style="width:137px">SO NUmb</td>
+            <td style="height:0px; width:383px">: -</td>
+            <td style="height:0px; width:155px">PO Number</td>
+            <td style="height:0px; width:513px">: P0-000-000-1234</td>
+         </tr>
+         <tr>
+            <td style="width:137px">Sales Ref</td>
+            <td style="width:383px">: MURYANI</td>
+            <td style="width:155px">Customer</td>
+            <td style="width:513px">: Lion Superindo DCA Cikarang</td>
+         </tr>
+         <tr>
+            <td style="width:137px">Driver</td>
+            <td style="width:383px">: TOPIK</td>
+            <td style="width:155px">Address</td>
+            <td colspan="1" rowspan="3" style="width:513px">: Karyadeka Industri Cikarang</td>
+         </tr>
+         <tr>
+            <td style="width:137px">No POL</td>
+            <td style="width:383px">: F 2111 FAB</td>
+            <td style="width:155px">&nbsp;</td>
+         </tr>
+      </tbody>
+   </table>
+
+</body>
+
+</html>

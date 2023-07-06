@@ -70,13 +70,19 @@ include "../mainsidebar.php";
                                     <div class="row">
                                        <div class="col"></div>
                                        <div class="col-3">
-                                          <span class="text-info"><i class="fas fa-eye"></i></span>
+                                          <a href="cetakdo.php?id=<?= $tampil['iddo']; ?>">
+                                             <span class="text-info"><i class="fas fa-eye"></i></span>
+                                          </a>
                                        </div>
                                        <div class="col-3">
-                                          <span class="text-success"><i class="fas fa-edit"></i></span>
+                                          <a href="edit.php?id=<?= $tampil['iddo']; ?>">
+                                             <span class="text-success"><i class="fas fa-edit"></i></span>
+                                          </a>
                                        </div>
                                        <div class="col-3">
-                                          <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
+                                          <a href="deletedo.php?id=<?= $tampil['iddo']; ?>">
+                                             <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
+                                          </a>
                                        </div>
                                        <div class="col"></div>
                                     </div>
