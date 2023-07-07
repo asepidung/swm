@@ -15,7 +15,7 @@ include "donumber.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="doprint.php" onsubmit="submitForm(event)">
+               <form method="POST" action="inputdo.php" onsubmit="submitForm(event)">
                   <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber">
                   <!-- <input type="hidden" value="note" name="note" id="note"> -->
                   <div class="card">

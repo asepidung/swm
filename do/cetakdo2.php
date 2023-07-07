@@ -4,8 +4,23 @@
 <head>
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <title>AdminLTE 3 | Invoice Print</title>
+   <title>DO No</title>
+   <style>
+      body {
+         background-color: white;
+         color: black;
+         font-family: 'poppins', 'cambria';
+         font-kerning: normal;
+         font-size: 14px;
+      }
 
+      table,
+      th,
+      td {
+         border: 1px solid black;
+         border-collapse: collapse;
+      }
+   </style>
    <!-- Google Font: Source Sans Pro -->
    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
    <!-- Font Awesome -->
@@ -15,7 +30,8 @@
 </head>
 
 <body>
-   <div class="container-fluid">
+   <div class="container-xl">
+      <br>
       <div class="row">
          <div class="col">
             Delivery Order<br />

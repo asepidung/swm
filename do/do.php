@@ -30,7 +30,7 @@ include "../mainsidebar.php";
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
-                     <table id="example1" class="table table-bordered table-striped table-sm">
+                     <table id="example1" class="table table-bordered table-striped">
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
@@ -40,6 +40,7 @@ include "../mainsidebar.php";
                               <th>PO</th>
                               <th>Qty</th>
                               <th>Catatan</th>
+                              <th>Made By</th>
                               <th>Actions</th>
                            </tr>
                         </thead>
@@ -53,9 +54,8 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
-                                   JOIN customers ON do.idcustomer = customers.idcustomer
-                                   ORDER BY do.donumber DESC");
-
+                                 JOIN customers ON do.idcustomer = customers.idcustomer
+                                 ORDER BY do.donumber DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
@@ -66,21 +66,24 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
+                                 <td class="text-center"><?= $userid ?></td>
                                  <td>
                                     <div class="row">
                                        <div class="col"></div>
-                                       <div class="col-3">
-                                          <a href="cetakdo.php?id=<?= $tampil['iddo']; ?>">
-                                             <span class="text-info"><i class="fas fa-eye"></i></span>
+                                       <div class="col-2">
+                                          <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
+                                             <span class="text-info"><i class="fas fa-print"></i></span>
                                           </a>
                                        </div>
-                                       <div class="col-3">
-                                          <a href="edit.php?id=<?= $tampil['iddo']; ?>">
+                                       <div class="col-1"></div>
+                                       <div class="col-2">
+                                          <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                              <span class="text-success"><i class="fas fa-edit"></i></span>
                                           </a>
                                        </div>
-                                       <div class="col-3">
-                                          <a href="deletedo.php?id=<?= $tampil['iddo']; ?>">
+                                       <div class="col-1"></div>
+                                       <div class="col-2">
+                                          <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>">
                                              <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
                                           </a>
                                        </div>
@@ -95,7 +98,7 @@ include "../mainsidebar.php";
                            <tr>
                               <th class="text-right" colspan="5">SUBTOTAL</th>
                               <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
-                              <th colspan="2"></th>
+                              <th colspan="3"></th>
                            </tr>
                         </tfoot>
                      </table>
