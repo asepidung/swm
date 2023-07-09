@@ -175,7 +175,7 @@ include "donumber.php";
                               <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
                            </div>
                            <div class="col">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')">Submit</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
                            </div>
                            <div class="col-1"></div>
                         </div>
@@ -209,6 +209,9 @@ include "donumber.php";
 
       document.getElementById("xbox").value = xbox;
       document.getElementById("xweight").value = xweight.toFixed(2);
+
+      // Aktifkan tombol Submit setelah mengklik Calculate
+      document.getElementById("submit-btn").disabled = false;
    }
 
    function addItem() {
@@ -220,72 +223,72 @@ include "donumber.php";
 
       // Konten baris item baru
       newItemRow.innerHTML = `
-         <div class="row">
-            <div class="col-1">
-               <div class="form-group">
-                  <div class="input-group">
-                     <select class="form-control" name="idgrade[]" id="idgrade">
-                     <?php
-                     // Query untuk mengambil data dari tabel grade
-                     $sql = "SELECT * FROM grade";
-                     $result = $conn->query($sql);
-                     // Membuat pilihan dalam select box berdasarkan data yang diambil
-                     if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                           echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
-                        }
-                     }
-                     ?>
-                     </select>
-                  </div>
-               </div>
-            </div>
-            <div class="col-4">
-               <div class="form-group">
-                  <div class="input-group">
-                     <select class="form-control" name="idbarang[]" id="idbarang" required>
-                        <option value="">--Pilih--</option>
-                        <?php
-                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                        $result = mysqli_query($conn, $query);
-                        while ($row = mysqli_fetch_assoc($result)) {
-                           $idbarang = $row['idbarang'];
-                           $nmbarang = $row['nmbarang'];
-                           echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                        }
-                        ?>
-                     </select>
-                  </div>
-               </div>
-            </div>
-            <div class="col-1">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="number" name="box[]" class="form-control" required>
-                  </div>
-               </div>
-            </div>
-            <div class="col-2">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="weight[]" class="form-control text-right" required>
-                  </div>
-               </div>
-            </div>
-            <div class="col">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="notes[]" class="form-control">
-                  </div>
-               </div>
-            </div>
-            <div class="col-1">        
-               <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
-                  <i class="fas fa-minus-circle"></i>
-               </button>
-            </div>
-         </div>
-      `;
+<div class="row">
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idgrade[]" id="idgrade">
+<?php
+// Query untuk mengambil data dari tabel grade
+$sql = "SELECT * FROM grade";
+$result = $conn->query($sql);
+// Membuat pilihan dalam select box berdasarkan data yang diambil
+if ($result->num_rows > 0) {
+   while ($row = $result->fetch_assoc()) {
+      echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+   }
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idbarang[]" id="idbarang" required>
+<option value="">--Pilih--</option>
+<?php
+$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+   $idbarang = $row['idbarang'];
+   $nmbarang = $row['nmbarang'];
+   echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<input type="number" name="box[]" class="form-control" required>
+</div>
+</div>
+</div>
+<div class="col-2">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="weight[]" class="form-control text-right" required>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="notes[]" class="form-control">
+</div>
+</div>
+</div>
+<div class="col-1">
+<button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+<i class="fas fa-minus-circle"></i>
+</button>
+</div>
+</div>
+`;
       // Tambahkan baris item baru ke dalam container
       itemsContainer.appendChild(newItemRow);
    }
@@ -300,6 +303,7 @@ include "donumber.php";
    // Mengubah judul halaman web
    document.title = "Delivery Order";
 </script>
+
 <?php
 // require "../footnotes.php";
 include "../footer.php";

@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "donumber.php";
 
 $iddo = $_GET['iddo'];
 
@@ -26,6 +25,7 @@ $row = mysqli_fetch_assoc($result);
             <div class="card">
               <div class="card-body">
                 <div class="row">
+                  <input type="hidden" name="iddo" value="<?= $iddo ?>">
                   <div class="col-2">
                     <div class="form-group">
                       <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
@@ -97,32 +97,31 @@ $row = mysqli_fetch_assoc($result);
             <div class="card">
               <div class="card-body">
                 <div id="items-container">
-
                   <!-- bagian dodetail -->
                   <div class="row">
                     <div class="col-1">
                       <div class="form-group">
-                        <label for="idgrade">Code</label>
+                        <label>Code</label>
                       </div>
                     </div>
                     <div class="col-4">
                       <div class="form-group">
-                        <label for="idbarang">Product</label>
+                        <label>Product</label>
                       </div>
                     </div>
                     <div class="col-1">
                       <div class="form-group">
-                        <label for="box">Box</label>
+                        <label>Box</label>
                       </div>
                     </div>
                     <div class="col-2">
                       <div class="form-group">
-                        <label for="weight">Weight</label>
+                        <label>Weight</label>
                       </div>
                     </div>
                     <div class="col-3">
                       <div class="form-group">
-                        <label for="notes">Notes</label>
+                        <label>Notes</label>
                       </div>
                     </div>
                   </div>
@@ -175,23 +174,20 @@ $row = mysqli_fetch_assoc($result);
                       </div>
                       <div class="col-1">
                         <div class="form-group">
-                          <!-- <label for="box">Box</label> -->
                           <div class="input-group">
-                            <input type="number" name="box[]" class="form-control" required value="<?= $row_dodetail['box']; ?>">
+                            <input type="text" name="box[]" class="form-control text-center box" required value="<?= $row_dodetail['box']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col-2">
                         <div class="form-group">
-                          <!-- <label for="weight">Weight</label> -->
                           <div class="input-group">
-                            <input type="text" name="weight[]" class="form-control text-right" required value="<?= $row_dodetail['weight']; ?>">
+                            <input type="text" name="weight[]" class="form-control text-right weight" required value="<?= $row_dodetail['weight']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col">
                         <div class="form-group">
-                          <!-- <label for="notes">Notes</label> -->
                           <div class="input-group">
                             <input type="text" name="notes[]" class="form-control" value="<?= $row_dodetail['notes']; ?>">
                           </div>
@@ -199,10 +195,23 @@ $row = mysqli_fetch_assoc($result);
                       </div>
                     </div>
                   <?php } ?>
+                  <div class="row">
+                    <div class="col-5"></div>
+                    <div class="col-1">
+                      <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
+                    </div>
+                    <div class="col-2">
+                      <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
+                    </div>
+                    <div class="col">
+                      <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
           </form>
         </div>
         <!-- /.card -->
@@ -214,13 +223,12 @@ $row = mysqli_fetch_assoc($result);
 <!-- /.container-fluid -->
 </section>
 <!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
 
+<!-- Kode JavaScript -->
 <script>
   function calculateTotals() {
-    var boxes = document.getElementsByName("box[]");
-    var weights = document.getElementsByName("weight[]");
+    var boxes = document.getElementsByClassName("box");
+    var weights = document.getElementsByClassName("weight");
     var xbox = 0;
     var xweight = 0;
 
@@ -231,100 +239,11 @@ $row = mysqli_fetch_assoc($result);
 
     document.getElementById("xbox").value = xbox;
     document.getElementById("xweight").value = xweight.toFixed(2);
-  }
 
-  // Mengubah judul halaman web
-  document.title = "Delivery Order";
-
-  function addItem() {
-    var itemsContainer = document.getElementById('items-container');
-
-    // Baris item baru
-    var newItemRow = document.createElement('div');
-    newItemRow.className = 'item-row';
-
-    // Konten baris item baru
-    newItemRow.innerHTML = `
-        <div class="row">
-            <div class="col-1">
-               <div class="form-group">
-                  <div class="input-group">
-                     <select class="form-control" name="idgrade[]" id="idgrade">
-                     <?php
-                      // Query untuk mengambil data dari tabel grade
-                      $sql = "SELECT * FROM grade";
-                      $result = $conn->query($sql);
-
-                      // Membuat pilihan dalam select box berdasarkan data yang diambil
-                      if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                          echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
-                        }
-                      }
-                      ?>
-                     </select>
-                  </div>
-               </div>
-            </div>
-            <div class="col-4">
-               <div class="form-group">
-                  <div class="input-group">
-                     <select class="form-control" name="idbarang[]" id="idbarang" required>
-                        <option value="">--Pilih--</option>
-                        <?php
-                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                        $result = mysqli_query($conn, $query);
-                        while ($row = mysqli_fetch_assoc($result)) {
-                          $idbarang = $row['idbarang'];
-                          $nmbarang = $row['nmbarang'];
-                          echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                        }
-                        ?>
-                     </select>
-                  </div>
-               </div>
-            </div>
-            <div class="col-1">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="number" name="box[]" class="form-control" required>
-                  </div>
-               </div>
-            </div>
-            <div class="col-2">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="weight[]" class="form-control text-right" required>
-                  </div>
-               </div>
-            </div>
-            <div class="col">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="notes[]" class="form-control">
-                  </div>
-               </div>
-            </div>
-            <div class="col-1">        
-               <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
-                  <i class="fas fa-minus-circle"></i>
-               </button>
-            </div>
-         </div>
-      `;
-
-    // Tambahkan baris item baru ke dalam container
-    itemsContainer.appendChild(newItemRow);
-  }
-
-  function removeItem(button) {
-    var itemRow = button.closest('.item-row');
-
-    // Hapus baris item
-    itemRow.remove();
+    document.getElementById("submit-btn").disabled = false;
   }
 </script>
+
 <?php
-// require "../footnotes.php";
 include "../footer.php";
 ?>
