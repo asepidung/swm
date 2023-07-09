@@ -75,6 +75,10 @@ $row = mysqli_fetch_assoc($result);
                   <label for="qtysapi">Jumlah Sapi</label>
                   <input type="number" class="form-control" name="qtysapi" id="qtysapi" value="<?= $row['qtysapi']; ?>" required>
                 </div>
+                <div class="form-group">
+                  <label for="qtysapi">Keterangan</label>
+                  <input type="text" class="form-control" name="keterangan" id="keterangan" value="<?= $row['keterangan']; ?>" required>
+                </div>
                 <div class="form-group mr-3 text-right">
                   <button type="submit" class="btn bg-gradient-success">Update</button>
                 </div>

@@ -31,6 +31,7 @@ CREATE TABLE boning (
   idsupplier INT,
   tglboning DATE,
   qtysapi INT,
+  keterangan VARCHAR(255),
   dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers),

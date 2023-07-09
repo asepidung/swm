@@ -57,14 +57,21 @@ $idusers = $_SESSION['idusers'];
                            <label>Tanggal Boning <span class="text-danger">*</span></label>
                            <div class="input-group date" id="tglboning" data-target-input="nearest">
                               <input type="date" class="form-control" name="tglboning" id="tglboning" required>
-                              <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
+
                            </div>
                         </div>
                         <div class="form-group">
                            <label>Jumlah sapi <span class="text-danger">*</span></label>
-                           <div class="input-group date" id="qtysapi" data-target-input="nearest">
+                           <div class="input-group">
                               <input type="number" class="form-control" name="qtysapi" id="qtysapi" required>
-                              <!-- <div class="input-group-text"><i class="fa fa-calendar"></i></div> -->
+
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label>Keterangan</span></label>
+                           <div class="input-group">
+                              <input type="text" class="form-control" name="keterangan" id="keterangan" required>
+
                            </div>
                         </div>
                      </div>

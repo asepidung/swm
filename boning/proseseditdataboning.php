@@ -10,11 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $idsupplier = $_POST['idsupplier'];
   $tglboning = $_POST['tglboning'];
   $qtysapi = $_POST['qtysapi'];
+  $keterangan = $_POST['keterangan'];
 
   // Lakukan validasi form jika diperlukan
 
   // Update data boning di database
-  $query = "UPDATE boning SET idsupplier = '$idsupplier', tglboning = '$tglboning', qtysapi = $qtysapi WHERE idboning = '$idboning'";
+  $query = "UPDATE boning SET idsupplier = '$idsupplier', tglboning = '$tglboning', qtysapi = $qtysapi, keterangan = '$keterangan' WHERE idboning = '$idboning'";
   $result = mysqli_query($conn, $query);
 
   if ($result) {

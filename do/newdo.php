@@ -15,7 +15,7 @@ include "donumber.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="inputdo.php" onsubmit="submitForm(event)">
+               <form method="POST" action="inputdo.php">
                   <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber">
                   <!-- <input type="hidden" value="note" name="note" id="note"> -->
                   <div class="card">
@@ -103,7 +103,6 @@ include "donumber.php";
                                           // Query untuk mengambil data dari tabel grade
                                           $sql = "SELECT * FROM grade";
                                           $result = $conn->query($sql);
-
                                           // Membuat pilihan dalam select box berdasarkan data yang diambil
                                           if ($result->num_rows > 0) {
                                              while ($row = $result->fetch_assoc()) {
@@ -173,10 +172,10 @@ include "donumber.php";
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
                            <div class="col-1">
-                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Check</button>
+                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
                            </div>
                            <div class="col">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Submit & Print</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')">Submit</button>
                            </div>
                            <div class="col-1"></div>
                         </div>
@@ -212,9 +211,6 @@ include "donumber.php";
       document.getElementById("xweight").value = xweight.toFixed(2);
    }
 
-   // Mengubah judul halaman web
-   document.title = "Delivery Order";
-
    function addItem() {
       var itemsContainer = document.getElementById('items-container');
 
@@ -233,7 +229,6 @@ include "donumber.php";
                      // Query untuk mengambil data dari tabel grade
                      $sql = "SELECT * FROM grade";
                      $result = $conn->query($sql);
-
                      // Membuat pilihan dalam select box berdasarkan data yang diambil
                      if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
@@ -291,7 +286,6 @@ include "donumber.php";
             </div>
          </div>
       `;
-
       // Tambahkan baris item baru ke dalam container
       itemsContainer.appendChild(newItemRow);
    }
@@ -302,6 +296,9 @@ include "donumber.php";
       // Hapus baris item
       itemRow.remove();
    }
+
+   // Mengubah judul halaman web
+   document.title = "Delivery Order";
 </script>
 <?php
 // require "../footnotes.php";

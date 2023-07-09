@@ -40,6 +40,7 @@ include "../mainsidebar.php";
                               <th>PO</th>
                               <th>Qty</th>
                               <th>Catatan</th>
+                              <th>Status</th>
                               <th>Made By</th>
                               <th>Actions</th>
                            </tr>
@@ -66,28 +67,26 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
+                                 <td class="text-center">Status</td>
                                  <td class="text-center"><?= $userid ?></td>
-                                 <td>
+                                 <td class="text-center">
+                                    <!-- Print | Update | Confirmed -->
                                     <div class="row">
-                                       <div class="col"></div>
-                                       <div class="col-2">
+                                       <div class="col-4">
                                           <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
-                                             <span class="text-info"><i class="fas fa-print"></i></span>
+                                             <span class="text-info"><i class="fas fa-print"></i> Print</span>
                                           </a>
                                        </div>
-                                       <div class="col-1"></div>
-                                       <div class="col-2">
+                                       <div class="col-4">
                                           <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
-                                             <span class="text-success"><i class="fas fa-edit"></i></span>
+                                             <span class="text-success"><i class="fas fa-edit"></i> Update</span>
                                           </a>
                                        </div>
-                                       <div class="col-1"></div>
-                                       <div class="col-2">
-                                          <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>">
-                                             <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
+                                       <div class="col-4">
+                                          <a href="#">
+                                             <span class="text-danger"><i class="fas fa-trash-alt"></i> Hapus</span>
                                           </a>
                                        </div>
-                                       <div class="col"></div>
                                     </div>
                                  </td>
                               </tr>
@@ -98,7 +97,7 @@ include "../mainsidebar.php";
                            <tr>
                               <th class="text-right" colspan="5">SUBTOTAL</th>
                               <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
-                              <th colspan="3"></th>
+                              <th colspan="4"></th>
                            </tr>
                         </tfoot>
                      </table>

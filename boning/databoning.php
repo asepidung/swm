@@ -39,6 +39,7 @@ include "../mainsidebar.php";
                     <th>Supplier</th>
                     <th>Jml Sapi</th>
                     <th>Ttl Weight</th>
+                    <th>Catatan</th>
                     <th>AKSI</th>
                   </tr>
                 </thead>
@@ -57,7 +58,6 @@ include "../mainsidebar.php";
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier ORDER BY b.batchboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
-                    $tglboning = date("d-M-Y", strtotime($tampil['tglboning']));
 
                     $query_total_weight = "SELECT SUM(qty) AS total_weight FROM labelboning WHERE idboning = " . $tampil['idboning'];
                     $result_total_weight = mysqli_query($conn, $query_total_weight);
@@ -67,10 +67,11 @@ include "../mainsidebar.php";
                     <tr class="text-center">
                       <td><?= $no; ?></td>
                       <td><?= $tampil['batchboning']; ?></td>
-                      <td><?= $tglboning; ?></td>
+                      <td><?= date("d-M-Y", strtotime($tampil['tglboning'])); ?></td>
                       <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
                       <td><?= $tampil['qtysapi']; ?></td>
-                      <td class="text-right"><?= $total_weight; ?></td>
+                      <td class="text-right"><?= number_format($total_weight, 2); ?></td>
+                      <td class="text-left"><?= $tampil['keterangan']; ?></td>
                       </button>
                       <td>
                         <div class="row">
@@ -103,13 +104,10 @@ include "../mainsidebar.php";
                   ?>
                 </tbody>
                 <tfoot>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th class="text-center"><?= $total_sapi; ?> </td>
-                  <th class="text-right"><?= $total_berat_keseluruhan; ?></td>
-                  <th></th>
+                  <th colspan="4"></th>
+                  <th class="text-center"><?= number_format($total_sapi); ?> </td>
+                  <th class="text-right"><?= number_format($total_berat_keseluruhan, 2); ?></td>
+                  <th colspan="2"></th>
                 </tfoot>
               </table>
             </div>
