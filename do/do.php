@@ -38,7 +38,7 @@ include "../mainsidebar.php";
                               <th>Tgl Kirim</th>
                               <th>Customer</th>
                               <th>PO</th>
-                              <th>Qty</th>
+                              <th>xQty</th>
                               <th>Catatan</th>
                               <th>Status</th>
                               <th>Made By</th>
@@ -72,17 +72,22 @@ include "../mainsidebar.php";
                                  <td class="text-center">
                                     <!-- Print | Update | Confirmed -->
                                     <div class="row">
-                                       <div class="col-4">
+                                       <div class="col-3">
                                           <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
                                              <span class="text-info"><i class="fas fa-print"></i></span>
                                           </a>
                                        </div>
-                                       <div class="col-4">
+                                       <div class="col-3">
                                           <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                              <span class="text-success"><i class="fas fa-edit"></i></span>
                                           </a>
                                        </div>
-                                       <div class="col-4">
+                                       <div class="col-3">
+                                          <a href="#">
+                                             <span class="text-primary"><i class="fas fa-clipboard-check"></i></span>
+                                          </a>
+                                       </div>
+                                       <div class="col-3">
                                           <a href="#">
                                              <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
                                           </a>

@@ -69,7 +69,7 @@ $result_detail = mysqli_query($conn, $query_detail);
         <td style="width:137px">DO Numb</td>
         <td style="width:383px">: <?= $row_do['donumber']; ?></td>
         <td style="width:155px">Delivery Date</td>
-        <td style="width:513px">: <?= $row_do['deliverydate']; ?></td>
+        <td style="width:513px">: <?= date('D, d-M-Y', strtotime($row_do['deliverydate'])); ?></td>
       </tr>
       <tr>
         <td style="width:137px">SO NUmb</td>
@@ -115,7 +115,7 @@ $result_detail = mysqli_query($conn, $query_detail);
         <td><?= $row_detail['nmgrade'] . $row_detail['kdbarang']; ?></td>
         <td align="left"><span class="data"><?= $row_detail['nmbarang']; ?></span></td>
         <td><?= $row_detail['box']; ?></td>
-        <td align="right"><span class="data"><?= $row_detail['weight']; ?></span></td>
+        <td align="right"><span class="data"><?= number_format($row_detail['weight'], 2); ?></span></td>
         <td align="left"><span class="data"><?= $row_detail['notes']; ?></span></td>
       </tr>
     <?php
@@ -124,8 +124,8 @@ $result_detail = mysqli_query($conn, $query_detail);
     ?>
     <tr align="right">
       <th colspan="3">Total</th>
-      <th align="center"><?= $row_do['xbox']; ?></th>
-      <th><span class="data"><?= $row_do['xweight']; ?></span></th>
+      <th align="center"><?= number_format($row_do['xbox']); ?></th>
+      <th><span class="data"><?= number_format($row_do['xweight'], 2); ?></span></th>
       <th></th>
     </tr>
   </table>

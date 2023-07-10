@@ -21,7 +21,7 @@ $row = mysqli_fetch_assoc($result);
     <div class="container-fluid">
       <div class="row">
         <div class="col mt-3">
-          <form method="POST" action="updatedo.php">
+          <form method="POST" action="prosesupdatedo.php">
             <div class="card">
               <div class="card-body">
                 <div class="row">
@@ -30,7 +30,7 @@ $row = mysqli_fetch_assoc($result);
                     <div class="form-group">
                       <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                       <div class="input-group">
-                        <input type="date" class="form-control" name="deliverydate" id="deliverydate" value="<?= $row['deliverydate']; ?>" required>
+                        <input type="date" class="form-control" name="deliverydate" id="deliverydate" value="<?= $row['deliverydate']; ?>">
                       </div>
                     </div>
                   </div>
@@ -38,12 +38,11 @@ $row = mysqli_fetch_assoc($result);
                     <div class="form-group">
                       <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                       <div class="input-group">
-                        <select class="form-control" name="idcustomer" id="idcustomer" required>
+                        <select class="form-control" name="idcustomer" id="idcustomer">
                           <option value="">Pilih Customer</option>
                           <?php
                           $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
                           $result = mysqli_query($conn, $query);
-                          // Generate options based on the retrieved data
                           while ($customerRow = mysqli_fetch_assoc($result)) {
                             $idcustomer = $customerRow['idcustomer'];
                             $nama_customer = $customerRow['nama_customer'];
@@ -52,9 +51,6 @@ $row = mysqli_fetch_assoc($result);
                           }
                           ?>
                         </select>
-                        <div class="input-group-append">
-                          <a href="../customer/newcustomer.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -133,7 +129,6 @@ $row = mysqli_fetch_assoc($result);
                     <div class="row">
                       <div class="col-1">
                         <div class="form-group">
-                          <!-- <label for="idgrade">Code</label> -->
                           <div class="input-group">
                             <select class="form-control" name="idgrade[]" id="idgrade">
                               <?php
@@ -156,7 +151,7 @@ $row = mysqli_fetch_assoc($result);
                         <div class="form-group">
                           <!-- <label for="idbarang">Product</label> -->
                           <div class="input-group">
-                            <select class="form-control" name="idbarang[]" id="idbarang" required>
+                            <select class="form-control" name="idbarang[]" id="idbarang">
                               <option value="">--Pilih--</option>
                               <?php
                               $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
@@ -175,14 +170,14 @@ $row = mysqli_fetch_assoc($result);
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="box[]" class="form-control text-center box" required value="<?= $row_dodetail['box']; ?>">
+                            <input type="text" name="box[]" class="form-control text-center box" value="<?= $row_dodetail['box']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col-2">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="weight[]" class="form-control text-right weight" required value="<?= $row_dodetail['weight']; ?>">
+                            <input type="text" name="weight[]" class="form-control text-right weight" value="<?= $row_dodetail['weight']; ?>">
                           </div>
                         </div>
                       </div>

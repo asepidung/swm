@@ -8,29 +8,25 @@ $po = $_POST['po'];
 $driver = $_POST['driver'];
 $plat = $_POST['plat'];
 $note = $_POST['note'];
+$xbox = $_POST['xbox'];
+$xweight = $_POST['xweight'];
 
-// Query untuk mengupdate data di tabel do
-$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ? WHERE iddo = ?";
+$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ? WHERE iddo = ?";
 $stmt_do = mysqli_prepare($conn, $query_do);
-mysqli_stmt_bind_param($stmt_do, "sissssi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $iddo);
+mysqli_stmt_bind_param($stmt_do, "sissssidi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $iddo);
 
 if (mysqli_stmt_execute($stmt_do)) {
-  // Jika data di tabel do berhasil diupdate, lanjutkan dengan mengupdate data di tabel dodetail
-
-  // Menghapus data dodetail yang terkait dengan iddo yang diberikan
   $delete_query = "DELETE FROM dodetail WHERE iddo = ?";
   $stmt_delete = mysqli_prepare($conn, $delete_query);
   mysqli_stmt_bind_param($stmt_delete, "i", $iddo);
   mysqli_stmt_execute($stmt_delete);
 
-  // Mengambil data yang di-submit melalui form
   $idgrade = $_POST['idgrade'];
   $idbarang = $_POST['idbarang'];
   $box = $_POST['box'];
   $weight = $_POST['weight'];
   $notes = $_POST['notes'];
 
-  // Looping untuk menyimpan data dodetail yang baru di tabel dodetail
   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt_dodetail = mysqli_prepare($conn, $query_dodetail);
   mysqli_stmt_bind_param($stmt_dodetail, "iiiiis", $iddo, $idgrade_val, $idbarang_val, $box_val, $weight_val, $notes_val);
