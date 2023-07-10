@@ -174,7 +174,7 @@ include "donumber.php";
                            <div class="col-1">
                               <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
                            </div>
-                           <div class="col">
+                           <div class="col ml-1">
                               <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
                            </div>
                            <div class="col-1"></div>
@@ -301,7 +301,7 @@ while ($row = mysqli_fetch_assoc($result)) {
    }
 
    // Mengubah judul halaman web
-   document.title = "Delivery Order";
+   document.title = "<?= $kodeauto ?>";
 </script>
 
 <?php

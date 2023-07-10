@@ -30,7 +30,7 @@ include "../mainsidebar.php";
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
-                     <table id="example1" class="table table-bordered table-striped">
+                     <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
@@ -74,17 +74,17 @@ include "../mainsidebar.php";
                                     <div class="row">
                                        <div class="col-4">
                                           <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
-                                             <span class="text-info"><i class="fas fa-print"></i> Print</span>
+                                             <span class="text-info"><i class="fas fa-print"></i></span>
                                           </a>
                                        </div>
                                        <div class="col-4">
                                           <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
-                                             <span class="text-success"><i class="fas fa-edit"></i> Update</span>
+                                             <span class="text-success"><i class="fas fa-edit"></i></span>
                                           </a>
                                        </div>
                                        <div class="col-4">
                                           <a href="#">
-                                             <span class="text-danger"><i class="fas fa-trash-alt"></i> Hapus</span>
+                                             <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
                                           </a>
                                        </div>
                                     </div>
