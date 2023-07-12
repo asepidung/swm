@@ -13,9 +13,9 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-sm-6">
+            <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newdo.php"><button type="button" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="newdo.php"><button type="button" class="btn btn-block btn-outline-primary btn-sm"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -67,11 +67,12 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center">Status</td>
+                                 <td class="text-center"><?= $tampil['status']; ?></td>
                                  <td class="text-center"><?= $userid ?></td>
                                  <td class="text-center">
                                     <!-- Print | Update | Confirmed -->
                                     <div class="row">
+                                       <div class="col-1"></div>
                                        <div class="col-3">
                                           <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
                                              <span class="text-info"><i class="fas fa-print"></i></span>
@@ -84,14 +85,10 @@ include "../mainsidebar.php";
                                        </div>
                                        <div class="col-3">
                                           <a href="#">
-                                             <span class="text-primary"><i class="fas fa-clipboard-check"></i></span>
-                                          </a>
-                                       </div>
-                                       <div class="col-3">
-                                          <a href="#">
                                              <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
                                           </a>
                                        </div>
+                                       <div class="col-1"></div>
                                     </div>
                                  </td>
                               </tr>

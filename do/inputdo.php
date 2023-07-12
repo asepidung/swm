@@ -14,13 +14,14 @@ if (isset($_POST['submit'])) {
    $plat = $_POST['plat'];
    $xbox = $_POST['xbox'];
    $xweight = $_POST['xweight'];
+   $status = "Unapproved";
    $note = $_POST['note'];
    $idusers = $_SESSION['idusers'];
 
    // Query INSERT ke tabel "do"
-   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, idusers) VALUES (?,?,?,?,?,?,?,?,?,?)";
+   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("ssissssidi", $donumber, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $idusers);
+   $stmt_do->bind_param("ssissssidsi", $donumber, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
    $stmt_do->execute();
 
    // Mendapatkan ID terakhir yang di-generate dalam tabel "do"

@@ -56,7 +56,7 @@ include "donumber.php";
                               <div class="form-group">
                                  <label for="po">Cust PO</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="po" id="po" value="-">
+                                    <input type="text" class="form-control" name="po" id="po">
                                  </div>
                               </div>
                            </div>
@@ -64,7 +64,7 @@ include "donumber.php";
                               <div class="form-group">
                                  <label for="driver">Driver</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="driver" id="driver" value="-">
+                                    <input type="text" class="form-control" name="driver" id="driver">
                                  </div>
                               </div>
                            </div>
@@ -72,7 +72,7 @@ include "donumber.php";
                               <div class="form-group">
                                  <label for="plat">Plat Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="plat" id="plat" value="-">
+                                    <input type="text" class="form-control" name="plat" id="plat">
                                  </div>
                               </div>
                            </div>

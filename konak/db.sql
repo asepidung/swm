@@ -127,3 +127,5 @@ CREATE TABLE dodetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+ALTER TABLE do
+ADD COLUMN status VARCHAR(20);

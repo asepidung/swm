@@ -205,7 +205,7 @@ $row = mysqli_fetch_assoc($result);
                       <button type="submit" class="btn bg-gradient-primary ml-2" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
                     </div>
                     <div class="col">
-                      <button type="button" class="btn btn-block btn-outline-success">Approve</button>
+                      <button type="button" name="approve" class="btn btn-block btn-outline-success">Approve</button>
                     </div>
                   </div>
                 </div>
