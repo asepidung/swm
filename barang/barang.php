@@ -7,6 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+include "flowstock.php";
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -30,13 +31,19 @@ include "../mainsidebar.php";
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
-                     <div class="col-6">
+                     <div class="col">
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
                                  <th>#</th>
-                                 <th>Kode Product</th>
+                                 <th>Kode</th>
                                  <th>Nama Product</th>
+                                 <th>Stock Awal</th>
+                                 <th>xPembelian</th>
+                                 <th>xPenjualan</th>
+                                 <th>xRetur Beli</th>
+                                 <th>xRetur Jual</th>
+                                 <th>Stock Akhir</th>
                                  <th>Action</th>
                               </tr>
                            </thead>
@@ -44,13 +51,19 @@ include "../mainsidebar.php";
                               </tr>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT * FROM barang ORDER BY nmbarang ASC");
+                              $ambildata = mysqli_query($conn, "SELECT * FROM barang");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                               ?>
                                  <tr class="text-center">
                                     <td><?= $no; ?></td>
                                     <td><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                                    <td class="text-right"><?= number_format($tampil['stockawal'], 2); ?></td>
+                                    <td></td>
+                                    <td class="text-right"><?= $totalpenjualan_per_idbarang[$tampil['idbarang']] ?? 0; ?></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right"><?= number_format($tampil['stock'], 2); ?></td>
                                     <td>
                                        <div class="row">
                                           <div class="col"></div>

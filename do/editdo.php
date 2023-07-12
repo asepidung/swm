@@ -201,11 +201,11 @@ $row = mysqli_fetch_assoc($result);
                     <div class="col-1">
                       <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
                     </div>
-                    <div class="col-1 ml-2">
-                      <button type="button" class="btn bg-gradient-success">Approve</button>
+                    <div class="col-1">
+                      <button type="submit" class="btn bg-gradient-primary ml-2" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
                     </div>
                     <div class="col">
-                      <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
+                      <button type="button" class="btn btn-block btn-outline-success">Approve</button>
                     </div>
                   </div>
                 </div>
