@@ -68,25 +68,25 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="pages/charts/chartjs.html" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Quotations</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/chartjs.html" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Order</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/flot.html" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Delivery Order</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/inline.html" class="nav-link">
+              <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Receipt Order</p>
               </a>
@@ -103,13 +103,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="pages/charts/chartjs.html" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Quotations</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/chartjs.html" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Order</p>
               </a>
@@ -121,9 +121,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="pages/charts/inline.html" class="nav-link">
+              <a href="../inv/invoice.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Receipt Order</p>
+                <p>Invoice</p>
               </a>
             </li>
           </ul>

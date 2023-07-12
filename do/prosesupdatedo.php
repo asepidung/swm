@@ -45,6 +45,31 @@ if (mysqli_stmt_execute($stmt_do)) {
   mysqli_stmt_close($stmt_dodetail);
   mysqli_close($conn);
 
+  // Cek apakah tombol "approve" telah diklik
+  if (isset($_POST['approve'])) {
+    // Ambil nilai iddo dari form
+    $iddo = $_POST['iddo'];
+
+    // Lakukan koneksi ke database
+    require "../konak/conn.php";
+
+    // Update field "status" menjadi "approved" di tabel "do"
+    $query = "UPDATE do SET status = 'Approved' WHERE iddo = '$iddo'";
+    $result = mysqli_query($conn, $query);
+
+    // Periksa apakah update berhasil
+    if ($result) {
+      // Redirect atau lakukan tindakan lain setelah berhasil diupdate
+      // ...
+    } else {
+      // Penanganan kesalahan jika update gagal
+      // ...
+    }
+
+    // Tutup koneksi ke database
+    mysqli_close($conn);
+  }
+
   header("location: do.php");
 } else {
   echo "Terjadi kesalahan: " . mysqli_error($conn);

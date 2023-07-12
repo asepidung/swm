@@ -67,29 +67,44 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center"><?= $tampil['status']; ?></td>
+                                 <td class="text-center">
+                                    <?php if ($tampil['status'] == "Approved") { ?>
+                                       <span class="text-primary"><?= $tampil['status']; ?></span>
+                                    <?php } else {
+                                       echo $tampil['status'];
+                                    } ?>
+                                 </td>
                                  <td class="text-center"><?= $userid ?></td>
                                  <td class="text-center">
-                                    <!-- Print | Update | Confirmed -->
-                                    <div class="row">
-                                       <div class="col-1"></div>
-                                       <div class="col-3">
-                                          <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
-                                             <span class="text-info"><i class="fas fa-print"></i></span>
-                                          </a>
+                                    <?php if ($tampil['status'] !== "Approved") { ?>
+                                       <div class="row">
+                                          <div class="col-2"></div>
+                                          <div class="col">
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
+                                                <span class="text-info"><i class="fas fa-print"></i></span>
+                                             </a>
+                                          </div>
+                                          <div class="col">
+                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
+                                                <span class="text-success"><i class="fas fa-edit"></i></span>
+                                             </a>
+                                          </div>
+                                          <div class="col-2"></div>
                                        </div>
-                                       <div class="col-3">
-                                          <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
-                                             <span class="text-success"><i class="fas fa-edit"></i></span>
-                                          </a>
+                                    <?php } else { ?>
+                                       <div class="row">
+                                          <div class="col-2"></div>
+                                          <div class="col">
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
+                                                <span class="text-info"><i class="fas fa-print"></i></span>
+                                             </a>
+                                          </div>
+                                          <div class="col">
+                                             <span class="text-secondary"><i class="fas fa-edit"></i></span>
+                                          </div>
+                                          <div class="col-2"></div>
                                        </div>
-                                       <div class="col-3">
-                                          <a href="#">
-                                             <span class="text-danger"><i class="fas fa-trash-alt"></i></span>
-                                          </a>
-                                       </div>
-                                       <div class="col-1"></div>
-                                    </div>
+                                    <?php } ?>
                                  </td>
                               </tr>
                            <?php $no++;
