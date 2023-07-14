@@ -9,6 +9,22 @@ include "../navbar.php";
 include "../mainsidebar.php";
 include "invnumber.php";
 $iddo = $_GET['iddo'];
+
+// Mengambil data dari tabel do
+$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak FROM do
+            INNER JOIN customers ON do.idcustomer = customers.idcustomer
+            WHERE do.iddo = $iddo";
+$resultDo = mysqli_query($conn, $queryDo);
+$rowDo = mysqli_fetch_assoc($resultDo);
+$pajak = $rowDo['pajak'];
+// Mengambil data dari tabel dodetail
+// Mengambil data dari tabel dodetail, grade, dan barang
+$queryDodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
+                  FROM dodetail
+                  INNER JOIN grade ON dodetail.idgrade = grade.idgrade
+                  INNER JOIN barang ON dodetail.idbarang = barang.idbarang
+                  WHERE dodetail.iddo = $iddo";
+$resultDodetail = mysqli_query($conn, $queryDodetail);
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -19,6 +35,7 @@ $iddo = $_GET['iddo'];
                <form method="POST" action="prosesinvoice.php">
                   <input type="hidden" value="<?= $kodeauto ?>" name="invnumber" id="invnumber">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
+                  <input type="hidden" value="<?= $pajak; ?>" name="pajak" id="pajak">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -34,7 +51,7 @@ $iddo = $_GET['iddo'];
                               <div class="form-group">
                                  <label for="idcustomer">Nama Customer</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="idcustomer" id="idcustomer" value="" readonly>
+                                    <input type="text" class="form-control" name="idcustomer" id="idcustomer" value="<?= $rowDo['nama_customer'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -42,7 +59,7 @@ $iddo = $_GET['iddo'];
                               <div class="form-group">
                                  <label for="po">PO Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="po" id="po" value="" readonly>
+                                    <input type="text" class="form-control" name="po" id="po" value="<?= $rowDo['po'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -50,7 +67,7 @@ $iddo = $_GET['iddo'];
                               <div class="form-group">
                                  <label for="donumber">DO Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="donumber" id="donumber" value="" readonly>
+                                    <input type="text" class="form-control" name="donumber" id="donumber" value="<?= $rowDo['donumber'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -70,104 +87,94 @@ $iddo = $_GET['iddo'];
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row">
-                              <div class="col-1">
+                              <div class="col">
                                  <div class="form-group">
-                                    <label for="idgrade">Code</label>
+                                    <label>Code</label>
                                  </div>
                               </div>
                               <div class="col">
                                  <div class="form-group">
-                                    <label for="idbarang">Products</label>
+                                    <label>Products</label>
                                  </div>
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
-                                    <label for="weight">Weight</label>
+                                    <label>Weight</label>
                                  </div>
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
-                                    <label for="price">Price <span class="text-danger">*</span></label>
+                                    <label>Price <span class="text-danger">*</span></label>
                                  </div>
                               </div>
                               <div class="col-1">
                                  <div class="form-group">
-                                    <label for="discount">Disc %</label>
+                                    <label>Disc %</label>
                                  </div>
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
-                                    <label for="amount">Amount</label>
+                                    <label>Amount</label>
                                  </div>
                               </div>
                            </div>
-                           <!-- looping data dodetail -->
-                           <div class="row">
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="idgrade" id="idgrade" value="" readonly>
+                           <?php while ($rowDodetail = mysqli_fetch_assoc($resultDodetail)) { ?>
+                              <div class="row mt-n2">
+                                 <div class="col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] . $rowDodetail['kdbarang'] ?>" readonly>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control" name="idbarang" id="idbarang" value="<?= $rowDodetail['nmbarang'] ?>" readonly>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="weight[]" value="<?= $rowDodetail['weight'] ?>" readonly>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="price[]" required>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-1">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="discount[]" value="0">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="amount[]" readonly value="0">
+                                       </div>
                                     </div>
                                  </div>
                               </div>
-                              <div class="col">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="idbarang" id="idbarang" value="" readonly>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-2">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="weight" id="weight" value="" readonly>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-2">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="price" id="price" required>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="discount" id="discount">
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-2">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" class="form-control" name="amount" id="amount" readonly>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <!-- akhir looping data dodetail -->
+                           <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-5"></div>
+                           <div class="col-5 text-right">Weight Total</div>
                            <div class="col-2">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
-                        </div>
-                        <div class="row">
-                           <div class="col-10 text-right">
+                           <div class="col-3 text-right">
                               Total Amount
                            </div>
                            <div class="col-2">
-                              <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly>
-                           </div>
-                        </div>
-                        <div class="row mt-1">
-                           <div class="col-10 text-right">
-                              Charge
-                           </div>
-                           <div class="col-2">
-                              <input type="text" name="charge" id="charge" class="form-control text-right">
+                              <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly value="0">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -175,7 +182,15 @@ $iddo = $_GET['iddo'];
                               Tax 11%
                            </div>
                            <div class="col-2">
-                              <input type="text" name="tax" id="tax" class="form-control text-right" readonly>
+                              <input type="text" name="tax" id="tax" class="form-control text-right" readonly value="0">
+                           </div>
+                        </div>
+                        <div class="row mt-1">
+                           <div class="col-10 text-right">
+                              Charge
+                           </div>
+                           <div class="col-2">
+                              <input type="text" name="charge" id="charge" class="form-control text-right" value="0">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -183,7 +198,7 @@ $iddo = $_GET['iddo'];
                               Down Payment
                            </div>
                            <div class="col-2">
-                              <input type="text" name="dp" id="dp" class="form-control text-right">
+                              <input type="text" name="dp" id="dp" class="form-control text-right" value="0">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -196,7 +211,7 @@ $iddo = $_GET['iddo'];
                         </div>
                         <div class="row">
                            <div class="col-3">
-                              <button type="button" class="btn btn-block bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
+                              <button type="button" class="btn btn-block bg-gradient-warning" onclick="calculateAmounts()">Calculate</button>
                            </div>
                            <div class="col-3">
                               <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
@@ -217,16 +232,11 @@ $iddo = $_GET['iddo'];
 <!-- /.content -->
 <!-- </div> -->
 <!-- /.content-wrapper -->
-
+<script src="../dist/js/hitunginvoice.js"></script>
 <script>
-   function calculateTotals() {
-      // Aktifkan tombol Submit setelah mengklik Calculate
-      document.getElementById("submit-btn").disabled = false;
-   }
    // Mengubah judul halaman web
    document.title = "<?= $kodeauto ?>";
 </script>
-
 <?php
 // require "../footnotes.php";
 include "../footer.php";
