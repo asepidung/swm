@@ -29,7 +29,7 @@ if (mysqli_stmt_execute($stmt_do)) {
 
   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt_dodetail = mysqli_prepare($conn, $query_dodetail);
-  mysqli_stmt_bind_param($stmt_dodetail, "iiiiis", $iddo, $idgrade_val, $idbarang_val, $box_val, $weight_val, $notes_val);
+  mysqli_stmt_bind_param($stmt_dodetail, "iiiids", $iddo, $idgrade_val, $idbarang_val, $box_val, $weight_val, $notes_val);
 
   for ($i = 0; $i < count($idgrade); $i++) {
     $idgrade_val = $idgrade[$i];

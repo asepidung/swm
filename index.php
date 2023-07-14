@@ -276,9 +276,9 @@ $userid = $_SESSION['userid'];
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="pages/charts/inline.html" class="nav-link">
+                           <a href="inv" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>Receipt Order</p>
+                              <p>Invoice</p>
                            </a>
                         </li>
                      </ul>

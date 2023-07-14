@@ -14,8 +14,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="invdraft.php"><button type="button" class="btn btn-outline-danger btn-sm"><i class="fab fa-firstdraft"></i></i> Buka Draft</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
