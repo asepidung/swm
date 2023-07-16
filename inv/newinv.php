@@ -11,11 +11,12 @@ include "invnumber.php";
 $iddo = $_GET['iddo'];
 
 // Mengambil data dari tabel do
-$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak FROM do
+$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak, customers.tukarfaktur FROM do
             INNER JOIN customers ON do.idcustomer = customers.idcustomer
             WHERE do.iddo = $iddo";
 $resultDo = mysqli_query($conn, $queryDo);
 $rowDo = mysqli_fetch_assoc($resultDo);
+$tukarfaktur = $rowDo['tukarfaktur'];
 $pajak = $rowDo['pajak'];
 // Mengambil data dari tabel dodetail
 // Mengambil data dari tabel dodetail, grade, dan barang
@@ -36,6 +37,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                   <input type="hidden" value="<?= $kodeauto ?>" name="invnumber" id="invnumber">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
                   <input type="hidden" value="<?= $pajak; ?>" name="pajak" id="pajak">
+                  <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -232,8 +234,67 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
 <!-- /.content -->
 <!-- </div> -->
 <!-- /.content-wrapper -->
-<script src="../dist/js/hitunginvoice.js"></script>
+<!-- <script src="../dist/js/hitunginvoice.js"></script> -->
 <script>
+   function calculateAmounts() {
+      var weightInputs = document.querySelectorAll("input[name='weight[]']");
+      var priceInputs = document.querySelectorAll("input[name='price[]']");
+      var discountInputs = document.querySelectorAll("input[name='discount[]']");
+      var amountInputs = document.querySelectorAll("input[name='amount[]']");
+      var totalWeightInput = document.getElementById("xweight");
+      var totalAmountInput = document.getElementById("xamount");
+      var pajakInput = document.getElementById("pajak");
+      var taxInput = document.getElementById("tax");
+      var chargeInput = document.getElementById("charge");
+      var dpInput = document.getElementById("dp");
+      var balanceInput = document.getElementById("balance");
+
+      var totalWeight = 0;
+      var totalAmount = 0;
+      var taxAmount = 0;
+
+      for (var i = 0; i < weightInputs.length; i++) {
+         var price = parseFloat(priceInputs[i].value);
+         var discount = parseFloat(discountInputs[i].value);
+
+         if (isNaN(discount)) {
+            var amount = weightInputs[i].value * price;
+            amountInputs[i].value = formatAmount(amount);
+         } else {
+            var amount = (weightInputs[i].value * price) - ((weightInputs[i].value * price) * (discount / 100));
+            amountInputs[i].value = formatAmount(amount);
+         }
+
+         totalWeight += parseFloat(weightInputs[i].value);
+         totalAmount += parseFloat(amountInputs[i].value.replace(/,/g, ''));
+      }
+
+      totalWeightInput.value = formatAmount(totalWeight);
+      totalAmountInput.value = formatAmount(totalAmount);
+
+      var pajak = parseInt(pajakInput.value);
+      if (pajak === 1) {
+         var taxRate = 0.11;
+         taxAmount = totalAmount * taxRate;
+         taxInput.value = formatAmount(taxAmount);
+      } else {
+         taxInput.value = "0";
+      }
+
+      var charge = parseFloat(chargeInput.value.replace(/,/g, ''));
+      var dp = parseFloat(dpInput.value.replace(/,/g, ''));
+
+      var balance = totalAmount + taxAmount + charge - dp;
+      balanceInput.value = formatAmount(balance);
+
+      // Aktifkan tombol Submit setelah mengklik Calculate
+      document.getElementById("submit-btn").disabled = false;
+   }
+
+   // Fungsi bantu untuk memformat angka
+   function formatAmount(amount) {
+      return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+   }
    // Mengubah judul halaman web
    document.title = "<?= $kodeauto ?>";
 </script>

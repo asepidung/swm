@@ -48,8 +48,12 @@ function calculateAmounts() {
 
    var balance = totalAmount + taxAmount + charge - dp;
    balanceInput.value = formatAmount(balance);
+
+   // Aktifkan tombol Submit setelah mengklik Calculate
+   document.getElementById("submit-btn").disabled = false;
 }
 
+// Fungsi bantu untuk memformat angka
 function formatAmount(amount) {
-   return amount.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+   return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }

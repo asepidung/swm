@@ -157,3 +157,8 @@ CREATE TABLE invoicedetail (
   FOREIGN KEY (iddodetail) REFERENCES dodetail (iddodetail)
 );
 ALTER TABLE customers ADD COLUMN tukarfaktur BOOLEAN;
+ALTER TABLE invoice MODIFY tax DECIMAL(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE invoice MODIFY downpayment DECIMAL(12,2) NOT NULL DEFAULT 0;
+ ALTER TABLE invoice ADD COLUMN tukarfaktur BOOLEAN;
+ ALTER TABLE invoice ADD COLUMN donumber VARCHAR(50);
+ ALTER TABLE invoice ADD COLUMN note VARCHAR(255);

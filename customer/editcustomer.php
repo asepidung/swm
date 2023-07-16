@@ -39,6 +39,7 @@ if (isset($_POST['simpan'])) {
    $pajak = isset($_POST['pajak']) ? 1 : 0;
    $telepon = $_POST['telepon'];
    $email = $_POST['email'];
+   $tukarfaktur = isset($_POST['tukarfaktur']) ? 1 : 0;
    $catatan = $_POST['catatan'];
 
    // Update data customer ke database
@@ -51,7 +52,8 @@ if (isset($_POST['simpan'])) {
              pajak = '$pajak', 
              telepon = '$telepon', 
              email = '$email', 
-             catatan = '$catatan' 
+             catatan = '$catatan', 
+             tukarfaktur = '$tukarfaktur' 
              WHERE idcustomer = $id";
 
    if (mysqli_query($conn, $query)) {
@@ -114,6 +116,13 @@ if (isset($_POST['simpan'])) {
                            <select class="form-control" name="pajak" id="pajak" required>
                               <option value="1" <?= $customer['pajak'] ? "selected" : ""; ?>>Yes</option>
                               <option value="0" <?= !$customer['pajak'] ? "selected" : ""; ?>>No</option>
+                           </select>
+                        </div>
+                        <div class="form-group">
+                           <label for="tukarfaktur">Tukar Faktur</label>
+                           <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
+                              <option value="1" <?= $customer['tukarfaktur'] ? "selected" : ""; ?>>Yes</option>
+                              <option value="0" <?= !$customer['tukarfaktur'] ? "selected" : ""; ?>>No</option>
                            </select>
                         </div>
                         <div class="form-group">
