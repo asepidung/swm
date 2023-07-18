@@ -128,22 +128,28 @@ CREATE TABLE dodetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-
 CREATE TABLE invoice (
-idinvoice INT PRIMARY KEY AUTO_INCREMENT,
-iddo INT,
-invoice_number VARCHAR(30) UNIQUE,
-invoice_date DATE,
-total_amount DECIMAL(12,2),
-tax DECIMAL(12,2),
-downpayment DECIMAL(12,2),
-balance DECIMAL(12,2),
-idcustomer INT,
-idsegment INT,
-created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (iddo) REFERENCES do (iddo),
-FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
-FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
+  idinvoice INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  noinvoice VARCHAR(30) NOT NULL UNIQUE,
+  iddo INT NOT NULL,
+  top INT,
+  duedate DATE,
+  idsegment INT NOT NULL,
+  invoice_date DATE NOT NULL,
+  idcustomer INT NOT NULL,
+  pocustomer VARCHAR(50) NOT NULL,
+  donumber VARCHAR (30) NOT NULL,
+  note VARCHAR(255),
+  xweight DECIMAL (12,2) NOT NULL,
+  xamount DECIMAL (12,2) NOT NULL,
+  xdiscount DECIMAL (12,2),
+  tax DECIMAL (12,2),
+  charge DECIMAL (12,2),
+  downpayment DECIMAL (12,2),
+  balance DECIMAL (12,2) NOT NULL,
+  FOREIGN KEY (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (idsegment) REFERENCES segment (idsegment),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
 );
 CREATE TABLE invoicedetail (
   idinvoicedetail INT PRIMARY KEY AUTO_INCREMENT,

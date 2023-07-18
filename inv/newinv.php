@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-// include "invnumber.php";
+include "invnumber.php";
 $iddo = $_GET['iddo'];
 
 // Mengambil data dari tabel do
@@ -37,12 +37,12 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
          <div class="row">
             <div class="col mt-3">
                <form method="POST" action="inputinvoice.php">
+                  <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
-                  <input type="hidden" value="<?= $invoice_number ?>" name="invoice_number" id="invoice_number">
-                  <input type="hidden" value="<?= $pajak; ?>">
-                  <input type="hidden" value="<?= $top; ?>">
-                  <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
+                  <input type="hidden" value="<?= $top; ?>">
+                  <input type="hidden" value="<?= $pajak; ?>">
+                  <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -66,7 +66,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               <div class="form-group">
                                  <label for="po">PO Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="po" id="po" value="<?= $rowDo['po'] ?>" readonly>
+                                    <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $rowDo['po'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -80,25 +80,6 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                            </div>
                         </div>
                         <div class="row">
-                           <div class="col-2">
-                              <div class="input-group">
-                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon3">Tax</span>
-                                 </div>
-                                 <?php if ($pajak == 1) { ?>
-                                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="YES" readonly>
-                                 <?php } else { ?>
-                                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="NO" readonly>
-                                 <?php } ?>
-                              </div>
-                           </div>
-                           <div class="col">
-                              <div class="form-group">
-                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
-                                 </div>
-                              </div>
-                           </div>
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">
@@ -154,7 +135,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
+                                          <input type="text" class="form-control text-center" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -236,7 +217,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               Down Payment
                            </div>
                            <div class="col-2">
-                              <input type="text" name="dp" id="dp" class="form-control text-right" value="0">
+                              <input type="text" name="downpayment" id="downpayment" class="form-control text-right" value="0">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -244,7 +225,8 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               Balance
                            </div>
                            <div class="col-2">
-                              <input type="text" name="balance" id="balance" class="form-control text-right" readonly>
+                              <input type="text" name="balance" id="balance" class="form-control text-right" readonly value="0">
+                              <input type="hidden" name="xdiscount" id="xdiscount" value="0">
                            </div>
                         </div>
                         <div class="row">
@@ -265,7 +247,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
    </section>
 </div>
 <script>
-   document.title = "<?= $invoice_number ?>";
+   document.title = "<?= $noinvoice ?>";
 </script>
 <?php
 // require "../footnotes.php";

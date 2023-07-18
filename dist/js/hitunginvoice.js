@@ -48,7 +48,6 @@ function calculateAmounts() {
 
    var balance = totalAmount + taxAmount + charge - dp;
    balanceInput.value = formatAmount(balance);
-
    // Aktifkan tombol Submit setelah mengklik Calculate
    document.getElementById("submit-btn").disabled = false;
 }
@@ -57,3 +56,5 @@ function calculateAmounts() {
 function formatAmount(amount) {
    return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
+
+document.title = "<?= $noinvoice ?>";

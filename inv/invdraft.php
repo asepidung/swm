@@ -57,7 +57,6 @@ include "../mainsidebar.php";
                               $no++;
                            }
                            ?>
-
                         </tbody>
                      </table>
                   </div>
@@ -72,13 +71,13 @@ include "../mainsidebar.php";
       <!-- /.container-fluid -->
    </section>
    <!-- /.content -->
-   <!-- </div> -->
-   <!-- /.content-wrapper -->
+</div>
+<!-- /.content-wrapper -->
 
-   <script>
-      // Mengubah judul halaman web
-      document.title = "Delivery Order";
-   </script>
-   <?php
-   // require "../footnote.php";
-   include "../footer.php" ?>
+<script>
+   // Mengubah judul halaman web
+   document.title = "Delivery Order";
+</script>
+<?php
+// require "../footnote.php";
+include "../footer.php" ?>
