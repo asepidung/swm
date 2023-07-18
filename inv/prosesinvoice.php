@@ -5,9 +5,8 @@ if (!isset($_SESSION['login'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-   $invoice_number = $_POST['invoice_number'];
+   $invnumber = $_POST['invnumber'];
    $iddo = $_POST['iddo'];
-   // $pajak = $_POST['pajak'];
    $tukarfaktur = $_POST['tukarfaktur'];
    $invoice_date = $_POST['invoice_date'];
    $idcustomer = $_POST['idcustomer'];
@@ -28,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Echo $_POST values
    echo "invnumber: " . $invnumber . "<br>";
    echo "iddo: " . $iddo . "<br>";
-   echo "pajak: " . $pajak . "<br>";
    echo "tukarfaktur: " . $tukarfaktur . "<br>";
    echo "invoice_date: " . $invoice_date . "<br>";
    echo "idcustomer: " . $idcustomer . "<br>";

@@ -41,6 +41,7 @@ include "../mainsidebar.php";
                               <th>T.O.P</th>
                               <th>Sales</th>
                               <th>Pajak</th>
+                              <th>T.T.F</th>
                               <th>Telepon</th>
                               <th>Email</th>
                               <th>Catatan</th>
@@ -64,7 +65,8 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['top'] . " Hari"; ?></td>
                                  <td>Muryani</td>
                                  <!-- <td><?= $tampil['sales_referensi']; ?></td> -->
-                                 <td><?= $tampil['pajak'] ? 'YES' : 'NO'; ?></td>
+                                 <td><?= $tampil['pajak']; ?></td>
+                                 <td><?= $tampil['tukarfaktur']; ?></td>
                                  <td><?= $tampil['telepon']; ?></td>
                                  <td><?= $tampil['email']; ?></td>
                                  <td><?= $tampil['catatan']; ?></td>

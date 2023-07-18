@@ -36,9 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    // Memformat qty menjadi 2 digit desimal di belakang koma
    $qty = number_format($qty, 2, '.', '');
+
+   $query = "INSERT INTO relabel (idbarang, qty, pcs, packdate, exp, kdbarcode, iduser)
+          VALUES ($idbarang, $qty, '$pcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
+
+   if (!mysqli_query($conn, $query)) {
+      echo "Error: " . mysqli_error($conn);
+   }
 }
-$query = mysqli_query($conn, "INSERT INTO relabel (idbarang, qty, pcs, packdate, kdbarcode, iduser)
-VALUES ('$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
+
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +94,7 @@ VALUES ('$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
          <tr>
             <td colspan=" 1" rowspan="2">
                <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <span style="font-size: 24px"><strong><?= number_format($qty, 2); ?></strong></span>
+                  <span style="font-size: 30px"><strong><?= number_format($qty, 2); ?></strong></span>
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">

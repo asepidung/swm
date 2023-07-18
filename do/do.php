@@ -76,20 +76,23 @@ include "../mainsidebar.php";
                                  </td>
                                  <td class="text-center"><?= $userid ?></td>
                                  <td class="text-center">
-                                    <?php if ($tampil['status'] !== "Approved") { ?>
+                                    <?php if ($tampil['status'] !== "Invoiced") { ?>
                                        <div class="row">
-                                          <div class="col-2"></div>
-                                          <div class="col">
+                                          <div class="col-4">
                                              <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
                                                 <span class="text-info"><i class="fas fa-print"></i></span>
                                              </a>
                                           </div>
-                                          <div class="col">
+                                          <div class="col-4">
                                              <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                                 <span class="text-success"><i class="fas fa-edit"></i></span>
                                              </a>
                                           </div>
-                                          <div class="col-2"></div>
+                                          <div class="col-4">
+                                             <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Segala perubahan yang anda lakukan akan terekam dalam sistem, apakah anda yakin ingin menghapus Surat Jalan ini?')">
+                                                <span class="text-danger"><i class="fas fa-trash"></i></span>
+                                             </a>
+                                          </div>
                                        </div>
                                     <?php } else { ?>
                                        <div class="row">

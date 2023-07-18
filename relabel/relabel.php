@@ -26,7 +26,7 @@ while ($row = mysqli_fetch_assoc($result)) {
   <div class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <div class="card mt-3">
             <div class="card-body">
               <form method="POST" action="cetakrelabel.php" onsubmit="submitForm(event)">
@@ -91,22 +91,64 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <!-- </div> -->
                   </div>
                 </div>
-                <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
+                <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Print</button>
               </form>
             </div>
           </div>
           <!-- /.card -->
         </div>
-        <!-- /.col-md-6 -->
+        <div class="col-lg-8">
+          <div class="card mt-3">
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped table-sm">
+                <thead class="text-center">
+                  <tr>
+                    <th>#</th>
+                    <th>Barcode</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Pcs</th>
+                    <th>Author</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  $no = 1;
+                  $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.userid FROM relabel r
+                                                   INNER JOIN barang b ON r.idbarang = b.idbarang
+                                                   INNER JOIN users u ON r.iduser = u.idusers
+                                                   ORDER BY r.dibuat DESC");
+                  while ($tampil = mysqli_fetch_array($ambildata)) {
+                    $userid = $tampil['userid'];
+                    $nmbarang = $tampil['nmbarang'];
+                  ?>
+                    <tr class="text-center">
+                      <td><?= $no; ?></td>
+                      <td><?= $tampil['kdbarcode']; ?></td>
+                      <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                      <td><?= $tampil['qty']; ?></td>
+                      <td><?= $tampil['pcs']; ?></td>
+                      <td><?= $userid; ?></td>
+                    </tr>
+                  <?php
+                    $no++;
+                  }
+                  ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
       </div>
-      <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
   </div>
-  <script>
-    document.title = "Relabel";
-  </script>
-  <?php
-  require "../footnote.php";
-  require "../footer.php";
-  ?>
+</div>
+<script>
+  document.title = "Relabel";
+</script>
+<?php
+// require "../footnote.php";
+require "../footer.php";
+?>

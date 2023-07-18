@@ -7,18 +7,21 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "invnumber.php";
+// include "invnumber.php";
 $iddo = $_GET['iddo'];
 
 // Mengambil data dari tabel do
-$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak, customers.tukarfaktur FROM do
+$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak, customers.top, customers.tukarfaktur, segment.idsegment
+            FROM do
             INNER JOIN customers ON do.idcustomer = customers.idcustomer
+            INNER JOIN segment ON customers.idsegment = segment.idsegment
             WHERE do.iddo = $iddo";
 $resultDo = mysqli_query($conn, $queryDo);
 $rowDo = mysqli_fetch_assoc($resultDo);
 $tukarfaktur = $rowDo['tukarfaktur'];
 $pajak = $rowDo['pajak'];
-// Mengambil data dari tabel dodetail
+$top = $rowDo['top'];
+$idsegment = $rowDo['idsegment'];
 // Mengambil data dari tabel dodetail, grade, dan barang
 $queryDodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
                   FROM dodetail
@@ -33,11 +36,13 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosesinvoice.php">
-                  <input type="hidden" value="<?= $kodeauto ?>" name="invnumber" id="invnumber">
+               <form method="POST" action="inputinvoice.php">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
-                  <input type="hidden" value="<?= $pajak; ?>" name="pajak" id="pajak">
+                  <input type="hidden" value="<?= $invoice_number ?>" name="invoice_number" id="invoice_number">
+                  <input type="hidden" value="<?= $pajak; ?>">
+                  <input type="hidden" value="<?= $top; ?>">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
+                  <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -75,6 +80,25 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                            </div>
                         </div>
                         <div class="row">
+                           <div class="col-2">
+                              <div class="input-group">
+                                 <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">Tax</span>
+                                 </div>
+                                 <?php if ($pajak == 1) { ?>
+                                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="YES" readonly>
+                                 <?php } else { ?>
+                                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="NO" readonly>
+                                 <?php } ?>
+                              </div>
+                           </div>
+                           <div class="col">
+                              <div class="form-group">
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
+                                 </div>
+                              </div>
+                           </div>
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">
@@ -89,7 +113,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row">
-                              <div class="col">
+                              <div class="col-1">
                                  <div class="form-group">
                                     <label>Code</label>
                                  </div>
@@ -99,7 +123,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                     <label>Products</label>
                                  </div>
                               </div>
-                              <div class="col-2">
+                              <div class="col-1">
                                  <div class="form-group">
                                     <label>Weight</label>
                                  </div>
@@ -116,16 +140,21 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
+                                    <label>Disc Rp</label>
+                                 </div>
+                              </div>
+                              <div class="col-2">
+                                 <div class="form-group">
                                     <label>Amount</label>
                                  </div>
                               </div>
                            </div>
                            <?php while ($rowDodetail = mysqli_fetch_assoc($resultDodetail)) { ?>
                               <div class="row mt-n2">
-                                 <div class="col-2">
+                                 <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] . $rowDodetail['kdbarang'] ?>" readonly>
+                                          <input type="text" class="form-control" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -136,7 +165,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-2">
+                                 <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
                                           <input type="text" class="form-control text-right" name="weight[]" value="<?= $rowDodetail['weight'] ?>" readonly>
@@ -160,6 +189,13 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="discountrp[]" value="0">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
                                           <input type="text" class="form-control text-right" name="amount[]" readonly value="0">
                                        </div>
                                     </div>
@@ -168,11 +204,11 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                            <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-5 text-right">Weight Total</div>
-                           <div class="col-2">
+                           <div class="col-4 text-right">Weight Total</div>
+                           <div class="col-1">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
-                           <div class="col-3 text-right">
+                           <div class="col-5 text-right">
                               Total Amount
                            </div>
                            <div class="col-2">
@@ -225,78 +261,11 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
             </div>
             <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
+   </section>
 </div>
-<!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
-<!-- <script src="../dist/js/hitunginvoice.js"></script> -->
 <script>
-   function calculateAmounts() {
-      var weightInputs = document.querySelectorAll("input[name='weight[]']");
-      var priceInputs = document.querySelectorAll("input[name='price[]']");
-      var discountInputs = document.querySelectorAll("input[name='discount[]']");
-      var amountInputs = document.querySelectorAll("input[name='amount[]']");
-      var totalWeightInput = document.getElementById("xweight");
-      var totalAmountInput = document.getElementById("xamount");
-      var pajakInput = document.getElementById("pajak");
-      var taxInput = document.getElementById("tax");
-      var chargeInput = document.getElementById("charge");
-      var dpInput = document.getElementById("dp");
-      var balanceInput = document.getElementById("balance");
-
-      var totalWeight = 0;
-      var totalAmount = 0;
-      var taxAmount = 0;
-
-      for (var i = 0; i < weightInputs.length; i++) {
-         var price = parseFloat(priceInputs[i].value);
-         var discount = parseFloat(discountInputs[i].value);
-
-         if (isNaN(discount)) {
-            var amount = weightInputs[i].value * price;
-            amountInputs[i].value = formatAmount(amount);
-         } else {
-            var amount = (weightInputs[i].value * price) - ((weightInputs[i].value * price) * (discount / 100));
-            amountInputs[i].value = formatAmount(amount);
-         }
-
-         totalWeight += parseFloat(weightInputs[i].value);
-         totalAmount += parseFloat(amountInputs[i].value.replace(/,/g, ''));
-      }
-
-      totalWeightInput.value = formatAmount(totalWeight);
-      totalAmountInput.value = formatAmount(totalAmount);
-
-      var pajak = parseInt(pajakInput.value);
-      if (pajak === 1) {
-         var taxRate = 0.11;
-         taxAmount = totalAmount * taxRate;
-         taxInput.value = formatAmount(taxAmount);
-      } else {
-         taxInput.value = "0";
-      }
-
-      var charge = parseFloat(chargeInput.value.replace(/,/g, ''));
-      var dp = parseFloat(dpInput.value.replace(/,/g, ''));
-
-      var balance = totalAmount + taxAmount + charge - dp;
-      balanceInput.value = formatAmount(balance);
-
-      // Aktifkan tombol Submit setelah mengklik Calculate
-      document.getElementById("submit-btn").disabled = false;
-   }
-
-   // Fungsi bantu untuk memformat angka
-   function formatAmount(amount) {
-      return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-   }
-   // Mengubah judul halaman web
-   document.title = "<?= $kodeauto ?>";
+   document.title = "<?= $invoice_number ?>";
 </script>
 <?php
 // require "../footnotes.php";

@@ -20,5 +20,5 @@ function angkaToRomawi($angka)
 
 $romawiMonth = angkaToRomawi($currentMonth);
 
-$kodeauto = "INV-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $invnumber;
+$invoice_number = "INV-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $invnumber;
 // echo $kodeauto;
