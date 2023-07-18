@@ -71,7 +71,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['email']; ?></td>
                                  <td><?= $tampil['catatan']; ?></td>
                                  <td class="text-center">
-                                    <a href="editcustomer.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-pen"></i></a>
+                                    <a href="editcust.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-pen"></i></a>
                                     |
                                     <a href="deletecustomer.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-trash-alt text-danger"></i></a>
                                  </td>
@@ -97,5 +97,4 @@ include "../mainsidebar.php";
    <!-- /.content -->
    <!-- </div> -->
    <!-- /.content-wrapper -->
-
    <?php include "../footer.php" ?>

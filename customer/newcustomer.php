@@ -60,19 +60,20 @@ include "../mainsidebar.php";
                            <div class="form-group">
                               <label for="pajak">Customer Dikenakan Pajak</label>
                               <select class="form-control" name="pajak" id="pajak">
-                                 <option>--Pilih Satu</option>
-                                 <option value="1">Yes</option>
-                                 <option value="0">No</option>
+                                 <option>--Pilih Satu--</option>
+                                 <option value="YES">YES</option>
+                                 <option value="NO">NO</option>
                               </select>
                            </div>
                            <div class="form-group">
-                              <label for="tukarfaktur">Tuka Faktur</label>
+                              <label for="tukarfaktur">Tukar Faktur</label>
                               <select class="form-control" name="tukarfaktur" id="tukarfaktur">
-                                 <option>--Pilih Satu</option>
-                                 <option value="1">Yes</option>
-                                 <option value="0">No</option>
+                                 <option>--Pilih Satu--</option>
+                                 <option value="YES">YES</option>
+                                 <option value="NO">NO</option>
                               </select>
                            </div>
+
                            <div class="form-group">
                               <label for="telepon">Telepon</label>
                               <input type="tel" class="form-control" name="telepon" id="telepon">
