@@ -170,7 +170,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="discountrp[]" value="0">
+                                          <input type="text" class="form-control text-right" name="discountrp[]" value="0" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -246,6 +246,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
       </div>
    </section>
 </div>
+<script src="../dist/js/hitunginvoice.js"></script>
 <script>
    document.title = "<?= $noinvoice ?>";
 </script>

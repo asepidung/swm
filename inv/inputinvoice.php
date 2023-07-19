@@ -7,20 +7,21 @@ require "../konak/conn.php";
 
 if (isset($_POST['submit'])) {
    $iddo = $_POST['iddo'];
-   $invoice_number = $_POST['invoice_number'];
-   $invoice_date = $_POST['invoice_date'];
-   $xamount = str_replace(',', '', $_POST['xamount']);
-   $tax = str_replace(',', '', $_POST['tax']);
-   $downpayment = str_replace(',', '', $_POST['downpayment']);
-   $balance = str_replace(',', '', $_POST['balance']);
-   $idcustomer = $_POST['idcustomer'];
+   $noinvoice = $_POST['noinvoice'];
+   $top = $_POST['top'];
+   // $invoice_date = $_POST['invoice_date'];
+   // $xamount = str_replace(',', '', $_POST['xamount']);
+   // $tax = str_replace(',', '', $_POST['tax']);
+   // $downpayment = str_replace(',', '', $_POST['downpayment']);
+   // $balance = str_replace(',', '', $_POST['balance']);
+   // $idcustomer = $_POST['idcustomer'];
    $idsegment = $_POST['idsegment'];
-   $tukarfaktur = $_POST['tukarfaktur'];
-   $donumber = $_POST['donumber'];
-   $po = $_POST['po'];
-   $note = $_POST['note'];
-   $xweight = $_POST['xweight'];
-   $charge = str_replace(',', '', $_POST['charge']);
+   // $tukarfaktur = $_POST['tukarfaktur'];
+   // $donumber = $_POST['donumber'];
+   // $po = $_POST['po'];
+   // $note = $_POST['note'];
+   // $xweight = $_POST['xweight'];
+   // $charge = str_replace(',', '', $_POST['charge']);
 
 
    // Query INSERT ke tabel "invoice"

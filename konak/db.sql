@@ -152,19 +152,21 @@ CREATE TABLE invoice (
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
 );
 CREATE TABLE invoicedetail (
-  idinvoicedetail INT PRIMARY KEY AUTO_INCREMENT,
-  idinvoice INT,
-  iddodetail INT,
-  weight DECIMAL(12,2),
-  unit_price DECIMAL(12,2),
-  diskon DECIMAL(5,2),
-  total_price DECIMAL(12,2),
+  idinvoicedetail INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  idinvoice INT NOT NULL,
+  idgrade INT NOT NULL,
+  idbarang INT NOT NULL,
+  price DECIMAL(12,2),
+  discount INT,
+  discountrp DECIMAL(12,2),
+  amount DECIMAL(12,2),
   FOREIGN KEY (idinvoice) REFERENCES invoice (idinvoice),
-  FOREIGN KEY (iddodetail) REFERENCES dodetail (iddodetail)
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-ALTER TABLE customers ADD COLUMN tukarfaktur BOOLEAN;
-ALTER TABLE invoice MODIFY tax DECIMAL(12,2) NOT NULL DEFAULT 0;
-ALTER TABLE invoice MODIFY downpayment DECIMAL(12,2) NOT NULL DEFAULT 0;
+  ALTER TABLE customers ADD COLUMN tukarfaktur BOOLEAN;
+  ALTER TABLE invoice MODIFY tax DECIMAL(12,2) NOT NULL DEFAULT 0;
+  ALTER TABLE invoice MODIFY downpayment DECIMAL(12,2) NOT NULL DEFAULT 0;
  ALTER TABLE invoice ADD COLUMN tukarfaktur BOOLEAN;
  ALTER TABLE invoice ADD COLUMN donumber VARCHAR(50);
  ALTER TABLE invoice ADD COLUMN note VARCHAR(255);

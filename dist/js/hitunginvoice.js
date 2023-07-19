@@ -1,60 +1,93 @@
 function calculateAmounts() {
-   var weightInputs = document.querySelectorAll("input[name='weight[]']");
-   var priceInputs = document.querySelectorAll("input[name='price[]']");
-   var discountInputs = document.querySelectorAll("input[name='discount[]']");
-   var amountInputs = document.querySelectorAll("input[name='amount[]']");
-   var totalWeightInput = document.getElementById("xweight");
-   var totalAmountInput = document.getElementById("xamount");
-   var pajakInput = document.getElementById("pajak");
-   var taxInput = document.getElementById("tax");
-   var chargeInput = document.getElementById("charge");
-   var dpInput = document.getElementById("dp");
-   var balanceInput = document.getElementById("balance");
-
+   var weights = document.getElementsByName('weight[]');
+   var prices = document.getElementsByName('price[]');
+   var discounts = document.getElementsByName('discount[]');
+   var discountrp = document.getElementsByName('discountrp[]');
+   var amounts = document.getElementsByName('amount[]');
    var totalWeight = 0;
    var totalAmount = 0;
-   var taxAmount = 0;
+   var totalDiscount = 0;
 
-   for (var i = 0; i < weightInputs.length; i++) {
-      var price = parseFloat(priceInputs[i].value);
-      var discount = parseFloat(discountInputs[i].value);
+   // Menghitung total berat, menghitung discountrp, dan menghitung amounts
+   for (var i = 0; i < weights.length; i++) {
+      var weight = parseFloat(weights[i].value);
+      var price = parseFloat(prices[i].value);
+      var discount = parseFloat(discounts[i].value);
 
-      if (isNaN(discount)) {
-         var amount = weightInputs[i].value * price;
-         amountInputs[i].value = formatAmount(amount);
-      } else {
-         var amount = (weightInputs[i].value * price) - ((weightInputs[i].value * price) * (discount / 100));
-         amountInputs[i].value = formatAmount(amount);
+      if (!isNaN(weight)) {
+         totalWeight += weight;
       }
 
-      totalWeight += parseFloat(weightInputs[i].value);
-      totalAmount += parseFloat(amountInputs[i].value.replace(/,/g, ''));
+      if (!isNaN(weight) && !isNaN(price)) {
+         var discountrpValue = (weight * price) * (discount / 100);
+         discountrp[i].value = discountrpValue.toFixed(2);
+
+         var amount = (weight * price) - discountrpValue;
+         amounts[i].value = amount.toFixed(2);
+
+         totalAmount += amount;
+         totalDiscount += discountrpValue;
+      }
    }
 
-   totalWeightInput.value = formatAmount(totalWeight);
-   totalAmountInput.value = formatAmount(totalAmount);
+   // Menghitung pajak
+   var pajak = "<?= $pajak ?>";
+   var taxElement = document.getElementById('tax');
+   var taxAmount = 0;
 
-   var pajak = parseInt(pajakInput.value);
-   if (pajak === 1) {
-      var taxRate = 0.11;
-      taxAmount = totalAmount * taxRate;
-      taxInput.value = formatAmount(taxAmount);
-   } else {
-      taxInput.value = "0";
+   if (pajak === 'YES') {
+      var taxPercentage = 0.11; // Persentase pajak 11%
+      taxAmount = totalAmount * taxPercentage;
    }
 
-   var charge = parseFloat(chargeInput.value.replace(/,/g, ''));
-   var dp = parseFloat(dpInput.value.replace(/,/g, ''));
+   taxElement.value = taxAmount.toFixed(2);
 
-   var balance = totalAmount + taxAmount + charge - dp;
-   balanceInput.value = formatAmount(balance);
-   // Aktifkan tombol Submit setelah mengklik Calculate
-   document.getElementById("submit-btn").disabled = false;
+   // Menghitung balance
+   var charge = parseFloat(document.getElementById('charge').value);
+   var downPayment = parseFloat(document.getElementById('downpayment').value);
+   var balanceElement = document.getElementById('balance');
+   var balance = totalAmount + taxAmount + charge - downPayment;
+
+   balanceElement.value = balance.toFixed(2);
+
+   // Mengubah format discountrp[]
+   for (var i = 0; i < discountrp.length; i++) {
+      discountrp[i].value = parseFloat(discountrp[i].value).toLocaleString(undefined, {
+         minimumFractionDigits: 2,
+         maximumFractionDigits: 2
+      });
+   }
+
+   // Mengubah format amounts[]
+   for (var i = 0; i < amounts.length; i++) {
+      amounts[i].value = parseFloat(amounts[i].value).toLocaleString(undefined, {
+         minimumFractionDigits: 2,
+         maximumFractionDigits: 2
+      });
+   }
+
+   // Mengubah format xamount
+   document.getElementById('xamount').value = parseFloat(totalAmount.toFixed(2)).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+   });
+
+   // Mengubah format tax
+   document.getElementById('tax').value = parseFloat(taxAmount.toFixed(2)).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+   });
+
+   // Mengubah format balance
+   balanceElement.value = parseFloat(balance.toFixed(2)).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+   });
+
+   // Mengubah format xdiscount
+   document.getElementById('xdiscount').value = parseFloat(totalDiscount.toFixed(2)).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+   });
+   document.getElementById('submit-btn').removeAttribute('disabled');
 }
-
-// Fungsi bantu untuk memformat angka
-function formatAmount(amount) {
-   return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
-
-document.title = "<?= $noinvoice ?>";
