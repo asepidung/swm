@@ -36,11 +36,11 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="inputinvoice.php">
+               <form method="POST" action="bahan.php">
                   <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
-                  <input type="hidden" value="<?= $top; ?>">
+                  <input type="hidden" value="<?= $top; ?>" name="top">
                   <input type="hidden" value="<?= $pajak; ?>">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">
@@ -135,14 +135,16 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-center" name="idgrade" id="idgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
+                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
+                                          <input type="hidden" class="form-control text-center" name="idgrade" id="idgrade" value="<?= $rowDodetail['idgrade'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control" name="idbarang" id="idbarang" value="<?= $rowDodetail['nmbarang'] ?>" readonly>
+                                          <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $rowDodetail['nmbarang'] ?>" readonly>
+                                          <input type="hidden" class="form-control" name="idbarang" id="idbarang" value="<?= $rowDodetail['idbarang'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>

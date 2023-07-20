@@ -4,84 +4,68 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-include "../header.php";
-include "../navbar.php";
-include "../mainsidebar.php";
 
-// Mengambil data dari tabel invoice
-// $queryInvoice = "SELECT * FROM invoice";
-// $resultInvoice = mysqli_query($conn, $queryInvoice);
-// $count = 1;
+if (isset($_POST['submit'])) {
+   $iddo = $_POST['iddo'];
+   $noinvoice = $_POST['noinvoice'];
+   $top = $_POST['top'];
+   $invoice_date = $_POST['invoice_date'];
+   $xamount = str_replace(',', '', $_POST['xamount']);
+   $tax = str_replace(',', '', $_POST['tax']);
+   $downpayment = str_replace(',', '', $_POST['downpayment']);
+   $balance = str_replace(',', '', $_POST['balance']);
+   $idcustomer = $_POST['idcustomer'];
+   $idsegment = $_POST['idsegment'];
+   $xdiscount = str_replace(',', '', $_POST['xdiscount']);
+   $donumber = $_POST['donumber'];
+   $pocustomer = $_POST['pocustomer'];
+   $note = $_POST['note'];
+   $xweight = $_POST['xweight'];
+   $charge = str_replace(',', '', $_POST['charge']);
 
-?>
-<div class="content-wrapper">
-   <!-- Content Header (Page header) -->
-   <div class="content-header">
-      <div class="container-fluid">
-         <div class="row">
-            <div class="col">
-               <a href="invdraft.php"><button type="button" class="btn btn-outline-danger btn-sm"><i class="fab fa-firstdraft"></i></i> Buka Draft</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-   </div>
-   <!-- /.content-header -->
+   // Displaying data from $_POST
+   echo "iddo: " . $iddo . "<br>";
+   echo "noinvoice: " . $noinvoice . "<br>";
+   echo "top: " . $top . "<br>";
+   echo "invoice_date: " . $invoice_date . "<br>";
+   echo "xamount: " . $xamount . "<br>";
+   echo "tax: " . $tax . "<br>";
+   echo "downpayment: " . $downpayment . "<br>";
+   echo "balance: " . $balance . "<br>";
+   echo "idcustomer: " . $idcustomer . "<br>";
+   echo "idsegment: " . $idsegment . "<br>";
+   echo "xdiscount: " . $xdiscount . "<br>";
+   echo "donumber: " . $donumber . "<br>";
+   echo "pocustomer: " . $pocustomer . "<br>";
+   echo "note: " . $note . "<br>";
+   echo "xweight: " . $xweight . "<br>";
+   echo "charge: " . $charge . "<br>";
 
-   <!-- Main content -->
-   <section class="content">
-      <div class="container-fluid">
-         <div class="row">
-            <div class="col-12">
-               <div class="card">
-                  <!-- /.card-header -->
-                  <div class="card-body">
-                     <table id="example1" class="table table-bordered table-striped table-sm">
-                        <thead>
-                           <tr>#</tr>
-                           <tr>Inv No</tr>
-                           <tr>DO No</tr>
-                           <tr>PO No</tr>
-                           <tr>xweight</tr>
-                           <tr>xdiscount</tr>
-                           <tr>balance</tr>
-                           <tr>Actions</tr>
-                        </thead>
-                        <tbody>
-                           <?php while ($rowInvoice = mysqli_fetch_assoc($resultInvoice)) { ?>
-                              <tr>
-                                 <td><?= $count; ?></td>
-                                 <td><?= $rowInvoice['invoice_number']; ?></td>
-                                 <td><?= $rowInvoice['donumber']; ?></td>
-                                 <td>po</td>
-                                 <td><?= $rowInvoice['xweight']; ?></td>
-                                 <td>xdiscount</td>
-                                 <td><?= $rowInvoice['balance']; ?></td>
-                                 <td></td>
-                              </tr>
-                           <?php
-                              $count++;
-                           } ?>
-                        </tbody>
-                     </table>
-                  </div>
-                  <!-- /.card-body -->
-               </div>
-               <!-- /.card -->
-            </div>
-            <!-- /.col -->
-         </div>
-         <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-   </section>
-   <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+   // Proses input ke tabel "invoicedetail"
+   $idgrades = $_POST['idgrade'];
+   $idbarangs = $_POST['idbarang'];
+   $prices = $_POST['price'];
+   $discounts = $_POST['discount'];
+   $discountrps = $_POST['discountrp'];
+   $amounts = $_POST['amount'];
 
-<script>
-   // Mengubah judul halaman web
-   document.title = "Invoice Approved List";
-</script>
-<?php
-// require "../footnote.php";
-include "../footer.php" ?>
+   for ($i = 0; $i < count($idgrades); $i++) {
+      $idgrade = $idgrades[$i];
+      $idbarang = $idbarangs[$i];
+      $price = str_replace(',', '', $prices[$i]);
+      $discount = $discounts[$i];
+      $discountrp = str_replace(',', '', $discountrps[$i]);
+      $amount = str_replace(',', '', $amounts[$i]);
+
+      // Displaying data from $_POST for invoice detail
+      echo "idgrade[" . $i . "]: " . $idgrade . "<br>";
+      echo "idbarang[" . $i . "]: " . $idbarang . "<br>";
+      echo "price[" . $i . "]: " . $price . "<br>";
+      echo "discount[" . $i . "]: " . $discount . "<br>";
+      echo "discountrp[" . $i . "]: " . $discountrp . "<br>";
+      echo "amount[" . $i . "]: " . $amount . "<br>";
+
+      // Query INSERT ke tabel "invoicedetail"
+      // ...
+   }
+}

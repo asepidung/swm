@@ -72,6 +72,9 @@ function calculateAmounts() {
       maximumFractionDigits: 2
    });
 
+   // Mengubah format xweight
+   document.getElementById('xweight').value = totalWeight.toFixed(2);
+
    // Mengubah format tax
    document.getElementById('tax').value = parseFloat(taxAmount.toFixed(2)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
