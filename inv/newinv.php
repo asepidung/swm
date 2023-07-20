@@ -36,7 +36,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="bahan.php">
+               <form method="POST" action="prosesinvoice.php">
                   <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice">
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
@@ -58,7 +58,8 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               <div class="form-group">
                                  <label for="idcustomer">Nama Customer</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="idcustomer" id="idcustomer" value="<?= $rowDo['nama_customer'] ?>" readonly>
+                                    <input type="hidden" name="idcustomer" id="idcustomer" value="<?= $rowDo['idcustomer'] ?>">
+                                    <input type="text" class="form-control" name="nama_customer" id="nama_customer" value="<?= $rowDo['nama_customer'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -136,7 +137,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                     <div class="form-group">
                                        <div class="input-group">
                                           <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
-                                          <input type="hidden" class="form-control text-center" name="idgrade" id="idgrade" value="<?= $rowDodetail['idgrade'] ?>" readonly>
+                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $rowDodetail['idgrade'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -144,7 +145,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                     <div class="form-group">
                                        <div class="input-group">
                                           <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $rowDodetail['nmbarang'] ?>" readonly>
-                                          <input type="hidden" class="form-control" name="idbarang" id="idbarang" value="<?= $rowDodetail['idbarang'] ?>" readonly>
+                                          <input type="hidden" class="form-control" name="idbarang[]" id="idbarang" value="<?= $rowDodetail['idbarang'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>

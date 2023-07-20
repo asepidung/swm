@@ -156,6 +156,7 @@ CREATE TABLE invoicedetail (
   idinvoice INT NOT NULL,
   idgrade INT NOT NULL,
   idbarang INT NOT NULL,
+  weight DECIMAL (12,2) NOT NULL,
   price DECIMAL(12,2),
   discount INT,
   discountrp DECIMAL(12,2),
@@ -165,8 +166,3 @@ CREATE TABLE invoicedetail (
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
   ALTER TABLE customers ADD COLUMN tukarfaktur BOOLEAN;
-  ALTER TABLE invoice MODIFY tax DECIMAL(12,2) NOT NULL DEFAULT 0;
-  ALTER TABLE invoice MODIFY downpayment DECIMAL(12,2) NOT NULL DEFAULT 0;
-  ALTER TABLE invoice ADD COLUMN tukarfaktur BOOLEAN;
-  ALTER TABLE invoice ADD COLUMN donumber VARCHAR(50);
-  ALTER TABLE invoice ADD COLUMN note VARCHAR(255);
