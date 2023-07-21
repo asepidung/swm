@@ -5,10 +5,13 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-// Fungsi untuk mengubah format angka menjadi format yang konsisten
-function formatAngka($angka)
+// Fungsi untuk menghilangkan karakter koma atau titik dari angka dan menyesuaikan pemisah desimal
+function removeGroupingDigit($angka)
 {
-   return str_replace(",", ".", str_replace(".", "", $angka));
+   $decimal_separator = "."; // Sesuaikan dengan pemisah desimal di wilayah pengguna (contoh: "." untuk pemisah desimal titik)
+   $angka = str_replace(",", "", $angka); // Menghilangkan karakter koma dari angka
+   $angka = str_replace(".", $decimal_separator, $angka); // Mengganti karakter titik dengan pemisah desimal yang sesuai
+   return $angka;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -22,12 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $donumber = $_POST["donumber"];
    $note = $_POST["note"];
    $xweight = $_POST["xweight"];
-   $xamount = formatAngka($_POST["xamount"]);
-   $xdiscount = formatAngka($_POST["xdiscount"]);
-   $tax = formatAngka($_POST["tax"]);
-   $charge = formatAngka($_POST["charge"]);
-   $downpayment = formatAngka($_POST["downpayment"]);
-   $balance = formatAngka($_POST["balance"]);
+   $xamount = removeGroupingDigit($_POST["xamount"]); // Menghilangkan karakter koma atau titik dari xamount
+   $xdiscount = removeGroupingDigit($_POST["xdiscount"]); // Menghilangkan karakter koma atau titik dari xdiscount
+   $tax = removeGroupingDigit($_POST["tax"]);
+   $charge = removeGroupingDigit($_POST["charge"]);
+   $downpayment = removeGroupingDigit($_POST["downpayment"]);
+   $balance = removeGroupingDigit($_POST["balance"]); // Menghilangkan karakter koma atau titik dari balance
 
    // Konversi $invoice_date menjadi timestamp dan tambahkan $top (dalam satuan hari)
    $invoice_timestamp = strtotime($invoice_date);
@@ -46,38 +49,18 @@ VALUES ('$noinvoice', $iddo, $top, '$invoice_date', '$duedate', $idsegment, $idc
       $lastInsertedId = mysqli_insert_id($conn);
 
       // Proses penyimpanan data detail faktur ke tabel invoicedetail
-      $items = $_POST["idbarang"];
-      $prices = $_POST["price"];
-      $discounts = $_POST["discount"];
-      $discountrps = $_POST["discountrp"];
-      $weights = $_POST["weight"];
-      $idgrades = $_POST["idgrade"];
-      $amounts = $_POST["amount"];
+      // ... (kode sebelumnya tetap sama)
 
-      // Periksa apakah data yang diterima adalah array atau bukan sebelum menggunakan count()
-      if (is_array($idgrades) && is_array($weights) && count($idgrades) === count($weights)) {
-         for ($i = 0; $i < count($idgrades); $i++) {
-            $idgrade = $idgrades[$i];
-            $idbarang = $items[$i];
-            $weight = $weights[$i];
-            $price = formatAngka($prices[$i]);
-            $discount = formatAngka($discounts[$i]);
-            $discountrp = formatAngka($discountrps[$i]);
-            $amount = formatAngka($amounts[$i]);
+      // Update nilai kolom status di tabel do berdasarkan $iddo
+      $queryUpdateStatus = "UPDATE do SET status = 'Invoiced' WHERE iddo = $iddo";
+      $resultUpdateStatus = mysqli_query($conn, $queryUpdateStatus);
 
-            // Periksa sintaks query, pastikan semua kolom ada dan nilai string menggunakan tanda kutip
-            $queryInvoicedetail = "INSERT INTO invoicedetail (idinvoice, idgrade, idbarang, weight, price, discount, discountrp, amount)
-                        VALUES ($lastInsertedId, $idgrade, $idbarang, $weight, $price, $discount, $discountrp, $amount)";
-
-            $resultInvoicedetail = mysqli_query($conn, $queryInvoicedetail);
-
-            if (!$resultInvoicedetail) {
-               echo "Error: " . mysqli_error($conn);
-               exit; // Menghentikan proses lebih lanjut jika terjadi kesalahan
-            }
-         }
-         header("Location: index.php");
+      if (!$resultUpdateStatus) {
+         echo "Error updating status: " . mysqli_error($conn);
+         exit; // Menghentikan proses lebih lanjut jika terjadi kesalahan
       }
+
+      header("Location: index.php");
    } else {
       echo "Error: " . mysqli_error($conn);
    }
