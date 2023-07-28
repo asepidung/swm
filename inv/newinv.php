@@ -41,7 +41,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                   <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
                   <input type="hidden" value="<?= $top; ?>" name="top">
-                  <input type="hidden" value="<?= $pajak; ?>">
+                  <input type="hidden" value="<?= $pajak; ?>" name="pajak">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">
                      <div class="card-body">
@@ -56,7 +56,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label for="idcustomer">Nama Customer</label>
+                                 <label for="nama_customer">Nama Customer</label>
                                  <div class="input-group">
                                     <input type="hidden" name="idcustomer" id="idcustomer" value="<?= $rowDo['idcustomer'] ?>">
                                     <input type="text" class="form-control" name="nama_customer" id="nama_customer" value="<?= $rowDo['nama_customer'] ?>" readonly>
@@ -65,7 +65,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label for="po">PO Number</label>
+                                 <label for="pocustomer">PO Number</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $rowDo['po'] ?>" readonly>
                                  </div>

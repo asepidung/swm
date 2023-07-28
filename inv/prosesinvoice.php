@@ -5,63 +5,79 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-// Fungsi untuk menghilangkan karakter koma atau titik dari angka dan menyesuaikan pemisah desimal
-function removeGroupingDigit($angka)
-{
-   $decimal_separator = "."; // Sesuaikan dengan pemisah desimal di wilayah pengguna (contoh: "." untuk pemisah desimal titik)
-   $angka = str_replace(",", "", $angka); // Menghilangkan karakter koma dari angka
-   $angka = str_replace(".", $decimal_separator, $angka); // Mengganti karakter titik dengan pemisah desimal yang sesuai
-   return $angka;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   $noinvoice = $_POST["noinvoice"];
-   $iddo = $_POST["iddo"];
-   $idsegment = $_POST["idsegment"];
-   $top = $_POST["top"];
-   $invoice_date = $_POST["invoice_date"];
-   $idcustomer = $_POST["idcustomer"];
-   $pocustomer = $_POST["pocustomer"];
-   $donumber = $_POST["donumber"];
-   $note = $_POST["note"];
-   $xweight = $_POST["xweight"];
-   $xamount = removeGroupingDigit($_POST["xamount"]); // Menghilangkan karakter koma atau titik dari xamount
-   $xdiscount = removeGroupingDigit($_POST["xdiscount"]); // Menghilangkan karakter koma atau titik dari xdiscount
-   $tax = removeGroupingDigit($_POST["tax"]);
-   $charge = removeGroupingDigit($_POST["charge"]);
-   $downpayment = removeGroupingDigit($_POST["downpayment"]);
-   $balance = removeGroupingDigit($_POST["balance"]); // Menghilangkan karakter koma atau titik dari balance
-
-   // Konversi $invoice_date menjadi timestamp dan tambahkan $top (dalam satuan hari)
-   $invoice_timestamp = strtotime($invoice_date);
-   $duedate_timestamp = strtotime("+$top day", $invoice_timestamp);
-   // Konversi kembali menjadi format tanggal yang diinginkan (misal: 23 Juli 2023)
-   $duedate = date('Y-m-d', $duedate_timestamp);
-
-   // Proses penyimpanan data faktur ke tabel invoice
-   $queryInvoice = "INSERT INTO invoice (noinvoice, iddo, top, invoice_date, duedate, idsegment, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance)
-VALUES ('$noinvoice', $iddo, $top, '$invoice_date', '$duedate', $idsegment, $idcustomer, '$pocustomer', '$donumber', '$note', $xweight, $xamount, $xdiscount, $tax, $charge, $downpayment, $balance)";
-   $resultInvoice = mysqli_query($conn, $queryInvoice);
-
-   // ...
-   if ($resultInvoice) {
-      // Mendapatkan ID invoice yang baru saja di-generate
-      $lastInsertedId = mysqli_insert_id($conn);
-
-      // Proses penyimpanan data detail faktur ke tabel invoicedetail
-      // ... (kode sebelumnya tetap sama)
-
-      // Update nilai kolom status di tabel do berdasarkan $iddo
-      $queryUpdateStatus = "UPDATE do SET status = 'Invoiced' WHERE iddo = $iddo";
-      $resultUpdateStatus = mysqli_query($conn, $queryUpdateStatus);
-
-      if (!$resultUpdateStatus) {
-         echo "Error updating status: " . mysqli_error($conn);
-         exit; // Menghentikan proses lebih lanjut jika terjadi kesalahan
-      }
-
-      header("Location: index.php");
+// Check if the form is submitted
+if (isset($_POST['submit'])) {
+   // Retrieve data from the form and remove commas
+   $noinvoice = $_POST['noinvoice'];
+   $iddo = $_POST['iddo'];
+   $idsegment = $_POST['idsegment'];
+   $top = $_POST['top'];
+   $invoice_date = $_POST['invoice_date'];
+   $idcustomer = $_POST['idcustomer'];
+   $pocustomer = $_POST['pocustomer'];
+   $donumber = $_POST['donumber'];
+   $note = $_POST['note'];
+   $pajak = $_POST['pajak'];
+   $xweight = $_POST['xweight'];
+   $xamount = str_replace(',', '', $_POST['xamount']);
+   $xdiscount = str_replace(',', '', $_POST['xdiscount']);
+   $tax = str_replace(',', '', $_POST['tax']);
+   $charge = str_replace(',', '', $_POST['charge']);
+   $downpayment = str_replace(',', '', $_POST['downpayment']);
+   $balance = str_replace(',', '', $_POST['balance']);
+   $tukarfaktur = $_POST['tukarfaktur'];
+   if ($tukarfaktur == 'YES') {
+      $status = "Belum TF";
+      $duedate = NULL;
    } else {
-      echo "Error: " . mysqli_error($conn);
+      $status = '-';
+      $invoice_date_obj = new DateTime($invoice_date);
+
+      // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
+      $duedate_obj = clone $invoice_date_obj; // Duplikasi objek tanggal invoice_date_obj
+      $duedate_obj->modify("+" . $top . " days"); // Tambahkan TOP (jangka waktu pembayaran) ke objek tanggal
+
+      // Format duedate menjadi string dengan format 'Y-m-d' (optional, tergantung kebutuhan)
+      $duedate = $duedate_obj->format('Y-m-d');
    }
+
+   // Insert data into the 'invoice' table
+   $sql = "INSERT INTO invoice (noinvoice, iddo, idsegment, top, duedate, status, invoice_date, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
+           VALUES ('$noinvoice', '$iddo', '$idsegment', '$top', '$duedate', '$status', '$invoice_date', '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
+   // Execute the SQL query
+   mysqli_query($conn, $sql);
+
+   // Retrieve the last inserted invoice ID
+   $invoiceID = mysqli_insert_id($conn);
+
+   // Insert data into the 'invoicedetail' table
+   $idgrade = $_POST['idgrade'];
+   $idbarang = $_POST['idbarang'];
+   $weight = $_POST['weight'];
+   $price = $_POST['price'];
+   $discount = $_POST['discount'];
+   $discountrp = $_POST['discountrp'];
+   $amount = $_POST['amount'];
+
+   for ($i = 0; $i < count($idgrade); $i++) {
+      $idgrade[$i] = mysqli_real_escape_string($conn, $idgrade[$i]);
+      $idbarang[$i] = mysqli_real_escape_string($conn, $idbarang[$i]);
+      $weight[$i] = mysqli_real_escape_string($conn, $weight[$i]);
+      $price[$i] = str_replace(',', '', $price[$i]);
+      $discount[$i] = mysqli_real_escape_string($conn, $discount[$i]);
+      $discountrp[$i] = str_replace(',', '', $discountrp[$i]);
+      $amount[$i] = str_replace(',', '', $amount[$i]);
+
+      $sql = "INSERT INTO invoicedetail (idinvoice, idgrade, idbarang, weight, price, discount, discountrp, amount) 
+              VALUES ('$invoiceID', '{$idgrade[$i]}', '{$idbarang[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
+      // Execute the SQL query
+      mysqli_query($conn, $sql);
+   }
+
+   $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddo'";
+   mysqli_query($conn, $updateSql);
+
+   // Redirect to a success page or perform any other actions
+   header("location: invoice.php");
+   // exit();
 }

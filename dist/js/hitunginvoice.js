@@ -30,14 +30,27 @@ function calculateAmounts() {
       }
    }
 
-   // Menghitung pajak
+   // Log totalAmount sebelum dihitung ulang
+   console.log("Total Amount (sebelum dihitung ulang): " + totalAmount);
+
    var pajak = "<?= $pajak ?>";
    var taxElement = document.getElementById('tax');
    var taxAmount = 0;
 
+   // Menghitung totalAmount setelah dihitung ulang
+   for (var i = 0; i < amounts.length; i++) {
+      var amountValue = parseFloat(amounts[i].value.replace(',', '')); // Mengubah format angka dengan digit grouping
+      if (!isNaN(amountValue)) {
+         totalAmount += amountValue;
+      }
+   }
+
+   // Log totalAmount setelah dihitung ulang
+   console.log("Total Amount (setelah dihitung ulang): " + totalAmount);
+
    if (pajak === 'YES') {
       var taxPercentage = 0.11; // Persentase pajak 11%
-      taxAmount = totalAmount * taxPercentage;
+      taxAmount = totalAmount * taxPercentage; // Menggunakan totalAmount bukan balance
    }
 
    taxElement.value = taxAmount.toFixed(2);
@@ -75,11 +88,8 @@ function calculateAmounts() {
    // Mengubah format xweight
    document.getElementById('xweight').value = totalWeight.toFixed(2);
 
-   // Mengubah format tax
-   document.getElementById('tax').value = parseFloat(taxAmount.toFixed(2)).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-   });
+   // Hapus toLocaleString() agar nilai taxAmount tetap angka, bukan string dengan tanda koma
+   taxElement.value = taxAmount;
 
    // Mengubah format balance
    balanceElement.value = parseFloat(balance.toFixed(2)).toLocaleString(undefined, {

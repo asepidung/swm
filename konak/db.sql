@@ -134,6 +134,8 @@ CREATE TABLE invoice (
   iddo INT NOT NULL,
   top INT,
   duedate DATE,
+  status VARCHAR (30),
+  tgltf DATE,
   idsegment INT NOT NULL,
   invoice_date DATE NOT NULL,
   idcustomer INT NOT NULL,

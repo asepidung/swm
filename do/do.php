@@ -70,6 +70,8 @@ include "../mainsidebar.php";
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
                                        <span class="text-primary"><?= $tampil['status']; ?></span>
+                                    <?php } elseif ($tampil['status'] == "Unapproved") { ?>
+                                       <span class="text-danger"><?= $tampil['status']; ?></span>
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>
@@ -96,16 +98,10 @@ include "../mainsidebar.php";
                                        </div>
                                     <?php } else { ?>
                                        <div class="row">
-                                          <div class="col-2"></div>
                                           <div class="col">
-                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
-                                                <span class="text-info"><i class="fas fa-print"></i></span>
-                                             </a>
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank" class="btn btn-sm btn-success">
+                                                <i class="fas fa-edit"></i> print </a>
                                           </div>
-                                          <div class="col">
-                                             <span class="text-secondary"><i class="fas fa-edit"></i></span>
-                                          </div>
-                                          <div class="col-2"></div>
                                        </div>
                                     <?php } ?>
                                  </td>

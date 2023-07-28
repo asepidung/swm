@@ -15,7 +15,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col-12">
-               <div class="card">
+               <div class="card mt-3">
                   <!-- /.card-header -->
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
@@ -76,7 +76,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Delivery Order";
+   document.title = "DRAFT INVOICE";
 </script>
 <?php
 // require "../footnote.php";
