@@ -24,7 +24,7 @@ if ($stmtDeleteDetail->execute()) {
 
    if ($stmtDeleteInvoice->execute()) {
       // Lakukan UPDATE status di tabel do menjadi "Approved" berdasarkan ID DO
-      $sqlUpdateDoStatus = "UPDATE do SET status = 'Approved' WHERE iddo = ?";
+      $sqlUpdateDoStatus = "UPDATE do SET status = 'Unapproved' WHERE iddo = ?";
       $stmtUpdateDoStatus = $conn->prepare($sqlUpdateDoStatus);
       $stmtUpdateDoStatus->bind_param("i", $iddo);
 

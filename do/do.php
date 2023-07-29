@@ -71,7 +71,9 @@ include "../mainsidebar.php";
                                     <?php if ($tampil['status'] == "Approved") { ?>
                                        <span class="text-primary"><?= $tampil['status']; ?></span>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
-                                       <span class="text-danger"><?= $tampil['status']; ?></span>
+                                       <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
+                                          <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
+                                       </a>
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>

@@ -85,14 +85,14 @@ include "../mainsidebar.php";
                                     <div class="row">
                                        <div class="col-1"></div>
                                        <div class="col">
-                                          <a href="printinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-eye"></i></a>
+                                          <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-eye"></i></a>
                                        </div>
-                                       <div class="col">
+                                       <!-- <div class="col">
                                           <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-pencil-alt text-success"></i></a>
-                                       </div>
+                                       </div> -->
                                        <div class="col">
                                           <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin menghapus invoice ini?');">
-                                             <i class="fas fa-trash-alt text-danger"></i>
+                                             <i class="fas fa-eject text-danger"></i>
                                           </a>
                                        </div>
                                        <div class="col-1"></div>

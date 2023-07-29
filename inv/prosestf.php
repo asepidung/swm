@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $resultUpdateTglTF = mysqli_query($conn, $queryUpdateTglTF);
 
       if ($resultUpdateTglTF) {
-         echo "Data berhasil diperbarui.";
+         header("location: invoice.php");
       } else {
          echo "Gagal mengupdate tanggal transfer.";
       }

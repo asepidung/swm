@@ -276,7 +276,7 @@ $userid = $_SESSION['userid'];
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="inv" class="nav-link">
+                           <a href="inv/invoice.php" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Invoice</p>
                            </a>

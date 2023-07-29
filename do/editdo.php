@@ -204,9 +204,9 @@ $row = mysqli_fetch_assoc($result);
                     <div class="col-1">
                       <button type="submit" class="btn bg-gradient-primary ml-2" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
                     </div>
-                    <div class="col">
+                    <!-- <div class="col">
                       <button type="submit" name="approve" class="btn btn-block btn-outline-success" onclick="return confirm('Setelah di Approve anda tidak bisa lagi mengubah atau menghapus surat jalan terkait, tetapi anda masih bisa mencetak ulang')">Approve</button>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
