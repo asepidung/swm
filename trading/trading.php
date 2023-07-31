@@ -9,7 +9,7 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// check if idboning is set in $_GET array
+// check if idtrading is set in $_GET array
 $idusers = $_SESSION['idusers'];
 // Mengambil daftar barang
 $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
@@ -109,6 +109,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <th>Qty</th>
                     <th>Pcs</th>
                     <th>Author</th>
+                    <th>Hapus</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -129,6 +130,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $userid; ?></td>
+                      <td>
+                        <a href="hapus_trading.php?id=<?php echo $tampil['idtrading']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                          <i class="far fa-times-circle"></i>
+                        </a>
+                      </td>
                     </tr>
                   <?php
                     $no++;
