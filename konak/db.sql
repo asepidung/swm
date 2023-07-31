@@ -167,4 +167,16 @@ CREATE TABLE invoicedetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-  ALTER TABLE customers ADD COLUMN tukarfaktur BOOLEAN;
+CREATE TABLE trading (
+  idtrading INT PRIMARY KEY AUTO_INCREMENT,
+  idbarang INT,
+  qty DECIMAL(12,2),
+  pcs CHAR(5),
+  packdate DATE,
+  exp DATE,
+  kdbarcode VARCHAR(20) UNIQUE,
+  dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  iduser INT,
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
+);

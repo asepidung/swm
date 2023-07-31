@@ -14,7 +14,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    }
 
    $tgltf = mysqli_real_escape_string($conn, $_POST['tgltf']);
-
+   $top = mysqli_real_escape_string($conn, $_POST['top']);
+   $tgltf_date_obj = new DateTime($tgltf);
+   // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
+   $duedate_obj = clone $tgltf_date_obj; // Duplikasi objek tanggal tgltf_date_obj
+   $duedate_obj->modify("+" . $top . " days"); // Tambahkan TOP (jangka waktu pembayaran) ke objek tanggal
+   $duedate = $duedate_obj->format('Y-m-d');
    // Update status invoice menjadi "Sudah TF"
    $queryUpdateStatus = "UPDATE invoice SET status = 'Sudah TF' WHERE idinvoice = $idinvoice";
    $resultUpdateStatus = mysqli_query($conn, $queryUpdateStatus);
@@ -25,7 +30,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $resultUpdateTglTF = mysqli_query($conn, $queryUpdateTglTF);
 
       if ($resultUpdateTglTF) {
-         header("location: invoice.php");
+         // Update duedate column
+         $queryUpdateDuedate = "UPDATE invoice SET duedate = '$duedate' WHERE idinvoice = $idinvoice";
+         $resultUpdateDuedate = mysqli_query($conn, $queryUpdateDuedate);
+
+         if ($resultUpdateDuedate) {
+            header("location: invoice.php");
+         } else {
+            echo "Gagal mengupdate duedate.";
+         }
       } else {
          echo "Gagal mengupdate tanggal transfer.";
       }

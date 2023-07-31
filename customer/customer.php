@@ -42,8 +42,8 @@ include "../mainsidebar.php";
                               <th>Sales</th>
                               <th>Pajak</th>
                               <th>T.T.F</th>
-                              <th>Telepon</th>
-                              <th>Email</th>
+                              <!-- <th>Telepon</th> -->
+                              <!-- <th>Email</th> -->
                               <th>Catatan</th>
                               <th>Aksi</th>
                            </tr>
@@ -67,8 +67,8 @@ include "../mainsidebar.php";
                                  <!-- <td><?= $tampil['sales_referensi']; ?></td> -->
                                  <td><?= $tampil['pajak']; ?></td>
                                  <td><?= $tampil['tukarfaktur']; ?></td>
-                                 <td><?= $tampil['telepon']; ?></td>
-                                 <td><?= $tampil['email']; ?></td>
+                                 <!-- <td><?= $tampil['telepon']; ?></td> -->
+                                 <!-- <td><?= $tampil['email']; ?></td> -->
                                  <td><?= $tampil['catatan']; ?></td>
                                  <td class="text-center">
                                     <a href="editcust.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-pen"></i></a>

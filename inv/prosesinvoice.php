@@ -11,8 +11,6 @@ if (isset($_POST['submit'])) {
    $noinvoice = $_POST['noinvoice'];
    $iddo = $_POST['iddo'];
    $idsegment = $_POST['idsegment'];
-   $top = $_POST['top'];
-   $invoice_date = $_POST['invoice_date'];
    $idcustomer = $_POST['idcustomer'];
    $pocustomer = $_POST['pocustomer'];
    $donumber = $_POST['donumber'];
@@ -25,6 +23,8 @@ if (isset($_POST['submit'])) {
    $charge = str_replace(',', '', $_POST['charge']);
    $downpayment = str_replace(',', '', $_POST['downpayment']);
    $balance = str_replace(',', '', $_POST['balance']);
+   $top = $_POST['top'];
+   $invoice_date = $_POST['invoice_date'];
    $tukarfaktur = $_POST['tukarfaktur'];
    if ($tukarfaktur == 'YES') {
       $status = "Belum TF";

@@ -29,7 +29,7 @@ if ($stmtDeleteDetail->execute()) {
       $stmtUpdateDoStatus->bind_param("i", $iddo);
 
       if ($stmtUpdateDoStatus->execute()) {
-         echo "<script>alert('Invoice berhasil dihapus dan status DO diubah menjadi Approved.'); window.location='invoice.php';</script>";
+         echo "<script>alert('Invoice berhasil di Reject.'); window.location='invoice.php';</script>";
       } else {
          echo "Terjadi kesalahan saat mengupdate status DO: " . $conn->error;
       }

@@ -1,5 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+  header("location: ../verifications/login.php");
+}
 require "../konak/conn.php";
+
 
 $iddo = $_POST['iddo'];
 $deliverydate = $_POST['deliverydate'];

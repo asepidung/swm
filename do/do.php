@@ -69,7 +69,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
-                                       <span class="text-primary"><?= $tampil['status']; ?></span>
+                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $userid ?>"><?= $tampil['status']; ?></span>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
                                           <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>

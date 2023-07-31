@@ -34,6 +34,7 @@ if ($idinvoice <= 0) {
                                  <label>Customer</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" value="<?= $tampil['nama_customer']; ?>" readonly>
+                                    <input type="hidden" name="top" value="<?= $tampil['top']; ?>">
                                  </div>
                               </div>
                            </div>
