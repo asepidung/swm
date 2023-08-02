@@ -5,45 +5,61 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-if (isset($_POST['approve'])) {
-   $iddo = $_POST['iddo'];
-   $donumber = $_POST['donumber'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   // Mendapatkan data dari form
+   $iddo = isset($_POST['iddo']) ? intval($_POST['iddo']) : 0;
    $deliverydate = $_POST['deliverydate'];
-   $idcustomer = $_POST['idcustomer'];
+   $idcustomer = isset($_POST['idcustomer']) ? intval($_POST['idcustomer']) : 0;
    $po = $_POST['po'];
+   $donumber = $_POST['donumber'];
    $driver = $_POST['driver'];
    $plat = $_POST['plat'];
+   $note = $_POST['note'];
    $xbox = $_POST['xbox'];
    $xweight = $_POST['xweight'];
-   $status = "Approved";
-   $note = $_POST['note'];
    $idusers = $_SESSION['idusers'];
+   $status = "Approved";
 
-   $query_do = "INSERT INTO doreceipt (iddo, donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers) 
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-   $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("ississssidsi", $iddo, $donumber, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
-   $stmt_do->execute();
+   // Insert data ke tabel doreceipt
+   $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, idusers, status)
+                            VALUES ('$iddo', '$donumber', '$deliverydate', '$idcustomer', '$po', '$driver', '$plat', '$note', '$xbox', '$xweight', '$idusers', '$status')";
+   $resultInsertDoreceipt = mysqli_query($conn, $queryInsertDoreceipt);
 
-   $last_id = $stmt_do->insert_id;
+   if ($resultInsertDoreceipt) {
+      $iddoreceipt = mysqli_insert_id($conn); // Mendapatkan ID dari data yang baru saja di-insert
 
-   $idgrade = $_POST['idgrade'];
-   $idbarang = $_POST['idbarang'];
-   $box = $_POST['box'];
-   $weight = $_POST['weight'];
-   $notes = $_POST['notes'];
+      // Insert data ke tabel doreceiptdetail
+      if (isset($_POST['idgrade']) && isset($_POST['idbarang']) && isset($_POST['box']) && isset($_POST['weight'])) {
+         $idgrade = $_POST['idgrade'];
+         $idbarang = $_POST['idbarang'];
+         $boxes = $_POST['box'];
+         $weights = $_POST['weight'];
+         $notes = $_POST['notes'];
 
-   $query_dodetail = "INSERT INTO doreceiptdetail (iddoreceipt, idgrade, idbarang, box, weight, notes) VALUES (?,?,?,?,?,?)";
-   $stmt_dodetail = $conn->prepare($query_dodetail);
+         for ($i = 0; $i < count($idgrade); $i++) {
+            $box = intval($boxes[$i]);
+            $weight = floatval($weights[$i]);
+            $note = $notes[$i];
 
-   for ($i = 0; $i < count($idgrade); $i++) {
-      $stmt_dodetail->bind_param("iiiids", $last_id, $idgrade[$i], $idbarang[$i], $box[$i], $weight[$i], $notes[$i]);
-      $stmt_dodetail->execute();
+            $queryInsertDoreceiptDetail = "INSERT INTO doreceiptdetail (iddoreceipt, idgrade, idbarang, box, weight, notes)
+                                              VALUES ('$iddoreceipt', '$idgrade[$i]', '$idbarang[$i]', '$box', '$weight', '$note')";
+            $resultInsertDoreceiptDetail = mysqli_query($conn, $queryInsertDoreceiptDetail);
+            if (!$resultInsertDoreceiptDetail) {
+               die("Error saat memasukkan data doreceiptdetail: " . mysqli_error($conn));
+            }
+         }
+      }
+
+      // Update status pada tabel do menjadi "Approved"
+      $queryUpdateDo = "UPDATE do SET status = 'Approved' WHERE iddo = '$iddo'";
+      $resultUpdateDo = mysqli_query($conn, $queryUpdateDo);
+      if (!$resultUpdateDo) {
+         die("Error saat mengupdate status pada tabel do: " . mysqli_error($conn));
+      }
+
+      header("Location: do.php"); // Ganti do.php dengan halaman tujuan setelah data berhasil disimpan
+      exit;
+   } else {
+      die("Error saat memasukkan data doreceipt: " . mysqli_error($conn));
    }
-
-   $stmt_dodetail->close();
-   $stmt_do->close();
-   $conn->close();
-
-   header("location: do.php");
 }

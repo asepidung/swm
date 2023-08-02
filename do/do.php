@@ -83,7 +83,7 @@ include "../mainsidebar.php";
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
                                        <div class="row">
                                           <div class="col-4">
-                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank">
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>">
                                                 <span class="text-info"><i class="fas fa-print"></i></span>
                                              </a>
                                           </div>

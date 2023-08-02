@@ -131,7 +131,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="hidden" name="idgrade" value="<?= $rowdodetail['idgrade'] ?>">
+                                          <input type="hidden" name="idgrade[]" value="<?= $rowdodetail['idgrade'] ?>">
                                           <input type="text" class="form-control text-center" value="<?= $rowdodetail['nmgrade'] ?>" readonly>
                                        </div>
                                     </div>
@@ -139,7 +139,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <div class="col-3">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="hidden" name="idbarang" value="<?= $rowdodetail['idbarang'] ?>">
+                                          <input type="hidden" name="idbarang[]" value="<?= $rowdodetail['idbarang'] ?>">
                                           <input type="text" class="form-control" value="<?= $rowdodetail['nmbarang'] ?>" readonly>
                                        </div>
                                     </div>
@@ -161,7 +161,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" name="notes" class="form-control" placeholder="<?= $rowdodetail['notes'] ?>">
+                                          <input type="text" name="notes[]" class="form-control" placeholder="<?= $rowdodetail['notes'] ?>">
                                        </div>
                                     </div>
                                  </div>

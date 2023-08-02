@@ -209,7 +209,7 @@ CREATE TABLE doreceiptdetail (
   box INT,
   weight DECIMAL(12, 2),
   notes VARCHAR(255),
-  FOREIGN KEY (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (iddoreceipt) REFERENCES doreceipt (iddoreceipt),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );

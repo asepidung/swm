@@ -15,10 +15,11 @@ $plat = $_POST['plat'];
 $note = $_POST['note'];
 $xbox = $_POST['xbox'];
 $xweight = $_POST['xweight'];
+$status = "Unapproved";
 
-$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ? WHERE iddo = ?";
+$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ?,  status = ? WHERE iddo = ?";
 $stmt_do = mysqli_prepare($conn, $query_do);
-mysqli_stmt_bind_param($stmt_do, "sissssidi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $iddo);
+mysqli_stmt_bind_param($stmt_do, "sissssidsi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $iddo);
 
 if (mysqli_stmt_execute($stmt_do)) {
   $delete_query = "DELETE FROM dodetail WHERE iddo = ?";
@@ -49,31 +50,6 @@ if (mysqli_stmt_execute($stmt_do)) {
   mysqli_stmt_close($stmt_delete);
   mysqli_stmt_close($stmt_dodetail);
   mysqli_close($conn);
-
-  // Cek apakah tombol "approve" telah diklik
-  if (isset($_POST['approve'])) {
-    // Ambil nilai iddo dari form
-    $iddo = $_POST['iddo'];
-
-    // Lakukan koneksi ke database
-    require "../konak/conn.php";
-
-    // Update field "status" menjadi "approved" di tabel "do"
-    $query = "UPDATE do SET status = 'Approved' WHERE iddo = '$iddo'";
-    $result = mysqli_query($conn, $query);
-
-    // Periksa apakah update berhasil
-    if ($result) {
-      // Redirect atau lakukan tindakan lain setelah berhasil diupdate
-      // ...
-    } else {
-      // Penanganan kesalahan jika update gagal
-      // ...
-    }
-
-    // Tutup koneksi ke database
-    mysqli_close($conn);
-  }
 
   header("location: do.php");
 } else {

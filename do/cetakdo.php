@@ -158,8 +158,15 @@ $result_detail = mysqli_query($conn, $query_detail);
     Made By <?= $row_do['userid'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
   </p>
   <script>
-    document.title = "<?= $row_do['donumber']; ?>";
-    window.addEventListener("load", window.print());
+    document.title = "<?php echo $row_do['donumber']; ?>";
+    window.addEventListener("load", function() {
+      window.print();
+
+      // Redirect ke halaman do.php setelah 3 detik
+      setTimeout(function() {
+        window.location.href = "do.php";
+      }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
+    });
   </script>
 </body>
 
