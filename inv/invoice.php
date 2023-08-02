@@ -87,9 +87,9 @@ include "../mainsidebar.php";
                                        <div class="col">
                                           <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-eye"></i></a>
                                        </div>
-                                       <!-- <div class="col">
-                                          <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-pencil-alt text-success"></i></a>
-                                       </div> -->
+                                       <div class="col">
+                                          <a href="printinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-print text-success"></i></a>
+                                       </div>
                                        <div class="col">
                                           <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
                                              <i class="fas fa-eject text-danger"></i>

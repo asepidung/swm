@@ -111,6 +111,7 @@ CREATE TABLE do (
   status VARCHAR(20),
   xbox INT,
   xweight DECIMAL(12.2),
+  xweightreceipt DECIMAL(12, 2),
   idusers INT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
@@ -123,6 +124,7 @@ CREATE TABLE dodetail (
   idbarang INT,
   box INT,
   weight DECIMAL(12, 2),
+  weightreceipt DECIMAL(12, 2),
   notes VARCHAR(255),
   FOREIGN KEY (iddo) REFERENCES do (iddo),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
@@ -179,4 +181,35 @@ CREATE TABLE trading (
   iduser INT,
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (iduser) REFERENCES users (idusers)
+);
+CREATE TABLE doreceipt (
+  iddoreceipt INT PRIMARY KEY AUTO_INCREMENT,
+  iddo INT,
+  donumber VARCHAR(30) UNIQUE,
+  deliverydate DATE,
+  idcustomer INT,
+  po VARCHAR (50),
+  driver VARCHAR(20),
+  plat VARCHAR (12),
+  note VARCHAR (255),
+  status VARCHAR(20),
+  xbox INT,
+  xweight DECIMAL(12.2),
+  idusers INT,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE doreceiptdetail (
+  iddoreceiptdetail INT PRIMARY KEY AUTO_INCREMENT,
+  iddoreceipt INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight DECIMAL(12, 2),
+  notes VARCHAR(255),
+  FOREIGN KEY (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );

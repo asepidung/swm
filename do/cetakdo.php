@@ -54,6 +54,10 @@ $result_detail = mysqli_query($conn, $query_detail);
     .half-width {
       width: 50%;
     }
+
+    .small-text {
+      font-size: 10px;
+    }
   </style>
 </head>
 
@@ -150,11 +154,11 @@ $result_detail = mysqli_query($conn, $query_detail);
     </tr>
   </table>
   <br>
-  <p>
+  <p class="small-text">
     Made By <?= $row_do['userid'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
   </p>
   <script>
-    document.title = "<?= $row_do['donumber'] ?>";
+    document.title = "<?= $row_do['donumber']; ?>";
     window.addEventListener("load", window.print());
   </script>
 </body>

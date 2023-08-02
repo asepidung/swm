@@ -211,11 +211,11 @@ $resultinvoicedetail = mysqli_query($conn, $queryinvoicedetail);
                         </div>
                         <div class="row mt-3">
                            <div class="col-2">
-                              <button type="button" name="approved" class="btn btn-block bg-gradient-warning">Approve</button>
+                              <button type="button" name="approved" class="btn btn-block bg-gradient-success">Approve</button>
                            </div>
-                           <div class="col-2">
-                              <button type="button" name="disapproved" class="btn btn-block bg-gradient-warning">Disapprove</button>
-                           </div>
+                           <!-- <div class="col-2">
+                              <button type="button" name="disapproved" class="btn btn-block bg-gradient-danger">Disapprove</button>
+                           </div> -->
                            <div class="col-2">
                               <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Print</button>
                            </div>
