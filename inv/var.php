@@ -9,7 +9,7 @@ require "../konak/conn.php";
 if (isset($_POST['submit'])) {
    // Retrieve data from the form and remove commas
    $noinvoice = $_POST['noinvoice'];
-   $iddo = $_POST['iddo'];
+   $iddoreceipt = $_POST['iddoreceipt'];
    $idsegment = $_POST['idsegment'];
    $top = $_POST['top'];
    $invoice_date = $_POST['invoice_date'];
@@ -43,10 +43,12 @@ if (isset($_POST['submit'])) {
    }
 
    // Print data submitted via POST without commas
-   var_dump($pajak) . PHP_EOL;
-   var_dump($xamount) . PHP_EOL;
+   var_dump($pajak);
+   echo "<br>";
+   var_dump($xamount);
+   echo "<br>";
    echo "noinvoice: $noinvoice<br>";
-   echo "iddo: $iddo<br>";
+   echo "iddoreceipt: $iddoreceipt<br>";
    echo "idsegment: $idsegment<br>";
    echo "top: $top<br>";
    echo "tukarfaktur: $tukarfaktur<br>";

@@ -8,27 +8,27 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 include "invnumber.php";
-$iddo = $_GET['iddo'];
+$iddoreceipt = $_GET['iddoreceipt'];
 
 // Mengambil data dari tabel do
-$queryDo = "SELECT do.*, customers.nama_customer, customers.pajak, customers.top, customers.tukarfaktur, segment.idsegment
-            FROM do
-            INNER JOIN customers ON do.idcustomer = customers.idcustomer
+$queryDo = "SELECT doreceipt.*, customers.nama_customer, customers.pajak, customers.top, customers.tukarfaktur, segment.idsegment
+            FROM doreceipt
+            INNER JOIN customers ON doreceipt.idcustomer = customers.idcustomer
             INNER JOIN segment ON customers.idsegment = segment.idsegment
-            WHERE do.iddo = $iddo";
+            WHERE doreceipt.iddoreceipt = $iddoreceipt";
 $resultDo = mysqli_query($conn, $queryDo);
 $rowDo = mysqli_fetch_assoc($resultDo);
 $tukarfaktur = $rowDo['tukarfaktur'];
 $pajak = $rowDo['pajak'];
 $top = $rowDo['top'];
 $idsegment = $rowDo['idsegment'];
-// Mengambil data dari tabel dodetail, grade, dan barang
-$queryDodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
-                  FROM dodetail
-                  INNER JOIN grade ON dodetail.idgrade = grade.idgrade
-                  INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-                  WHERE dodetail.iddo = $iddo";
-$resultDodetail = mysqli_query($conn, $queryDodetail);
+// Mengambil data dari tabel doreceiptdetail, grade, dan barang
+$querydoreceiptdetail = "SELECT doreceiptdetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
+                  FROM doreceiptdetail
+                  INNER JOIN grade ON doreceiptdetail.idgrade = grade.idgrade
+                  INNER JOIN barang ON doreceiptdetail.idbarang = barang.idbarang
+                  WHERE doreceiptdetail.iddoreceipt = $iddoreceipt";
+$resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -38,7 +38,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
             <div class="col mt-3">
                <form method="POST" action="prosesinvoice.php">
                   <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice">
-                  <input type="hidden" value="<?= $iddo ?>" name="iddo" id="iddo">
+                  <input type="hidden" value="<?= $iddoreceipt ?>" name="iddoreceipt" id="iddoreceipt">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
                   <input type="hidden" value="<?= $top; ?>" name="top">
                   <input type="hidden" value="<?= $pajak; ?>" name="pajak">
@@ -50,7 +50,7 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                               <div class="form-group">
                                  <label for="invoice_date">Invoice Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="invoice_date" id="invoice_date" required>
+                                    <input type="date" class="form-control" name="invoice_date" id="invoice_date" required autofocus>
                                  </div>
                               </div>
                            </div>
@@ -131,28 +131,28 @@ $resultDodetail = mysqli_query($conn, $queryDodetail);
                                  </div>
                               </div>
                            </div>
-                           <?php while ($rowDodetail = mysqli_fetch_assoc($resultDodetail)) { ?>
+                           <?php while ($rowdoreceiptdetail = mysqli_fetch_assoc($resultdoreceiptdetail)) { ?>
                               <div class="row mt-n2">
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $rowDodetail['nmgrade'] ?>" readonly>
-                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $rowDodetail['idgrade'] ?>" readonly>
+                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $rowdoreceiptdetail['nmgrade'] ?>" readonly>
+                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $rowdoreceiptdetail['idgrade'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $rowDodetail['nmbarang'] ?>" readonly>
-                                          <input type="hidden" class="form-control" name="idbarang[]" id="idbarang" value="<?= $rowDodetail['idbarang'] ?>" readonly>
+                                          <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $rowdoreceiptdetail['nmbarang'] ?>" readonly>
+                                          <input type="hidden" class="form-control" name="idbarang[]" id="idbarang" value="<?= $rowdoreceiptdetail['idbarang'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="weight[]" value="<?= $rowDodetail['weight'] ?>" readonly>
+                                          <input type="text" class="form-control text-right" name="weight[]" value="<?= $rowdoreceiptdetail['weight'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>

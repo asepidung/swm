@@ -5,7 +5,6 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-
 $iddo = $_POST['iddo'];
 $deliverydate = $_POST['deliverydate'];
 $idcustomer = $_POST['idcustomer'];
@@ -17,6 +16,33 @@ $xbox = $_POST['xbox'];
 $xweight = $_POST['xweight'];
 $status = "Unapproved";
 
+// Mengecek apakah ada iddo yang sama dengan $iddo di tabel 'doreceipt'
+$check_doreceipt_query = "SELECT iddoreceipt FROM doreceipt WHERE iddo = ?";
+$stmt_check_doreceipt = mysqli_prepare($conn, $check_doreceipt_query);
+mysqli_stmt_bind_param($stmt_check_doreceipt, "i", $iddo);
+mysqli_stmt_execute($stmt_check_doreceipt);
+mysqli_stmt_store_result($stmt_check_doreceipt);
+
+// Menghapus data di tabel 'doreceiptdetail' jika ada iddoreceipt yang sama
+if (mysqli_stmt_num_rows($stmt_check_doreceipt) > 0) {
+    mysqli_stmt_bind_result($stmt_check_doreceipt, $iddoreceipt);
+    while (mysqli_stmt_fetch($stmt_check_doreceipt)) {
+        $delete_doreceiptdetail_query = "DELETE FROM doreceiptdetail WHERE iddoreceipt = ?";
+        $stmt_delete_doreceiptdetail = mysqli_prepare($conn, $delete_doreceiptdetail_query);
+        mysqli_stmt_bind_param($stmt_delete_doreceiptdetail, "i", $iddoreceipt);
+        mysqli_stmt_execute($stmt_delete_doreceiptdetail);
+        mysqli_stmt_close($stmt_delete_doreceiptdetail);
+    }
+}
+
+// Menghapus data di tabel 'doreceipt' yang memiliki iddo sama dengan tabel 'do'
+$delete_doreceipt_query = "DELETE FROM doreceipt WHERE iddo = ?";
+$stmt_delete_doreceipt = mysqli_prepare($conn, $delete_doreceipt_query);
+mysqli_stmt_bind_param($stmt_delete_doreceipt, "i", $iddo);
+mysqli_stmt_execute($stmt_delete_doreceipt);
+mysqli_stmt_close($stmt_delete_doreceipt);
+
+// Update data pada tabel 'do'
 $query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ?,  status = ? WHERE iddo = ?";
 $stmt_do = mysqli_prepare($conn, $query_do);
 mysqli_stmt_bind_param($stmt_do, "sissssidsi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $iddo);

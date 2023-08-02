@@ -66,7 +66,7 @@ include "../mainsidebar.php";
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= $tampil['noinvoice']; ?></td>
-                                 <td class="text-center"><?= substr($tampil['donumber'], 14); ?></td>
+                                 <td class="text-center"><?= substr($tampil['donumber'], 15); ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
                                  <td><?= $tampil['pocustomer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
@@ -91,7 +91,7 @@ include "../mainsidebar.php";
                                           <a href="printinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-print text-success"></i></a>
                                        </div>
                                        <div class="col">
-                                          <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
+                                          <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
                                              <i class="fas fa-eject text-danger"></i>
                                           </a>
                                        </div>

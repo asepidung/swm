@@ -34,10 +34,10 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
-                           JOIN customers ON do.idcustomer = customers.idcustomer
+                           $ambildata = mysqli_query($conn, "SELECT doreceipt.*, customers.nama_customer FROM doreceipt
+                           JOIN customers ON doreceipt.idcustomer = customers.idcustomer
                            WHERE status = 'Approved'
-                           ORDER BY do.donumber ASC");
+                           ORDER BY doreceipt.donumber ASC");
 
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
@@ -50,7 +50,7 @@ include "../mainsidebar.php";
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center text-primary">
-                                    <a href="newinv.php?iddo=<?= $tampil['iddo']; ?>">Buat Invoice <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="newinv.php?iddoreceipt=<?= $tampil['iddoreceipt']; ?>">Buat Invoice <i class="fas fa-arrow-circle-right"></i></a>
                                  </td>
                               </tr>
                            <?php

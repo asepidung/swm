@@ -130,58 +130,6 @@ CREATE TABLE dodetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-CREATE TABLE invoice (
-  idinvoice INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  noinvoice VARCHAR(30) NOT NULL UNIQUE,
-  iddo INT NOT NULL,
-  top INT,
-  duedate DATE,
-  status VARCHAR (30),
-  tgltf DATE,
-  idsegment INT NOT NULL,
-  invoice_date DATE NOT NULL,
-  idcustomer INT NOT NULL,
-  pocustomer VARCHAR(50) NOT NULL,
-  donumber VARCHAR (30) NOT NULL,
-  note VARCHAR(255),
-  xweight DECIMAL (12,2) NOT NULL,
-  xamount DECIMAL (12,2) NOT NULL,
-  xdiscount DECIMAL (12,2),
-  tax DECIMAL (12,2),
-  charge DECIMAL (12,2),
-  downpayment DECIMAL (12,2),
-  balance DECIMAL (12,2) NOT NULL,
-  FOREIGN KEY (iddo) REFERENCES do (iddo),
-  FOREIGN KEY (idsegment) REFERENCES segment (idsegment),
-  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
-);
-CREATE TABLE invoicedetail (
-  idinvoicedetail INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  idinvoice INT NOT NULL,
-  idgrade INT NOT NULL,
-  idbarang INT NOT NULL,
-  weight DECIMAL (12,2) NOT NULL,
-  price DECIMAL(12,2),
-  discount INT,
-  discountrp DECIMAL(12,2),
-  amount DECIMAL(12,2),
-  FOREIGN KEY (idinvoice) REFERENCES invoice (idinvoice),
-  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
-  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
-);
-CREATE TABLE trading (
-  idtrading INT PRIMARY KEY AUTO_INCREMENT,
-  idbarang INT,
-  qty DECIMAL(12,2),
-  pcs CHAR(5),
-  packdate DATE,
-  exp DATE,
-  kdbarcode VARCHAR(20) UNIQUE,
-  dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  iduser INT,
-  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
-  FOREIGN KEY (iduser) REFERENCES users (idusers)
-);
 CREATE TABLE doreceipt (
   iddoreceipt INT PRIMARY KEY AUTO_INCREMENT,
   iddo INT,
@@ -212,4 +160,56 @@ CREATE TABLE doreceiptdetail (
   FOREIGN KEY (iddoreceipt) REFERENCES doreceipt (iddoreceipt),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE invoice (
+  idinvoice INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  noinvoice VARCHAR(30) NOT NULL UNIQUE,
+  iddoreceipt INT NOT NULL,
+  top INT,
+  duedate DATE,
+  status VARCHAR (30),
+  tgltf DATE,
+  idsegment INT NOT NULL,
+  invoice_date DATE NOT NULL,
+  idcustomer INT NOT NULL,
+  pocustomer VARCHAR(50) NOT NULL,
+  donumber VARCHAR (30) NOT NULL,
+  note VARCHAR(255),
+  xweight DECIMAL (12,2) NOT NULL,
+  xamount DECIMAL (12,2) NOT NULL,
+  xdiscount DECIMAL (12,2),
+  tax DECIMAL (12,2),
+  charge DECIMAL (12,2),
+  downpayment DECIMAL (12,2),
+  balance DECIMAL (12,2) NOT NULL,
+  FOREIGN KEY (iddoreceipt) REFERENCES doreceipt (iddoreceipt),
+  FOREIGN KEY (idsegment) REFERENCES segment (idsegment),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
+);
+CREATE TABLE invoicedetail (
+  idinvoicedetail INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  idinvoice INT NOT NULL,
+  idgrade INT NOT NULL,
+  idbarang INT NOT NULL,
+  weight DECIMAL (12,2) NOT NULL,
+  price DECIMAL(12,2),
+  discount INT,
+  discountrp DECIMAL(12,2),
+  amount DECIMAL(12,2),
+  FOREIGN KEY (idinvoice) REFERENCES invoice (idinvoice),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE trading (
+  idtrading INT PRIMARY KEY AUTO_INCREMENT,
+  idbarang INT,
+  qty DECIMAL(12,2),
+  pcs CHAR(5),
+  packdate DATE,
+  exp DATE,
+  kdbarcode VARCHAR(20) UNIQUE,
+  dibuat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  iduser INT,
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
 );

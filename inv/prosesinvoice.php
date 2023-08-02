@@ -9,13 +9,16 @@ require "../konak/conn.php";
 if (isset($_POST['submit'])) {
    // Retrieve data from the form and remove commas
    $noinvoice = $_POST['noinvoice'];
-   $iddo = $_POST['iddo'];
+   $iddoreceipt = $_POST['iddoreceipt'];
    $idsegment = $_POST['idsegment'];
+   $top = $_POST['top'];
+   $invoice_date = $_POST['invoice_date'];
    $idcustomer = $_POST['idcustomer'];
    $pocustomer = $_POST['pocustomer'];
    $donumber = $_POST['donumber'];
    $note = $_POST['note'];
    $pajak = $_POST['pajak'];
+
    $xweight = $_POST['xweight'];
    $xamount = str_replace(',', '', $_POST['xamount']);
    $xdiscount = str_replace(',', '', $_POST['xdiscount']);
@@ -23,14 +26,12 @@ if (isset($_POST['submit'])) {
    $charge = str_replace(',', '', $_POST['charge']);
    $downpayment = str_replace(',', '', $_POST['downpayment']);
    $balance = str_replace(',', '', $_POST['balance']);
-   $top = $_POST['top'];
-   $invoice_date = $_POST['invoice_date'];
    $tukarfaktur = $_POST['tukarfaktur'];
    if ($tukarfaktur == 'YES') {
-      $status = "Belum TF";
+      $status = NULL;
       $duedate = NULL;
    } else {
-      $status = '-';
+      $status = 'hitung';
       $invoice_date_obj = new DateTime($invoice_date);
 
       // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
@@ -42,8 +43,8 @@ if (isset($_POST['submit'])) {
    }
 
    // Insert data into the 'invoice' table
-   $sql = "INSERT INTO invoice (noinvoice, iddo, idsegment, top, duedate, status, invoice_date, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
-           VALUES ('$noinvoice', '$iddo', '$idsegment', '$top', '$duedate', '$status', '$invoice_date', '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
+   $sql = "INSERT INTO invoice (noinvoice, iddoreceipt, idsegment, top, duedate, status, tgltf, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
+           VALUES ('$noinvoice', '$iddoreceipt', '$idsegment', '$top', '$duedate', '$status', NULL, '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
    // Execute the SQL query
    mysqli_query($conn, $sql);
 
@@ -60,11 +61,11 @@ if (isset($_POST['submit'])) {
    $amount = $_POST['amount'];
 
    for ($i = 0; $i < count($idgrade); $i++) {
-      $idgrade[$i] = mysqli_real_escape_string($conn, $idgrade[$i]);
-      $idbarang[$i] = mysqli_real_escape_string($conn, $idbarang[$i]);
-      $weight[$i] = mysqli_real_escape_string($conn, $weight[$i]);
+      $idgrade[$i] = $idgrade[$i];
+      $idbarang[$i] = $idbarang[$i];
+      $weight[$i] = $weight[$i];
       $price[$i] = str_replace(',', '', $price[$i]);
-      $discount[$i] = mysqli_real_escape_string($conn, $discount[$i]);
+      $discount[$i] = $discount[$i];
       $discountrp[$i] = str_replace(',', '', $discountrp[$i]);
       $amount[$i] = str_replace(',', '', $amount[$i]);
 
@@ -74,10 +75,10 @@ if (isset($_POST['submit'])) {
       mysqli_query($conn, $sql);
    }
 
-   $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddo'";
+   $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddoreceipt'";
    mysqli_query($conn, $updateSql);
 
    // Redirect to a success page or perform any other actions
    header("location: invoice.php");
-   // exit();
+   exit();
 }
