@@ -8,6 +8,7 @@ require "../konak/conn.php";
 // Check if the form is submitted
 if (isset($_POST['submit'])) {
    // Retrieve data from the form and remove commas
+   $iddo = $_POST['iddo'];
    $noinvoice = $_POST['noinvoice'];
    $iddoreceipt = $_POST['iddoreceipt'];
    $idsegment = $_POST['idsegment'];
@@ -28,10 +29,10 @@ if (isset($_POST['submit'])) {
    $balance = str_replace(',', '', $_POST['balance']);
    $tukarfaktur = $_POST['tukarfaktur'];
    if ($tukarfaktur == 'YES') {
-      $status = NULL;
+      $status = 'Belum TF';
       $duedate = NULL;
    } else {
-      $status = 'hitung';
+      $status = '-';
       $invoice_date_obj = new DateTime($invoice_date);
 
       // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
@@ -43,8 +44,8 @@ if (isset($_POST['submit'])) {
    }
 
    // Insert data into the 'invoice' table
-   $sql = "INSERT INTO invoice (noinvoice, iddoreceipt, idsegment, top, duedate, status, tgltf, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
-           VALUES ('$noinvoice', '$iddoreceipt', '$idsegment', '$top', '$duedate', '$status', NULL, '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
+   $sql = "INSERT INTO invoice (noinvoice, iddoreceipt, idsegment, top, duedate, invoice_date, status, tgltf, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
+           VALUES ('$noinvoice', '$iddoreceipt', '$idsegment', '$top', '$duedate', '$invoice_date', '$status', NULL, '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
    // Execute the SQL query
    mysqli_query($conn, $sql);
 
@@ -75,7 +76,10 @@ if (isset($_POST['submit'])) {
       mysqli_query($conn, $sql);
    }
 
-   $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddoreceipt'";
+   $updateSql1 = "UPDATE doreceipt SET status = 'Invoiced' WHERE iddoreceipt = '$iddoreceipt'";
+   mysqli_query($conn, $updateSql1);
+
+   $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddo'";
    mysqli_query($conn, $updateSql);
 
    // Redirect to a success page or perform any other actions

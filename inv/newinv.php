@@ -11,10 +11,11 @@ include "invnumber.php";
 $iddoreceipt = $_GET['iddoreceipt'];
 
 // Mengambil data dari tabel do
-$queryDo = "SELECT doreceipt.*, customers.nama_customer, customers.pajak, customers.top, customers.tukarfaktur, segment.idsegment
+$queryDo = "SELECT doreceipt.*, customers.nama_customer, customers.pajak, customers.top, customers.tukarfaktur, segment.idsegment, do.iddo
             FROM doreceipt
             INNER JOIN customers ON doreceipt.idcustomer = customers.idcustomer
             INNER JOIN segment ON customers.idsegment = segment.idsegment
+            INNER JOIN do ON doreceipt.iddo = do.iddo
             WHERE doreceipt.iddoreceipt = $iddoreceipt";
 $resultDo = mysqli_query($conn, $queryDo);
 $rowDo = mysqli_fetch_assoc($resultDo);
@@ -22,6 +23,8 @@ $tukarfaktur = $rowDo['tukarfaktur'];
 $pajak = $rowDo['pajak'];
 $top = $rowDo['top'];
 $idsegment = $rowDo['idsegment'];
+$iddo = $rowDo['iddo'];
+
 // Mengambil data dari tabel doreceiptdetail, grade, dan barang
 $querydoreceiptdetail = "SELECT doreceiptdetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
                   FROM doreceiptdetail
@@ -41,6 +44,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                   <input type="hidden" value="<?= $iddoreceipt ?>" name="iddoreceipt" id="iddoreceipt">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
                   <input type="hidden" value="<?= $top; ?>" name="top">
+                  <input type="hidden" value="<?= $iddo; ?>" name="iddo">
                   <input type="hidden" value="<?= $pajak; ?>" name="pajak">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">

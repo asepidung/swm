@@ -49,10 +49,11 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT invoice.*, customers.nama_customer, customers.tukarfaktur 
+                           $ambildata = mysqli_query($conn, "SELECT invoice.*, customers.nama_customer, customers.tukarfaktur, do.iddo
                            FROM invoice 
-                           INNER JOIN customers ON invoice.idcustomer = customers.idcustomer ORDER BY noinvoice DESC
-                           ");
+                           INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
+                           LEFT JOIN do ON invoice.donumber = do.donumber
+                           ORDER BY noinvoice DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $tukarfaktur = $tampil['tukarfaktur'];
                               $status = $tampil['status'];
@@ -61,9 +62,10 @@ include "../mainsidebar.php";
                               $tgltf_timestamp = strtotime($tgltf);
                               $duedate_timestamp = strtotime("+$top day", $tgltf_timestamp);
                               $duedate = date('d-M-y', $duedate_timestamp);
+                              $iddo = $tampil['iddo'];
                            ?>
                               <tr>
-                                 <td><?= $no; ?></td>
+                                 <td class="text-center"><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= $tampil['noinvoice']; ?></td>
                                  <td class="text-center"><?= substr($tampil['donumber'], 15); ?></td>
@@ -91,7 +93,7 @@ include "../mainsidebar.php";
                                           <a href="printinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-print text-success"></i></a>
                                        </div>
                                        <div class="col">
-                                          <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
+                                          <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
                                              <i class="fas fa-eject text-danger"></i>
                                           </a>
                                        </div>
