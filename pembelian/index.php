@@ -14,8 +14,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="newpembelian.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -34,19 +33,17 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>DO Number</th>
-                              <th>Tgl Kirim</th>
-                              <th>Customer</th>
-                              <th>PO</th>
+                              <th>PR Number</th>
+                              <th>Receiping Date</th>
+                              <th>Supplier</th>
                               <th>xQty</th>
                               <th>Catatan</th>
-                              <th>Status</th>
                               <th>Made By</th>
                               <th>Actions</th>
                            </tr>
                         </thead>
                         <?php
-                        $query_total_weight_keseluruhan = "SELECT SUM(xweight) AS total_weight_keseluruhan FROM do";
+                        $query_total_weight_keseluruhan = "SELECT SUM(xweight) AS total_weight_keseluruhan FROM pembelian";
                         $result_total_weight_keseluruhan = mysqli_query($conn, $query_total_weight_keseluruhan);
                         $row_total_weight_keseluruhan = mysqli_fetch_assoc($result_total_weight_keseluruhan);
                         $total_weight_keseluruhan = $row_total_weight_keseluruhan['total_weight_keseluruhan'];
@@ -54,31 +51,19 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
-                           JOIN customers ON do.idcustomer = customers.idcustomer
-                           ORDER BY (do.status = 'Unapproved') DESC, do.donumber;
+                           $ambildata = mysqli_query($conn, "SELECT pembelian.*, supplier.nmsupplier FROM pembelian
+                           JOIN supplier ON pembelian.idsupplier = supplier.idsupplier
+                           ORDER BY nmsupplier DESC ;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td class="text-center"><?= $tampil['donumber']; ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
-                                 <td><?= $tampil['nama_customer']; ?></td>
-                                 <td><?= $tampil['po']; ?></td>
+                                 <td class="text-center"><?= $tampil['prnumber']; ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['receivedate'])); ?></td>
+                                 <td><?= $tampil['nmsupplier']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center">
-                                    <?php if ($tampil['status'] == "Approved") { ?>
-                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $userid ?>"><?= $tampil['status']; ?></span>
-                                    <?php } elseif ($tampil['status'] == "Unapproved") { ?>
-                                       <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
-                                          <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
-                                       </a>
-                                    <?php } else {
-                                       echo $tampil['status'];
-                                    } ?>
-                                 </td>
                                  <td class="text-center"><?= $userid ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
@@ -137,7 +122,7 @@ include "../mainsidebar.php";
 
    <script>
       // Mengubah judul halaman web
-      document.title = "Delivery Order";
+      document.title = "Purchase Receipt";
    </script>
    <?php
    // require "../footnote.php";

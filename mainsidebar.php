@@ -76,13 +76,13 @@
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Sales Quotations</p>
+                <p>Purchase Order</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../pembelian" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Sales Order</p>
+                <p>Purchase Receipt</p>
               </a>
             </li>
             <li class="nav-item">

@@ -30,23 +30,12 @@ function calculateAmounts() {
       }
    }
 
-   // Log totalAmount sebelum dihitung ulang
-   console.log("Total Amount (sebelum dihitung ulang): " + totalAmount);
+   // Log totalAmount before calculating tax
+   console.log("Total Amount (before calculating tax): " + totalAmount);
 
    var pajak = "<?= $pajak ?>";
    var taxElement = document.getElementById('tax');
    var taxAmount = 0;
-
-   // Menghitung totalAmount setelah dihitung ulang
-   for (var i = 0; i < amounts.length; i++) {
-      var amountValue = parseFloat(amounts[i].value.replace(',', '')); // Mengubah format angka dengan digit grouping
-      if (!isNaN(amountValue)) {
-         totalAmount += amountValue;
-      }
-   }
-
-   // Log totalAmount setelah dihitung ulang
-   console.log("Total Amount (setelah dihitung ulang): " + totalAmount);
 
    if (pajak === 'YES') {
       var taxPercentage = 0.11; // Persentase pajak 11%
@@ -55,12 +44,19 @@ function calculateAmounts() {
 
    taxElement.value = taxAmount.toFixed(2);
 
-   // Menghitung balance
+   // Calculate balance
    var charge = parseFloat(document.getElementById('charge').value);
    var downPayment = parseFloat(document.getElementById('downpayment').value);
    var balanceElement = document.getElementById('balance');
    var balance = totalAmount + taxAmount + charge - downPayment;
 
+   // Update the relevant fields with the calculated values
+   document.getElementById('xamount').value = parseFloat(totalAmount.toFixed(2)).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+   });
+   document.getElementById('xweight').value = totalWeight.toFixed(2);
+   taxElement.value = taxAmount.toFixed(2);
    balanceElement.value = balance.toFixed(2);
 
    // Mengubah format discountrp[]
@@ -78,15 +74,6 @@ function calculateAmounts() {
          maximumFractionDigits: 2
       });
    }
-
-   // Mengubah format xamount
-   document.getElementById('xamount').value = parseFloat(totalAmount.toFixed(2)).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-   });
-
-   // Mengubah format xweight
-   document.getElementById('xweight').value = totalWeight.toFixed(2);
 
    // Hapus toLocaleString() agar nilai taxAmount tetap angka, bukan string dengan tanda koma
    taxElement.value = taxAmount;
