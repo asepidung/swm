@@ -29,7 +29,16 @@ if ($stmtDeleteDetail->execute()) {
       $stmtUpdateDoStatus->bind_param("i", $iddo);
 
       if ($stmtUpdateDoStatus->execute()) {
-         echo "<script>alert('Invoice berhasil di Reject.'); window.location='invoice.php';</script>";
+         // Lakukan UPDATE status di tabel doreceipt menjadi "Approved" berdasarkan ID DO
+         $sqlUpdateDoReceiptStatus = "UPDATE doreceipt SET status = 'Approved' WHERE iddo = ?";
+         $stmtUpdateDoReceiptStatus = $conn->prepare($sqlUpdateDoReceiptStatus);
+         $stmtUpdateDoReceiptStatus->bind_param("i", $iddo);
+
+         if ($stmtUpdateDoReceiptStatus->execute()) {
+            echo "<script>alert('Invoice berhasil di Reject.'); window.location='invoice.php';</script>";
+         } else {
+            echo "Terjadi kesalahan saat mengupdate status doreceipt: " . $conn->error;
+         }
       } else {
          echo "Terjadi kesalahan saat mengupdate status DO: " . $conn->error;
       }

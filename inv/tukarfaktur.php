@@ -49,6 +49,14 @@ if ($idinvoice <= 0) {
                            </div>
                            <div class="col">
                               <div class="form-group">
+                                 <label>Invoice Date</label>
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" value="<?= date("d-M-Y", strtotime($tampil['invoice_date'])); ?>" readonly>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col">
+                              <div class="form-group">
                                  <label>Amount</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" value="<?= "Rp." . " " . number_format($tampil['balance'], 2); ?>" readonly>
