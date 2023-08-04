@@ -39,6 +39,7 @@ include "../mainsidebar.php";
                     <th>Supplier</th>
                     <th>Jml Sapi</th>
                     <th>Ttl Weight</th>
+                    <th>Avg/Kg</th>
                     <th>Catatan</th>
                     <th>AKSI</th>
                   </tr>
@@ -63,6 +64,11 @@ include "../mainsidebar.php";
                     $result_total_weight = mysqli_query($conn, $query_total_weight);
                     $row_total_weight = mysqli_fetch_assoc($result_total_weight);
                     $total_weight = $row_total_weight['total_weight'];
+
+                    $avg_weight_per_sapi = 0;
+                    if ($tampil['qtysapi'] > 0) {
+                      $avg_weight_per_sapi = $total_weight / $tampil['qtysapi'];
+                    }
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -71,6 +77,7 @@ include "../mainsidebar.php";
                       <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
                       <td><?= $tampil['qtysapi']; ?></td>
                       <td class="text-right"><?= number_format($total_weight, 2); ?></td>
+                      <td class="text-right"><?= number_format($avg_weight_per_sapi, 2); ?></td>
                       <td class="text-left"><?= $tampil['keterangan']; ?></td>
                       </button>
                       <td>
@@ -107,7 +114,7 @@ include "../mainsidebar.php";
                   <th colspan="4"></th>
                   <th class="text-center"><?= number_format($total_sapi); ?> </td>
                   <th class="text-right"><?= number_format($total_berat_keseluruhan, 2); ?></td>
-                  <th colspan="2"></th>
+                  <th colspan="3"></th>
                 </tfoot>
               </table>
             </div>

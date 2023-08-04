@@ -89,13 +89,13 @@ $result_detail = mysqli_query($conn, $query_detail);
       </tr>
       <tr>
         <td style="width:137px">Driver</td>
-        <td style="width:383px">: TOPIK</td>
+        <td style="width:383px">: <?= $row_do['driver']; ?></td>
         <td style="width:155px">Address</td>
         <td colspan="1" rowspan="3" style="width:513px" valign="top">: <?= $row_do['alamat']; ?></td>
       </tr>
       <tr>
         <td style="width:137px">No POL</td>
-        <td style="width:383px">: F 2111 FAB</td>
+        <td style="width:383px">: <?= $row_do['plat']; ?></td>
         <td style="width:155px">&nbsp;</td>
       </tr>
     </tbody>
