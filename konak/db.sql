@@ -185,9 +185,12 @@ CREATE TABLE invoice (
   charge DECIMAL (12,2),
   downpayment DECIMAL (12,2),
   balance DECIMAL (12,2) NOT NULL,
+  idusers INT,
+  creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (iddoreceipt) REFERENCES doreceipt (iddoreceipt),
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment),
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
 CREATE TABLE invoicedetail (
   idinvoicedetail INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
