@@ -52,6 +52,18 @@ include "donumber.php";
                                  </div>
                               </div>
                            </div>
+                           <div class="col">
+                              <div class="form-group">
+                                 <label for="alamat">Alamat <span class="text-danger">*</span></label>
+                                 <div class="input-group">
+                                    <select class="form-control" name="alamat" id="alamat" required>
+                                       <option value="">Pilih Alamat</option>
+                                    </select>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
                            <div class="col-2">
                               <div class="form-group">
                                  <label for="po">Cust PO</label>
@@ -76,11 +88,9 @@ include "donumber.php";
                                  </div>
                               </div>
                            </div>
-                        </div>
-                        <div class="row">
                            <div class="col">
                               <div class="form-group">
-                                 <!-- <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label> -->
+                                 <Label for="note">Catatan Pengiriman</Label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
                                  </div>
@@ -183,19 +193,41 @@ include "donumber.php";
                   </div>
                </form>
             </div>
-            <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
+   </section>
 </div>
-<!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
 
 <script>
+   function fillAlamatOptions() {
+      var selectedCustomerId = document.getElementById('idcustomer').value;
+      var alamatSelect = document.getElementById('alamat');
+      alamatSelect.innerHTML = '<option value="">Memuat Alamat...</option>'; // Tampilkan pesan "Memuat Alamat..."
+
+      // Kirim permintaan AJAX untuk mengambil data alamat
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+         if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+               // Jika permintaan berhasil, isi opsi alamat dengan data yang diterima
+               alamatSelect.innerHTML = xhr.responseText;
+            } else {
+               // Jika permintaan gagal, tampilkan pesan error
+               alamatSelect.innerHTML = '<option value="">Gagal Memuat Alamat</option>';
+            }
+         }
+      };
+      xhr.open('POST', 'get_alamat.php', true); // Ganti "get_alamat.php" dengan URL ke file PHP yang akan mengambil data alamat
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.send('idcustomer=' + encodeURIComponent(selectedCustomerId));
+   }
+
+   // Panggil fungsi fillAlamatOptions() saat pilihan customer berubah
+   document.getElementById('idcustomer').addEventListener('change', fillAlamatOptions);
+
+   // Panggil fungsi fillAlamatOptions() saat halaman dimuat (untuk mengisi opsi alamat jika ada customer yang dipilih sebelumnya)
+   fillAlamatOptions();
+
    function calculateTotals() {
       var boxes = document.getElementsByName("box[]");
       var weights = document.getElementsByName("weight[]");

@@ -7,7 +7,7 @@ require "../konak/conn.php";
 
 $iddo = $_GET['iddo'];
 // Query untuk mengambil data dari tabel do
-$query = "SELECT do.*, customers.nama_customer, customers.alamat, users.userid
+$query = "SELECT do.*, customers.nama_customer, users.userid
           FROM do 
           INNER JOIN customers ON do.idcustomer = customers.idcustomer 
           INNER JOIN users ON do.idusers = users.idusers

@@ -3,7 +3,9 @@ require "../konak/conn.php";
 
 // mengambil data dari form
 $nama_customer = $_POST['nama_customer'];
-$alamat = $_POST['alamat'];
+$alamat1 = $_POST['alamat1'];
+$alamat2 = $_POST['alamat2'];
+$alamat3 = $_POST['alamat3'];
 $idsegment = $_POST['idsegment'];
 $top = $_POST['top'];
 $pajak = $_POST['pajak'];
@@ -13,11 +15,11 @@ $tukarfaktur = $_POST['tukarfaktur'];
 $catatan = $_POST['catatan'];
 
 // membuat prepared statement
-$stmt = $conn->prepare("INSERT INTO customers (nama_customer, alamat, idsegment, top, pajak, tukarfaktur, telepon, email, catatan)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO customers (nama_customer, alamat1, alamat2, alamat3, idsegment, top, pajak, tukarfaktur, telepon, email, catatan)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // bind parameter
-$stmt->bind_param("ssiisssss", $nama_customer, $alamat, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan);
+$stmt->bind_param("ssssiisssss", $nama_customer, $alamat1, $alamat2, $alamat3, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan);
 
 // mengeksekusi prepared statement
 if ($stmt->execute()) {

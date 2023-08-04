@@ -28,8 +28,16 @@ include "../mainsidebar.php";
                                  <input type="text" class="form-control" name="nama_customer" id="nama_customer" autofocus required>
                               </div>
                               <div class="form-group">
-                                 <label for="alamat">Alamat <span class="text-danger">*</label>
-                                 <input type="text" class="form-control" name="alamat" id="alamat" required>
+                                 <label for="alamat">Alamat 1<span class="text-danger">*</label>
+                                 <input type="text" class="form-control" name="alamat1" id="alamat1" required>
+                              </div>
+                              <div class="form-group">
+                                 <label for="alamat">Alamat 2</label>
+                                 <input type="text" class="form-control" name="alamat2" id="alamat2">
+                              </div>
+                              <div class="form-group">
+                                 <label for="alamat">Alamat 3</label>
+                                 <input type="text" class="form-control" name="alamat3" id="alamat3">
                               </div>
                               <div class="form-group">
                                  <label for="idsegment">Segment <span class="text-danger">*</span></label>

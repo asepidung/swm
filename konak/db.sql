@@ -81,7 +81,9 @@ VALUES
 CREATE TABLE customers (
   idcustomer INT PRIMARY KEY AUTO_INCREMENT,
   nama_customer VARCHAR(100) UNIQUE,
-  alamat VARCHAR(200),
+  alamat1 VARCHAR(200),
+  alamat2 VARCHAR(200),
+  alamat3 VARCHAR(200),
   idsegment INT,
   top INT,
   sales_referensi VARCHAR(50),
@@ -104,6 +106,7 @@ CREATE TABLE do (
   donumber VARCHAR(30) UNIQUE,
   deliverydate DATE,
   idcustomer INT,
+  alamat VARCHAR(255);
   po VARCHAR (50),
   driver VARCHAR(20),
   plat VARCHAR (12),

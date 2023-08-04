@@ -9,6 +9,7 @@ if (isset($_POST['submit'])) {
    $donumber = $_POST['donumber'];
    $deliverydate = $_POST['deliverydate'];
    $idcustomer = $_POST['idcustomer'];
+   $alamat = $_POST['alamat'];
    $po = $_POST['po'];
    $driver = $_POST['driver'];
    $plat = $_POST['plat'];
@@ -18,9 +19,9 @@ if (isset($_POST['submit'])) {
    $note = $_POST['note'];
    $idusers = $_SESSION['idusers'];
 
-   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("ssissssidsi", $donumber, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
+   $stmt_do->bind_param("ssisssssidsi", $donumber, $deliverydate, $idcustomer, $alamat, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
    $stmt_do->execute();
 
    $last_id = $stmt_do->insert_id;

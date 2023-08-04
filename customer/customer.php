@@ -58,7 +58,7 @@ include "../mainsidebar.php";
                               <tr>
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
-                                 <td><?= $tampil['alamat']; ?></td>
+                                 <td><?= $tampil['alamat1']; ?></td>
                                  <td><?= $tampil['nmsegment']; ?></td>
                                  <td><?= $tampil['top'] . " Hari"; ?></td>
                                  <td>Muryani</td>
