@@ -40,10 +40,7 @@ $result_detail = mysqli_query($conn, $query_detail);
     }
 
     body {
-      background-color: white;
-      color: black;
-      font-family: 'poppins', 'cambria';
-      font-kerning: normal;
+      font-family: Cambria, sans-serif;
       font-size: 14px;
     }
 
@@ -67,38 +64,54 @@ $result_detail = mysqli_query($conn, $query_detail);
     Jl. Perum Asabri Blok B Desa Sukasirna Kec. Jonggol Kab. Bogor Telp. 021-89935103
   </p>
   <hr />
-  <table cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td style="width:137px">DO Numb</td>
-        <td style="width:383px">: <?= $row_do['donumber']; ?></td>
-        <td style="width:155px">Delivery Date</td>
-        <td style="width:513px">: <?= date('D, d-M-Y', strtotime($row_do['deliverydate'])); ?></td>
-      </tr>
-      <tr>
-        <td style="width:137px">SO NUmb</td>
-        <td style="height:0px; width:383px">: -</td>
-        <td style="height:0px; width:155px">PO Number</td>
-        <td style="height:0px; width:513px">: <?= $row_do['po']; ?></td>
-      </tr>
-      <tr>
-        <td style="width:137px">Sales Ref</td>
-        <td style="width:383px">: MURYANI</td>
-        <td style="width:155px">Customer</td>
-        <td style="width:513px">: <?= $row_do['nama_customer']; ?></td>
-      </tr>
-      <tr>
-        <td style="width:137px">Driver</td>
-        <td style="width:383px">: <?= $row_do['driver']; ?></td>
-        <td style="width:155px">Address</td>
-        <td colspan="1" rowspan="3" style="width:513px" valign="top">: <?= $row_do['alamat']; ?></td>
-      </tr>
-      <tr>
-        <td style="width:137px">No POL</td>
-        <td style="width:383px">: <?= $row_do['plat']; ?></td>
-        <td style="width:155px">&nbsp;</td>
-      </tr>
-    </tbody>
+  <table width="100%">
+    <tr>
+      <td width="12%">Do Number</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"><?= $row_do['donumber']; ?></td>
+      <td width="12%">Delivery Date</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"><?= date('d-M-Y', strtotime($row_do['deliverydate'])); ?></td>
+    </tr>
+    <tr>
+      <td width="12%">So Number</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"> -</td>
+      <td width="12%">PO Number</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"><?= $row_do['po']; ?></td>
+    </tr>
+    <tr>
+      <td width="12%">Sales Ref</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"> Muryani</td>
+      <td width="12%">Customer</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"><?= $row_do['nama_customer']; ?></td>
+    </tr>
+    <tr>
+      <td width="12%">Driver</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"> <?= $row_do['driver']; ?></td>
+      <td class="border-collapse" width="12%" valign="top">Address</td>
+      <td class="border-collapse" width="2%" valign="top" align="right">:</td>
+      <!-- <td width="30%" align="justify" valign="top"><?= $row_do['alamat']; ?></td> -->
+      <td rowspan="3" width="30%" align="justify" valign="top">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. </td>
+    </tr>
+    <tr>
+      <td width="12%">No POL</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"> <?= $row_do['plat']; ?></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr height="30px">
+      <td width="12%"></td>
+      <td width="2%"></td>
+      <td width="30%"></td>
+      <td width="12%"></td>
+      <td width="2%"></td>
+    </tr>
   </table>
   <br>
   <table width="100%" border="1" cellpadding="2" class="border-collapse">
@@ -147,26 +160,26 @@ $result_detail = mysqli_query($conn, $query_detail);
   </i>
   <table width="100%">
     <tr align="center">
-      <td width="25%">Warehouse <br><br><br><br> ....................................</td>
-      <td width="25%">Driver <br><br><br><br> ....................................</td>
-      <td width="25%">Security <br><br><br><br> ....................................</td>
-      <td width="25%">Customer <br><br><br><br> ....................................</td>
+      <td width="25%">Warehouse <br><br><br><br><br> ....................................</td>
+      <td width="25%">Driver <br><br><br><br><br> ....................................</td>
+      <td width="25%">Security <br><br><br><br><br> ....................................</td>
+      <td width="25%">Customer <br><br><br><br><br> ....................................</td>
     </tr>
   </table>
   <br>
-  <p class="small-text">
+  <p class="small-text" align="right">
     Made By <?= $row_do['userid'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
   </p>
   <script>
     document.title = "<?php echo $row_do['donumber']; ?>";
-    window.addEventListener("load", function() {
-      window.print();
+    // window.addEventListener("load", function() {
+    //   window.print();
 
-      // Redirect ke halaman do.php setelah 3 detik
-      setTimeout(function() {
-        window.location.href = "do.php";
-      }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
-    });
+    //   // Redirect ke halaman do.php setelah 3 detik
+    //   setTimeout(function() {
+    //     window.location.href = "do.php";
+    //   }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
+    // });
   </script>
 </body>
 

@@ -3,7 +3,36 @@ session_start();
 if (!isset($_SESSION['login'])) {
    header("location: verifications/login.php");
 }
-$userid = $_SESSION['userid'];
+require "../konak/conn.php";
+require "terbilang.php";
+$idinvoice = $_GET['idinvoice'];
+$idusers = $_SESSION['idusers'];
+
+// Tampilkan data dari tabel invoice
+$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, doreceipt.alamat, customers.nama_customer, segment.banksegment, segment.accname, segment.accnumber 
+                  FROM invoice 
+                  INNER JOIN doreceipt ON invoice.iddoreceipt = doreceipt.iddoreceipt 
+                  INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
+                  INNER JOIN segment ON customers.idsegment = segment.idsegment
+                  WHERE invoice.idinvoice = '$idinvoice'";
+
+$result_invoice = mysqli_query($conn, $query_invoice);
+$row_invoice = mysqli_fetch_assoc($result_invoice);
+
+// Tampilkan data dari tabel invoicedetail
+$query_invoicedetail = "SELECT invoicedetail.*, barang.nmbarang 
+                        FROM invoicedetail 
+                        INNER JOIN barang ON invoicedetail.idbarang = barang.idbarang 
+                        WHERE idinvoice = '$idinvoice'";
+$result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
+
+$balance = $row_invoice['balance'];
+$terbilang = terbilang($balance);
+
+// Mendapatkan nilai dari tabel segment berdasarkan nmcustomer
+$banksegment = $row_invoice['banksegment'];
+$accname = $row_invoice['accname'];
+$accnumber = $row_invoice['accnumber'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,208 +52,178 @@ $userid = $_SESSION['userid'];
    <link rel="stylesheet" href="../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
    <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
    <link rel="stylesheet" href="../plugins/summernote/summernote-bs4.min.css">
+   <style>
+      .mt-0 {
+         margin: 0 0 0 0;
+      }
+   </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
    <div class="wrapper">
       <div class="container">
          <div class="row mb-2">
-            <img src="../dist/img/invoiceswm.png" alt="Logo-Invoice" class="btn-block">
+            <img src="../dist/img/hic.png" alt=" Logo-Invoice" class="btn-block">
          </div>
+         <div class="col text-right mt-3 mb-2">
+            <h4><?= $row_invoice['noinvoice']; ?></h4>
+         </div>
+         <table class="table table-borderless table-sm">
+            <tr>
+               <td width="15%">Do Number</td>
+               <td width="1%">:</td>
+               <td width="30%"><?= $row_invoice['donumber']; ?></td>
+               <td></td>
+               <td width="15%">Invoice Date</td>
+               <td width="1%">:</td>
+               <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['invoice_date'])); ?></td>
+            </tr>
+            <tr>
+               <td width="15%">Delivery Date</td>
+               <td width="1%">:</td>
+               <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['deliverydate'])); ?></td>
+               <td></td>
+               <td width="15%">Bill To</td>
+               <td width="1%">:</td>
+               <td width="30%"><?= $row_invoice['nama_customer']; ?></td>
+            </tr>
+            <tr>
+               <td width="15%">Terms</td>
+               <td width="1%">:</td>
+               <td width="30%"><?= $row_invoice['top']; ?> Days</td>
+               <td></td>
+               <td width="15%" valign="top">Address</td>
+               <td width="1%" valign="top">:</td>
+               <td rowspan="4" width="30%" valign="top" class="text-jutify"><?= $row_invoice['alamat']; ?></td>
+            </tr>
+            <tr>
+               <td width="15%">Due Date</td>
+               <td width="1%">:</td>
+               <td width="30%" colspan="4"><?= date('d-M-Y', strtotime($row_invoice['duedate'])); ?></td>
+            </tr>
+            <tr>
+               <td width="15%">Sales Ref</td>
+               <td width="1%">:</td>
+               <td width="30%" colspan="4">Muryani</td>
+            </tr>
+            <tr>
+               <td width="15%">Customer PO</td>
+               <td width="1%">:</td>
+               <td width="30%" colspan="4"><?= $row_invoice['pocustomer']; ?></td>
+            </tr>
+         </table>
+         <table class="table table-striped table-borderless table-sm">
+            <thead class="thead-dark">
+               <tr class="text-center text-white">
+                  <th>#</th>
+                  <th>Prod Descriptions</th>
+                  <th>Weight</th>
+                  <th>Price</th>
+                  <th>Disc %</th>
+                  <th>Disc Rp</th>
+                  <th>Total</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $no = 1;
+               while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
+                  <tr class="text-right">
+                     <td class="text-center"><?= $no; ?></td>
+                     <td class="text-left"><?= $row_invoicedetail['nmbarang']; ?></td>
+                     <td><?= number_format($row_invoicedetail['weight'], 2); ?></td>
+                     <td><?= number_format($row_invoicedetail['price'], 2); ?></td>
+                     <td class="text-center"><?= $row_invoicedetail['discount']; ?></td>
+                     <td><?= number_format($row_invoicedetail['discountrp'], 2); ?></td>
+                     <td><?= number_format($row_invoicedetail['amount'], 2); ?></td>
+                  </tr>
+               <?php $no++;
+               } ?>
+            </tbody>
+            <tfoot class="text-right">
+               <tr>
+                  <th colspan="2"></th>
+                  <th class="thead-light"><?= number_format($row_invoice['xweight'], 2); ?></th>
+                  <td colspan="3">Grand Total :</td>
+                  <th colspan="3" class="thead-light"><?= number_format($row_invoice['xamount'], 2); ?></th>
+               </tr>
+               <tr>
+                  <td colspan="4" rowspan="2" class="text-justify border-0" valign="top">
+                     <i>
+                        <strong><?= "Says :" . " " . terbilang($row_invoice['balance']) . " " . "Rupiah"; ?></strong>
+                     </i>
+                  </td>
+                  <td colspan="2">Tax 11% :</td>
+                  <th colspan="3"><?= number_format($row_invoice['tax'], 2); ?></th>
+               </tr>
+               <tr>
+                  <td colspan="2">Charge :</td>
+                  <th colspan="3"><?= number_format($row_invoice['charge'], 2); ?></th>
+               </tr>
+               <tr>
+                  <td colspan="4" rowspan="2" class="text-justify" valign="top"><?= $row_invoice['note']; ?></td>
+                  <td colspan="2">DownPayment :</td>
+                  <th colspan="3"><?= number_format($row_invoice['downpayment'], 2); ?></th>
+               </tr>
+               <tr>
+                  <td colspan="2">Balance :</td>
+                  <th colspan="3" class="thead-light"><?= number_format($row_invoice['balance'], 2); ?></th>
+               </tr>
+            </tfoot>
+         </table>
          <div class="row">
-            <table class="table table-sm table-borderless mb-3">
-               <thead>
+            <div class="col-4">
+               <table class="table table-borderless table-sm">
                   <tr>
-                     <th>Bill To</th>
-                     <td class="text-right">:</td>
-                     <td>LION DCA SUPERINDO</td>
-                     <td></td>
-                     <th>Invoice Number</th>
-                     <td class="text-right">:</td>
-                     <td>INV-SWM/23/VIII/000252</td>
+                     <th>Payment Methods</th>
                   </tr>
                   <tr>
-                     <th>Terms</th>
-                     <td class="text-right">:</td>
-                     <td>30 Days (transfer)</td>
-                     <td></td>
-                     <th>Invoice Date</th>
-                     <td class="text-right">:</td>
-                     <td>03-Aug-2023</td>
+                     <td colspan="4"><?= $banksegment; ?></td>
                   </tr>
                   <tr>
-                     <th>Due Date</th>
-                     <td class="text-right">:</td>
-                     <td>07-Aug-2023</td>
-                     <td></td>
-                     <th>DO Number</th>
-                     <td class="text-right">:</td>
-                     <td>INV-DO/23/VIII/000252</td>
+                     <td>ACC. NAME</td>
+                     <td>:</td>
+                     <td><?= $accname; ?></td>
                   </tr>
                   <tr>
-                     <th>Sales Ref</th>
-                     <td class="text-right">:</td>
-                     <td>MURYANI</td>
-                     <td></td>
-                     <th>DO Date</th>
-                     <td class="text-right">:</td>
-                     <td>03-Aug-2023</td>
+                     <td>ACC. NUMBER</td>
+                     <td>:</td>
+                     <td><?= $accnumber; ?></td>
                   </tr>
-                  <tr>
-                     <th>Cust. PO</th>
-                     <td class="text-right">:</td>
-                     <td colspan="5">PO 123456789123</td>
-                  </tr>
-               </thead>
-            </table>
-            <table class="table table-bordered table-sm">
-               <thead class="text-center">
-                  <tr>
-                     <th>#</th>
-                     <th>Product Desc</th>
-                     <th>Qty (Kg) </th>
-                     <th>Price </th>
-                     <th>Discount % </th>
-                     <th>Discount Rp </th>
-                     <th>Total </th>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-                  <tr class="text-right">
-                     <td class="text-center">1</td>
-                     <td class="text-left">Cuberoll</td>
-                     <td>31.52</td>
-                     <td>152.000</td>
-                     <td class="text-center">2%</td>
-                     <td>15.000</td>
-                     <td>1,576,235.13</td>
-                  </tr>
-               </tbody>
-               <tfoot class="text-right">
-                  <tr>
-                     <th colspan="3">22,171,252.36</th>
-                     <th colspan="3">Grand Total :</th>
-                     <th>22,171,252.36</th>
-                  </tr>
-                  <tr>
-                     <th colspan="6">Tax 11% :</th>
-                     <th>22,171,252.36</th>
-                  </tr>
-                  <tr>
-                     <th colspan="6">Charge :</th>
-                     <th>22,171,252.36</th>
-                  </tr>
-                  <tr>
-                     <th colspan="6">DownPayment :</th>
-                     <th>22,171,252.36</th>
-                  </tr>
-                  <tr>
-                     <th colspan="6">Balance :</th>
-                     <th>22,171,252.36</th>
-                  </tr>
-               </tfoot>
-            </table>
-            <div class="row">
-               <div class="col">
-                  Says : <br>
-                  <i> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt excepturi </i>
-               </div>
+               </table>
+            </div>
+            <div class="col-4"></div>
+            <div class="col text-center mt-4">
+               F I N A N C E
+               <br><br><br><br><br>
+               ( ............................ )
             </div>
          </div>
-         <div class="row mt-3">
-            <div class="col-8">
-               PAYMENT METHODS
-            </div>
-         </div>
-         <div class="row">
-            <div class="col">
-               BNI (BANK NEGARA INDONESIA)
-               <br>
-               ACC NAME : PT. SANTI WIJAYA MEAT
-               <br>
-               ACC NUMBER : 8585889991
-            </div>
-         </div>
-         <!-- /.container-fluid -->
-
       </div>
-      <script src="../plugins/jquery/jquery.min.js"></script>
-      <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script src="../plugins/select2/js/select2.full.min.js"></script>
-      <script src="../plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
-      <script src="../plugins/moment/moment.min.js"></script>
-      <script src="../plugins/inputmask/jquery.inputmask.min.js"></script>
-      <script src="../plugins/daterangepicker/daterangepicker.js"></script>
-      <script src="../plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-      <script src="../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-      <script src="../plugins/bs-stepper/js/bs-stepper.min.js"></script>
-      <script src="../plugins/dropzone/min/dropzone.min.js"></script>
-      <script src="../dist/js/adminlte.min.js"></script>
-      <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
-      <script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-      <script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-      <script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-      <script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-      <script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-      <script src="../plugins/jszip/jszip.min.js"></script>
-      <script src="../plugins/pdfmake/pdfmake.min.js"></script>
-      <script src="../plugins/pdfmake/vfs_fonts.js"></script>
-      <script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-      <script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+   </div>
+
+   <script src="../plugins/jquery/jquery.min.js"></script>
+   <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+   <script src="../plugins/select2/js/select2.full.min.js"></script>
+   <script src="../plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+   <script src="../plugins/moment/moment.min.js"></script>
+   <script src="../plugins/inputmask/jquery.inputmask.min.js"></script>
+   <script src="../plugins/daterangepicker/daterangepicker.js"></script>
+   <script src="../plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+   <script src="../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+   <script src="../plugins/bs-stepper/js/bs-stepper.min.js"></script>
+   <script src="../plugins/dropzone/min/dropzone.min.js"></script>
+   <script src="../dist/js/adminlte.min.js"></script>
+   <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+   <script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+   <script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+   <script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+   <script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+   <script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+   <script src="../plugins/jszip/jszip.min.js"></script>
+   <script src="../plugins/pdfmake/pdfmake.min.js"></script>
+   <script src="../plugins/pdfmake/vfs_fonts.js"></script>
+   <script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+   <script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
 
 
 </body>

@@ -9,16 +9,30 @@ $idinvoice = $_GET['idinvoice'];
 $idusers = $_SESSION['idusers'];
 
 // Tampilkan data dari tabel invoice
-$query_invoice = "SELECT * FROM invoice WHERE idinvoice = '$idinvoice'";
+$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, doreceipt.alamat, customers.nama_customer, segment.banksegment, segment.accname, segment.accnumber 
+                  FROM invoice 
+                  INNER JOIN doreceipt ON invoice.iddoreceipt = doreceipt.iddoreceipt 
+                  INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
+                  INNER JOIN segment ON customers.idsegment = segment.idsegment
+                  WHERE invoice.idinvoice = '$idinvoice'";
+
 $result_invoice = mysqli_query($conn, $query_invoice);
 $row_invoice = mysqli_fetch_assoc($result_invoice);
 
 // Tampilkan data dari tabel invoicedetail
-$query_invoicedetail = "SELECT * FROM invoicedetail WHERE idinvoice = '$idinvoice'";
+$query_invoicedetail = "SELECT invoicedetail.*, barang.nmbarang 
+                        FROM invoicedetail 
+                        INNER JOIN barang ON invoicedetail.idbarang = barang.idbarang 
+                        WHERE idinvoice = '$idinvoice'";
 $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
 
 $balance = $row_invoice['balance'];
 $terbilang = terbilang($balance);
+
+// Mendapatkan nilai dari tabel segment berdasarkan nmcustomer
+$banksegment = $row_invoice['banksegment'];
+$accname = $row_invoice['accname'];
+$accnumber = $row_invoice['accnumber'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,10 +41,16 @@ $terbilang = terbilang($balance);
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title><?= $row_invoice['noinvoice']; ?></title>
+   <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <style>
       body {
          font-family: Cambria, sans-serif;
          font-size: 14px;
+      }
+
+      .noinvoice {
+         font-size: 18px;
+         font-weight: bold;
       }
 
       /* Styling for table with border-collapse */
@@ -62,6 +82,10 @@ $terbilang = terbilang($balance);
          margin: 5px 0 10px 0;
       }
 
+      .mt {
+         margin: 40px 0 0 0;
+      }
+
       .h2tea {
          margin: 5px 0 0 0;
       }
@@ -77,7 +101,7 @@ $terbilang = terbilang($balance);
    <img src="../dist/img/hib.png" alt="headerinvoice" width="100%">
 
    <!-- Invoice Number -->
-   <h4 class="h1tea" align="right"><?= $row_invoice['noinvoice']; ?></h4>
+   <p class="noinvoice" align="right"><?= $row_invoice['noinvoice']; ?></p>
 
    <!-- Table 1 (Information) -->
    <table width="100%">
@@ -90,12 +114,12 @@ $terbilang = terbilang($balance);
          <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['invoice_date'])); ?></td>
       </tr>
       <tr>
-         <td width="12%">Do Date</td>
+         <td width="12%">Delivery Date</td>
          <td width="2%" align="right">:</td>
          <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['deliverydate'])); ?></td>
          <td width="12%">Bill To</td>
          <td width="2%" align="right">:</td>
-         <td width="30%"><?= $row_invoice['idcustomer']; ?></td>
+         <td width="30%"><?= $row_invoice['nama_customer']; ?></td>
       </tr>
       <tr>
          <td width="12%">Terms</td>
@@ -138,7 +162,7 @@ $terbilang = terbilang($balance);
       while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
          <tr align="right">
             <td class="tdcollapse" align="center"><?= $no; ?></td>
-            <td class="tdcollapse" align="left"><?= $row_invoicedetail['idbarang']; ?></td>
+            <td class="tdcollapse" align="left"><?= $row_invoicedetail['nmbarang']; ?></td>
             <td class="tdcollapse"><?= number_format($row_invoicedetail['weight'], 2); ?></td>
             <td class="tdcollapse"><?= number_format($row_invoicedetail['price'], 2); ?></td>
             <td class="tdcollapse" align="center"><?= $row_invoicedetail['discount']; ?></td>
@@ -191,31 +215,26 @@ $terbilang = terbilang($balance);
    <div class="h2tea">Payment Methods</div>
    <table width="100%">
       <tr>
-         <td colspan="4">BCA (BANK CENTRAL ASIA)</td>
+         <td colspan="4"><?= $banksegment; ?></td>
          <td valign="top" align="center" rowspan="2">
-            FINANCE
+            F I N A N C E
          </td>
       </tr>
       <tr>
          <td width="20%">ACC Name</td>
          <td width="5%">:</td>
-         <td width="25%">SANTI WIJAYA L</td>
+         <td width="25%"><?= $accname; ?></td>
          <td width="25%"></td>
       </tr>
       <tr>
          <td width="20%">ACC. NUMBER</td>
          <td width="5%">:</td>
-         <td width="25%">7115407007</td>
+         <td width="25%"><?= $accnumber; ?></td>
          <td></td>
       </tr>
       <tr>
          <td colspan="4"></td>
-         <td>
-         <td>
-      </tr>
-      <tr>
-         <td colspan="4"></td>
-         <td valign="bottom" align="center" width="25%">....................................</td>
+         <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
       </tr>
    </table>
 
