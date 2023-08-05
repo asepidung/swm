@@ -50,6 +50,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <label>Customer </label>
                                  <div class="input-group">
                                     <input type="hidden" name="idcustomer" value="<?= $row['idcustomer'] ?>">
+                                    <input type="hidden" name="alamat" value="<?= $row['alamat'] ?>">
                                     <input type="text" class="form-control" value="<?= $row['nama_customer'] ?>" readonly>
                                  </div>
                               </div>

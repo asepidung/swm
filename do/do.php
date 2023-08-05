@@ -56,7 +56,7 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
                            JOIN customers ON do.idcustomer = customers.idcustomer
-                           ORDER BY (do.status = 'Unapproved') DESC, do.donumber;
+                           ORDER BY donumber DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
