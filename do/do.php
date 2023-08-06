@@ -59,6 +59,15 @@ include "../mainsidebar.php";
                            ORDER BY donumber DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+
+                              // $no = 1;
+                              // $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, do.xweight AS do_xweight, doreceipt.xweight AS doreceipt_xweight
+                              //                FROM do
+                              //                JOIN customers ON do.idcustomer = customers.idcustomer
+                              //                JOIN doreceipt ON do.iddo = doreceipt.iddo
+                              //                ORDER BY donumber DESC;");
+                              // while ($tampil = mysqli_fetch_array($ambildata)) {
+
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>

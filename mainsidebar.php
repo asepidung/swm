@@ -68,19 +68,19 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-shopping-bag"></i>
             <p>
-              PEMBELIAN
+              WAREHOUSE
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../do/do.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Purchase Order</p>
+                <p>Delivery Order</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="../pembelian" class="nav-link">
+              <a href="../do." class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Purchase Receipt</p>
               </a>
