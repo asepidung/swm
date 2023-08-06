@@ -38,10 +38,8 @@ include "../mainsidebar.php";
                               <th>No Invoice</th>
                               <th>No DO</th>
                               <th>Tgl Invoice</th>
-                              <!-- <th>Tgl Do</th> -->
                               <th>PO</th>
                               <th>Amount</th>
-                              <!-- <th>Due Date</th> -->
                               <th>Status</th>
                               <th>Action</th>
                            </tr>
@@ -85,19 +83,26 @@ include "../mainsidebar.php";
                                  </td>
                                  <td class="text-center">
                                     <div class="row">
-                                       <div class="col-1"></div>
                                        <div class="col">
-                                          <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-eye"></i></a>
+                                          <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                             <i class="fas fa-calendar-check"></i>
+                                          </a>
                                        </div>
                                        <div class="col">
-                                          <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>"><i class="fas fa-print text-success"></i></a>
+                                          <div class="dropleft">
+                                             <i class="fas fa-print text-success" data-toggle="dropdown" aria-expanded="false"></i>
+                                             <div class="dropdown-menu">
+                                                <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">Print BW</a>
+                                                <a href="pic.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">
+                                                   <span class="text-"></span>Print Colour</a>
+                                             </div>
+                                          </div>
                                        </div>
                                        <div class="col">
                                           <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
-                                             <i class="fas fa-eject text-danger"></i>
+                                             <i class="fas fa-eject" style="color: #d50707;"></i>
                                           </a>
                                        </div>
-                                       <div class="col-1"></div>
                                     </div>
                                  </td>
                               </tr>

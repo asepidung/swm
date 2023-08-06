@@ -223,13 +223,13 @@ $accnumber = $row_invoice['accnumber'];
       <tr>
          <td width="20%">ACC Name</td>
          <td width="5%">:</td>
-         <td width="25%"><?= $accname; ?></td>
+         <td width="25%"><strong><?= $accname; ?></strong></td>
          <td width="25%"></td>
       </tr>
       <tr>
          <td width="20%">ACC. NUMBER</td>
          <td width="5%">:</td>
-         <td width="25%"><?= $accnumber; ?></td>
+         <td width="25%"><strong><?= $accnumber; ?></strong></td>
          <td></td>
       </tr>
       <tr>

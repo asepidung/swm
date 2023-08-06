@@ -63,7 +63,7 @@ $accnumber = $row_invoice['accnumber'];
    <div class="wrapper">
       <div class="container">
          <div class="row mb-2">
-            <img src="../dist/img/hic.png" alt=" Logo-Invoice" class="btn-block">
+            <img src="../dist/img/hic.png" alt=" Logo-Invoice" class="img-fluid">
          </div>
          <div class="col text-right mt-3 mb-2">
             <h4><?= $row_invoice['noinvoice']; ?></h4>
@@ -182,12 +182,12 @@ $accnumber = $row_invoice['accnumber'];
                   <tr>
                      <td>ACC. NAME</td>
                      <td>:</td>
-                     <td><?= $accname; ?></td>
+                     <td><strong><?= $accname; ?></strong></td>
                   </tr>
                   <tr>
                      <td>ACC. NUMBER</td>
                      <td>:</td>
-                     <td><?= $accnumber; ?></td>
+                     <td><strong><?= $accnumber; ?></strong></td>
                   </tr>
                </table>
             </div>
