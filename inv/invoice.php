@@ -94,7 +94,7 @@ include "../mainsidebar.php";
                                              <div class="dropdown-menu">
                                                 <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">Print BW</a>
                                                 <a href="pic.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">
-                                                   <span class="text-"></span>Print Colour</a>
+                                                   <span class="text-primary">Print Colour</span></a>
                                              </div>
                                           </div>
                                        </div>

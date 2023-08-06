@@ -48,9 +48,48 @@ $accnumber = $row_invoice['accnumber'];
          font-size: 14px;
       }
 
+      tfoot {
+         padding: 20 0 0 0;
+      }
+
+      .floatingButtonContainer {
+         position: fixed;
+         bottom: 20px;
+         left: 50%;
+         transform: translateX(-50%);
+         z-index: 9999;
+      }
+
+      .floatingButton {
+         background-color: #f0ad4e;
+         color: #fff;
+         padding: 12px 20px;
+         border: none;
+         border-radius: 5px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+         font-size: 16px;
+         cursor: pointer;
+      }
+
+      /* Hover effect */
+      .floatingButton:hover {
+         background-color: #e69537;
+      }
+
+      /* Media query untuk tampilan cetak */
+      @media print {
+         .floatingButton {
+            display: none;
+         }
+      }
+
       .noinvoice {
-         font-size: 18px;
+         font-size: 16px;
          font-weight: bold;
+      }
+
+      .tableContainer {
+         padding: 20 0 0 0;
       }
 
       /* Styling for table with border-collapse */
@@ -68,7 +107,7 @@ $accnumber = $row_invoice['accnumber'];
       /* Styling for data cells (td) with border */
       .tdcollapse {
          border: 1px solid black;
-         padding: 2px;
+         padding: 4px;
       }
 
       /* Styling for data cells (td) without border */
@@ -97,6 +136,9 @@ $accnumber = $row_invoice['accnumber'];
 </head>
 
 <body>
+   <div class="floatingButtonContainer">
+      <button class="btn bg-gradient-warning floatingButton" onclick="printPage()">Print Invoice</button>
+   </div>
    <!-- Header -->
    <img src="../dist/img/hib.png" alt="headerinvoice" width="100%">
 
@@ -145,63 +187,56 @@ $accnumber = $row_invoice['accnumber'];
          <td width="30%"><?= $row_invoice['pocustomer']; ?></td>
       </tr>
    </table>
-
-   <!-- Table 2 (Invoice Details) -->
-   <table class="tablecollapse" width="100%">
-      <tr>
-         <th class="tdcollapse">#</th>
-         <th class="tdcollapse">Prod Descriptions</th>
-         <th class="tdcollapse">Weight</th>
-         <th class="tdcollapse">Price</th>
-         <th class="tdcollapse">Disc %</th>
-         <th class="tdcollapse">Disc Rp</th>
-         <th class="tdcollapse">Total</th>
-      </tr>
-      <?php
-      $no = 1;
-      while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
-         <tr align="right">
-            <td class="tdcollapse" align="center"><?= $no; ?></td>
-            <td class="tdcollapse" align="left"><?= $row_invoicedetail['nmbarang']; ?></td>
-            <td class="tdcollapse"><?= number_format($row_invoicedetail['weight'], 2); ?></td>
-            <td class="tdcollapse"><?= number_format($row_invoicedetail['price'], 2); ?></td>
-            <td class="tdcollapse" align="center"><?= $row_invoicedetail['discount']; ?></td>
-            <td class="tdcollapse"><?= number_format($row_invoicedetail['discountrp'], 2); ?></td>
-            <td class="tdcollapse"><?= number_format($row_invoicedetail['amount'], 2); ?></td>
-         </tr>
-      <?php $no++;
-      } ?>
-      <tfoot>
+   <div class="tableContainer">
+      <table class="tablecollapse" width="100%">
          <tr>
-            <th colspan="3" align="right"><?= number_format($row_invoice['xweight'], 2); ?></th>
-            <td colspan="3" align="right">Grand Total :</td>
-            <th class="noborder pad" align="right"><?= number_format($row_invoice['xamount'], 2); ?></th>
+            <th class="tdcollapse">#</th>
+            <th class="tdcollapse">Prod Descriptions</th>
+            <th class="tdcollapse">Weight</th>
+            <th class="tdcollapse">Price</th>
+            <th class="tdcollapse">Disc %</th>
+            <th class="tdcollapse">Disc Rp</th>
+            <th class="tdcollapse">Total</th>
          </tr>
-         <?php if ($row_invoice['tax'] > 1) { ?>
+         <?php
+         $no = 1;
+         while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
+            <tr align="right">
+               <td class="tdcollapse" align="center"><?= $no; ?></td>
+               <td class="tdcollapse" align="left"><?= $row_invoicedetail['nmbarang']; ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['weight'], 2); ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['price'], 2); ?></td>
+               <td class="tdcollapse" align="center"><?= $row_invoicedetail['discount']; ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['discountrp'], 2); ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['amount'], 2); ?></td>
+            </tr>
+         <?php $no++;
+         } ?>
+         <tfoot>
+            <tr>
+               <th colspan="3" align="right"><?= number_format($row_invoice['xweight'], 2); ?></th>
+               <td colspan="3" align="right">Grand Total :</td>
+               <th class="noborder pad" align="right"><?= number_format($row_invoice['xamount'], 2); ?></th>
+            </tr>
             <tr class="noborder">
                <td colspan="6" align="right">Tax 11% :</td>
                <th class="pad" align="right"><?= number_format($row_invoice['tax'], 2); ?></th>
             </tr>
-         <?php } ?>
-         <?php if ($row_invoice['charge'] > 1) { ?>
             <tr class="noborder">
                <td colspan="6" align="right">Charge :</td>
                <th class="pad" align="right"><?= number_format($row_invoice['charge'], 2); ?></th>
             </tr>
-         <?php } ?>
-         <?php if ($row_invoice['downpayment'] > 1) { ?>
             <tr class="noborder">
                <td colspan="6" align="right">DownPayment :</td>
                <th class="pad" align="right"><?= number_format($row_invoice['downpayment'], 2); ?></th>
             </tr>
-         <?php } ?>
-         <tr class="noborder">
-            <td colspan="6" align="right">Balance :</td>
-            <th class="pad" align="right"><?= number_format($row_invoice['balance'], 2); ?></th>
-         </tr>
-      </tfoot>
-   </table>
-
+            <tr class="noborder">
+               <td colspan="6" align="right">Balance :</td>
+               <th class="pad" align="right"><?= number_format($row_invoice['balance'], 2); ?></th>
+            </tr>
+         </tfoot>
+      </table>
+   </div>
    <table class="h2tea" width="50%">
       <tr>
          <td>Says :</td>
@@ -238,6 +273,11 @@ $accnumber = $row_invoice['accnumber'];
       </tr>
    </table>
 
+   <script>
+      function printPage() {
+         window.print();
+      }
+   </script>
 </body>
 
 </html>

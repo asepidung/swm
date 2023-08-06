@@ -28,19 +28,17 @@ if (isset($_POST['submit'])) {
    $downpayment = str_replace(',', '', $_POST['downpayment']);
    $balance = str_replace(',', '', $_POST['balance']);
    $tukarfaktur = $_POST['tukarfaktur'];
+   // hitung duedate
+   $invoice_date_obj = new DateTime($invoice_date);
+   $duedate_obj = clone $invoice_date_obj; // Duplikasi objek tanggal invoice_date_obj
+   $duedate_obj->modify("+" . $top . " days"); // Tambahkan TOP (jangka waktu pembayaran) ke objek tanggal
+   $duedate = $duedate_obj->format('Y-m-d');
+   //  akhir hitung duedate
+
    if ($tukarfaktur == 'YES') {
       $status = 'Belum TF';
-      $duedate = NULL;
    } else {
       $status = '-';
-      $invoice_date_obj = new DateTime($invoice_date);
-
-      // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
-      $duedate_obj = clone $invoice_date_obj; // Duplikasi objek tanggal invoice_date_obj
-      $duedate_obj->modify("+" . $top . " days"); // Tambahkan TOP (jangka waktu pembayaran) ke objek tanggal
-
-      // Format duedate menjadi string dengan format 'Y-m-d' (optional, tergantung kebutuhan)
-      $duedate = $duedate_obj->format('Y-m-d');
    }
 
    // Insert data into the 'invoice' table

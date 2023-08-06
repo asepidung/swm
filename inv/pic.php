@@ -56,18 +56,33 @@ $accnumber = $row_invoice['accnumber'];
       .mt-0 {
          margin: 0 0 0 0;
       }
+
+      .floatingButton {
+         position: fixed;
+         top: 20px;
+         right: 20px;
+         z-index: 9999;
+      }
+
+      /* Media query untuk tampilan cetak */
+      @media print {
+         .floatingButton {
+            display: none;
+         }
+      }
    </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
+   <button class="btn bg-gradient-warning floatingButton" onclick="printPage()" media="print">Print Invoice</button>
    <div class="wrapper">
       <div class="container">
          <div class="row mb-2">
             <img src="../dist/img/hic.png" alt=" Logo-Invoice" class="img-fluid">
          </div>
-         <div class="col text-right mt-3 mb-2">
+         <span class="float-right mt-3 mb-2">
             <h4><?= $row_invoice['noinvoice']; ?></h4>
-         </div>
+         </span>
          <table class="table table-borderless table-sm">
             <tr>
                <td width="15%">Do Number</td>
@@ -112,9 +127,9 @@ $accnumber = $row_invoice['accnumber'];
                <td width="30%" colspan="4"><?= $row_invoice['pocustomer']; ?></td>
             </tr>
          </table>
-         <table class="table table-striped table-borderless table-sm">
+         <table class="table table-sm border-0">
             <thead class="thead-dark">
-               <tr class="text-center text-white">
+               <tr class="text-center">
                   <th>#</th>
                   <th>Prod Descriptions</th>
                   <th>Weight</th>
@@ -146,27 +161,30 @@ $accnumber = $row_invoice['accnumber'];
                   <td colspan="3">Grand Total :</td>
                   <th colspan="3" class="thead-light"><?= number_format($row_invoice['xamount'], 2); ?></th>
                </tr>
-               <tr>
-                  <td colspan="4" rowspan="2" class="text-justify border-0" valign="top">
+               <tr class="border-0">
+                  <td colspan="4" rowspan="4" class="text-justify border-0" valign="top">
+                     Catatan : <br>
                      <i>
-                        <strong><?= "Says :" . " " . terbilang($row_invoice['balance']) . " " . "Rupiah"; ?></strong>
+                        <strong>
+                           <!-- <?= terbilang($row_invoice['balance']) . " " . "Rupiah"; ?> -->
+                           <?= $row_invoice['note']; ?>
+                        </strong>
                      </i>
                   </td>
-                  <td colspan="2">Tax 11% :</td>
-                  <th colspan="3"><?= number_format($row_invoice['tax'], 2); ?></th>
+                  <td colspan="2" class="border-0">Tax 11% :</td>
+                  <th colspan="3" class="border-0"><?= number_format($row_invoice['tax'], 2); ?></th>
                </tr>
                <tr>
-                  <td colspan="2">Charge :</td>
-                  <th colspan="3"><?= number_format($row_invoice['charge'], 2); ?></th>
+                  <td colspan="2" class="border-0">Charge :</td>
+                  <th colspan="3" class="border-0"><?= number_format($row_invoice['charge'], 2); ?></th>
                </tr>
                <tr>
-                  <td colspan="4" rowspan="2" class="text-justify" valign="top"><?= $row_invoice['note']; ?></td>
-                  <td colspan="2">DownPayment :</td>
-                  <th colspan="3"><?= number_format($row_invoice['downpayment'], 2); ?></th>
+                  <td colspan="2" class="border-0">DownPayment :</td>
+                  <th colspan="3" class="border-0"><?= number_format($row_invoice['downpayment'], 2); ?></th>
                </tr>
                <tr>
-                  <td colspan="2">Balance :</td>
-                  <th colspan="3" class="thead-light"><?= number_format($row_invoice['balance'], 2); ?></th>
+                  <td colspan="2" class="border-0">Balance :</td>
+                  <th colspan="3" class="border-0"><?= number_format($row_invoice['balance'], 2); ?></th>
                </tr>
             </tfoot>
          </table>
@@ -200,7 +218,11 @@ $accnumber = $row_invoice['accnumber'];
          </div>
       </div>
    </div>
-
+   <script>
+      function printPage() {
+         window.print();
+      }
+   </script>
    <script src="../plugins/jquery/jquery.min.js"></script>
    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
    <script src="../plugins/select2/js/select2.full.min.js"></script>
