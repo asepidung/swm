@@ -95,8 +95,7 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="30%"> <?= $row_do['driver']; ?></td>
       <td class="border-collapse" width="12%" valign="top">Address</td>
       <td class="border-collapse" width="2%" valign="top" align="right">:</td>
-      <!-- <td width="30%" align="justify" valign="top"><?= $row_do['alamat']; ?></td> -->
-      <td rowspan="3" width="30%" align="justify" valign="top">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. </td>
+      <td width="30%" align="justify" valign="top"><?= $row_do['alamat']; ?></td>
     </tr>
     <tr>
       <td width="12%">No POL</td>
@@ -172,14 +171,14 @@ $result_detail = mysqli_query($conn, $query_detail);
   </p>
   <script>
     document.title = "<?php echo $row_do['donumber']; ?>";
-    // window.addEventListener("load", function() {
-    //   window.print();
+    window.addEventListener("load", function() {
+      window.print();
 
-    //   // Redirect ke halaman do.php setelah 3 detik
-    //   setTimeout(function() {
-    //     window.location.href = "do.php";
-    //   }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
-    // });
+      // Redirect ke halaman do.php setelah 3 detik
+      setTimeout(function() {
+        window.location.href = "do.php";
+      }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
+    });
   </script>
 </body>
 
