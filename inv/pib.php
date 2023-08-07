@@ -132,6 +132,10 @@ $accnumber = $row_invoice['accnumber'];
       .pad {
          padding: 2px;
       }
+
+      .pad1 {
+         padding: 15px 0 15px 0;
+      }
    </style>
 </head>
 
@@ -245,43 +249,50 @@ $accnumber = $row_invoice['accnumber'];
          <td align="justify" class="tdcollapse">
             <b><i><?= terbilang($row_invoice['balance']) ?></i></b>
          </td>
-         <td width="10%"></td>
-         <td align="justify"">
-            <i>Note : <?= $row_invoice['note'] ?></i>
+      </tr>
+      <tr>
+         <td class="pad1"></td>
+      </tr>
+      <?php if ($row_invoice['note'] !== "") { ?>
+         <tr class="pad1">
+            <td align="justify">
+               <i>Note :<br> <b><?= $row_invoice['note'] ?></b></i>
+            </td>
+         </tr>
+      <?php } ?>
+   </table>
+   <hr>
+   <div class=" h2tea">Payment Methods</div>
+   <table width="100%">
+      <tr>
+         <td colspan="4"><?= $banksegment; ?></td>
+         <td valign="top" align="center" rowspan="2">
+            F I N A N C E
          </td>
       </tr>
+      <tr>
+         <td width="20%">ACC Name</td>
+         <td width="5%">:</td>
+         <td width="25%"><strong><?= $accname; ?></strong></td>
+         <td width="25%"></td>
+      </tr>
+      <tr>
+         <td width="20%">ACC. NUMBER</td>
+         <td width="5%">:</td>
+         <td width="25%"><strong><?= $accnumber; ?></strong></td>
+         <td></td>
+      </tr>
+      <tr>
+         <td colspan="4"></td>
+         <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
+      </tr>
    </table>
-   <div class=" h2tea">Payment Methods</div>
-            <table width="100%">
-               <tr>
-                  <td colspan="4"><?= $banksegment; ?></td>
-                  <td valign="top" align="center" rowspan="2">
-                     F I N A N C E
-                  </td>
-               </tr>
-               <tr>
-                  <td width="20%">ACC Name</td>
-                  <td width="5%">:</td>
-                  <td width="25%"><strong><?= $accname; ?></strong></td>
-                  <td width="25%"></td>
-               </tr>
-               <tr>
-                  <td width="20%">ACC. NUMBER</td>
-                  <td width="5%">:</td>
-                  <td width="25%"><strong><?= $accnumber; ?></strong></td>
-                  <td></td>
-               </tr>
-               <tr>
-                  <td colspan="4"></td>
-                  <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
-               </tr>
-            </table>
 
-            <script>
-               function printPage() {
-                  window.print();
-               }
-            </script>
+   <script>
+      function printPage() {
+         window.print();
+      }
+   </script>
 </body>
 
 </html>
