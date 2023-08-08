@@ -24,8 +24,7 @@
         <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-warehouse"></i>
-            <!-- <i class="nav-icon fas fa-chart-pie"></i> -->
+            <i class="nav-icon fas fa-boxes"></i>
             <p>
               PRODUKSI
               <i class="right fas fa-angle-left"></i>
@@ -66,7 +65,7 @@
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-shopping-bag"></i>
+            <i class="nav-icon fas fa-warehouse"></i>
             <p>
               WAREHOUSE
               <i class="right fas fa-angle-left"></i>
@@ -88,13 +87,54 @@
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Delivery Order</p>
+                <p>Sales Return</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Receipt Order</p>
+                <p>Mutasi & Repacking</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Adjustment</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Stock</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-shopping-bag"></i>
+            <p>
+              SALES
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Price List</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../po" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Purchase Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Approve Invoice</p>
               </a>
             </li>
           </ul>
@@ -103,33 +143,21 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-cart-plus"></i>
             <p>
-              PENJUALAN
+              FINANCE
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../inv/invoice.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Sales Quotations</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Sales Order</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../do/do.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Delivery Order</p>
+                <p>Invoice</p>
               </a>
             </li>
             <li class="nav-item">
               <a href="../inv/invoice.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Invoice</p>
+                <p>Piutang</p>
               </a>
             </li>
           </ul>

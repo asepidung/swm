@@ -241,17 +241,22 @@ $accnumber = $row_invoice['accnumber'];
          </tfoot>
       </table>
    </div>
-   <table class="h2tea tablecollapse" width="50%">
-      <tr class="tablecollapse">
-         <td>Says :</td>
-      </tr>
+   <br>
+   <table class="h2tea tablecollapse">
+      <!-- <tr class="tablecollapse">
+         <td align="right">Says :</td>
+      </tr> -->
       <tr>
-         <td align="justify" class="tdcollapse">
-            <b><i><?= terbilang($row_invoice['balance']) ?></i></b>
+         <td width="50%"></td>
+         <td scope="col" align="right" class="tdcollapse">
+            <b>
+               Says :
+               <i>
+                  <?= terbilang($row_invoice['balance']) . " " . "Rupiah" ?>
+               </i>
+            </b>
          </td>
-      </tr>
-      <tr>
-         <td class="pad1"></td>
+         <td></td>
       </tr>
       <?php if ($row_invoice['note'] !== "") { ?>
          <tr class="pad1">
@@ -261,7 +266,7 @@ $accnumber = $row_invoice['accnumber'];
          </tr>
       <?php } ?>
    </table>
-   <hr>
+   <br>
    <div class=" h2tea">Payment Methods</div>
    <table width="100%">
       <tr>
