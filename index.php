@@ -184,8 +184,6 @@ include "kebutuhanindex.php";
                   <li class="nav-item">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-boxes"></i>
-
-                        <!-- <i class="nav-icon fas fa-chart-pie"></i> -->
                         <p>
                            PRODUKSI
                            <i class="right fas fa-angle-left"></i>
@@ -205,13 +203,13 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="pages/charts/flot.html" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Repack Import</p>
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="pages/charts/inline.html" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Repack Stock</p>
                            </a>
@@ -240,9 +238,9 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="do." class="nav-link">
+                           <a href="gr/" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>Purchase Receipt</p>
+                              <p>Goods Receipt</p>
                            </a>
                         </li>
                         <li class="nav-item">
@@ -252,19 +250,19 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Mutasi & Repacking</p>
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Adjustment</p>
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Stock</p>
                            </a>
@@ -316,7 +314,7 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="inv/invoice.php" class="nav-link">
+                           <a href="#" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Piutang</p>
                            </a>
