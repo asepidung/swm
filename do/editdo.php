@@ -93,123 +93,95 @@ $row = mysqli_fetch_assoc($result);
             <div class="card">
               <div class="card-body">
                 <div id="items-container">
-                  <!-- bagian dodetail -->
-                  <div class="row">
+                  <div class="row mb-2">
                     <div class="col-1">
-                      <div class="form-group">
-                        <label>Code</label>
-                      </div>
+                      Code
                     </div>
                     <div class="col-4">
-                      <div class="form-group">
-                        <label>Product</label>
-                      </div>
+                      Product Desc
                     </div>
                     <div class="col-1">
-                      <div class="form-group">
-                        <label>Box</label>
-                      </div>
+                      Box
                     </div>
                     <div class="col-2">
-                      <div class="form-group">
-                        <label>Weight</label>
-                      </div>
+                      Weight(Kg)
                     </div>
-                    <div class="col-3">
-                      <div class="form-group">
-                        <label>Notes</label>
-                      </div>
+                    <div class="col">
+                      Code
                     </div>
                   </div>
                   <?php
-                  $query_dodetail = "SELECT * FROM dodetail WHERE iddo = '$iddo'";
+                  $query_dodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang
+                                    FROM dodetail
+                                    INNER JOIN grade ON dodetail.idgrade = grade.idgrade
+                                    INNER JOIN barang ON dodetail.idbarang = barang.idbarang
+                                    WHERE iddo = '$iddo'";
                   $result_dodetail = mysqli_query($conn, $query_dodetail);
-                  while ($row_dodetail = mysqli_fetch_assoc($result_dodetail)) {
-                  ?>
-                    <div class="row">
+                  while ($row_dodetail = mysqli_fetch_assoc($result_dodetail)) { ?>
+                    <div class="row mb-n2">
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <select class="form-control" name="idgrade[]" id="idgrade">
-                              <?php
-                              // Query untuk mengambil data dari tabel grade
-                              $sql = "SELECT * FROM grade";
-                              $result = $conn->query($sql);
-                              // Membuat pilihan dalam select box berdasarkan data yang diambil
-                              if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                  $selected = ($row['idgrade'] == $row_dodetail['idgrade']) ? "selected" : "";
-                                  echo "<option value=\"" . $row["idgrade"] . "\" $selected>" . $row["nmgrade"] . "</option>";
-                                }
-                              }
-                              ?>
-                            </select>
+                            <input type="hidden" name="idgrade[]" id="idgrade" value="<?= $row_dodetail['idgrade']; ?>">
+                            <input type="text" class="form-control" value="<?= $row_dodetail['nmgrade']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col-4">
                         <div class="form-group">
-                          <!-- <label for="idbarang">Product</label> -->
                           <div class="input-group">
-                            <select class="form-control" name="idbarang[]" id="idbarang">
-                              <option value="">--Pilih--</option>
-                              <?php
-                              $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                              $result = mysqli_query($conn, $query);
-                              while ($row = mysqli_fetch_assoc($result)) {
-                                $idbarang = $row['idbarang'];
-                                $nmbarang = $row['nmbarang'];
-                                $selected = ($idbarang == $row_dodetail['idbarang']) ? "selected" : "";
-                                echo '<option value="' . $idbarang . '" ' . $selected . '>' . $nmbarang . '</option>';
-                              }
-                              ?>
-                            </select>
+                            <input type="hidden" name="idbarang[]" id="idbarang" value="<?= $row_dodetail['idbarang']; ?>">
+                            <input type="text" class="form-control" value="<?= $row_dodetail['nmbarang']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="box[]" class="form-control text-center box" value="<?= $row_dodetail['box']; ?>">
+                            <input type="number" name="box[]" class="form-control" value="<?= $row_dodetail['box']; ?>">
                           </div>
                         </div>
                       </div>
                       <div class="col-2">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="weight[]" class="form-control text-right weight" value="<?= $row_dodetail['weight']; ?>">
+                            <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_dodetail['weight']; ?>">
                           </div>
                         </div>
                       </div>
-                      <div class="col">
+                      <div class="col-3">
                         <div class="form-group">
                           <div class="input-group">
                             <input type="text" name="notes[]" class="form-control" value="<?= $row_dodetail['notes']; ?>">
                           </div>
                         </div>
                       </div>
+                      <div class="col">
+                      </div>
                     </div>
                   <?php } ?>
-                  <div class="row">
-                    <div class="col-5"></div>
-                    <div class="col-1">
-                      <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
-                    </div>
-                    <div class="col-2">
-                      <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
-                    </div>
-                    <div class="col-1">
-                      <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
-                    </div>
-                    <div class="col-1">
-                      <button type="submit" class="btn bg-gradient-primary ml-2" name="submit" onclick="return confirm('Pastikan Data Yang Di Update Sudah Benar')" disabled id="submit-btn">Update</button>
-                    </div>
-                    <!-- <div class="col">
-                      <button type="submit" name="approve" class="btn btn-block btn-outline-success" onclick="return confirm('Setelah di Approve anda tidak bisa lagi mengubah atau menghapus surat jalan terkait, tetapi anda masih bisa mencetak ulang')">Approve</button>
-                    </div> -->
+                </div>
+                <div class="row">
+                  <div class="col-1">
+                    <button type="button" class="btn btn-link text-success" onclick="addItem()"><i class="fas fa-plus-circle"></i></button>
                   </div>
+                  <div class="col-4"></div>
+                  <div class="col-1">
+                    <input type="text" name="xbox" id="xbox" class="form-control" readonly>
+                  </div>
+                  <div class="col-2">
+                    <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
+                  </div>
+                  <div class="col-1">
+                    <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
+                  </div>
+                  <div class="col ml-1">
+                    <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
+                  </div>
+                  <div class="col-1"></div>
                 </div>
               </div>
+            </div>
           </form>
         </div>
         <!-- /.card -->
@@ -225,8 +197,8 @@ $row = mysqli_fetch_assoc($result);
 <!-- Kode JavaScript -->
 <script>
   function calculateTotals() {
-    var boxes = document.getElementsByClassName("box");
-    var weights = document.getElementsByClassName("weight");
+    var boxes = document.getElementsByName("box[]");
+    var weights = document.getElementsByName("weight[]");
     var xbox = 0;
     var xweight = 0;
 
@@ -238,7 +210,95 @@ $row = mysqli_fetch_assoc($result);
     document.getElementById("xbox").value = xbox;
     document.getElementById("xweight").value = xweight.toFixed(2);
 
-    document.getElementById("submit-btn").disabled = false;
+    var submitBtn = document.getElementById("submit-btn");
+    submitBtn.disabled = false;
+  }
+
+
+  function addItem() {
+    var itemsContainer = document.getElementById('items-container');
+
+    // Baris item baru
+    var newItemRow = document.createElement('div');
+    newItemRow.className = 'item-row';
+
+    // Konten baris item baru
+    newItemRow.innerHTML = `
+<div class="row">
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idgrade[]" id="idgrade">
+<?php
+// Query untuk mengambil data dari tabel grade
+$sql = "SELECT * FROM grade";
+$result = $conn->query($sql);
+// Membuat pilihan dalam select box berdasarkan data yang diambil
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+  }
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idbarang[]" id="idbarang" required>
+<option value="">--Pilih--</option>
+<?php
+$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+  $idbarang = $row['idbarang'];
+  $nmbarang = $row['nmbarang'];
+  echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<input type="number" name="box[]" class="form-control" required>
+</div>
+</div>
+</div>
+<div class="col-2">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="weight[]" class="form-control text-right" required>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="notes[]" class="form-control">
+</div>
+</div>
+</div>
+<div class="col-1">
+<button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+<i class="fas fa-minus-circle"></i>
+</button>
+</div>
+</div>
+`;
+    // Tambahkan baris item baru ke dalam container
+    itemsContainer.appendChild(newItemRow);
+  }
+
+  function removeItem(button) {
+    var itemRow = button.closest('.item-row');
+
+    // Hapus baris item
+    itemRow.remove();
   }
 </script>
 

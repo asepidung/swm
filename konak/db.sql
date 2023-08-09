@@ -15,9 +15,6 @@ CREATE TABLE supplier (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
-INSERT INTO supplier (nmsupplier, jenis_usaha, alamat, telepon)
-VALUES
-('H. DONI', 'SAPI', 'RPH TAPOS JL. RAYA TAPOS DEPOK CITY 16457', '081225834627');
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
   kdbarang VARCHAR(10),
@@ -73,11 +70,6 @@ CREATE TABLE segment (
   accname VARCHAR (50),
   accnumber VARCHAR (50)
 );
-INSERT INTO segment (nmsegment, banksegment, accname, accnumber)
-VALUES
-('HOREKA', 'BNI (BANK NEGARA INDONESIA)', 'PT. SANTI WIJAYA MEAT', '8585889991'),
-('WARGA/KARYAWAN', 'BCA (BANK CENTRAL ASIA)', 'SANTI WIJAYA L', '7115407007'),
-('SPECIAL', 'BNI (BANK NEGARA INDONESIA)', 'SANTI WIJAYA L', '0335163001');
 CREATE TABLE customers (
   idcustomer INT PRIMARY KEY AUTO_INCREMENT,
   nama_customer VARCHAR(100) UNIQUE,
@@ -98,9 +90,6 @@ CREATE TABLE grade (
   idgrade INT PRIMARY KEY AUTO_INCREMENT,
   nmgrade CHAR(3) UNIQUE
 );
-INSERT INTO grade (nmgrade)
-VALUES
-("J01"),  ("J02"), ("P01"), ("P02");
 CREATE TABLE do (
   iddo INT PRIMARY KEY AUTO_INCREMENT,
   donumber VARCHAR(30) UNIQUE,
@@ -218,4 +207,29 @@ CREATE TABLE trading (
   iduser INT,
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (iduser) REFERENCES users (idusers)
+);
+CREATE TABLE gr (
+  idgr INT PRIMARY KEY AUTO_INCREMENT,
+  grnumber VARCHAR(30) NOT NULL UNIQUE,
+  receivedate DATE,
+  idsupplier INT,
+  idnumber VARCHAR(30),
+  xbox INT,
+  xweight DECIMAL(6,2),
+  note VARCHAR(255),
+  iduser INT,
+  creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
+);
+CREATE TABLE grdetail (
+  idgrdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idgr INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight  DECIMAL(6,2),
+  notes VARCHAR(100),
+  FOREIGN KEY (idgr) REFERENCES gr (idgr),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+  FOREIGN KEY (idgrade) REFERENCES GRADE (idgrade)
 );

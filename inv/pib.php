@@ -84,8 +84,12 @@ $accnumber = $row_invoice['accnumber'];
       }
 
       .noinvoice {
-         font-size: 16px;
+         font-size: 14px;
          font-weight: bold;
+         margin-top: -2px;
+         /* Atur nilai negatif sesuai kebutuhan Anda */
+         margin-bottom: -5px;
+         /* Atur nilai negatif sesuai kebutuhan Anda */
       }
 
       .tableContainer {
@@ -135,6 +139,10 @@ $accnumber = $row_invoice['accnumber'];
 
       .pad1 {
          padding: 15px 0 15px 0;
+      }
+
+      .bggelap {
+         background-color: #C1C1C1;
       }
    </style>
 </head>
@@ -248,8 +256,8 @@ $accnumber = $row_invoice['accnumber'];
       </tr> -->
       <tr>
          <td width="50%"></td>
-         <td scope="col" align="right" class="tdcollapse">
-            <b>
+         <td scope="col" align="right">
+            <b class="bggelap">
                Says :
                <i>
                   <?= terbilang($row_invoice['balance']) . " " . "Rupiah" ?>

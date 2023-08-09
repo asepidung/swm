@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-// include "donumber.php";
+include "grnumber.php";
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -15,20 +15,20 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosesinbound.php">
-                  <!-- <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber"> -->
+               <form method="POST" action="inputgr.php">
+                  <input type="hidden" value="<?= $gr ?>" name="grnumber" id="grnumber">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
-                           <div class="col-2">
+                           <div class="col">
                               <div class="form-group">
-                                 <label for="inbounddate">Tgl Pembelian <span class="text-danger">*</span></label>
+                                 <label for="receivedate">Receiving Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="inbounddate" id="inbounddate" required>
+                                    <input type="date" class="form-control" name="receivedate" id="receivedate" required>
                                  </div>
                               </div>
                            </div>
-                           <div class="col-4">
+                           <div class="col">
                               <div class="form-group">
                                  <label for="idsupplier">Supplier <span class="text-danger">*</span></label>
                                  <div class="input-group">
@@ -53,9 +53,18 @@ include "../mainsidebar.php";
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label for="note">Catatan Pembelian</label>
+                                 <label for="po">ID Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
+                                    <input type="text" class="form-control" name="idnumber" id="idnumber">
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col">
+                              <div class="form-group">
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="Receiving Note">
                                  </div>
                               </div>
                            </div>
@@ -110,7 +119,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="box">Box</label>
                                     <div class="input-group">
-                                       <input type="number" name="box[]" class="form-control" required>
+                                       <input type="text" name="box[]" class="form-control text-center" required>
                                     </div>
                                  </div>
                               </div>
@@ -139,7 +148,7 @@ include "../mainsidebar.php";
                            </div>
                            <div class="col-4"></div>
                            <div class="col-1">
-                              <input type="text" name="xbox" id="xbox" class="form-control" readonly>
+                              <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
                            </div>
                            <div class="col-2">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
@@ -156,17 +165,10 @@ include "../mainsidebar.php";
                   </div>
                </form>
             </div>
-            <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
+   </section>
 </div>
-<!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
 
 <script>
    function calculateTotals() {
@@ -237,7 +239,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <div class="col-1">
 <div class="form-group">
 <div class="input-group">
-<input type="number" name="box[]" class="form-control" required>
+<input type="text" name="box[]" class="form-control text-center" required>
 </div>
 </div>
 </div>
@@ -274,7 +276,7 @@ while ($row = mysqli_fetch_assoc($result)) {
    }
 
    // Mengubah judul halaman web
-   document.title = "<?= $kodeauto ?>";
+   document.title = "<?= $gr ?>";
 </script>
 
 <?php

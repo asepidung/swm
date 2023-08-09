@@ -163,18 +163,18 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="price[]" required>
+                                          <input type="text" class="form-control text-right" name="price[]" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="discount[]" value="0">
+                                          <input type="text" class="form-control text-right" name="discount[]" value="0" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-2">
+                                 <div class=" col-2">
                                     <div class="form-group">
                                        <div class="input-group">
                                           <input type="text" class="form-control text-right" name="discountrp[]" value="0" readonly>
@@ -254,6 +254,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
    </section>
 </div>
 <script src="../dist/js/hitunginvoice.js"></script>
+<script src="../dist/js/movefocus.js"></script>
 <script>
    document.title = "<?= $noinvoice ?>";
 </script>

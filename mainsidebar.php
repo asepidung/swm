@@ -79,9 +79,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="../do." class="nav-link">
+              <a href="../gr/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Purchase Receipt</p>
+                <p>Goods Receipt</p>
               </a>
             </li>
             <li class="nav-item">
