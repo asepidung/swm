@@ -138,14 +138,14 @@ $row = mysqli_fetch_assoc($result);
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="number" name="box[]" class="form-control" value="<?= $row_dodetail['box']; ?>">
+                            <input type="text" name="box[]" class="form-control text-center" value="<?= $row_dodetail['box']; ?>" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
                           </div>
                         </div>
                       </div>
                       <div class="col-2">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_dodetail['weight']; ?>">
+                            <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_dodetail['weight']; ?>" required onkeydown=" moveFocusToNextInput(event, this, 'weight[]' )">
                           </div>
                         </div>
                       </div>
@@ -195,26 +195,9 @@ $row = mysqli_fetch_assoc($result);
 <!-- /.content -->
 
 <!-- Kode JavaScript -->
+<script src="../dist/js/calculateTotals.js"></script>
+<script src="../dist/js/movefocus.js"></script>
 <script>
-  function calculateTotals() {
-    var boxes = document.getElementsByName("box[]");
-    var weights = document.getElementsByName("weight[]");
-    var xbox = 0;
-    var xweight = 0;
-
-    for (var i = 0; i < boxes.length; i++) {
-      xbox += parseInt(boxes[i].value) || 0;
-      xweight += parseFloat(weights[i].value) || 0;
-    }
-
-    document.getElementById("xbox").value = xbox;
-    document.getElementById("xweight").value = xweight.toFixed(2);
-
-    var submitBtn = document.getElementById("submit-btn");
-    submitBtn.disabled = false;
-  }
-
-
   function addItem() {
     var itemsContainer = document.getElementById('items-container');
 
