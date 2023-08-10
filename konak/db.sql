@@ -233,3 +233,22 @@ CREATE TABLE grdetail (
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (idgrade) REFERENCES GRADE (idgrade)
 );
+CREATE TABLE adjustment (
+  idadjustment INT PRIMARY KEY AUTO_INCREMENT,
+  noadjustment VARCHAR (30) UNIQUE,
+  tgladjustment DATE,
+  eventadjustment VARCHAR(30),
+  note VARCHAR (255),
+  xweight DECIMAL(6,2)
+);
+CREATE TABLE adjustmentdetail (
+  idadjustmentdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idadjustment INT,
+  idgrade INT,
+  idbarang INT,
+  weight DECIMAL(6,2),
+  notes VARCHAR(255),
+  FOREIGN KEY (idadjustment) REFERENCES adjustment (idadjustment),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);

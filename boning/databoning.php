@@ -39,7 +39,7 @@ include "../mainsidebar.php";
                     <th>Supplier</th>
                     <th>Jml Sapi</th>
                     <th>Ttl Weight</th>
-                    <th>Avg/Kg</th>
+                    <th>MBR</th>
                     <th>Catatan</th>
                     <th>AKSI</th>
                   </tr>

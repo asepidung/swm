@@ -23,11 +23,22 @@ while ($row = mysqli_fetch_assoc($result)) {
 ?>
 <div class="content-wrapper">
   <!-- /.content-header -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-n4">
+        <div class="col">
+          <marquee behavior="scrolling" direction="">
+            <h2>RELABEL</h2>
+          </marquee>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
   <div class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-4">
-          <div class="card mt-3">
+          <div class="card">
             <div class="card-body">
               <form method="POST" action="cetakrelabel.php" onsubmit="submitForm(event)">
                 <div class="form-group">
@@ -98,7 +109,7 @@ while ($row = mysqli_fetch_assoc($result)) {
           <!-- /.card -->
         </div>
         <div class="col-lg-8">
-          <div class="card mt-3">
+          <div class="card">
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped table-sm">
                 <thead class="text-center">

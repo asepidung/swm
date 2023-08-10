@@ -92,7 +92,7 @@ include "../mainsidebar.php";
                               </div>
                               <div class="form-group">
                                  <label for="catatan">Catatan</label>
-                                 <textarea name="catatan" id="catatan" rows="2" class="form-control"></textarea>
+                                 <input type="text" class="form-control" name="catatan" id="catatan" value="-">
                               </div>
                            </div>
                         </div>
