@@ -54,20 +54,12 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer FROM do
+                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.userid FROM do
                            JOIN customers ON do.idcustomer = customers.idcustomer
+                           JOIN users ON do.idusers = users.idusers
                            ORDER BY donumber DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
-
-                              // $no = 1;
-                              // $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, do.xweight AS do_xweight, doreceipt.xweight AS doreceipt_xweight
-                              //                FROM do
-                              //                JOIN customers ON do.idcustomer = customers.idcustomer
-                              //                JOIN doreceipt ON do.iddo = doreceipt.iddo
-                              //                ORDER BY donumber DESC;");
-                              // while ($tampil = mysqli_fetch_array($ambildata)) {
-
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -88,7 +80,7 @@ include "../mainsidebar.php";
                                        echo $tampil['status'];
                                     } ?>
                                  </td>
-                                 <td class="text-center"><?= $userid ?></td>
+                                 <td class="text-center"><?= $tampil['userid']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
                                        <div class="row">
