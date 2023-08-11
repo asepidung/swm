@@ -35,38 +35,26 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Adjust Number</th>
                               <th>Adjusting Date</th>
-                              <th>Event</th>
                               <th>xQty</th>
-                              <th>Catatan</th>
                               <th>Made By</th>
-                              <th>Actions</th>
+                              <th>Event</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT * FROM adjustment");
+                           $ambildata = mysqli_query($conn, "SELECT a.*, u.userid
+                           FROM adjustment a
+                           JOIN users u ON a.idusers = u.idusers;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
                                  <td class="text-center"><?= $tampil['noadjustment']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['tgladjustment'])); ?></td>
-                                 <td><?= $tampil['eventadjustment']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
-                                 <td><?= $tampil['note']; ?></td>
-                                 <!-- <td class="text-center"><?= $userid ?></td> -->
-                                 <td class="text-center">
-                                    <a href="print.php?idadjustment=<?= $tampil['idadjustment']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-eye text-primary"></i>
-                                    </a>
-                                    <a href="editadjustment.php?idadjustment=<?= $tampil['idadjustment']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-edit text-success"></i>
-                                    </a>
-                                    <a href="deleteadjustment.php?idadjustment=<?= $tampil['idadjustment']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                       <i class="far fa-trash-alt text-danger"></i>
-                                    </a>
-                                 </td>
+                                 <td class="text-center"><?= $tampil['userid']; ?></td>
+                                 <td><?= $tampil['eventadjustment']; ?></td>
                               </tr>
                            <?php $no++;
                            } ?>

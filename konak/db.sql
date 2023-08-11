@@ -239,8 +239,10 @@ CREATE TABLE adjustment (
   noadjustment VARCHAR (30) UNIQUE,
   tgladjustment DATE,
   eventadjustment VARCHAR(30),
-  note VARCHAR (255),
-  xweight DECIMAL(6,2)
+  xweight DECIMAL(6,2),
+  idusers INT,
+  FOREIGN KEY (idusers) REFERENCES users (idusers),
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE adjustmentdetail (
   idadjustmentdetail INT PRIMARY KEY AUTO_INCREMENT,
