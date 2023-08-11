@@ -8,8 +8,8 @@ $iddo = $_GET['iddo'];
 
 // Menghapus data dari tabel doreceiptdetail berdasarkan iddoreceipt dari tabel doreceipt
 $sqlDeleteDoreceiptDetail = "DELETE doreceiptdetail FROM doreceiptdetail
-                            INNER JOIN doreceipt ON doreceiptdetail.iddoreceipt = doreceipt.iddoreceipt
-                            WHERE doreceipt.iddo = $iddo";
+                              INNER JOIN doreceipt ON doreceiptdetail.iddoreceipt = doreceipt.iddoreceipt
+                              WHERE doreceipt.iddo = $iddo";
 if ($conn->query($sqlDeleteDoreceiptDetail) === TRUE) {
    // Jika penghapusan doreceiptdetail berhasil, lanjutkan menghapus data dari tabel doreceipt
    $sqlDeleteDoreceipt = "DELETE FROM doreceipt WHERE iddo = $iddo";

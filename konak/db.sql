@@ -255,3 +255,54 @@ CREATE TABLE adjustmentdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE inbound (
+  idinbound INT PRIMARY KEY AUTO_INCREMENT,
+  noinbound VARCHAR(30) UNIQUE,
+  tglinbound DATE,
+  xweight DECIMAL(12,2),
+  xbox INT,
+  note VARCHAR(255),
+  proses VARCHAR(30),
+  idusers INT,
+  creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+
+CREATE TABLE inbounddetail (
+  idinbounddetail INT PRIMARY KEY AUTO_INCREMENT,
+  idinbound INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight DECIMAL(6,2),
+  notes VARCHAR(100),
+  FOREIGN KEY (idinbound) REFERENCES inbound (idinbound),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE outbound (
+  idoutbound INT PRIMARY KEY AUTO_INCREMENT,
+  nooutbound VARCHAR(30) UNIQUE,
+  tgloutbound DATE,
+  xweight DECIMAL(12,2),
+  xbox INT,
+  note VARCHAR(255),
+  proses VARCHAR(30),
+  idusers INT,
+  creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+
+CREATE TABLE outbounddetail (
+  idoutbounddetail INT PRIMARY KEY AUTO_INCREMENT,
+  idoutbound INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight DECIMAL(6,2),
+  notes VARCHAR(100),
+  FOREIGN KEY (idoutbound) REFERENCES outbound (idoutbound),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+

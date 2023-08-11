@@ -119,7 +119,7 @@ include "../mainsidebar.php";
                            <tr>
                               <th class="text-right" colspan="5">SUBTOTAL</th>
                               <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
-                              <th colspan="4"></th>
+                              <th colspan="5"></th>
                            </tr>
                         </tfoot>
                      </table>
