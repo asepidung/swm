@@ -103,6 +103,7 @@ CREATE TABLE do (
   status VARCHAR(20),
   xbox INT,
   xweight DECIMAL(12.2),
+  rweight DECIMAL(12.2),
   xweightreceipt DECIMAL(12, 2),
   idusers INT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

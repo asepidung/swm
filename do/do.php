@@ -39,6 +39,7 @@ include "../mainsidebar.php";
                               <th>Customer</th>
                               <th>PO</th>
                               <th>xQty</th>
+                              <th>rQty</th>
                               <th>Catatan</th>
                               <th>Status</th>
                               <th>Made By</th>
@@ -68,6 +69,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
+                                 <td class="text-right"><?= number_format($tampil['rweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>

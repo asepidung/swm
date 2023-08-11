@@ -52,8 +52,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
 
       // Update status pada tabel do menjadi "Approved"
-      $queryUpdateDo = "UPDATE do SET status = 'Approved' WHERE iddo = '$iddo'";
+      $queryUpdateDo = "UPDATE do SET status = 'Approved', rweight = '$xweight' WHERE iddo = '$iddo'";
       $resultUpdateDo = mysqli_query($conn, $queryUpdateDo);
+
       if (!$resultUpdateDo) {
          die("Error saat mengupdate status pada tabel do: " . mysqli_error($conn));
       }
