@@ -14,8 +14,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newretrjual.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="newreturjual.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -43,12 +42,6 @@ include "../mainsidebar.php";
                               <th>Actions</th>
                            </tr>
                         </thead>
-                        <?php
-                        $query_total_weight_keseluruhan = "SELECT SUM(xweight) AS total_weight_keseluruhan FROM returjual";
-                        $result_total_weight_keseluruhan = mysqli_query($conn, $query_total_weight_keseluruhan);
-                        $row_total_weight_keseluruhan = mysqli_fetch_assoc($result_total_weight_keseluruhan);
-                        $total_weight_keseluruhan = $row_total_weight_keseluruhan['total_weight_keseluruhan'];
-                        ?>
                         <tbody>
                            <?php
                            $no = 1;
@@ -73,13 +66,6 @@ include "../mainsidebar.php";
                            <?php $no++;
                            } ?>
                         </tbody>
-                        <tfoot>
-                           <tr>
-                              <th class="text-right" colspan="5">SUBTOTAL</th>
-                              <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
-                              <th colspan="4"></th>
-                           </tr>
-                        </tfoot>
                      </table>
                   </div>
                   <!-- /.card-body -->

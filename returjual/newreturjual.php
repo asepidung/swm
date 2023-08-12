@@ -7,25 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "../returnnumber.php";
-// $iddo = isset($_GET['iddo']) ? intval($_GET['iddo']) : 0;
-// if ($iddo <= 0) {
-//    die("ID DO tidak valid.");
-// }
-// $querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.idsegment
-//             FROM do
-//             INNER JOIN customers ON do.idcustomer = customers.idcustomer
-//             INNER JOIN segment ON customers.idsegment = segment.idsegment
-//             WHERE do.iddo = $iddo";
-// $resultdo = mysqli_query($conn, $querydo);
-// $row = mysqli_fetch_assoc($resultdo);
-
-// $querydodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
-//                   FROM dodetail
-//                   INNER JOIN grade ON dodetail.idgrade = grade.idgrade
-//                   INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-//                   WHERE dodetail.iddo = $iddo";
-// $resultdodetail = mysqli_query($conn, $querydodetail);
+include "returnnumber.php";
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -33,64 +15,62 @@ include "../returnnumber.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosesapprovedo.php">
-                  <input type="hidden" name="iddo" value="<?= $iddo ?>">
+               <form method="POST" action="inputreturjual.php">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-2">
                               <div class="form-group">
-                                 <label>Tgl Kirim</label>
+                                 <label for="returnnumber">Return Number <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" name="deliverydate" class="form-control" value="<?= $row['deliverydate'] ?>" readonly>
+                                    <input type="text" class="form-control" value="<?= $returnnumber ?>" name="returnnumber" id="returnnumber" readonly>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <label for="returdate">Tgl Retur <span class="text-danger">*</span></label>
+                                 <div class="input-group">
+                                    <input type="date" class="form-control" name="returdate" id="returdate" required autofocus>
                                  </div>
                               </div>
                            </div>
                            <div class="col-3">
                               <div class="form-group">
-                                 <label>Customer </label>
+                                 <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="hidden" name="idcustomer" value="<?= $row['idcustomer'] ?>">
-                                    <input type="text" class="form-control" value="<?= $row['nama_customer'] ?>" readonly>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-3">
-                              <div class="form-group">
-                                 <label>Cust PO</label>
-                                 <div class="input-group">
-                                    <input type="text" name="po" class="form-control" value="<?= $row['po'] ?>" readonly>
+                                    <select class="form-control" name="idcustomer" id="idcustomer" required>
+                                       <option value="">Pilih Customer</option>
+                                       <?php
+                                       $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
+                                       $result = mysqli_query($conn, $query);
+                                       // Generate options based on the retrieved data
+                                       while ($row = mysqli_fetch_assoc($result)) {
+                                          $idcustomer = $row['idcustomer'];
+                                          $nama_customer = $row['nama_customer'];
+                                          echo "<option value=\"$idcustomer\">$nama_customer</option>";
+                                       }
+                                       ?>
+                                    </select>
                                  </div>
                               </div>
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label>DO Number</label>
+                                 <label for="iddo">Nomor DO </label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="donumber" value="<?= $row['donumber'] ?>" readonly>
+                                    <select name="iddo" id="iddo" class="form-control">
+                                       <option value="">Pilih DO Terkait</option>
+                                    </select>
                                  </div>
                               </div>
                            </div>
                         </div>
                         <div class="row">
-                           <div class="col-2">
-                              <div class="form-group">
-                                 <div class="input-group">
-                                    <input type="text" name="driver" class="form-control" value="<?= $row['driver'] ?>" readonly>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-3">
-                              <div class="form-group">
-                                 <div class="input-group">
-                                    <input type="text" name="plat" class="form-control" value="<?= $row['plat'] ?>" readonly>
-                                 </div>
-                              </div>
-                           </div>
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">
-                                    <input type="text" name="note" class="form-control" value="<?= $row['catatan'] ?>" readonly>
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
                                  </div>
                               </div>
                            </div>
@@ -100,128 +80,195 @@ include "../returnnumber.php";
                   <div class="card">
                      <div class="card-body">
                         <div id="items-container">
-                           <div class="row">
+                           <!-- Baris item pertama -->
+                           <div class="row mb-n2">
                               <div class="col-1">
                                  <div class="form-group">
-                                    <label>Code</label>
+                                    <label for="idgrade">Code</label>
+                                    <div class="input-group">
+                                       <select class="form-control" name="idgrade[]" id="idgrade">
+                                          <?php
+                                          // Query untuk mengambil data dari tabel grade
+                                          $sql = "SELECT * FROM grade";
+                                          $result = $conn->query($sql);
+                                          // Membuat pilihan dalam select box berdasarkan data yang diambil
+                                          if ($result->num_rows > 0) {
+                                             while ($row = $result->fetch_assoc()) {
+                                                echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+                                             }
+                                          }
+                                          ?>
+                                       </select>
+                                    </div>
                                  </div>
                               </div>
-                              <div class="col-3">
+                              <div class="col-4">
                                  <div class="form-group">
-                                    <label>Product</label>
+                                    <label for="idbarang">Product</label>
+                                    <div class="input-group">
+                                       <select class="form-control" name="idbarang[]" id="idbarang" required>
+                                          <option value="">--Pilih--</option>
+                                          <?php
+                                          $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                                          $result = mysqli_query($conn, $query);
+                                          while ($row = mysqli_fetch_assoc($result)) {
+                                             $idbarang = $row['idbarang'];
+                                             $nmbarang = $row['nmbarang'];
+                                             echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                                          }
+                                          ?>
+                                       </select>
+                                    </div>
                                  </div>
                               </div>
                               <div class="col-1">
                                  <div class="form-group">
-                                    <label>Box</label>
+                                    <label for="box">Box</label>
+                                    <div class="input-group">
+                                       <input type="text" name="box[]" class="form-control text-center" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
+                                    </div>
                                  </div>
                               </div>
                               <div class="col-2">
                                  <div class="form-group">
-                                    <label>Weight</label>
+                                    <label for="weight">Weight</label>
+                                    <div class="input-group">
+                                       <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
+                                    </div>
                                  </div>
                               </div>
-                              <div class="col">
+                              <div class="col-3">
                                  <div class="form-group">
-                                    <label>Notes</label>
+                                    <label for="notes">Notes</label>
+                                    <div class="input-group">
+                                       <input type="text" name="notes[]" class="form-control">
+                                    </div>
                                  </div>
                               </div>
+                              <div class="col"></div>
                            </div>
-                           <?php while ($rowdodetail = mysqli_fetch_assoc($resultdodetail)) { ?>
-                              <div class="row mt-n2">
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="hidden" name="idgrade[]" value="<?= $rowdodetail['idgrade'] ?>">
-                                          <input type="text" class="form-control text-center" value="<?= $rowdodetail['nmgrade'] ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="hidden" name="idbarang[]" value="<?= $rowdodetail['idbarang'] ?>">
-                                          <input type="text" class="form-control" value="<?= $rowdodetail['nmbarang'] ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" name="box[]" class="form-control text-center" value="<?= $rowdodetail['box'] ?>" required>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-2">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" name="weight[]" class="form-control text-right" value="<?= $rowdodetail['weight'] ?>" required>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" name="notes[]" class="form-control" placeholder="<?= $rowdodetail['notes'] ?>">
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-2">
-                              <button type="button" class="btn btn-block btn-warning" id="calculate-btn">Calculate</button>
-                           </div>
-                           <div class="col-2">
-                              <button type="submit" disabled name="approve" id="submit-btn" class="btn btn-block btn-success" onclick="return confirm('Pastikan semua data sudah sesuai')">Receipt</button>
-                           </div>
                            <div class="col-1">
-                              <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
+                              <button type="button" class="btn btn-link text-success" onclick="addItem()"><i class="fas fa-plus-circle"></i></button>
+                           </div>
+                           <div class="col-4"></div>
+                           <div class="col-1">
+                              <input type="text" name="xbox" id="xbox" class="text-center form-control" readonly>
                            </div>
                            <div class="col-2">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
+                           <div class="col-1">
+                              <button type="button" class="btn bg-gradient-warning" onclick="calculateTotals()">Calculate</button>
+                           </div>
+                           <div class="col ml-1">
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
+                           </div>
+                           <div class="col-1"></div>
                         </div>
                      </div>
                   </div>
                </form>
             </div>
-            <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
-
+<script src="../dist/js/get_dos.js"></script>
+<script src="../dist/js/movefocus.js"></script>
+<script src="../dist/js/calculateTotals.js"></script>
 <script>
-   function calculateTotal() {
-      const boxInputs = document.getElementsByName("box[]");
-      const weightInputs = document.getElementsByName("weight[]");
-      let totalBox = 0;
-      let totalWeight = 0;
+   function addItem() {
+      var itemsContainer = document.getElementById('items-container');
 
-      for (let i = 0; i < boxInputs.length; i++) {
-         const boxValue = parseInt(boxInputs[i].value) || 0;
-         const weightValue = parseFloat(weightInputs[i].value) || 0;
-         totalBox += boxValue;
-         totalWeight += weightValue;
-      }
+      // Baris item baru
+      var newItemRow = document.createElement('div');
+      newItemRow.className = 'item-row';
 
-      document.getElementById("xbox").value = totalBox;
-      document.getElementById("xweight").value = totalWeight.toFixed(2);
-      // Aktifkan tombol Submit setelah mengklik Calculate
-      document.getElementById("submit-btn").disabled = false;
+      // Konten baris item baru
+      newItemRow.innerHTML = `
+<div class="row mb-n2">
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idgrade[]" id="idgrade">
+<?php
+// Query untuk mengambil data dari tabel grade
+$sql = "SELECT * FROM grade";
+$result = $conn->query($sql);
+// Membuat pilihan dalam select box berdasarkan data yang diambil
+if ($result->num_rows > 0) {
+   while ($row = $result->fetch_assoc()) {
+      echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+   }
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idbarang[]" id="idbarang" required>
+<option value="">--Pilih--</option>
+<?php
+$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+   $idbarang = $row['idbarang'];
+   $nmbarang = $row['nmbarang'];
+   echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="box[]" class="form-control text-center" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
+</div>
+</div>
+</div>
+<div class="col-2">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
+</div>
+</div>
+</div>
+<div class="col">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="notes[]" class="form-control">
+</div>
+</div>
+</div>
+<div class="col-1">
+<button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+<i class="fas fa-minus-circle"></i>
+</button>
+</div>
+</div>
+`;
+      // Tambahkan baris item baru ke dalam container
+      itemsContainer.appendChild(newItemRow);
    }
 
-   // Attach click event to the Calculate button
-   const calculateBtn = document.getElementById("calculate-btn");
-   calculateBtn.addEventListener("click", calculateTotal);
+   function removeItem(button) {
+      var itemRow = button.closest('.item-row');
+
+      // Hapus baris item
+      itemRow.remove();
+   }
+
+   // Mengubah judul halaman web
+   document.title = "New Retur Jual";
 </script>
+
 <?php
 // require "../footnotes.php";
 include "../footer.php";

@@ -267,7 +267,6 @@ CREATE TABLE inbound (
   creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
-
 CREATE TABLE inbounddetail (
   idinbounddetail INT PRIMARY KEY AUTO_INCREMENT,
   idinbound INT,
@@ -292,7 +291,6 @@ CREATE TABLE outbound (
   creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
-
 CREATE TABLE outbounddetail (
   idoutbounddetail INT PRIMARY KEY AUTO_INCREMENT,
   idoutbound INT,
@@ -302,6 +300,31 @@ CREATE TABLE outbounddetail (
   weight DECIMAL(6,2),
   notes VARCHAR(100),
   FOREIGN KEY (idoutbound) REFERENCES outbound (idoutbound),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE returjual (
+  idreturjual INT PRIMARY KEY AUTO_INCREMENT,
+  returnnumber VARCHAR(30),
+  returdate DATE,
+  idcustomer INT,
+  note VARCHAR(255),
+  iddo INT,
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN key (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE returjualdetail (
+  idreturjualdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idreturjual INT,
+  idgrade INT,
+  idbarang INT,
+  box INT,
+  weight DECIMAL(6,2),
+  notes VARCHAR(100),
+  FOREIGN KEY (idreturjual) REFERENCES returjual (idreturjual),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
