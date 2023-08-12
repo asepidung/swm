@@ -15,12 +15,18 @@ CREATE TABLE supplier (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
+CREATE TABLE grade (
+  idgrade INT PRIMARY KEY AUTO_INCREMENT,
+  nmgrade CHAR(3) UNIQUE
+);
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
+  idgrade INT,
   kdbarang VARCHAR(10),
   nmbarang VARCHAR(30) UNIQUE,
   stockawal DECIMAL(12,2),
   iduser INT,
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
 CREATE TABLE boning (
@@ -86,10 +92,7 @@ CREATE TABLE customers (
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );
-CREATE TABLE grade (
-  idgrade INT PRIMARY KEY AUTO_INCREMENT,
-  nmgrade CHAR(3) UNIQUE
-);
+
 CREATE TABLE do (
   iddo INT PRIMARY KEY AUTO_INCREMENT,
   donumber VARCHAR(30) UNIQUE,
@@ -318,7 +321,6 @@ CREATE TABLE returjual (
   FOREIGN KEY (iddo) REFERENCES do (iddo),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
-
 CREATE TABLE returjualdetail (
   idreturjualdetail INT PRIMARY KEY AUTO_INCREMENT,
   idreturjual INT,

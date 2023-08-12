@@ -39,11 +39,11 @@ include "flowstock.php";
                                  <th>Kode</th>
                                  <th>Nama Product</th>
                                  <th>Stock Awal</th>
-                                 <th>xPembelian</th>
+                                 <!-- <th>xPembelian</th>
                                  <th>xPenjualan</th>
                                  <th>xRetur Beli</th>
                                  <th>xRetur Jual</th>
-                                 <th>Stock Akhir</th>
+                                 <th>Stock Akhir</th> -->
                                  <th>Action</th>
                               </tr>
                            </thead>
@@ -59,11 +59,11 @@ include "flowstock.php";
                                     <td><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                                     <td class="text-right"><?= number_format($tampil['stockawal'], 2); ?></td>
-                                    <td></td>
+                                    <!-- <td></td>
                                     <td class="text-right"><?= $totalpenjualan_per_idbarang[$tampil['idbarang']] ?? 0; ?></td>
                                     <td></td>
                                     <td></td>
-                                    <td class="text-right"><?= number_format($tampil['stock'], 2); ?></td>
+                                    <td class="text-right"><?= number_format($tampil['stock'], 2); ?></td> -->
                                     <td>
                                        <div class="row">
                                           <div class="col"></div>
