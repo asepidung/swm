@@ -45,8 +45,9 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer FROM returjual
+                           $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer, do.donumber FROM returjual
                            JOIN customers ON returjual.idcustomer = customers.idcustomer
+                           JOIN do ON returjual.iddo = do.iddo
                            ORDER BY returnnumber DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
@@ -60,7 +61,9 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $userid ?></td>
                                  <td class="text-center">
-                                    CRUD
+                                    <a href="printreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-eye"></i> Print</a>
+                                    <a href="editreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-success"><i class="fas fa-pencil-alt"></i> Edit</a>
+                                    <a href="deletereturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')"><i class="fas fa-minus-circle"></i> Delete</a>
                                  </td>
                               </tr>
                            <?php $no++;

@@ -15,9 +15,8 @@ if (isset($_POST['submit'])) {
    $idcustomer = $_POST['idcustomer'];
    $idusers = $_SESSION['idusers'];
 
-   // Kueri returjual (dikomentari)
-   /* $query_returjual = "INSERT INTO returjual (returnnumber, returdate, xweight, xbox, note, iddo, idusers, idcustomer)
-                         VALUES (?,?,?,?,?,?,?,?)";
+   $query_returjual = "INSERT INTO returjual (returnnumber, returdate, xweight, xbox, note, iddo, idusers, idcustomer)
+                        VALUES (?,?,?,?,?,?,?,?)";
    $stmt_returjual = $conn->prepare($query_returjual);
    if ($stmt_returjual === false) {
       die("Error preparing returjual query: " . $conn->error);
@@ -27,17 +26,17 @@ if (isset($_POST['submit'])) {
       die("Error executing returjual query: " . $stmt_returjual->error);
    }
    $last_id = $stmt_returjual->insert_id;
-   $stmt_returjual->close(); */
+   $stmt_returjual->close();
 
    // Data returjual
-   echo "Return Number: $returnnumber<br>";
-   echo "Retur Date: $returdate<br>";
-   echo "X Weight: $xweight<br>";
-   echo "X Box: $xbox<br>";
-   echo "Note: $note<br>";
-   echo "ID DO: $iddo<br>";
-   echo "ID Customer: $idcustomer<br>";
-   echo "ID Users: $idusers<br>";
+   // echo "Return Number: $returnnumber<br>";
+   // echo "Retur Date: $returdate<br>";
+   // echo "X Weight: $xweight<br>";
+   // echo "X Box: $xbox<br>";
+   // echo "Note: $note<br>";
+   // echo "ID DO: $iddo<br>";
+   // echo "ID Customer: $idcustomer<br>";
+   // echo "ID Users: $idusers<br>";
 
    $idgrade = $_POST['idgrade'];
    $idbarang = $_POST['idbarang'];
@@ -46,7 +45,7 @@ if (isset($_POST['submit'])) {
    $notes = $_POST['notes'];
 
    // Kueri returjualdetail (dikomentari)
-   /* $query_returjualdetail = "INSERT INTO returjualdetail (idreturjual, idgrade, idbarang, weight, box, notes) VALUES (?,?,?,?,?,?)";
+   $query_returjualdetail = "INSERT INTO returjualdetail (idreturjual, idgrade, idbarang, weight, box, notes) VALUES (?,?,?,?,?,?)";
    $stmt_returjualdetail = $conn->prepare($query_returjualdetail);
    if ($stmt_returjualdetail === false) {
       die("Error preparing returjualdetail query: " . $conn->error);
@@ -59,19 +58,19 @@ if (isset($_POST['submit'])) {
       }
    }
 
-   $stmt_returjualdetail->close(); */
+   $stmt_returjualdetail->close();
 
    // Data returjualdetail
-   for ($i = 0; $i < count($idgrade); $i++) {
-      echo "<br>Retur Jual Detail $i:";
-      echo "<br>ID Grade: " . $idgrade[$i];
-      echo "<br>ID Barang: " . $idbarang[$i];
-      echo "<br>Box: " . $box[$i];
-      echo "<br>Weight: " . $weight[$i];
-      echo "<br>Notes: " . $notes[$i];
-   }
+   // for ($i = 0; $i < count($idgrade); $i++) {
+   //    echo "<br>Retur Jual Detail $i:";
+   //    echo "<br>ID Grade: " . $idgrade[$i];
+   //    echo "<br>ID Barang: " . $idbarang[$i];
+   //    echo "<br>Box: " . $box[$i];
+   //    echo "<br>Weight: " . $weight[$i];
+   //    echo "<br>Notes: " . $notes[$i];
+   // }
 
-   // $conn->close();
+   $conn->close();
 
-   // header("location: index.php");
+   header("location: index.php");
 }

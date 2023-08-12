@@ -309,13 +309,16 @@ CREATE TABLE returjual (
   returdate DATE,
   idcustomer INT,
   note VARCHAR(255),
+  xbox INT,
+  xweight DECIMAL(12,2),
   iddo INT,
   idusers INT,
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
-  FOREIGN key (iddo) REFERENCES do (iddo),
+  FOREIGN KEY (iddo) REFERENCES do (iddo),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
+
 CREATE TABLE returjualdetail (
   idreturjualdetail INT PRIMARY KEY AUTO_INCREMENT,
   idreturjual INT,
@@ -328,4 +331,5 @@ CREATE TABLE returjualdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+
 
