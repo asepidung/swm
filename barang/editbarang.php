@@ -37,7 +37,7 @@ $row = mysqli_fetch_assoc($result);
               <div class=" card-body">
                 <div class="form-group">
                   <label for="kdbarang">Kode</label>
-                  <input type="text" name="idbarang" value="<?= $idbarang ?>" ?>
+                  <input type="hidden" name="idbarang" value="<?= $idbarang ?>" ?>
                   <input type="text" class="form-control" name="kdbarang" id="kdbarang" value="<?= $row['kdbarang']; ?>" readonly>
                 </div>
                 <div class="form-group">

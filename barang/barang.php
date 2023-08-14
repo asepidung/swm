@@ -33,22 +33,17 @@ include "../mainsidebar.php";
                               <tr>
                                  <th rowspan="2">Kode</th>
                                  <th rowspan="2">Nama Product</th>
-                                 <th colspan="6">Penjualan DO</th>
-                                 <th colspan="6">Penjualan LB</th>
+                                 <th colspan="3">G. Jonggol</th>
+                                 <th colspan="3">G. Perum</th>
+                                 <th rowspan="2">Total</th>
                               </tr>
                               <tr>
-                                 <th>J01</th>
-                                 <th>J02</th>
-                                 <th>P01</th>
-                                 <th>P02</th>
-                                 <th>J03</th>
-                                 <th>P03</th>
-                                 <th>J01</th>
-                                 <th>J02</th>
-                                 <th>P01</th>
-                                 <th>P02</th>
-                                 <th>J03</th>
-                                 <th>P03</th>
+                                 <th>CHILL</th>
+                                 <th>FROZEN</th>
+                                 <th>GRADE</th>
+                                 <th>CHILL</th>
+                                 <th>FROZEN</th>
+                                 <th>GRADE</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -58,21 +53,16 @@ include "../mainsidebar.php";
                                  $idbarang = $tampil['idbarang'];
                                  include "flowstock.php";
                               ?>
-                                 <tr class="text-center">
-                                    <td><?= $tampil['kdbarang']; ?></td>
+                                 <tr class="text-right">
+                                    <td class="text-center"><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                    <td><?= $doJ01; ?></td>
-                                    <td><?= $doJ02; ?></td>
-                                    <td><?= $doP01; ?></td>
-                                    <td><?= $doP02; ?></td>
-                                    <td><?= $doJ03; ?></td>
-                                    <td><?= $doP03; ?></td>
-                                    <td><?= $lbJ01; ?></td>
-                                    <td><?= $lbJ02; ?></td>
-                                    <td><?= $lbP01; ?></td>
-                                    <td><?= $lbP02; ?></td>
-                                    <td><?= $lbJ03; ?></td>
-                                    <td><?= $lbP03; ?></td>
+                                    <td><?= number_format($J01, 2); ?></td>
+                                    <td><?= number_format($J02, 2); ?></td>
+                                    <td><?= number_format($J03, 2); ?></td>
+                                    <td><?= number_format($P01, 2); ?></td>
+                                    <td><?= number_format($P02, 2); ?></td>
+                                    <td><?= number_format($P03, 2); ?></td>
+                                    <th><?= number_format($totalstockperitem, 2); ?></th>
                                  </tr>
                               <?php
                               }

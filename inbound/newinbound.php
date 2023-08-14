@@ -27,7 +27,7 @@ include "noinbound.php";
                       </div>
                     </div>
                   </div>
-                  <div class="col-2">
+                  <div class="col-3">
                     <div class="form-group">
                       <label for="idbarang">Jenis Proses <span class="text-danger">*</span></label>
                       <div class="input-group">

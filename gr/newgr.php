@@ -119,7 +119,7 @@ include "grnumber.php";
                                  <div class="form-group">
                                     <label for="box">Box</label>
                                     <div class="input-group">
-                                       <input type="text" name="box[]" class="form-control text-center" required>
+                                       <input type="text" name="box[]" class="form-control text-center" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
                                     </div>
                                  </div>
                               </div>
@@ -127,7 +127,7 @@ include "grnumber.php";
                                  <div class="form-group">
                                     <label for="weight">Weight</label>
                                     <div class="input-group">
-                                       <input type="text" name="weight[]" class="form-control text-right" required>
+                                       <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
                                     </div>
                                  </div>
                               </div>
@@ -169,26 +169,9 @@ include "grnumber.php";
       </div>
    </section>
 </div>
-
+<script src="../dist/js/movefocus.js"></script>
+<script src="../dist/js/calculateTotals.js"></script>
 <script>
-   function calculateTotals() {
-      var boxes = document.getElementsByName("box[]");
-      var weights = document.getElementsByName("weight[]");
-      var xbox = 0;
-      var xweight = 0;
-
-      for (var i = 0; i < boxes.length; i++) {
-         xbox += parseInt(boxes[i].value) || 0;
-         xweight += parseFloat(weights[i].value) || 0;
-      }
-
-      document.getElementById("xbox").value = xbox;
-      document.getElementById("xweight").value = xweight.toFixed(2);
-
-      // Aktifkan tombol Submit setelah mengklik Calculate
-      document.getElementById("submit-btn").disabled = false;
-   }
-
    function addItem() {
       var itemsContainer = document.getElementById('items-container');
 
@@ -239,14 +222,14 @@ while ($row = mysqli_fetch_assoc($result)) {
 <div class="col-1">
 <div class="form-group">
 <div class="input-group">
-<input type="text" name="box[]" class="form-control text-center" required>
+<input type="text" name="box[]" class="form-control text-center" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
 </div>
 </div>
 </div>
 <div class="col-2">
 <div class="form-group">
 <div class="input-group">
-<input type="text" name="weight[]" class="form-control text-right" required>
+<input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
 </div>
 </div>
 </div>
