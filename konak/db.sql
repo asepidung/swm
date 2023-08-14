@@ -2,7 +2,8 @@ CREATE DATABASE swm;
 USE swm;
 CREATE TABLE users (
   idusers INT PRIMARY KEY AUTO_INCREMENT,
-  userid VARCHAR(100) UNIQUE,
+  userid VARCHAR(30) UNIQUE,
+  fullname VARCHAR (30),
   passuser VARCHAR(100)
 );
 CREATE TABLE supplier (
@@ -21,12 +22,9 @@ CREATE TABLE grade (
 );
 CREATE TABLE barang (
   idbarang INT PRIMARY KEY AUTO_INCREMENT,
-  idgrade INT,
   kdbarang VARCHAR(10),
   nmbarang VARCHAR(30) UNIQUE,
-  stockawal DECIMAL(12,2),
   iduser INT,
-  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
 CREATE TABLE boning (
@@ -92,7 +90,6 @@ CREATE TABLE customers (
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );
-
 CREATE TABLE do (
   iddo INT PRIMARY KEY AUTO_INCREMENT,
   donumber VARCHAR(30) UNIQUE,
@@ -333,5 +330,12 @@ CREATE TABLE returjualdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-
+CREATE TABLE stock (
+  idstock INT PRIMARY KEY AUTO_INCREMENT,
+  idgrade INT,
+  idbarang INT,
+  jumlah DECIMAL (12,2),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
 

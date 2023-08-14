@@ -37,15 +37,12 @@ $row = mysqli_fetch_assoc($result);
               <div class=" card-body">
                 <div class="form-group">
                   <label for="kdbarang">Kode</label>
+                  <input type="text" name="idbarang" value="<?= $idbarang ?>" ?>
                   <input type="text" class="form-control" name="kdbarang" id="kdbarang" value="<?= $row['kdbarang']; ?>" readonly>
                 </div>
                 <div class="form-group">
                   <label for="nmbarang">Nama Product <span class="text-danger">*</span></label>
                   <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $row['nmbarang']; ?>">
-                </div>
-                <div class="form-group">
-                  <label for="stockawal">Stock Awal</span></label>
-                  <input type="text" class="form-control" name="stockawal" id="stockawal" value="<?= $row['stockawal']; ?>">
                 </div>
               </div>
               <div class="form-group mr-3 text-right">

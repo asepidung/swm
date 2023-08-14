@@ -27,19 +27,19 @@
             <p class="login-box-msg">Regist New User/Employee</p>
 
             <form action="newuser.php" method="post">
-               <!-- <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="nmuser" id="nmuser" placeholder="Full name" required>
+               <div class="input-group mb-3">
+                  <input type="text" class="form-control" name="userid" id="userid" placeholder="Buat Username Login Anda" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
-                        <span class="fas fa-user"></span>
+                        <i class="fas fa-user-check"></i>
                      </div>
                   </div>
-               </div> -->
+               </div>
                <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="userid" id="userid" placeholder="username" required>
+                  <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Nama Lengkap" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
-                        <span class="fas fa-user"></span>
+                        <i class="fas fa-file-signature"></i>
                      </div>
                   </div>
                </div>
@@ -52,7 +52,7 @@
                   </div>
                </div>
                <div class="input-group mb-3">
-                  <input type="password" class="form-control" name="password2" id="password2" placeholder="Retype password" required>
+                  <input type="password" class="form-control" name="password2" id="password2" placeholder="Ulangi Password" required>
                   <div class="input-group-append">
                      <div class="input-group-text">
                         <span class="fas fa-lock"></span>

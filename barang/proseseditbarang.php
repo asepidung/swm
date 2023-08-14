@@ -6,12 +6,11 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 
 // mengambil data dari form
-$kdbarang = $_POST['kdbarang'];
+$idbarang = $_POST['idbarang'];
 $nmbarang = $_POST['nmbarang'];
-$stockawal = $_POST['stockawal'];
 
 // membuat query untuk memperbarui data barang di database
-$sql = "UPDATE barang SET nmbarang = '$nmbarang', stockawal = $stockawal WHERE kdbarang = '$kdbarang'";
+$sql = "UPDATE barang SET nmbarang = '$nmbarang' WHERE idbarang = '$idbarang'";
 
 // mengeksekusi query
 if (mysqli_query($conn, $sql)) {

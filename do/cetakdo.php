@@ -53,7 +53,7 @@ $result_detail = mysqli_query($conn, $query_detail);
     }
 
     .small-text {
-      font-size: 10px;
+      font-size: 12px;
     }
   </style>
 </head>
