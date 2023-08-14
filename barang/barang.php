@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "flowstock.php";
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -15,13 +14,11 @@ include "flowstock.php";
       <div class="container-fluid">
          <div class="row mb-2">
             <div class="col-sm-6">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
                <a href="newbarang.php"><button type="button" class="btn btn-info"> Product Baru</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+            </div>
+         </div>
+      </div>
    </div>
-   <!-- /.content-header -->
 
    <!-- Main content -->
    <section class="content">
@@ -29,77 +26,71 @@ include "flowstock.php";
          <div class="row">
             <div class="col-12">
                <div class="card">
-                  <!-- /.card-header -->
                   <div class="card-body">
                      <div class="col">
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
-                                 <th>#</th>
-                                 <th>Kode</th>
-                                 <th>Nama Product</th>
-                                 <!-- <th>xPembelian</th>
-                                 <th>xPenjualan</th>
-                                 <th>xRetur Beli</th>
-                                 <th>xRetur Jual</th>
-                                 <th>Stock Akhir</th> -->
-                                 <th>Action</th>
+                                 <th rowspan="2">Kode</th>
+                                 <th rowspan="2">Nama Product</th>
+                                 <th colspan="6">Penjualan DO</th>
+                                 <th colspan="6">Penjualan LB</th>
+                              </tr>
+                              <tr>
+                                 <th>J01</th>
+                                 <th>J02</th>
+                                 <th>P01</th>
+                                 <th>P02</th>
+                                 <th>J03</th>
+                                 <th>P03</th>
+                                 <th>J01</th>
+                                 <th>J02</th>
+                                 <th>P01</th>
+                                 <th>P02</th>
+                                 <th>J03</th>
+                                 <th>P03</th>
                               </tr>
                            </thead>
                            <tbody>
-                              </tr>
                               <?php
-                              $no = 1;
                               $ambildata = mysqli_query($conn, "SELECT * FROM barang");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
+                                 $idbarang = $tampil['idbarang'];
+                                 include "flowstock.php";
                               ?>
                                  <tr class="text-center">
-                                    <td><?= $no; ?></td>
                                     <td><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                    <!-- <td></td>
-                                    <td class="text-right"><?= $totalpenjualan_per_idbarang[$tampil['idbarang']] ?? 0; ?></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-right"><?= number_format($tampil['stock'], 2); ?></td> -->
-                                    <td>
-                                       <div class="row">
-                                          <div class="col"></div>
-                                          <div class="col-3">
-                                             <a href="editbarang.php?idbarang=<?= $tampil['idbarang'] ?>"><span class="text-success"><i class="fas fa-edit"></i></span></a>
-                                          </div>
-                                          <div class="col-3">
-                                             <a href="deletebarang.php?idbarang=<?= $tampil['idbarang'] ?>" onclick="return confirm('Apakah kamu yakin? Ingat! Segala aktivitasmu akan terekam oleh sistem.');"><span class="text-danger"><i class="fas fa-trash"></i></span></a>
-                                          </div>
-                                          <div class="col"></div>
-                                       </div>
-                                    </td>
+                                    <td><?= $doJ01; ?></td>
+                                    <td><?= $doJ02; ?></td>
+                                    <td><?= $doP01; ?></td>
+                                    <td><?= $doP02; ?></td>
+                                    <td><?= $doJ03; ?></td>
+                                    <td><?= $doP03; ?></td>
+                                    <td><?= $lbJ01; ?></td>
+                                    <td><?= $lbJ02; ?></td>
+                                    <td><?= $lbP01; ?></td>
+                                    <td><?= $lbP02; ?></td>
+                                    <td><?= $lbJ03; ?></td>
+                                    <td><?= $lbP03; ?></td>
                                  </tr>
                               <?php
-                                 $no++;
                               }
                               ?>
                            </tbody>
-                           <tfoot>
-                           </tfoot>
                         </table>
                      </div>
                   </div>
-                  <!-- /.card-body -->
                </div>
-               <!-- /.card -->
             </div>
-            <!-- /.col -->
          </div>
-         <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
-   <!-- </div> -->
-   <!-- /.content-wrapper -->
-
-   <?php
-   include "../footer.php";
-   include "../footnote.php";
-   ?>
+</div>
+<script>
+   document.title = "DATA BARANG";
+</script>
+<?php
+include "../footer.php";
+include "../footnote.php";
+?>

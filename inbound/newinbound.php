@@ -36,6 +36,7 @@ include "noinbound.php";
                           <option value="Hasil Repack">Hasil Repack</option>
                           <option value="Mutasi Masuk G. Jonggol">Mutasi Masuk G Jonggol</option>
                           <option value="Mutasi Masuk G. Perum">Mutasi Masuk G Perum</option>
+                          <option value="Stock Awal">Stock Awal</option>
                         </select>
                       </div>
                     </div>

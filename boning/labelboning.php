@@ -75,6 +75,29 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
+                  <label>Grade <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <select class="form-control" name="idgrade" id="idgrade" required>
+                      <?php
+                      if (isset($_SESSION['idgrade']) && $_SESSION['idgrade'] != '') {
+                        $selectedIdgrade = $_SESSION['idgrade'];
+                        echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                      } else {
+                        echo '<option value="" selected>--Pilih Grade--</option>';
+                      }
+                      $query = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                      $result = mysqli_query($conn, $query);
+                      while ($row = mysqli_fetch_assoc($result)) {
+                        $idgrade = $row['idgrade'];
+                        $nmgrade = $row['nmgrade'];
+                        $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                        echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label>Packed Date<span class="text-danger">*</span></label>
                   <div class="input-group">
                     <?php
@@ -111,7 +134,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <!-- </div> -->
                   </div>
                 </div>
-                <button type="submit" class="btn bg-gradient-primary" name="submit">Print</button>
+                <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
               </form>
             </div>
           </div>
@@ -174,6 +197,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
   </script>
   <?php
-  require "../footnote.php";
+  // require "../footnote.php";
   require "../footer.php";
   ?>

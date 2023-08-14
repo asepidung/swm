@@ -27,6 +27,7 @@ CREATE TABLE barang (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
+-- boning adalah transaksi masuk barang
 CREATE TABLE boning (
   idboning INT PRIMARY KEY AUTO_INCREMENT,
   batchboning VARCHAR(10),
@@ -38,7 +39,7 @@ CREATE TABLE boning (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers),
   FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
-);
+); 
 CREATE TABLE labelboning (
   idlabelboning INT PRIMARY KEY AUTO_INCREMENT,
   idboning INT,
@@ -90,6 +91,7 @@ CREATE TABLE customers (
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );
+-- do adalah transaksi keluar barang
 CREATE TABLE do (
   iddo INT PRIMARY KEY AUTO_INCREMENT,
   donumber VARCHAR(30) UNIQUE,
@@ -209,6 +211,7 @@ CREATE TABLE trading (
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
+-- gr adalah transaksi masuk barang
 CREATE TABLE gr (
   idgr INT PRIMARY KEY AUTO_INCREMENT,
   grnumber VARCHAR(30) NOT NULL UNIQUE,
@@ -234,6 +237,7 @@ CREATE TABLE grdetail (
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
   FOREIGN KEY (idgrade) REFERENCES GRADE (idgrade)
 );
+-- adjustment adalah transaksi masuk barang
 CREATE TABLE adjustment (
   idadjustment INT PRIMARY KEY AUTO_INCREMENT,
   noadjustment VARCHAR (30) UNIQUE,
@@ -255,6 +259,7 @@ CREATE TABLE adjustmentdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+-- inbound adalah transaksi masuk barang
 CREATE TABLE inbound (
   idinbound INT PRIMARY KEY AUTO_INCREMENT,
   noinbound VARCHAR(30) UNIQUE,
@@ -279,6 +284,7 @@ CREATE TABLE inbounddetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+-- outbond adalah transaksi keluar barang
 CREATE TABLE outbound (
   idoutbound INT PRIMARY KEY AUTO_INCREMENT,
   nooutbound VARCHAR(30) UNIQUE,
@@ -303,6 +309,7 @@ CREATE TABLE outbounddetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+-- returjual adalah transaksi masuk barang
 CREATE TABLE returjual (
   idreturjual INT PRIMARY KEY AUTO_INCREMENT,
   returnnumber VARCHAR(30),
@@ -330,6 +337,7 @@ CREATE TABLE returjualdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+-- stock adalah jumlah sisa barang dari transaksi diatas
 CREATE TABLE stock (
   idstock INT PRIMARY KEY AUTO_INCREMENT,
   idgrade INT,

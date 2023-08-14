@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idusers = $_SESSION['idusers'];
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
+   $idgrade = $_POST['idgrade'];
    $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
    $result = mysqli_query($conn, $query);
    $row = mysqli_fetch_assoc($result);
@@ -26,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $pcs = null;
    $qtyPcsInput = $_POST['qty'];
    $_SESSION['idbarang'] = $_POST['idbarang'];
+   $_SESSION['idgrade'] = $_POST['idgrade'];
    $_SESSION['packdate'] = $packdate;
    $_SESSION['tenderstreach'] = $tenderstreachActive;
    $_SESSION['exp'] = $exp;
@@ -39,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Memformat qty menjadi 2 digit desimal di belakang koma
    $qty = number_format($qty, 2, '.', '');
 }
-$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser)
-VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers')");
+$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade)
+VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')");
 ?>
 
 <!DOCTYPE html>

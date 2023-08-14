@@ -45,7 +45,7 @@ include "../mainsidebar.php";
                 </thead>
                 <tbody>
                   <?php
-                  $idgrade1 = "total_hitung_idbarang_berdasarkan_idgrade";
+                  $idgrade1 = "stock_akhir_idbarang_berdasarkan_idgrade_1";
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT * FROM barang");
                   while ($tampil = mysqli_fetch_array($ambildata)) { ?>
