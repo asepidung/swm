@@ -44,13 +44,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../404.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Repack Import</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../404.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Repack Stock</p>
               </a>
@@ -85,7 +85,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../returjual/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Return</p>
               </a>
@@ -93,19 +93,30 @@
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Mutasi & Repacking</p>
+                <p>
+                  Bound Procces
+                  <i class="right fas fa-angle-left"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../inbound/" class="nav-link">
+                    <i class="far fa-dot-circle nav-icon"></i>
+                    <p>Inbound</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="../outbond/" class="nav-link">
+                    <i class="far fa-dot-circle nav-icon"></i>
+                    <p>Outbond</p>
+                  </a>
+                </li>
+              </ul>
             </li>
             <li class="nav-item">
               <a href="../adjustment" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Adjustment</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Stock</p>
               </a>
             </li>
           </ul>
@@ -132,7 +143,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../404.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Approve Invoice</p>
               </a>
@@ -140,7 +151,7 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="../404.php" class="nav-link">
             <i class="nav-icon fas fa-cart-plus"></i>
             <p>
               FINANCE
@@ -155,9 +166,50 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="../404.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Piutang</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-database"></i>
+            <p>
+              DATA REPORT
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../stock/" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Stock</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../inv/invoice.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Penjualan</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../404.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Utang</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../404.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Piutang</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Menu lainya nanti</p>
               </a>
             </li>
           </ul>

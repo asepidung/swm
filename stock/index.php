@@ -9,65 +9,54 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
-  <div class="content-header">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col">
-          <h3>DATA STOCK</h3>
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
+  <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 mt-3">
           <div class="card">
-            <!-- /.card-header -->
             <div class="card-body">
-              <table class="table table-bordered table-striped table-sm">
-                <thead class="text-center">
-                  <tr>
-                    <th rowspan="2">#</th>
-                    <th rowspan="2">Poduct</th>
-                    <th colspan="3">G. JONGGOL</th>
-                    <th colspan="3">G. PERUM</th>
-                    <th rowspan="2">TOTAL</th>
-                  </tr>
-                  <tr>
-                    <th>J01</th>
-                    <th>J02</th>
-                    <th>J03</th>
-                    <th>P01</th>
-                    <th>P02</th>
-                    <th>P03</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $idgrade1 = "stock_akhir_idbarang_berdasarkan_idgrade_1";
-                  $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT * FROM barang");
-                  while ($tampil = mysqli_fetch_array($ambildata)) { ?>
-                    <tr class="text-right">
-                      <td class="text-center"><?= $no; ?></td>
-                      <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                      <td><?= $idgrade1; ?></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+              <div class="col">
+                <table id="example1" class="table table-bordered table-striped table-sm">
+                  <thead class="text-center">
+                    <tr>
+                      <th rowspan="2">Kode</th>
+                      <th rowspan="2">Nama Product</th>
+                      <th colspan="3">G. Jonggol</th>
+                      <th colspan="3">G. Perum</th>
+                      <th rowspan="2">Total</th>
                     </tr>
-                  <?php $no++;
-                  } ?>
-                </tbody>
-                <tfoot>
-                  <tr>
-
-                  </tr>
-                </tfoot>
-              </table>
+                    <tr>
+                      <th>CHILL</th>
+                      <th>FROZEN</th>
+                      <th>GRADE</th>
+                      <th>CHILL</th>
+                      <th>FROZEN</th>
+                      <th>GRADE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $ambildata = mysqli_query($conn, "SELECT * FROM barang");
+                    while ($tampil = mysqli_fetch_array($ambildata)) {
+                      $idbarang = $tampil['idbarang'];
+                      include "flowstock.php";
+                    ?>
+                      <tr class="text-right">
+                        <td class="text-center"><?= $tampil['kdbarang']; ?></td>
+                        <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                        <td><?= ($J01 == 0) ? '' : (($J01 < 0) ? '<span class="text-danger">' . number_format($J01, 2) . '</span>' : number_format($J01, 2)); ?></td>
+                        <td><?= ($J02 == 0) ? '' : (($J02 < 0) ? '<span class="text-danger">' . number_format($J02, 2) . '</span>' : number_format($J02, 2)); ?></td>
+                        <td><?= ($J03 == 0) ? '' : (($J03 < 0) ? '<span class="text-danger">' . number_format($J03, 2) . '</span>' : number_format($J03, 2)); ?></td>
+                        <td><?= ($P01 == 0) ? '' : (($P01 < 0) ? '<span class="text-danger">' . number_format($P01, 2) . '</span>' : number_format($P01, 2)); ?></td>
+                        <td><?= ($P02 == 0) ? '' : (($P02 < 0) ? '<span class="text-danger">' . number_format($P02, 2) . '</span>' : number_format($P02, 2)); ?></td>
+                        <td><?= ($P03 == 0) ? '' : (($P03 < 0) ? '<span class="text-danger">' . number_format($P03, 2) . '</span>' : number_format($P03, 2)); ?></td>
+                        <td><?= ($totalstockperitem < 0) ? '<span class="text-danger">' . number_format($totalstockperitem, 2) . '</span>' : (($totalstockperitem == 0) ? '' : number_format($totalstockperitem, 2)); ?></td>
+                      </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -75,12 +64,10 @@ include "../mainsidebar.php";
     </div>
   </section>
 </div>
-
 <script>
-  // Mengubah judul halaman web
-  document.title = "Stock";
+  document.title = "DATA BARANG";
 </script>
 <?php
-$conn->close();
-// require "../footnote.php";
-include "../footer.php" ?>
+include "../footer.php";
+// include "../footnote.php";
+?>
