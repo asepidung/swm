@@ -346,4 +346,3 @@ CREATE TABLE stock (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-

@@ -24,7 +24,7 @@ include "../mainsidebar.php";
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-6">
+            <div class="col-8">
                <div class="card">
                   <div class="card-body">
                      <div class="col">
@@ -48,9 +48,9 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                    <td>
-                                       <a href="editbarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-succes mx-auto py-2">EDIT</a>
-                                       <a href="deletebarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-danger mx-auto py-2">HAPUS</a>
+                                    <td class="text-center">
+                                       <a href="editbarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-succes mx-auto p-2"><i class="fas fa-pencil-alt"></i></a>
+                                       <a href="deletebarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-danger mx-auto p-2" onclick="return confirm('apakah anda yakin ingin menghapus barang ini?')"><i class="fas fa-minus-square"></i></a>
                                     </td>
                                  </tr>
                               <?php $no++;

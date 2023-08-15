@@ -334,7 +334,7 @@ include "kebutuhanindex.php";
                   </li>
                   <li class="nav-item">
                      <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-database"></i>
+                        <i class=" nav-icon fas fa-sticky-note"></i>
                         <p>
                            DATA REPORT
                            <i class="right fas fa-angle-left"></i>

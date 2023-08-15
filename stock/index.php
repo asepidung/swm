@@ -51,7 +51,7 @@ include "../mainsidebar.php";
                         <td><?= ($P01 == 0) ? '' : (($P01 < 0) ? '<span class="text-danger">' . number_format($P01, 2) . '</span>' : number_format($P01, 2)); ?></td>
                         <td><?= ($P02 == 0) ? '' : (($P02 < 0) ? '<span class="text-danger">' . number_format($P02, 2) . '</span>' : number_format($P02, 2)); ?></td>
                         <td><?= ($P03 == 0) ? '' : (($P03 < 0) ? '<span class="text-danger">' . number_format($P03, 2) . '</span>' : number_format($P03, 2)); ?></td>
-                        <td><?= ($totalstockperitem < 0) ? '<span class="text-danger">' . number_format($totalstockperitem, 2) . '</span>' : (($totalstockperitem == 0) ? '' : number_format($totalstockperitem, 2)); ?></td>
+                        <th><?= ($totalstockperitem < 0) ? '<span class="text-danger">' . number_format($totalstockperitem, 2) . '</span>' : (($totalstockperitem == 0) ? '' : number_format($totalstockperitem, 2)); ?></th>
                       </tr>
                     <?php } ?>
                   </tbody>
