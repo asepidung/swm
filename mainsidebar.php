@@ -1,4 +1,4 @@
-<?php $userid = $_SESSION['userid']; ?>
+<?php $fullname = $_SESSION['fullname']; ?>
 
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -15,7 +15,7 @@
         <img src="../dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
       </div>
       <div class="info">
-        <a href="#" class="d-block"><?= $userid; ?></a>
+        <a href="#" class="d-block"><?= $fullname; ?></a>
       </div>
     </div>
     <!-- Sidebar Menu -->
@@ -137,9 +137,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="../po" class="nav-link">
+              <a href="../so" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Purchase Order</p>
+                <p>Sales Order</p>
               </a>
             </li>
             <li class="nav-item">

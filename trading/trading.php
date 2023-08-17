@@ -115,12 +115,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.userid FROM trading r
+                  $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.fullname FROM trading r
                                                    INNER JOIN barang b ON r.idbarang = b.idbarang
                                                    INNER JOIN users u ON r.iduser = u.idusers
                                                    ORDER BY r.dibuat DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
-                    $userid = $tampil['userid'];
+                    $fullname = $tampil['fullname'];
                     $nmbarang = $tampil['nmbarang'];
                   ?>
                     <tr class="text-center">
@@ -129,7 +129,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
-                      <td><?= $userid; ?></td>
+                      <td><?= $fullname; ?></td>
                       <td>
                         <a href="hapus_trading.php?id=<?php echo $tampil['idtrading']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                           <i class="far fa-times-circle"></i>

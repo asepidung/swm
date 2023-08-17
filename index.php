@@ -5,7 +5,7 @@ if (!isset($_SESSION['login'])) {
 }
 require "konak/conn.php";
 
-$userid = $_SESSION['userid'];
+$fullname = $_SESSION['fullname'];
 include "kebutuhanindex.php";
 ?>
 <!DOCTYPE html>
@@ -174,7 +174,7 @@ include "kebutuhanindex.php";
                   <img src="dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
                </div>
                <div class="info">
-                  <a href="#" class="d-block"><?= $userid; ?></a>
+                  <a href="404.php" class="d-block"><?= $fullname; ?></a>
                </div>
             </div>
             <!-- Sidebar Menu -->
@@ -298,7 +298,7 @@ include "kebutuhanindex.php";
                         <li class="nav-item">
                            <a href="po" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>Purchase Order</p>
+                              <p>Sales Order</p>
                            </a>
                         </li>
                         <li class="nav-item">

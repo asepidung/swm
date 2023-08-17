@@ -34,7 +34,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-6">
-          <!-- <h1 class="m-0">DATA BONING</h1> -->
           <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -74,7 +73,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label>Grade <span class="text-danger">*</span></label>
                   <div class="input-group">
                     <select class="form-control" name="idgrade" id="idgrade" required>
@@ -91,6 +90,28 @@ while ($row = mysqli_fetch_assoc($result)) {
                         $idgrade = $row['idgrade'];
                         $nmgrade = $row['nmgrade'];
                         $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                        echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
+                </div> -->
+                <div class="form-group">
+                  <label>Grade <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <select class="form-control" name="idgrade" id="idgrade" required>
+                      <?php
+                      $defaultIdgrade = 1; // Set nilai default idgrade
+
+                      echo '<option value="" selected>--Pilih Grade--</option>';
+
+                      $query = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                      $result = mysqli_query($conn, $query);
+
+                      while ($row = mysqli_fetch_assoc($result)) {
+                        $idgrade = $row['idgrade'];
+                        $nmgrade = $row['nmgrade'];
+                        $selected = ($idgrade == $defaultIdgrade) ? 'selected' : '';
                         echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
                       }
                       ?>
@@ -159,9 +180,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.userid FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang JOIN boning bo ON l.idboning = bo.idboning JOIN users u ON l.iduser = u.idusers WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+                  $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.fullname FROM labelboning l JOIN barang b ON l.idbarang = b.idbarang JOIN boning bo ON l.idboning = bo.idboning JOIN users u ON l.iduser = u.idusers WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
-                    $userid = $tampil['userid'];
+                    $fullname = $tampil['fullname'];
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -169,7 +190,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
-                      <td><?= $userid; ?></td>
+                      <td><?= $fullname; ?></td>
                       <td>
                         <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                           <i class="far fa-times-circle"></i>

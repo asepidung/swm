@@ -45,7 +45,7 @@ include "../mainsidebar.php";
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT a.*, u.userid FROM outbound a JOIN users u ON a.idusers = u.idusers ORDER BY nooutbound DESC; ");
+                  $ambildata = mysqli_query($conn, "SELECT a.*, u.fullname FROM outbound a JOIN users u ON a.idusers = u.idusers ORDER BY nooutbound DESC; ");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $idoutbound = $tampil['idoutbound'];
                   ?>
@@ -56,7 +56,7 @@ include "../mainsidebar.php";
                       <td class="text-right"><?= number_format($tampil['xbox'], 2); ?></td>
                       <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                       <td><?= $tampil['proses']; ?></td>
-                      <td class="text-center"><?= $tampil['userid']; ?></td>
+                      <td class="text-center"><?= $tampil['fullname']; ?></td>
                       <td class="text-center">
                         <a href="editoutbound.php?idoutbound=<?= $tampil['idoutbound']; ?>" class="mx-auto p-2 text-succes">
                           <i class="fas fa-pencil-alt"></i> EDIT

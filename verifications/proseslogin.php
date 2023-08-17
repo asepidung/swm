@@ -3,15 +3,18 @@ require "../konak/conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $userid = $_POST['userid'];
+   $fullname = $_POST['fullname'];
    $password = $_POST['password'];
 
    // Query untuk memeriksa apakah username sesuai di database
    $sql = "SELECT * FROM users WHERE userid = '$userid'";
    $result = mysqli_query($conn, $sql);
 
+   // ...
    if (mysqli_num_rows($result) == 1) {
       $row = mysqli_fetch_assoc($result);
       $hashedPassword = $row['passuser'];
+      $fullname = $row['fullname']; // Ambil nilai fullname dari hasil query
 
       // Memeriksa kecocokan password yang dimasukkan dengan hash yang ada dalam database
       if (password_verify($password, $hashedPassword)) {
@@ -19,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          session_start();
          $_SESSION['login'] = true;
          $_SESSION['userid'] = $userid;
+         $_SESSION['fullname'] = $fullname; // Simpan fullname dalam sesi
          $_SESSION['idusers'] = $row['idusers'];
          header("Location: ../index.php");
          exit();

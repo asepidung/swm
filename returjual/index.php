@@ -59,7 +59,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center"><?= $userid ?></td>
+                                 <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
                                     <a href="printreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-eye"></i> Print</a>
                                     <a href="editreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-success"><i class="fas fa-pencil-alt"></i> Edit</a>

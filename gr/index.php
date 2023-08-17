@@ -61,7 +61,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['idnumber']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center"><?= $userid ?></td>
+                                 <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
                                     <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="mx-auto p-2">
                                        <i class="far fa-eye text-primary"></i>

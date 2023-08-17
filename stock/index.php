@@ -65,7 +65,7 @@ include "../mainsidebar.php";
   </section>
 </div>
 <script>
-  document.title = "DATA BARANG";
+  document.title = "DATA STOCK";
 </script>
 <?php
 include "../footer.php";

@@ -7,7 +7,7 @@ require "../konak/conn.php";
 
 $iddo = $_GET['iddo'];
 // Query untuk mengambil data dari tabel do
-$query = "SELECT do.*, customers.nama_customer, users.userid
+$query = "SELECT do.*, customers.nama_customer, users.fullname
           FROM do 
           INNER JOIN customers ON do.idcustomer = customers.idcustomer 
           INNER JOIN users ON do.idusers = users.idusers
@@ -167,7 +167,7 @@ $result_detail = mysqli_query($conn, $query_detail);
   </table>
   <br>
   <p class="small-text" align="right">
-    Made By <?= $row_do['userid'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
+    Made By <?= $row_do['fullname'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
   </p>
   <script>
     document.title = "<?php echo $row_do['donumber']; ?>";

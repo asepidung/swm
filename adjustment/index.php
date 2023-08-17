@@ -43,7 +43,7 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT a.*, u.userid
+                           $ambildata = mysqli_query($conn, "SELECT a.*, u.fullname
                            FROM adjustment a
                            JOIN users u ON a.idusers = u.idusers ORDER BY idadjustment DESC;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
@@ -59,7 +59,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['noadjustment']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['tgladjustment'])); ?></td>
                                  <td class="text-right"><?= number_format($xweight, 2); ?></td>
-                                 <td class="text-center"><?= $tampil['userid']; ?></td>
+                                 <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td><?= $tampil['eventadjustment']; ?></td>
                                  </tr>
                                  <tr class="expandable-body">

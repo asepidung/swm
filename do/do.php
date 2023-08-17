@@ -55,7 +55,7 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.userid FROM do
+                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
                            JOIN customers ON do.idcustomer = customers.idcustomer
                            JOIN users ON do.idusers = users.idusers
                            ORDER BY donumber DESC;
@@ -73,7 +73,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
-                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $userid ?>"><?= $tampil['status']; ?></span>
+                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $fullname ?>"><?= $tampil['status']; ?></span>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
                                           <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
@@ -82,7 +82,7 @@ include "../mainsidebar.php";
                                        echo $tampil['status'];
                                     } ?>
                                  </td>
-                                 <td class="text-center"><?= $tampil['userid']; ?></td>
+                                 <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
                                        <div class="row">
