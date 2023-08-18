@@ -25,14 +25,14 @@ mysqli_stmt_store_result($stmt_check_doreceipt);
 
 // Menghapus data di tabel 'doreceiptdetail' jika ada iddoreceipt yang sama
 if (mysqli_stmt_num_rows($stmt_check_doreceipt) > 0) {
-    mysqli_stmt_bind_result($stmt_check_doreceipt, $iddoreceipt);
-    while (mysqli_stmt_fetch($stmt_check_doreceipt)) {
-        $delete_doreceiptdetail_query = "DELETE FROM doreceiptdetail WHERE iddoreceipt = ?";
-        $stmt_delete_doreceiptdetail = mysqli_prepare($conn, $delete_doreceiptdetail_query);
-        mysqli_stmt_bind_param($stmt_delete_doreceiptdetail, "i", $iddoreceipt);
-        mysqli_stmt_execute($stmt_delete_doreceiptdetail);
-        mysqli_stmt_close($stmt_delete_doreceiptdetail);
-    }
+  mysqli_stmt_bind_result($stmt_check_doreceipt, $iddoreceipt);
+  while (mysqli_stmt_fetch($stmt_check_doreceipt)) {
+    $delete_doreceiptdetail_query = "DELETE FROM doreceiptdetail WHERE iddoreceipt = ?";
+    $stmt_delete_doreceiptdetail = mysqli_prepare($conn, $delete_doreceiptdetail_query);
+    mysqli_stmt_bind_param($stmt_delete_doreceiptdetail, "i", $iddoreceipt);
+    mysqli_stmt_execute($stmt_delete_doreceiptdetail);
+    mysqli_stmt_close($stmt_delete_doreceiptdetail);
+  }
 }
 
 // Menghapus data di tabel 'doreceipt' yang memiliki iddo sama dengan tabel 'do'
@@ -59,6 +59,12 @@ if (mysqli_stmt_execute($stmt_do)) {
   $weight = $_POST['weight'];
   $notes = $_POST['notes'];
 
+  var_dump($_POST['idgrade']);
+  var_dump($_POST['idbarang']);
+  var_dump($_POST['box']);
+  var_dump($_POST['weight']);
+  var_dump($_POST['notes']);
+
   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt_dodetail = mysqli_prepare($conn, $query_dodetail);
   mysqli_stmt_bind_param($stmt_dodetail, "iiiids", $iddo, $idgrade_val, $idbarang_val, $box_val, $weight_val, $notes_val);
@@ -71,7 +77,6 @@ if (mysqli_stmt_execute($stmt_do)) {
     $notes_val = $notes[$i];
     mysqli_stmt_execute($stmt_dodetail);
   }
-
   mysqli_stmt_close($stmt_do);
   mysqli_stmt_close($stmt_delete);
   mysqli_stmt_close($stmt_dodetail);

@@ -122,16 +122,38 @@ $row = mysqli_fetch_assoc($result);
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="hidden" name="idgrade[]" id="idgrade" value="<?= $row_dodetail['idgrade']; ?>">
-                            <input type="text" class="form-control" value="<?= $row_dodetail['nmgrade']; ?>">
+                            <select class="form-control" name="idgrade[]" id="idgrade">
+                              <option value="">Pilih Grade</option>
+                              <?php
+                              $querygrade = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                              $resultgrade = mysqli_query($conn, $querygrade);
+                              while ($gradeRow = mysqli_fetch_assoc($resultgrade)) {
+                                $idgrade = $gradeRow['idgrade'];
+                                $nmgrade = $gradeRow['nmgrade'];
+                                $selectedgrade = ($idgrade == $row_dodetail['idgrade']) ? "selected" : "";
+                                echo "<option value=\"$idgrade\" $selectedgrade>$nmgrade</option>";
+                              }
+                              ?>
+                            </select>
                           </div>
                         </div>
                       </div>
                       <div class="col-4">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="hidden" name="idbarang[]" id="idbarang" value="<?= $row_dodetail['idbarang']; ?>">
-                            <input type="text" class="form-control" value="<?= $row_dodetail['nmbarang']; ?>">
+                            <select class="form-control" name="idbarang[]" id="idbarang">
+                              <option value="">Pilih Barang</option>
+                              <?php
+                              $querybarang = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                              $resultbarang = mysqli_query($conn, $querybarang);
+                              while ($barangRow = mysqli_fetch_assoc($resultbarang)) {
+                                $idbarang = $barangRow['idbarang'];
+                                $nmbarang = $barangRow['nmbarang'];
+                                $selectedbarang = ($idbarang == $row_dodetail['idbarang']) ? "selected" : "";
+                                echo "<option value=\"$idbarang\" $selectedbarang>$nmbarang</option>";
+                              }
+                              ?>
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -198,91 +220,7 @@ $row = mysqli_fetch_assoc($result);
 <script src="../dist/js/calculateTotals.js"></script>
 <script src="../dist/js/movefocus.js"></script>
 <script>
-  function addItem() {
-    var itemsContainer = document.getElementById('items-container');
-
-    // Baris item baru
-    var newItemRow = document.createElement('div');
-    newItemRow.className = 'item-row';
-
-    // Konten baris item baru
-    newItemRow.innerHTML = `
-<div class="row">
-<div class="col-1">
-<div class="form-group">
-<div class="input-group">
-<select class="form-control" name="idgrade[]" id="idgrade">
-<?php
-// Query untuk mengambil data dari tabel grade
-$sql = "SELECT * FROM grade";
-$result = $conn->query($sql);
-// Membuat pilihan dalam select box berdasarkan data yang diambil
-if ($result->num_rows > 0) {
-  while ($row = $result->fetch_assoc()) {
-    echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
-  }
-}
-?>
-</select>
-</div>
-</div>
-</div>
-<div class="col-4">
-<div class="form-group">
-<div class="input-group">
-<select class="form-control" name="idbarang[]" id="idbarang" required>
-<option value="">--Pilih--</option>
-<?php
-$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-$result = mysqli_query($conn, $query);
-while ($row = mysqli_fetch_assoc($result)) {
-  $idbarang = $row['idbarang'];
-  $nmbarang = $row['nmbarang'];
-  echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-}
-?>
-</select>
-</div>
-</div>
-</div>
-<div class="col-1">
-<div class="form-group">
-<div class="input-group">
-<input type="number" name="box[]" class="form-control" required>
-</div>
-</div>
-</div>
-<div class="col-2">
-<div class="form-group">
-<div class="input-group">
-<input type="text" name="weight[]" class="form-control text-right" required>
-</div>
-</div>
-</div>
-<div class="col">
-<div class="form-group">
-<div class="input-group">
-<input type="text" name="notes[]" class="form-control">
-</div>
-</div>
-</div>
-<div class="col-1">
-<button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
-<i class="fas fa-minus-circle"></i>
-</button>
-</div>
-</div>
-`;
-    // Tambahkan baris item baru ke dalam container
-    itemsContainer.appendChild(newItemRow);
-  }
-
-  function removeItem(button) {
-    var itemRow = button.closest('.item-row');
-
-    // Hapus baris item
-    itemRow.remove();
-  }
+  document.title = "Eidt Do";
 </script>
 
 <?php
