@@ -13,7 +13,7 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-6">
+            <div class="col">
                <a href="invdraft.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Draft</button></a>
                <a href="invoicedetail.php"><button type="button" class="btn btn-outline-secondary float right"><i class="fas fa-eye"></i> Detail Invoice</button></a>
             </div><!-- /.col -->

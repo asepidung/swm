@@ -19,7 +19,7 @@ include "../mainsidebar.php";
                   <div class="card-header">
                      <h3 class="card-title">Data Customer Baru</h3>
                   </div>
-                  <form method="POST" action="inputCustomer.php">
+                  <form method="POST" action="inputcustomer.php">
                      <div class=" card-body">
                         <div class="row">
                            <div class="col-6">

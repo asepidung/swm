@@ -148,11 +148,13 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <tr>
                     <th>#</th>
                     <th>Barcode</th>
+                    <th>Grade</th>
                     <th>Product</th>
                     <th>Qty</th>
                     <th>Pcs</th>
                     <th>Author</th>
                     <th>Hapus</th>
+                    <th>Create</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,6 +167,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <tr class="text-center">
                       <td><?= $no; ?></td>
                       <td><?= $tampil['kdbarcode']; ?></td>
+                      <td><?= $tampil['idgrade']; ?></td>
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
@@ -174,6 +177,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                           <i class="far fa-times-circle"></i>
                         </a>
                       </td>
+                      <td><?= date("d-M-y H:i:s", strtotime($tampil['dibuat'])); ?></td>
                     </tr>
                   <?php
                     $no++;
