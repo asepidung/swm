@@ -73,7 +73,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </div>
                   </div>
                 </div>
-                <!-- <div class="form-group">
+                <div class="form-group">
                   <label>Grade <span class="text-danger">*</span></label>
                   <div class="input-group">
                     <select class="form-control" name="idgrade" id="idgrade" required>
@@ -90,28 +90,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                         $idgrade = $row['idgrade'];
                         $nmgrade = $row['nmgrade'];
                         $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
-                        echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
-                      }
-                      ?>
-                    </select>
-                  </div>
-                </div> -->
-                <div class="form-group">
-                  <label>Grade <span class="text-danger">*</span></label>
-                  <div class="input-group">
-                    <select class="form-control" name="idgrade" id="idgrade" required>
-                      <?php
-                      $defaultIdgrade = 1; // Set nilai default idgrade
-
-                      echo '<option value="" selected>--Pilih Grade--</option>';
-
-                      $query = "SELECT * FROM grade ORDER BY nmgrade ASC";
-                      $result = mysqli_query($conn, $query);
-
-                      while ($row = mysqli_fetch_assoc($result)) {
-                        $idgrade = $row['idgrade'];
-                        $nmgrade = $row['nmgrade'];
-                        $selected = ($idgrade == $defaultIdgrade) ? 'selected' : '';
                         echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
                       }
                       ?>
