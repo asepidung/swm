@@ -7,6 +7,13 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$totalJ01 = 0;
+$totalJ02 = 0;
+$totalJ03 = 0;
+$totalP01 = 0;
+$totalP02 = 0;
+$totalP03 = 0;
+$totalStock = 0;
 ?>
 <div class="content-wrapper">
   <!-- Main content -->
@@ -54,6 +61,18 @@ include "../mainsidebar.php";
                         <th><?= ($totalstockperitem < 0) ? '<span class="text-danger">' . number_format($totalstockperitem, 2) . '</span>' : (($totalstockperitem == 0) ? '' : number_format($totalstockperitem, 2)); ?></th>
                       </tr>
                     <?php } ?>
+                  <tfoot>
+                    <tr class="text-right">
+                      <th colspan="2">SUBTOTAL</th>
+                      <th><?= number_format($totalJ01, 2); ?></th>
+                      <th><?= number_format($totalJ02, 2); ?></th>
+                      <th><?= number_format($totalJ03, 2); ?></th>
+                      <th><?= number_format($totalP01, 2); ?></th>
+                      <th><?= number_format($totalP02, 2); ?></th>
+                      <th><?= number_format($totalP03, 2); ?></th>
+                      <th><?= number_format($totalStock, 2); ?></th>
+                    </tr>
+                  </tfoot>
                   </tbody>
                 </table>
               </div>

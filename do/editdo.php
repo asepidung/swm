@@ -220,7 +220,7 @@ $row = mysqli_fetch_assoc($result);
 <script src="../dist/js/calculateTotals.js"></script>
 <script src="../dist/js/movefocus.js"></script>
 <script>
-  document.title = "Eidt Do";
+  document.title = "Edit Do";
 </script>
 
 <?php
