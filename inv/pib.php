@@ -40,7 +40,7 @@ $accnumber = $row_invoice['accnumber'];
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title><?= $row_invoice['noinvoice']; ?></title>
+   <title><?= $row_invoice['nama_customer'] . " " . $row_invoice['noinvoice']; ?></title>
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <style>
       body {

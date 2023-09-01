@@ -189,6 +189,7 @@ CREATE TABLE invoicedetail (
   idinvoice INT NOT NULL,
   idgrade INT NOT NULL,
   idbarang INT NOT NULL,
+  idrawmate INT NOT NULL
   weight DECIMAL (12,2) NOT NULL,
   price DECIMAL(12,2),
   discount INT,
@@ -196,7 +197,8 @@ CREATE TABLE invoicedetail (
   amount DECIMAL(12,2),
   FOREIGN KEY (idinvoice) REFERENCES invoice (idinvoice),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
-  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+  FOREIGN KEY (idrawmate) REFERENCES rawmate (idrawmate)
 );
 CREATE TABLE trading (
   idtrading INT PRIMARY KEY AUTO_INCREMENT,
@@ -345,4 +347,45 @@ CREATE TABLE stock (
   jumlah DECIMAL (12,2),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE repack (
+  idrepack INT PRIMARY KEY AUTO_INCREMENT,
+  norepack VARCHAR (30),
+  tglrepack DATE,
+  xbahan DECIMAL (12,2),
+  xhasil DECIMAL (12,2),
+  xsusut DECIMAL (12,2),
+  note VARCHAR (255),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE detailbahan (
+  iddetailbahan INT PRIMARY KEY AUTO_INCREMENT,
+  idrepack INT,
+  idgradebahan INT,
+  idbarangbahan INT,
+  bahan DECIMAL (12,2),
+  FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
+  FOREIGN KEY (idgradebahan) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarangbahan) REFERENCES barang (idbarang)
+);
+CREATE TABLE detailhasil (
+  iddetailhasil INT PRIMARY KEY AUTO_INCREMENT,
+  idrepack INT,
+  idgradehasil INT,
+  idbaranghasil INT,
+  hasil DECIMAL (12,2),
+  susut DECIMAL (12,2),
+  notes VARCHAR (100),
+  FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
+  FOREIGN KEY (idgradehasil) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbaranghasil) REFERENCES barang (idbarang)
+);
+CREATE TABLE rawmate (
+  idrawmate INT PRIMARY KEY AUTO_INCREMENT,
+  kdrawmate VARCHAR(10),
+  nmrawmate VARCHAR(30) UNIQUE,
+  iduser INT,
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
 );

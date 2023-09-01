@@ -4,6 +4,13 @@ function calculateAmounts() {
    var discounts = document.getElementsByName('discount[]');
    var discountrp = document.getElementsByName('discountrp[]');
    var amounts = document.getElementsByName('amount[]');
+
+   var weightsrm = document.getElementsByName('weightrm[]');
+   var pricesrm = document.getElementsByName('pricerm[]');
+   var discountsrm = document.getElementsByName('discountrm[]');
+   var discountrprm = document.getElementsByName('discountrprm[]');
+   var amountsrm = document.getElementsByName('amountrm[]');
+
    var totalWeight = 0;
    var totalAmount = 0;
    var totalDiscount = 0;
@@ -14,10 +21,6 @@ function calculateAmounts() {
       var price = parseFloat(prices[i].value);
       var discount = parseFloat(discounts[i].value);
 
-      if (!isNaN(weight)) {
-         totalWeight += weight;
-      }
-
       if (!isNaN(weight) && !isNaN(price)) {
          var discountrpValue = (weight * price) * (discount / 100);
          discountrp[i].value = discountrpValue.toFixed(2);
@@ -25,10 +28,38 @@ function calculateAmounts() {
          var amount = (weight * price) - discountrpValue;
          amounts[i].value = amount.toFixed(2);
 
+         totalWeight += weight;
          totalAmount += amount;
          totalDiscount += discountrpValue;
       }
    }
+
+   // Menghitung total berat dan total amount dari kedua set elemen
+   for (var i = 0; i < weightsrm.length; i++) {
+      var weightrm = parseFloat(weightsrm[i].value);
+      var pricerm = parseFloat(pricesrm[i].value);
+      var discountrm = parseFloat(discountsrm[i].value);
+
+      if (!isNaN(weightrm) && !isNaN(pricerm)) {
+         var discountrpmValue = (weightrm * pricerm) * (discountrm / 100);
+         discountrprm[i].value = discountrpmValue.toFixed(2);
+
+         var amountrm = (weightrm * pricerm) - discountrpmValue;
+         amountsrm[i].value = amountrm.toFixed(2);
+
+         totalWeight += weightrm;
+         totalAmount += amountrm;
+         totalDiscount += discountrpmValue;
+      }
+   }
+
+   // Log totalAmount before calculating tax
+   console.log("Total Amount (before calculating tax): " + totalAmount);
+
+   // ... (sisa kode tetap sama seperti sebelumnya)
+
+   // Log totalAmount before calculating tax
+   console.log("Total Amount (before calculating tax): " + totalAmount);
 
    // Log totalAmount before calculating tax
    console.log("Total Amount (before calculating tax): " + totalAmount);

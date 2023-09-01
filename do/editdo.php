@@ -189,7 +189,7 @@ $row = mysqli_fetch_assoc($result);
                   </div>
                   <div class="col-4"></div>
                   <div class="col-1">
-                    <input type="text" name="xbox" id="xbox" class="form-control" readonly>
+                    <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
                   </div>
                   <div class="col-2">
                     <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>

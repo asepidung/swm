@@ -224,10 +224,25 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="../barang/barang.php" class="nav-link">
+              <a href="#" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Barang</p>
+                <i class="right fas fa-angle-left"></i>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../barang/barang.php" class="nav-link">
+                    <i class="far fa-dot-circle nav-icon"></i>
+                    <p>Product</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="../rawmate/" class="nav-link">
+                    <i class="far fa-dot-circle nav-icon"></i>
+                    <p>NoN Product</p>
+                  </a>
+                </li>
+              </ul>
             </li>
             <li class="nav-item">
               <a href="../supplier/supplier.php" class="nav-link">
@@ -249,7 +264,6 @@
             </li>
           </ul>
         </li>
-
         <li class="nav-item">
           <a href="../verifications/logout.php" class="nav-link">
             <i class="nav-icon fas fa-power-off fa-spin text-danger"></i>
