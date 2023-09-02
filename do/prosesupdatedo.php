@@ -59,12 +59,6 @@ if (mysqli_stmt_execute($stmt_do)) {
   $weight = $_POST['weight'];
   $notes = $_POST['notes'];
 
-  var_dump($_POST['idgrade']);
-  var_dump($_POST['idbarang']);
-  var_dump($_POST['box']);
-  var_dump($_POST['weight']);
-  var_dump($_POST['notes']);
-
   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt_dodetail = mysqli_prepare($conn, $query_dodetail);
   mysqli_stmt_bind_param($stmt_dodetail, "iiiids", $iddo, $idgrade_val, $idbarang_val, $box_val, $weight_val, $notes_val);

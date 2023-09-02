@@ -53,6 +53,7 @@ if (isset($_POST['submit'])) {
    // Insert data into the 'invoicedetail' table
    $idgrade = $_POST['idgrade'];
    $idbarang = $_POST['idbarang'];
+   $idrawmate = $_POST['idrawmate'];
    $weight = $_POST['weight'];
    $price = $_POST['price'];
    $discount = $_POST['discount'];
@@ -62,14 +63,15 @@ if (isset($_POST['submit'])) {
    for ($i = 0; $i < count($idgrade); $i++) {
       $idgrade[$i] = $idgrade[$i];
       $idbarang[$i] = $idbarang[$i];
+      $idrawmate[$i] = $idrawmate[$i];
       $weight[$i] = $weight[$i];
       $price[$i] = str_replace(',', '', $price[$i]);
       $discount[$i] = $discount[$i];
       $discountrp[$i] = str_replace(',', '', $discountrp[$i]);
       $amount[$i] = str_replace(',', '', $amount[$i]);
 
-      $sql = "INSERT INTO invoicedetail (idinvoice, idgrade, idbarang, weight, price, discount, discountrp, amount) 
-              VALUES ('$invoiceID', '{$idgrade[$i]}', '{$idbarang[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
+      $sql = "INSERT INTO invoicedetail (idinvoice, idgrade, idbarang, idrawmate, weight, price, discount, discountrp, amount) 
+              VALUES ('$invoiceID', '{$idgrade[$i]}', '{$idbarang[$i]}', '{$idrawmate[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
       // Execute the SQL query
       mysqli_query($conn, $sql);
    }
