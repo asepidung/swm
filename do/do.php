@@ -59,7 +59,7 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
                            JOIN customers ON do.idcustomer = customers.idcustomer
                            JOIN users ON do.idusers = users.idusers
-                           ORDER BY donumber DESC;
+                           ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
