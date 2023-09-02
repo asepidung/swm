@@ -59,9 +59,9 @@ include "../mainsidebar.php";
                       <td class="text-center"><?= $tampil['fullname']; ?></td>
                       <td class="text-center">
                         <a href="editinbound.php?idinbound=<?= $tampil['idinbound']; ?>" class="mx-auto p-2 text-succes">
-                          <i class="fas fa-pencil-alt"></i> EDIT
+                          <i class="far fa-edit text-success"></i>
                         </a>
-                        <a href="deleteinbound.php?idinbound=<?= $tampil['idinbound']; ?>" class="mx-auto p-2 text-danger" onclick="return confirm('apakah anda yakin ingin menghapus Inbound ini?')"><i class="fas fa-times"></i> DELETE</a>
+                        <a href="deleteinbound.php?idinbound=<?= $tampil['idinbound']; ?>" class="mx-auto p-2 text-danger" onclick="return confirm('apakah anda yakin ingin menghapus Inbound ini?')"> <i class="far fa-trash-alt text-danger"></i></a>
                       </td>
                     </tr>
                     <tr class="expandable-body">

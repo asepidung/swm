@@ -38,6 +38,7 @@ include "../mainsidebar.php";
                               <th>xQty</th>
                               <th>Made By</th>
                               <th>Event</th>
+                              <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -61,6 +62,14 @@ include "../mainsidebar.php";
                                  <td class="text-right"><?= number_format($xweight, 2); ?></td>
                                  <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td><?= $tampil['eventadjustment']; ?></td>
+                                 <td class="text-center">
+                                    <a href="editadjustment.php?idadjustment=<?= $tampil['idadjustment']; ?>" class="mx-auto p-2">
+                                       <i class="far fa-edit text-success"></i>
+                                    </a>
+                                    <a href="deleteadjustment.php?idadjustment=<?= $tampil['idadjustment']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                       <i class="far fa-trash-alt text-danger"></i>
+                                    </a>
+                                 </td>
                                  </tr>
                                  <tr class="expandable-body">
                                     <td colspan="6">

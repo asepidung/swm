@@ -102,16 +102,38 @@ if (isset($_GET['idinbound'])) {
                       <div class="col-1">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="hidden" name="idgrade[]" id="idgrade" value="<?= $row_inbounddetail['idgrade']; ?>">
-                            <input type="text" class="form-control tex-center" value="<?= $row_inbounddetail['nmgrade']; ?>">
+                            <select class="form-control" name="idgrade[]" id="idgrade">
+                              <option value="">Pilih Grade</option>
+                              <?php
+                              $querygrade = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                              $resultgrade = mysqli_query($conn, $querygrade);
+                              while ($gradeRow = mysqli_fetch_assoc($resultgrade)) {
+                                $idgrade = $gradeRow['idgrade'];
+                                $nmgrade = $gradeRow['nmgrade'];
+                                $selectedgrade = ($idgrade == $row_inbounddetail['idgrade']) ? "selected" : "";
+                                echo "<option value=\"$idgrade\" $selectedgrade>$nmgrade</option>";
+                              }
+                              ?>
+                            </select>
                           </div>
                         </div>
                       </div>
                       <div class="col-4">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="hidden" name="idbarang[]" id="idbarang" value="<?= $row_inbounddetail['idbarang']; ?>">
-                            <input type="text" class="form-control" value="<?= $row_inbounddetail['nmbarang']; ?>">
+                            <select class="form-control" name="idbarang[]" id="idbarang">
+                              <option value="">Pilih Barang</option>
+                              <?php
+                              $querybarang = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                              $resultbarang = mysqli_query($conn, $querybarang);
+                              while ($barangRow = mysqli_fetch_assoc($resultbarang)) {
+                                $idbarang = $barangRow['idbarang'];
+                                $nmbarang = $barangRow['nmbarang'];
+                                $selectedbarang = ($idbarang == $row_inbounddetail['idbarang']) ? "selected" : "";
+                                echo "<option value=\"$idbarang\" $selectedbarang>$nmbarang</option>";
+                              }
+                              ?>
+                            </select>
                           </div>
                         </div>
                       </div>
