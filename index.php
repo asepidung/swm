@@ -282,6 +282,40 @@ include "kebutuhanindex.php";
                   </li>
                   <li class="nav-item">
                      <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>
+                           PURCHASE MODULE
+                           <i class="right fas fa-angle-left"></i>
+                        </p>
+                     </a>
+                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                           <a href="#" class="nav-link">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>
+                                 Purchase Order
+                                 <i class="right fas fa-angle-left"></i>
+                              </p>
+                           </a>
+                           <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                 <a href="poproduct/" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>PO Product</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item">
+                                 <a href="#" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>PO Non Product</p>
+                                 </a>
+                              </li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="nav-item">
+                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-shopping-bag"></i>
                         <p>
                            SALES
@@ -296,7 +330,7 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="po" class="nav-link">
+                           <a href="so" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Sales Order</p>
                            </a>
@@ -334,7 +368,7 @@ include "kebutuhanindex.php";
                   </li>
                   <li class="nav-item">
                      <a href="#" class="nav-link">
-                        <i class=" nav-icon fas fa-sticky-note"></i>
+                        <i class="nav-icon fas fa-sticky-note"></i>
                         <p>
                            DATA REPORT
                            <i class="right fas fa-angle-left"></i>
@@ -423,7 +457,6 @@ include "kebutuhanindex.php";
                         </li>
                      </ul>
                   </li>
-
                   <li class="nav-item">
                      <a href="verifications/logout.php" class="nav-link">
                         <i class="nav-icon fas fa-power-off fa-spin text-danger"></i>

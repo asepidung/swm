@@ -20,5 +20,5 @@ function angkaToRomawi($angka)
 
 $romawiMonth = angkaToRomawi($currentMonth);
 
-$kodeauto = "PO-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
+$kodeauto = "POP-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
 // echo $kodeauto;
