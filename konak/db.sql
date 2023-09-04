@@ -389,3 +389,53 @@ CREATE TABLE rawmate (
   iduser INT,
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );
+CREATE TABLE poproduct (
+  idpoproduct INT PRIMARY KEY AUTO_INCREMENT,
+  nopoproduct VARCHAR(30),
+  idsupplier INT,
+  tglpoproduct DATE,
+  deliveryat DATE,
+  xweight DECIMAL (12,2),
+  xamount DECIMAL (12,2),
+  Terms VARCHAR (10),
+  note VARCHAR (255),
+  stat VARCHAR (10),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE poproductdetail (
+  idpoproductdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idpoproduct INT,
+  idbarang INT,
+  qty DECIMAL (12,2),
+  price DECIMAL (12,2),
+  amount DECIMAL (12,2),
+  notes VARCHAR (100),
+  FOREIGN KEY (idpoproduct) REFERENCES poproduct (idpoproduct),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
+CREATE TABLE poraw (
+  idporaw INT PRIMARY KEY AUTO_INCREMENT,
+  noporaw VARCHAR(30),
+  idsupplier INT,
+  tglporaw DATE,
+  Terms VARCHAR (10),
+  note VARCHAR (255),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE porawdetail (
+  idporawdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idporaw INT,
+  idrawmate INT,
+  qty DECIMAL (12,2),
+  price DECIMAL (12,2),
+  amount DECIMAL (12,2),
+  notes VARCHAR (100),
+  FOREIGN KEY (idporaw) REFERENCES poraw (idporaw),
+  FOREIGN KEY (idrawmate) REFERENCES rawmate (idrawmate)
+);

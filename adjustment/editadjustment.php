@@ -115,7 +115,6 @@ if (isset($_GET['idadjustment'])) {
                                                 // Query untuk mengambil data dari tabel barang
                                                 $barang_query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                                                 $barang_result = mysqli_query($conn, $barang_query);
-
                                                 while ($barang_row = mysqli_fetch_assoc($barang_result)) {
                                                    $selected = ($idbarang == $barang_row['idbarang']) ? "selected" : "";
                                                    echo '<option value="' . $barang_row['idbarang'] . '" ' . $selected . '>' . $barang_row['nmbarang'] . '</option>';
