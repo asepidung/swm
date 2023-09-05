@@ -439,3 +439,9 @@ CREATE TABLE porawdetail (
   FOREIGN KEY (idporaw) REFERENCES poraw (idporaw),
   FOREIGN KEY (idrawmate) REFERENCES rawmate (idrawmate)
 );
+CREATE TABLE bank (
+  idbank INT PRIMARY KEY AUTO_INCREMENT,
+  jenisbank VARCHAR (10),
+  nmbank VARCHAR (50),
+  norek VARCHAR (20)
+);

@@ -4,7 +4,7 @@ if (!isset($_SESSION['login'])) {
    header("location: verifications/login.php");
 }
 require "../konak/conn.php";
-// require "terbilang.php";
+require "../inv/terbilang.php";
 $idpoproduct = $_GET['idpoproduct'];
 $idusers = $_SESSION['idusers'];
 
@@ -13,24 +13,15 @@ $query_poproduct = "SELECT poproduct.*, supplier.nmsupplier
                   FROM poproduct 
                   INNER JOIN supplier ON poproduct.idsupplier = supplier.idsupplier 
                   WHERE poproduct.idpoproduct = '$idpoproduct'";
-
 $result_poproduct = mysqli_query($conn, $query_poproduct);
 $row_poproduct = mysqli_fetch_assoc($result_poproduct);
-
+$Terms = $row_poproduct['Terms'];
 // Tampilkan data dari tabel poproductdetail
 $query_poproductdetail = "SELECT poproductdetail.*, barang.nmbarang 
                         FROM poproductdetail 
                         INNER JOIN barang ON poproductdetail.idbarang = barang.idbarang 
                         WHERE idpoproduct = '$idpoproduct'";
 $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
-
-// $balance = $row_poproduct['balance'];
-// $terbilang = terbilang($balance);
-
-// Mendapatkan nilai dari tabel segment berdasarkan nmsupplier
-// $banksegment = $row_poproduct['banksegment'];
-// $accname = $row_poproduct['accname'];
-// $accnumber = $row_poproduct['accnumber'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,6 +68,13 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
             display: none;
          }
       }
+
+      /* Media query untuk tampilan cetak */
+      @media print {
+         .floatingLeft {
+            display: none;
+         }
+      }
    </style>
 </head>
 
@@ -86,11 +84,11 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
    <div class="wrapper">
       <div class="container">
          <div class="row mb-2">
-            <img src="../dist/img/hic.png" alt=" Logo-poproduct" class="img-fluid">
+            <img src="../dist/img/headerpo.png" alt=" Logo-poproduct" class="img-fluid">
          </div>
-         <span class="float-right mt-3 mb-2">
-            <h4><?= $row_poproduct['nopoproduct']; ?></h4>
-         </span>
+         <!-- <span class="mt-3 mb-2">
+            <h5><?= $row_poproduct['nopoproduct']; ?></h5>
+         </span> -->
          <table class="table table-borderless table-sm">
             <tr>
                <td width="15%">PO Number</td>
@@ -102,7 +100,7 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
                <td width="30%"><?= date('d-M-Y', strtotime($row_poproduct['deliveryat'])); ?></td>
             </tr>
             <tr>
-               <td width="15%">Delivery Date</td>
+               <td width="15%">PO Date</td>
                <td width="1%">:</td>
                <td width="30%"><?= date('d-M-Y', strtotime($row_poproduct['deliveryat'])); ?></td>
                <td></td>
@@ -111,18 +109,21 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
                <td width="30%"><?= $row_poproduct['nmsupplier']; ?></td>
             </tr>
             <tr>
-               <td width="15%">Terms</td>
+               <td width="15%">Delivery Address</td>
                <td width="1%">:</td>
-               <td width="30%"><?= $row_poproduct['Terms']; ?></td>
+               <td width="30%">RPH Jonggol Kp. Menan Rt 04.01 Ds. Sukamaju Kec. Jonggol Kab. Bogor</td>
                <td></td>
-               <td width="15%" valign="top">Address</td>
+               <td width="15%" valign="top">Terms</td>
                <td width="1%" valign="top">:</td>
-               <!-- <td rowspan="4" width="30%" valign="top" class="text-jutify"><?= $row_poproduct['alamat']; ?></td> -->
-               <td>-</td>
+               <?php if ($Terms === "COD" || $Terms === "CBD") { ?>
+                  <td><?= $Terms; ?> </td>
+               <?php } else { ?>
+                  <td><?= $Terms . " " . "Hari"; ?> </td>
+               <?php } ?>
             </tr>
 
          </table>
-         <table class="table table-sm border-0">
+         <table class="table table-sm table-bordered border-0">
             <thead class="thead-dark">
                <tr class="text-center">
                   <th>#</th>
@@ -147,62 +148,30 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
             </tbody>
             <tfoot class="text-right">
                <tr>
-                  <th colspan="2"></th>
-                  <th class="thead-light"><?= number_format($row_poproduct['xweight'], 2); ?></th>
-                  <td>Grand Total :</td>
-                  <th colspan="3" class="thead-light"><?= number_format($row_poproduct['xamount'], 2); ?></th>
-               </tr>
-               <tr class="border-0">
-                  <td colspan="4" rowspan="4" class="text-justify border-0" valign="top">
-                     Catatan : <br>
-                     <i>
-                        <strong>
-                           <!-- <?= terbilang($row_poproduct['balance']) . " " . "Rupiah"; ?> -->
-                           <?= $row_poproduct['note']; ?>
-                        </strong>
-                     </i>
-                  </td>
-                  <td colspan="2" class="border-0">Tax 11% :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['tax'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">Charge :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['charge'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">DownPayment :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['downpayment'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">Balance :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['balance'], 2); ?></th>
+                  <th colspan="2" class="border-0">Qty Total</th>
+                  <th class="border-0"><?= number_format($row_poproduct['xweight'], 2); ?></th>
+                  <th class="border-0">Total Amount</th>
+                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['xamount'], 2); ?></th>
                </tr>
             </tfoot>
          </table>
          <div class="row">
-            <div class="col-4">
-               <table class="table table-borderless table-sm">
-                  <tr>
-                     <th>Payment Methods</th>
-                  </tr>
-                  <tr>
-                     <td colspan="4"><?= $banksegment; ?></td>
-                  </tr>
-                  <tr>
-                     <td>ACC. NAME</td>
-                     <td>:</td>
-                     <td><strong><?= $accname; ?></strong></td>
-                  </tr>
-                  <tr>
-                     <td>ACC. NUMBER</td>
-                     <td>:</td>
-                     <td><strong><?= $accnumber; ?></strong></td>
-                  </tr>
-               </table>
+            <div class="col-6">
+               <strong>
+                  Says :
+               </strong>
+               <?= terbilang($row_poproduct['xamount']) . " " . "Rupiah" ?>
             </div>
-            <div class="col-4"></div>
-            <div class="col text-center mt-4">
-               F I N A N C E
+         </div>
+         <div class="row mt-3">
+            <div class="col-6 float-right text-justify">
+               <strong>Catatan :</strong>
+               <?= $row_poproduct['note']; ?>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col text-right mt-4">
+               P U R C H A S I N G
                <br><br><br><br><br>
                ( ............................ )
             </div>
