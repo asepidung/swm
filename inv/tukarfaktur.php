@@ -20,7 +20,7 @@ if ($idinvoice <= 0) {
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-6">
+            <div class="col">
                <div class="card mt-3">
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -72,6 +72,14 @@ if ($idinvoice <= 0) {
                               </div>
                            </div>
                         <?php } ?>
+                        <div class="col">
+                           <div class="form-group">
+                              <label>Bukti</label>
+                              <div class="input-group">
+                                 <input type="text" class="form-control" name="note" placeholder="Resi, Email dll">
+                              </div>
+                           </div>
+                        </div>
                         <button type="submit" class="btn btn-info float-right">Tukar Faktur</button>
                      </form>
                   </div>

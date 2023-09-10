@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    }
 
    $tgltf = mysqli_real_escape_string($conn, $_POST['tgltf']);
+   $note = mysqli_real_escape_string($conn, $_POST['note']);
    $top = mysqli_real_escape_string($conn, $_POST['top']);
    $tgltf_date_obj = new DateTime($tgltf);
    // Tambahkan TOP (jangka waktu pembayaran) ke invoice_date_obj
@@ -35,7 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          $resultUpdateDuedate = mysqli_query($conn, $queryUpdateDuedate);
 
          if ($resultUpdateDuedate) {
-            header("location: invoice.php");
+            // Tambahkan nilai baru ke kolom 'note' tanpa menggantikan yang sudah ada
+            $queryUpdateNote = "UPDATE invoice SET note = CONCAT(note, ' ','|', '$note') WHERE idinvoice = $idinvoice";
+            $resultUpdateNote = mysqli_query($conn, $queryUpdateNote);
+
+            if ($resultUpdateNote) {
+               header("location: invoice.php");
+            } else {
+               echo "Gagal menambahkan note.";
+            }
          } else {
             echo "Gagal mengupdate duedate.";
          }
@@ -46,3 +55,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       echo "Gagal mengupdate status.";
    }
 }
+// ...
