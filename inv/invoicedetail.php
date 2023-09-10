@@ -54,7 +54,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"> <?= $row_number; ?> </td>
                                  <td class="text-left"> <?= $row["nama_customer"]; ?> </td>
                                  <td class="text-center"> <?= $row["invoice_date"]; ?> </td>
-                                 <td class="text-center"> <?= date("d-M-y", strtotime($row["noinvoice"])); ?> </td>
+                                 <td class="text-center"> <?= $row["noinvoice"]; ?> </td>
                                  <td class="text-center"> <?= $row["donumber"]; ?> </td>
                                  <td class="text-left"> <?= $row["pocustomer"]; ?> </td>
                                  <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
