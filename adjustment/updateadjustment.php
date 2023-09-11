@@ -12,9 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $noadjustment = $_POST['noadjustment'];
    $tgladjustment = $_POST['tgladjustment'];
    $eventadjustment = $_POST['eventadjustment'];
+   $xweight = $_POST['xweight'];
 
    // Update data di tabel adjustment
-   $update_adjustment_query = "UPDATE adjustment SET noadjustment = '$noadjustment', tgladjustment = '$tgladjustment', eventadjustment = '$eventadjustment' WHERE idadjustment = $adjustment_id";
+   $update_adjustment_query = "UPDATE adjustment SET noadjustment = '$noadjustment', tgladjustment = '$tgladjustment', eventadjustment = '$eventadjustment', xweight = '$xweight' WHERE idadjustment = $adjustment_id";
    $update_adjustment_result = mysqli_query($conn, $update_adjustment_query);
 
    if ($update_adjustment_result) {
