@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    require "../konak/conn.php";
 
    // Ambil data dari form
-   $adjustment_id = $_POST['adjustment_id'];
+   $adjustment_id = $_POST['idadjustment'];
    $noadjustment = $_POST['noadjustment'];
    $tgladjustment = $_POST['tgladjustment'];
    $eventadjustment = $_POST['eventadjustment'];
