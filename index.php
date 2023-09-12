@@ -511,8 +511,14 @@ include "kebutuhanindex.php";
                   <div class="col-lg-3 col-6">
                      <div class="small-box bg-info">
                         <div class="inner">
-                           <h3>150</h3>
-                           <p>New Orders</p>
+                           <?php
+                           $query = "SELECT COUNT(*) as jumlah_plandev FROM plandev WHERE plandelivery >= CURDATE()";
+                           $result = mysqli_query($conn, $query);
+                           $row = mysqli_fetch_assoc($result);
+                           $jumlah_plandev = $row['jumlah_plandev'];
+                           ?>
+                           <h3><?= $jumlah_plandev; ?></h3>
+                           <p>Plan Delivery</p>
                         </div>
                         <div class="icon">
                            <i class="ion ion-bag"></i>
