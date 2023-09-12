@@ -540,6 +540,7 @@ include "kebutuhanindex.php";
                      </div>
                   </div>
                </div>
+               <?php include "update.php"; ?>
             </div>
          </section>
          <!-- /.content -->

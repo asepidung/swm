@@ -445,3 +445,14 @@ CREATE TABLE bank (
   nmbank VARCHAR (50),
   norek VARCHAR (20)
 );
+CREATE TABLE plandev (
+  idplandev INT PRIMARY KEY AUTO_INCREMENT,
+  plandelivery DATE,
+  idcustomer INT,
+  weight INT,
+  driver_name VARCHAR(50),
+  armada VARCHAR(10),
+  loadtime TIME,
+  note VARCHAR(255),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
+);

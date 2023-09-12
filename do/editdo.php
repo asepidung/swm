@@ -107,15 +107,18 @@ $row = mysqli_fetch_assoc($result);
                       Weight(Kg)
                     </div>
                     <div class="col">
-                      Code
+                      Notes
+                    </div>
+                    <div class="col-1">
+                      Action
                     </div>
                   </div>
                   <?php
                   $query_dodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang
-                                    FROM dodetail
-                                    INNER JOIN grade ON dodetail.idgrade = grade.idgrade
-                                    INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-                                    WHERE iddo = '$iddo'";
+                      FROM dodetail
+                      INNER JOIN grade ON dodetail.idgrade = grade.idgrade
+                      INNER JOIN barang ON dodetail.idbarang = barang.idbarang
+                      WHERE iddo = '$iddo'";
                   $result_dodetail = mysqli_query($conn, $query_dodetail);
                   while ($row_dodetail = mysqli_fetch_assoc($result_dodetail)) { ?>
                     <div class="row mb-n2">
@@ -167,7 +170,7 @@ $row = mysqli_fetch_assoc($result);
                       <div class="col-2">
                         <div class="form-group">
                           <div class="input-group">
-                            <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_dodetail['weight']; ?>" required onkeydown=" moveFocusToNextInput(event, this, 'weight[]' )">
+                            <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_dodetail['weight']; ?>" required onkeydown="moveFocusToNextInput(event, this, 'weight[]' )">
                           </div>
                         </div>
                       </div>
@@ -178,7 +181,10 @@ $row = mysqli_fetch_assoc($result);
                           </div>
                         </div>
                       </div>
-                      <div class="col">
+                      <div class="col-1">
+                        <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+                          <i class="fas fa-minus-circle"></i>
+                        </button>
                       </div>
                     </div>
                   <?php } ?>
@@ -220,6 +226,95 @@ $row = mysqli_fetch_assoc($result);
 <script src="../dist/js/calculateTotals.js"></script>
 <script src="../dist/js/movefocus.js"></script>
 <script>
+  function addItem() {
+    var itemsContainer = document.getElementById('items-container');
+
+    // Baris item baru
+    var newItemRow = document.createElement('div');
+    newItemRow.className = 'item-row';
+
+    // Konten baris item baru
+    newItemRow.innerHTML = `
+<div class="row">
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idgrade[]">
+<option value="">Pilih Grade</option>
+<?php
+// Query untuk mengambil data dari tabel grade
+$sql = "SELECT * FROM grade ORDER BY nmgrade ASC";
+$result = $conn->query($sql);
+// Membuat pilihan dalam select box berdasarkan data yang diambil
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+  }
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="form-group">
+<div class="input-group">
+<select class="form-control" name="idbarang[]" required>
+<option value="">--Pilih--</option>
+<?php
+$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+  $idbarang = $row['idbarang'];
+  $nmbarang = $row['nmbarang'];
+  echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+}
+?>
+</select>
+</div>
+</div>
+</div>
+<div class="col-1">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="box[]" class="form-control text-center" required onkeydown="moveFocusToNextInput(event, this, 'box[]')">
+</div>
+</div>
+</div>
+<div class="col-2">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
+</div>
+</div>
+</div>
+<div class="col">
+<div class="form-group">
+<div class="input-group">
+<input type="text" name="notes[]" class="form-control">
+</div>
+</div>
+</div>
+<div class="col-1">
+<button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+<i class="fas fa-minus-circle"></i>
+</button>
+</div>
+</div>
+`;
+
+    // Tambahkan baris item baru ke dalam container
+    itemsContainer.appendChild(newItemRow);
+  }
+
+  function removeItem(button) {
+    var itemRow = button.closest('.row');
+
+    // Hapus baris item
+    itemRow.remove();
+  }
+
+
   document.title = "Edit Do";
 </script>
 
