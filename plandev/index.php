@@ -58,7 +58,7 @@ include "../mainsidebar.php";
                                  <td><?= $no; ?></td>
                                  <td><?= date("D, d-M-y", strtotime($tampil['plandelivery'])); ?></td>
                                  <td class="text-left"><?= $tampil['nama_customer']; ?></td>
-                                 <td><?= number_format($tampil['weight']); ?></td>
+                                 <td><?= number_format($tampil['weight']) . " " . "Kg"; ?></td>
                                  <td><?= $tampil['driver_name']; ?></td>
                                  <td><?= $tampil['armada']; ?></td>
                                  <td><?= $tampil['loadtime']; ?></td>
