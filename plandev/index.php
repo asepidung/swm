@@ -48,10 +48,10 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer FROM plandev
-                          JOIN customers ON plandev.idcustomer = customers.idcustomer
-                          WHERE plandelivery >= CURDATE()
-                          ORDER BY plandelivery ASC;
-                          ");
+                                       JOIN customers ON plandev.idcustomer = customers.idcustomer
+                                       WHERE plandelivery > CURDATE()
+                                       ORDER BY plandelivery ASC;
+                           ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr class="text-center" onclick="window.location.href='editplandev.php?idplandev=<?= $tampil['idplandev']; ?>';" style="cursor: pointer;" title="KLIK UNTUK EDIT">
