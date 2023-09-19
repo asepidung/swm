@@ -8,6 +8,7 @@ require "../konak/conn.php";
 $iddo = $_POST['iddo'];
 $deliverydate = $_POST['deliverydate'];
 $idcustomer = $_POST['idcustomer'];
+$alamat = $_POST['alamat'];
 $po = $_POST['po'];
 $driver = $_POST['driver'];
 $plat = $_POST['plat'];
@@ -43,9 +44,9 @@ mysqli_stmt_execute($stmt_delete_doreceipt);
 mysqli_stmt_close($stmt_delete_doreceipt);
 
 // Update data pada tabel 'do'
-$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ?,  status = ? WHERE iddo = ?";
+$query_do = "UPDATE do SET deliverydate = ?, idcustomer = ?,  alamat = ?, po = ?, driver = ?, plat = ?, note = ?,  xbox = ?,  xweight = ?,  status = ? WHERE iddo = ?";
 $stmt_do = mysqli_prepare($conn, $query_do);
-mysqli_stmt_bind_param($stmt_do, "sissssidsi", $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $iddo);
+mysqli_stmt_bind_param($stmt_do, "sisssssidsi", $deliverydate, $idcustomer, $alamat, $po, $driver, $plat, $note, $xbox, $xweight, $status, $iddo);
 
 if (mysqli_stmt_execute($stmt_do)) {
   $delete_query = "DELETE FROM dodetail WHERE iddo = ?";

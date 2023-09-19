@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "donumber.php";
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -16,8 +15,7 @@ include "donumber.php";
          <div class="row">
             <div class="col mt-3">
                <form method="POST" action="inputdo.php">
-                  <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber">
-                  <!-- <input type="hidden" value="note" name="note" id="note"> -->
+                  <!-- <input type="hidden" value="<?= $kodeauto ?>" name="donumber" id="donumber"> -->
                   <div class="card">
                      <div class="card-body">
                         <div class="row">

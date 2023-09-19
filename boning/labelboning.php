@@ -50,7 +50,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <div class="form-group">
                   <label>Product <span class="text-danger">*</span></label>
                   <div class="input-group">
-                    <select class="form-control" name="idbarang" id="idbarang" required>
+                    <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                       <?php
                       if (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] != '') {
                         $selectedIdbarang = $_SESSION['idbarang'];
@@ -129,7 +129,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                   <div class="input-group col-lg-4">
                     <!-- <div class="col-lg-4"> -->
-                    <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required autofocus>
+                    <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
                     <!-- </div> -->
                   </div>
                 </div>
@@ -203,7 +203,20 @@ while ($row = mysqli_fetch_assoc($result)) {
   </div>
   <script>
     document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
+    document.addEventListener('DOMContentLoaded', function() {
+      // Menggunakan event listener untuk menangkap event keydown pada elemen dengan id "idbarang"
+      document.getElementById('idbarang').addEventListener('keydown', function(e) {
+        // Jika tombol yang ditekan adalah "Tab" (kode 9)
+        if (e.keyCode === 9) {
+          // Pindahkan fokus ke elemen dengan id "qty"
+          document.getElementById('qty').focus();
+          // Mencegah perpindahan fokus bawaan yang dihasilkan oleh tombol "Tab"
+          e.preventDefault();
+        }
+      });
+    });
   </script>
+
   <?php
   // require "../footnote.php";
   require "../footer.php";

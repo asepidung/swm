@@ -54,6 +54,18 @@ $row = mysqli_fetch_assoc($result);
                       </div>
                     </div>
                   </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <label for="alamat">Alamat <span class="text-danger">*</span></label>
+                      <div class="input-group">
+                        <select class="form-control" name="alamat" id="alamat" required>
+                          <option value="">Pilih Alamat</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
                   <div class="col-2">
                     <div class="form-group">
                       <label for="po">Cust PO</label>
@@ -78,10 +90,9 @@ $row = mysqli_fetch_assoc($result);
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="row">
                   <div class="col">
                     <div class="form-group">
+                      <label for="note">Catatan</label>
                       <div class="input-group">
                         <input type="text" class="form-control" name="note" id="note" placeholder="keterangan" value="<?= $row['note']; ?>">
                       </div>
@@ -223,6 +234,7 @@ $row = mysqli_fetch_assoc($result);
 <!-- /.content -->
 
 <!-- Kode JavaScript -->
+<script src="../dist/js/fill_alamat_note.js"></script>
 <script src="../dist/js/calculateTotals.js"></script>
 <script src="../dist/js/movefocus.js"></script>
 <script>

@@ -4,9 +4,10 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
+include "donumber.php";
 
 if (isset($_POST['submit'])) {
-   $donumber = $_POST['donumber'];
+   $donumber =  $kodeauto;
    $deliverydate = $_POST['deliverydate'];
    $idcustomer = $_POST['idcustomer'];
    $alamat = $_POST['alamat'];
