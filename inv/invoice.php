@@ -40,6 +40,7 @@ include "../mainsidebar.php";
                               <th>Tgl Invoice</th>
                               <th>PO</th>
                               <th>Amount</th>
+                              <th>Due Date</th>
                               <th>Status</th>
                               <th>Action</th>
                            </tr>
@@ -70,6 +71,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
                                  <td><?= $tampil['pocustomer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['duedate'])); ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == '-') {
                                        echo "-";
@@ -97,6 +99,11 @@ include "../mainsidebar.php";
                                                    <span class="text-primary">Print Colour</span></a>
                                              </div>
                                           </div>
+                                       </div>
+                                       <div class="col">
+                                          <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                             <i class="fas fa-pencil-alt"></i>
+                                          </a>
                                        </div>
                                        <div class="col">
                                           <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">

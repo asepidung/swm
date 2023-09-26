@@ -34,34 +34,24 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosesupdateinvoice.php">
-                  <input type="hidden" name="idinvoice" value="<?= $idinvoice ?>">
-                  <input type="hidden" name="pajak" id="pajak" value="<?= $row_invoice['pajak']; ?>">
+               <form method="POST" action="updateinvoice.php">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
                            <div class="col">
                               <div class="form-group">
-                                 <label for="noinvoice">Invoice Number <span class="text-danger">*</span></label>
-                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="noinvoice" id="noinvoice" value="<?= $row_invoice['noinvoice'] ?>" readonly>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col">
-                              <div class="form-group">
                                  <label for="invoice_date">Invoice Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="invoice_date" id="invoice_date" value="<?= $row_invoice['invoice_date'] ?>">
+                                    <input type="date" class="form-control" name="invoice_date" id="invoice_date" value="<?= $row_invoice['invoice_date']; ?>">
                                  </div>
                               </div>
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label for="idcustomer">Customer ID</label>
+                                 <label for="nama_customer">Nama Customer</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="nama_customer" id="nama_customer" value="<?= $row_invoice['nama_customer'] ?>" readonly>
                                     <input type="hidden" name="idcustomer" id="idcustomer" value="<?= $row_invoice['idcustomer'] ?>">
+                                    <input type="text" class="form-control" name="nama_customer" id="nama_customer" value="<?= $row_invoice['nama_customer'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -69,7 +59,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               <div class="form-group">
                                  <label for="pocustomer">PO Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $row_invoice['pocustomer'] ?>">
+                                    <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $row_invoice['pocustomer'] ?>" readonly>
                                  </div>
                               </div>
                            </div>
@@ -86,7 +76,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="Catatan ..." value="<?= $row_invoice['note'] ?>">
+                                    <input type="text" class="form-control" name="note" id="note" value="<?= $row_invoice['note'] ?>">
                                  </div>
                               </div>
                            </div>
@@ -133,67 +123,66 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                                  </div>
                               </div>
                            </div>
-                           <!-- invoicedetail -->
-                           <?php
-                           while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) {
-                              $idinvoicedetail = $row_invoicedetail['idinvoicedetail'];
-                              $idgrade = $row_invoicedetail['idgrade'];
-                              $nmgrade = $row_invoicedetail['nmgrade'];
-                              $idbarang = $row_invoicedetail['idbarang'];
-                              $nmbarang = $row_invoicedetail['nmbarang'];
-                              $weight = $row_invoicedetail['weight'];
-                              $price = $row_invoicedetail['price'];
-                              $discount = $row_invoicedetail['discount'];
-                              $discountrp = $row_invoicedetail['discountrp'];
-                              $amount = $row_invoicedetail['amount'];
-                           ?>
-                              <div class="row m-n2">
+                           <?php while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
+                              <div class="row mt-n2">
                                  <div class="col-1">
                                     <div class="form-group">
-                                       <input type="hidden" name="idgrade" id="idgrade[]" value="<?= $idgrade ?>">
-                                       <input type="text" class="form-control text-center" value="<?= $nmgrade ?>" readonly>
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $row_invoicedetail['nmgrade'] ?>" readonly>
+                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $row_invoicedetail['idgrade'] ?>" readonly>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col">
                                     <div class="form-group">
-                                       <input type="text" class="form-control" value="<?= $nmbarang ?>" readonly>
-                                       <input type="hidden" name="idbarang" id="idbarang[]" value="<?= $idbarang ?>">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $row_invoicedetail['nmbarang'] ?>" readonly>
+                                          <input type="hidden" class="form-control" name="idbarang[]" id="idbarang" value="<?= $row_invoicedetail['idbarang'] ?>" readonly>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-1">
                                     <div class="form-group">
-                                       <input type="text" class="form-control text-right" name="weight" id="weight[]" value="<?= number_format($weight, 2) ?>" readonly>
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="weight[]" value="<?= $row_invoicedetail['weight'] ?>" readonly>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-2">
                                     <div class="form-group">
-                                       <input type="text" class="form-control text-right" name="price" id="price[]" value="<?= number_format($price, 2) ?>">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="price[]" value="<?= $row_invoicedetail['price'] ?>" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-1">
                                     <div class="form-group">
-                                       <input type="text" class="form-control  text-center" name="discount" id="discount[]" value="<?= $discount ?>">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="discount[]" value="0" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class=" col-2">
+                                    <div class="form-group">
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="discountrp[]" value="0" readonly>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-2">
                                     <div class="form-group">
-                                       <input type="text" class="form-control  text-right" name="discountrp" id="discountrp[]" value="0">
-                                    </div>
-                                 </div>
-                                 <div class="col-2">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control text-right" name="amount" id="amount[]" value="0" readonly>
+                                       <div class="input-group">
+                                          <input type="text" class="form-control text-right" name="amount[]" readonly value="0">
+                                       </div>
                                     </div>
                                  </div>
                               </div>
-                           <?php
-                           }
-                           ?>
+                           <?php } ?>
                         </div>
                         <div class="row">
                            <div class="col-4 text-right">Weight Total</div>
                            <div class="col-1">
-                              <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
+                              <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly value="<?= $row_invoice['xweight'] ?>">
                            </div>
                            <div class="col-5 text-right">
                               Total Amount
@@ -207,7 +196,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               Tax 11%
                            </div>
                            <div class="col-2">
-                              <input type="text" name="tax" id="tax" class="form-control text-right" readonly value="0">
+                              <input type="text" name="tax" id="tax" class="form-control text-right" readonly value="<?= $row_invoice['tax'] ?>">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -215,7 +204,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               Charge
                            </div>
                            <div class="col-2">
-                              <input type="text" name="charge" id="charge" class="form-control text-right" value="0">
+                              <input type="text" name="charge" id="charge" class="form-control text-right" value="<?= $row_invoice['charge'] ?>">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -223,7 +212,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               Down Payment
                            </div>
                            <div class="col-2">
-                              <input type="text" name="downpayment" id="downpayment" class="form-control text-right" value="0">
+                              <input type="text" name="downpayment" id="downpayment" class="form-control text-right" value="<?= $row_invoice['downpayment'] ?>">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -232,15 +221,15 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                            </div>
                            <div class="col-2">
                               <input type="text" name="balance" id="balance" class="form-control text-right" readonly value="0">
+                              <input type="hidden" name="xdiscount" id="xdiscount" value="<?= $row_invoice['xdiscount'] ?>">
                            </div>
                         </div>
-                        <input type="hidden" name="xdiscount" id="xdiscount" value="0">
                         <div class="row">
                            <div class="col-3">
                               <button type="button" class="btn btn-block bg-gradient-warning" onclick="calculateAmounts()">Calculate</button>
                            </div>
                            <div class="col-3">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Update</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
                            </div>
                         </div>
                      </div>
@@ -249,14 +238,12 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
             </div>
             <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
 </div>
+
 <script src="../dist/js/hitunginvoice.js"></script>
+<script src="../dist/js/movefocus.js"></script>
 <script>
    document.title = "Edit Invoice";
 </script>
