@@ -456,3 +456,14 @@ CREATE TABLE plandev (
   note VARCHAR(255),
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
 );
+CREATE TABLE tally (
+  idtally INT PRIMARY KEY AUTO_INCREMENT,
+  tallynumber VARCHAR (30),
+  deliverydate DATE,
+  idcustomer INT,
+  ponumber VARCHAR(30),
+  keterangan VARCHAR(255),
+  idusers INT,
+  FOREIGN KEY (idusers) REFERENCES users (idusers),
+  FOREIGN key (idcustomer) REFERENCES customers (idcustomer)
+);

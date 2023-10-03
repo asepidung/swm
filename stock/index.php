@@ -34,12 +34,12 @@ $totalStock = 0;
                       <th rowspan="2">Total</th>
                     </tr>
                     <tr>
-                      <th>CHILL</th>
-                      <th>FROZEN</th>
-                      <th>GRADE</th>
-                      <th>CHILL</th>
-                      <th>FROZEN</th>
-                      <th>GRADE</th>
+                      <th>CHILL (J)</th>
+                      <th>FROZEN (J)</th>
+                      <th>GRADE (J)</th>
+                      <th>CHILL (P)</th>
+                      <th>FROZEN (P)</th>
+                      <th>GRADE (P)</th>
                     </tr>
                   </thead>
                   <tbody>
