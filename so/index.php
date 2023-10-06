@@ -15,8 +15,7 @@ include "../mainsidebar.php";
          <div class="row">
             <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
-               <a href="dodetail.php"><button type="button" class="btn btn-outline-secondary"><i class="fas fa-eye"></i> Detail</button></a>
+               <a href="newso.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -86,15 +85,23 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
-                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="mx-auto p-2">
-                                          <span class="text-info"><i class="fas fa-print"></i></span>
-                                       </a>
-                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="mx-auto p-2">
-                                          <span class="text-success"><i class="fas fa-edit"></i></span>
-                                       </a>
-                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="mx-auto p-2">
-                                          <span class="text-danger"><i class="fas fa-trash"></i></span>
-                                       </a>
+                                       <div class="row">
+                                          <div class="col-4">
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>">
+                                                <span class="text-info"><i class="fas fa-print"></i></span>
+                                             </a>
+                                          </div>
+                                          <div class="col-4">
+                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
+                                                <span class="text-success"><i class="fas fa-edit"></i></span>
+                                             </a>
+                                          </div>
+                                          <div class="col-4">
+                                             <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Segala perubahan yang anda lakukan akan terekam dalam sistem, apakah anda yakin ingin menghapus Surat Jalan ini?')">
+                                                <span class="text-danger"><i class="fas fa-trash"></i></span>
+                                             </a>
+                                          </div>
+                                       </div>
                                     <?php } else { ?>
                                        <div class="row">
                                           <div class="col">
@@ -128,13 +135,13 @@ include "../mainsidebar.php";
       <!-- /.container-fluid -->
    </section>
    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
+   <!-- </div> -->
+   <!-- /.content-wrapper -->
 
-<script>
-   // Mengubah judul halaman web
-   document.title = "Delivery Order";
-</script>
-<?php
-// require "../footnote.php";
-include "../footer.php" ?>
+   <script>
+      // Mengubah judul halaman web
+      document.title = "Delivery Order";
+   </script>
+   <?php
+   // require "../footnote.php";
+   include "../footer.php" ?>

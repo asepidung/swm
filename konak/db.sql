@@ -467,3 +467,23 @@ CREATE TABLE tally (
   FOREIGN KEY (idusers) REFERENCES users (idusers),
   FOREIGN key (idcustomer) REFERENCES customers (idcustomer)
 );
+CREATE TABLE pricelist (
+  idpricelist INT PRIMARY KEY AUTO_INCREMENT,
+  idcustomer INT,
+  latestupdate DATE,
+  up VARCHAR(30),
+  note VARCHAR(255),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE pricelistdetail (
+  idpricelistdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idpricelist INT,
+  idbarang INT,
+  price INT,
+  notes VARCHAR(255),
+  FOREIGN KEY (idpricelist) REFERENCES pricelist (idpricelist),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);

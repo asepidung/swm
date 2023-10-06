@@ -20,7 +20,7 @@ if (!isset($_GET['id'])) {
       <div class="container-fluid">
          <div class="row">
             <div class="col-sm-6">
-               <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> TALLY</button></a>
+               <a href="index.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> TALLY</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
