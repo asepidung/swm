@@ -28,6 +28,27 @@ include "../mainsidebar.php";
                                  <input type="text" class="form-control" name="nama_customer" id="nama_customer" autofocus required>
                               </div>
                               <div class="form-group">
+                                 <label for="groupcs">Group <span class="text-danger">*</span></label>
+                                 <div class="input-group">
+                                    <select class="form-control" name="idgroup" id="idgroup" required>
+                                       <option value="">Pilih Group</option>
+                                       <?php
+                                       $query = "SELECT * FROM groupcs ORDER BY nmgroup ASC";
+                                       $result = mysqli_query($conn, $query);
+                                       // Generate options based on the retrieved data
+                                       while ($row = mysqli_fetch_assoc($result)) {
+                                          $idgroup = $row['idgroup'];
+                                          $nmgroup = $row['nmgroup'];
+                                          echo "<option value=\"$idgroup\">$nmgroup</option>";
+                                       }
+                                       ?>
+                                    </select>
+                                    <div class="input-group-append">
+                                       <a href="../group/newgroup.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="form-group">
                                  <label for="alamat">Alamat 1<span class="text-danger">*</label>
                                  <input type="text" class="form-control" name="alamat1" id="alamat1" required>
                               </div>

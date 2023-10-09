@@ -324,7 +324,7 @@ include "kebutuhanindex.php";
                      </a>
                      <ul class="nav nav-treeview">
                         <li class="nav-item">
-                           <a href="pricelist.php" class="nav-link">
+                           <a href="pricelist/" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Price List</p>
                            </a>

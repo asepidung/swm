@@ -38,6 +38,7 @@ include "../mainsidebar.php";
                               <th>Nama Customer</th>
                               <th>Alamat</th>
                               <th>Segment</th>
+                              <th>Group</th>
                               <th>T.O.P</th>
                               <th>Sales</th>
                               <th>Pajak</th>
@@ -49,10 +50,12 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT c.*, s.nmsegment
-                                  FROM customers c
-                                  JOIN segment s ON c.idsegment = s.idsegment
-                                  ORDER BY c.nama_customer ASC");
+                           $ambildata = mysqli_query($conn, "SELECT c.*, s.nmsegment, g.nmgroup
+                           FROM customers c
+                           JOIN segment s ON c.idsegment = s.idsegment
+                           LEFT JOIN groupcs g ON c.idgroup = g.idgroup
+                           ORDER BY c.nama_customer ASC
+                           ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
@@ -60,6 +63,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['alamat1']; ?></td>
                                  <td><?= $tampil['nmsegment']; ?></td>
+                                 <td><?= $tampil['nmgroup']; ?></td>
                                  <td><?= $tampil['top'] . " Hari"; ?></td>
                                  <td>Muryani</td>
                                  <td class="text-center"><?= $tampil['pajak']; ?></td>

@@ -13,13 +13,14 @@ $telepon = $_POST['telepon'];
 $email = $_POST['email'];
 $tukarfaktur = $_POST['tukarfaktur'];
 $catatan = $_POST['catatan'];
+$idgroup = $_POST['idgroup'];
 
 // membuat prepared statement
-$stmt = $conn->prepare("INSERT INTO customers (nama_customer, alamat1, alamat2, alamat3, idsegment, top, pajak, tukarfaktur, telepon, email, catatan)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO customers (nama_customer, alamat1, alamat2, alamat3, idsegment, top, pajak, tukarfaktur, telepon, email, catatan, idgroup)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // bind parameter
-$stmt->bind_param("ssssiisssss", $nama_customer, $alamat1, $alamat2, $alamat3, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan);
+$stmt->bind_param("ssssiisssssi", $nama_customer, $alamat1, $alamat2, $alamat3, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan, $idgroup);
 
 // mengeksekusi prepared statement
 if ($stmt->execute()) {

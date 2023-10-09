@@ -487,3 +487,11 @@ CREATE TABLE pricelistdetail (
   FOREIGN KEY (idpricelist) REFERENCES pricelist (idpricelist),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE groupcs (
+  idgroup INT PRIMARY KEY AUTO_INCREMENT,
+  nmgroup VARCHAR (20)
+);
+ALTER TABLE customers
+ADD idgroup INT;
+ALTER TABLE customers
+ADD FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup);

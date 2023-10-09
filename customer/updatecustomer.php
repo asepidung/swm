@@ -5,7 +5,7 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-// mengambil data dari form
+// Mendapatkan data dari form
 $idcustomer = $_POST['idcustomer'];
 $nama_customer = $_POST['nama_customer'];
 $alamat1 = $_POST['alamat1'];
@@ -18,11 +18,12 @@ $tukarfaktur = $_POST['tukarfaktur'];
 $telepon = $_POST['telepon'];
 $email = $_POST['email'];
 $catatan = $_POST['catatan'];
+$idgroup = $_POST['idgroup'];
 
-// update data customer
-$query = "UPDATE customers SET nama_customer = ?, alamat1 = ?, alamat2 = ?, alamat3 = ?, idsegment = ?, top = ?, pajak = ?, tukarfaktur = ?, telepon = ?, email = ?, catatan = ? WHERE idcustomer = ?";
+// Update data customer
+$query = "UPDATE customers SET nama_customer = ?, alamat1 = ?, alamat2 = ?, alamat3 = ?, idsegment = ?, top = ?, pajak = ?, tukarfaktur = ?, telepon = ?, email = ?, catatan = ?, idgroup = ? WHERE idcustomer = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ssssissssssi", $nama_customer, $alamat1, $alamat2, $alamat3, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan, $idcustomer);
+$stmt->bind_param("ssssissssssii", $nama_customer, $alamat1, $alamat2, $alamat3, $idsegment, $top, $pajak, $tukarfaktur, $telepon, $email, $catatan, $idgroup, $idcustomer);
 
 if ($stmt->execute()) {
    echo "<script>alert('Data berhasil diperbarui.'); window.location='customer.php';</script>";

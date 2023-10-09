@@ -22,7 +22,7 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
       <div class="container-fluid">
          <div class="row">
             <!-- left column -->
-            <div class="col-10">
+            <div class="col">
                <!-- general form elements -->
                <div class="card card-dark mt-3">
                   <div class="card-header">
@@ -36,6 +36,24 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                         <div class="form-group">
                            <label for="nama_customer">Nama Customer <span class="text-danger">*</span></label>
                            <input type="text" class="form-control" name="nama_customer" id="nama_customer" value="<?= $rowCustomer['nama_customer']; ?>" autofocus required>
+                        </div>
+                        <div class="form-group">
+                           <label for="idgroup">Group <span class="text-danger">*</span></label>
+                           <div class="input-group">
+                              <select class="form-control" name="idgroup" id="idgroup">
+                                 <option value="">Pilih Group</option>
+                                 <?php
+                                 $query = "SELECT * FROM groupcs ORDER BY nmgroup ASC";
+                                 $result = mysqli_query($conn, $query);
+                                 while ($groupRow = mysqli_fetch_assoc($result)) {
+                                    $idgroup = $groupRow['idgroup'];
+                                    $nmgroup = $groupRow['nmgroup'];
+                                    $selected = ($idgroup == $rowCustomer['idgroup']) ? "selected" : "";
+                                    echo "<option value=\"$idgroup\" $selected>$nmgroup</option>";
+                                 }
+                                 ?>
+                              </select>
+                           </div>
                         </div>
                         <div class="form-group">
                            <label for="alamat">Alamat 1</label>
