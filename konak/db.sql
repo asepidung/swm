@@ -456,26 +456,20 @@ CREATE TABLE plandev (
   note VARCHAR(255),
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
 );
-CREATE TABLE tally (
-  idtally INT PRIMARY KEY AUTO_INCREMENT,
-  tallynumber VARCHAR (30),
-  deliverydate DATE,
-  idcustomer INT,
-  ponumber VARCHAR(30),
-  keterangan VARCHAR(255),
-  idusers INT,
-  FOREIGN KEY (idusers) REFERENCES users (idusers),
-  FOREIGN key (idcustomer) REFERENCES customers (idcustomer)
+CREATE TABLE groupcs (
+  idgroup INT PRIMARY KEY AUTO_INCREMENT,
+  nmgroup VARCHAR (20),
+  terms char(3)
 );
 CREATE TABLE pricelist (
   idpricelist INT PRIMARY KEY AUTO_INCREMENT,
-  idcustomer INT,
+  idgroup INT,
   latestupdate DATE,
   up VARCHAR(30),
   note VARCHAR(255),
   idusers INT,
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
 CREATE TABLE pricelistdetail (
@@ -487,11 +481,32 @@ CREATE TABLE pricelistdetail (
   FOREIGN KEY (idpricelist) REFERENCES pricelist (idpricelist),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
-CREATE TABLE groupcs (
-  idgroup INT PRIMARY KEY AUTO_INCREMENT,
-  nmgroup VARCHAR (20)
-);
 ALTER TABLE customers
 ADD idgroup INT;
 ALTER TABLE customers
 ADD FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup);
+
+CREATE TABLE salesorder (
+  idso INT PRIMARY KEY AUTO_INCREMENT,
+  noso  VARCHAR(30),
+  idgroup INT,
+  idcustomer INT,
+  deliverydate DATE,
+  progres,
+  note VARCHAR(255),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE salesorderdetail (
+  idsodetail INT PRIMARY KEY AUTO_INCREMENT,
+  idso INT,
+  idbarang INT,
+  weight INT,
+  price INT,
+  notes VARCHAR(255),
+  FOREIGN KEY (idso) REFERENCES salesorder (idso),
+  FOREIGN KEY idbarang REFERENCES barang (idbarang)
+);

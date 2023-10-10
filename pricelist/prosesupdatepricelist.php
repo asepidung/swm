@@ -8,13 +8,13 @@ require "../konak/conn.php";
 // Cek apakah form sudah disubmit
 if (isset($_POST['submit'])) {
   $idpricelist = $_POST['idpricelist'];
-  $idcustomer = $_POST['idcustomer'];
+  $idgroup = $_POST['idgroup'];
   $note = $_POST['note'];
   $up = $_POST['up'];
   $latestupdate = date('Y-m-d');
 
   // Update tabel pricelist
-  $update_query = "UPDATE pricelist SET idcustomer = '$idcustomer', note = '$note', up = '$up', latestupdate = '$latestupdate' WHERE idpricelist = '$idpricelist'";
+  $update_query = "UPDATE pricelist SET idgroup = '$idgroup', note = '$note', up = '$up', latestupdate = '$latestupdate' WHERE idpricelist = '$idpricelist'";
   $result = mysqli_query($conn, $update_query);
 
   if ($result) {

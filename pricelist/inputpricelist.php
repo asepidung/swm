@@ -7,15 +7,15 @@ require "../konak/conn.php";
 
 if (isset($_POST['submit'])) {
 
-   $idcustomer = $_POST['idcustomer'];
+   $idgroup = $_POST['idgroup'];
    $note = $_POST['note'];
    $up = $_POST['up'];
    $idusers = $_SESSION['idusers'];
    $latestupdate = date('Y-m-d');
 
-   $query_pricelist = "INSERT INTO pricelist (idcustomer, note, idusers, latestupdate, up) VALUES (?,?,?,?,?)";
+   $query_pricelist = "INSERT INTO pricelist (idgroup, note, idusers, latestupdate, up) VALUES (?,?,?,?,?)";
    $stmt_pricelist = $conn->prepare($query_pricelist);
-   $stmt_pricelist->bind_param("isiss", $idcustomer, $note, $idusers, $latestupdate, $up);
+   $stmt_pricelist->bind_param("isiss", $idgroup, $note, $idusers, $latestupdate, $up);
    $stmt_pricelist->execute();
 
    $last_id = $stmt_pricelist->insert_id;

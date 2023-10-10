@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $exp = $_POST['exp'];
    $kdbarcode = $_POST['kdbarcode'];
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
-
+   $pembulatan = isset($_POST['pembulatan']) ? true : false;
    // Memeriksa dan memecah nilai qty dan pcs
    $qty = null;
    $pcs = null;
@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $_SESSION['idbarang'] = $_POST['idbarang'];
    $_SESSION['packdate'] = $packdate;
    $_SESSION['tenderstreach'] = $tenderstreachActive;
+   $_SESSION['pembulatan'] = $pembulatan;
    $_SESSION['exp'] = $exp;
 
    if (strpos($qtyPcsInput, "/") !== false) {
@@ -94,7 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          <tr>
             <td colspan=" 1" rowspan="2">
                <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <span style="font-size: 30px"><strong><?= number_format($qty, 2); ?></strong></span>
+                  <?php
+                  if ($pembulatan == true) { ?>
+                     <span style="font-size: 30px"><strong><?= number_format($qty, 1); ?></strong></span>
+                  <?php } else { ?>
+                     <span style="font-size: 30px"><strong><?= number_format($qty, 2); ?></strong></span>
+                  <?php } ?>
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">

@@ -15,7 +15,7 @@ include "../mainsidebar.php";
          <div class="row">
             <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newpricelist.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="newso.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -26,7 +26,7 @@ include "../mainsidebar.php";
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-12">
+            <div class="col">
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -34,43 +34,41 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>Group</th>
-                              <th>UP</th>
-                              <th>T.O.P</th>
-                              <th>Last Update</th>
-                              <th>Note</th>
+                              <th>SO Number</th>
+                              <th>Tgl Kirim</th>
+                              <th>Customer</th>
+                              <th>PO</th>
+                              <th>xQty</th>
+                              <th>Catatan</th>
+                              <th>Status</th>
+                              <th>Made By</th>
                               <th>Actions</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT PRICELIST.*, groupcs.nmgroup, groupcs.terms 
-                                   FROM PRICELIST 
-                                   JOIN groupcs ON PRICELIST.idgroup = groupcs.idgroup");
+                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer, users.fullname FROM salesorder
+                           JOIN customers ON do.idcustomer = customers.idcustomer
+                           JOIN users ON do.idusers = users.idusers
+                           ORDER BY idso DESC;
+                           ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td><?= $tampil['nmgroup']; ?></td>
-                                 <td><?= $tampil['up']; ?></td>
-                                 <td><?= $tampil['terms']; ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['latestupdate'])); ?></td>
+                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
+                                 <td><?= $tampil['nama_customer']; ?></td>
+                                 <td><?= $tampil['po']; ?></td>
+                                 <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <!-- <td class="text-center"><?= $tampil['fullname']; ?></td> -->
                                  <td class="text-center">
-                                    <a class="btn btn-success btn-sm" href="lihatpricelist.php?idpricelist=<?= $tampil['idpricelist'] ?>">
-                                       <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a class="btn btn-warning btn-sm" href="editpricelist.php?idpricelist=<?= $tampil['idpricelist'] ?>">
-                                       <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a class="btn btn-primary btn-sm" href="cetakpricelist.php?idpricelist=<?= $tampil['idpricelist'] ?>">
-                                       <i class="fas fa-coffee"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" href="deletepricelist.php?idpricelist=<?= $tampil['idpricelist'] ?>">
-                                       <i class="fas fa-minus-square"></i>
-                                    </a>
+
+                                 </td>
+                                 <td class="text-center"><?= $tampil['fullname']; ?></td>
+                                 <td class="text-center">
+
                                  </td>
                               </tr>
                            <?php $no++;
@@ -94,7 +92,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Price List";
+   document.title = "Delivery Order";
 </script>
 <?php
 // require "../footnote.php";

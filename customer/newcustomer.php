@@ -81,12 +81,13 @@ include "../mainsidebar.php";
                                     </div>
                                  </div>
                               </div>
+
+                           </div>
+                           <div class="col-6">
                               <div class="form-group">
                                  <label for="top">T.O.P <span class="text-danger">*</label>
                                  <input type="number" class="form-control" name="top" id="top" required>
                               </div>
-                           </div>
-                           <div class="col-6">
                               <div class="form-group">
                                  <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label>
                                  <select class="form-control" name="pajak" id="pajak" required>

@@ -28,18 +28,18 @@ $row = mysqli_fetch_assoc($result);
                   <input type="hidden" name="idpricelist" value="<?= $idpricelist ?>">
                   <div class="col-4">
                     <div class="form-group">
-                      <label for="idcustomer">Customer <span class="text-danger">*</span></label>
+                      <label for="idgroup">Group <span class="text-danger">*</span></label>
                       <div class="input-group">
-                        <select class="form-control" name="idcustomer" id="idcustomer">
-                          <option value="">Pilih Customer</option>
+                        <select class="form-control" name="idgroup" id="idgroup">
+                          <option value="">Pilih Group</option>
                           <?php
-                          $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
+                          $query = "SELECT * FROM groupcs ORDER BY nmgroup ASC";
                           $result = mysqli_query($conn, $query);
-                          while ($customerRow = mysqli_fetch_assoc($result)) {
-                            $idcustomer = $customerRow['idcustomer'];
-                            $nama_customer = $customerRow['nama_customer'];
-                            $selected = ($idcustomer == $row['idcustomer']) ? "selected" : "";
-                            echo "<option value=\"$idcustomer\" $selected>$nama_customer</option>";
+                          while ($groupRow = mysqli_fetch_assoc($result)) {
+                            $idgroup = $groupRow['idgroup'];
+                            $nmgroup = $groupRow['nmgroup'];
+                            $selected = ($idgroup == $row['idgroup']) ? "selected" : "";
+                            echo "<option value=\"$idgroup\" $selected>$nmgroup</option>";
                           }
                           ?>
                         </select>

@@ -29,6 +29,8 @@ include "../mainsidebar.php";
                            <label for="nmgroup">Nama Group <span class="text-danger">*</span></label>
                            <input type="text" class="form-control" name="nmgroup" id="nmgroup" placeholder="Gunakan Huruf BESAR !!!" required>
                         </div>
+                        <p class="text-justify">apabila Karyawan / Warga silahkan pilih reguler, apabila customer hanya memiliki 1 cabang cukup isi nama customernya tidak perlu lengkap</p>
+                        <p><strong>Contoh :</strong> Santi Wijaya</p>
                      </div>
                      <div class="form-group mr-3 text-right">
                         <button type="submit" class="btn bg-gradient-primary">Submit</button>

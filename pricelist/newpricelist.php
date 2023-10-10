@@ -23,16 +23,16 @@ include "../mainsidebar.php";
                               <div class="form-group">
                                  <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <select class="form-control" name="idcustomer" id="idcustomer" required>
-                                       <option value="">Pilih Customer</option>
+                                    <select class="form-control" name="idgroup" id="idgroup" required>
+                                       <option value="">Pilih Group</option>
                                        <?php
-                                       $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
+                                       $query = "SELECT * FROM groupcs ORDER BY nmgroup ASC";
                                        $result = mysqli_query($conn, $query);
                                        // Generate options based on the retrieved data
                                        while ($row = mysqli_fetch_assoc($result)) {
-                                          $idcustomer = $row['idcustomer'];
-                                          $nama_customer = $row['nama_customer'];
-                                          echo "<option value=\"$idcustomer\">$nama_customer</option>";
+                                          $idgroup = $row['idgroup'];
+                                          $nmgroup = $row['nmgroup'];
+                                          echo "<option value=\"$idgroup\">$nmgroup</option>";
                                        }
                                        ?>
                                     </select>

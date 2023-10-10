@@ -8,11 +8,10 @@ include "../header.php";
 
 $idpricelist = $_GET['idpricelist'];
 
-$query = "SELECT p.*, c.nama_customer, c.top
-FROM pricelist p
-INNER JOIN customers c ON p.idcustomer = c.idcustomer
-WHERE idpricelist = $idpricelist
-ORDER BY nama_customer ASC";
+$query = "SELECT pricelist.*, groupcs.nmgroup 
+          FROM pricelist 
+          JOIN groupcs ON pricelist.idgroup = groupcs.idgroup 
+          WHERE pricelist.idpricelist = $idpricelist";
 
 $result = mysqli_query($conn, $query);
 $row = mysqli_fetch_assoc($result);
@@ -35,9 +34,9 @@ $row = mysqli_fetch_assoc($result);
       <h3 class="text-center">PRICE LIST</h3>
       <table class="table table-responsive table-borderless table-sm">
          <tr>
-            <td>Customer</td>
+            <td>Group</td>
             <td>:</td>
-            <th><?= $row['nama_customer']; ?></th>
+            <th><?= $row['nmgroup']; ?></th>
          </tr>
          <tr>
             <td>CP</td>
