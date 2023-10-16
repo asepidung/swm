@@ -40,7 +40,7 @@ include "../mainsidebar.php";
                               <th>Segment</th>
                               <th>Group</th>
                               <th>T.O.P</th>
-                              <th>Sales</th>
+                              <!-- <th>Sales</th> -->
                               <th>Pajak</th>
                               <th>T.T.F</th>
                               <th>Catatan</th>
@@ -65,7 +65,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nmsegment']; ?></td>
                                  <td><?= $tampil['nmgroup']; ?></td>
                                  <td><?= $tampil['top'] . " Hari"; ?></td>
-                                 <td>Muryani</td>
+                                 <!-- <td>Muryani</td> -->
                                  <td class="text-center"><?= $tampil['pajak']; ?></td>
                                  <td class="text-center"><?= $tampil['tukarfaktur']; ?></td>
                                  <td><?= $tampil['catatan']; ?></td>

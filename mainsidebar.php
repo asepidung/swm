@@ -171,7 +171,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="../so" class="nav-link">
+              <a href="../salesorder" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Order</p>
               </a>
@@ -305,6 +305,12 @@
               <a href="../customer/customer.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Customer</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../group/" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Group Customer</p>
               </a>
             </li>
             <li class="nav-item">

@@ -92,7 +92,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="pembulatan" id="pembulatan" <?php echo isset($_SESSION['pembulatan']) && $_SESSION['pembulatan'] ? 'checked' : ''; ?>>
-                  <label class="form-check-label">Bulatkan Komanya bgsd</label>
+                  <label class="form-check-label">1 Digit Koma</label>
                 </div>
                 <!-- ... -->
                 <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">

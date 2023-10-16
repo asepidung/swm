@@ -10,6 +10,7 @@ include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
+   <!-- /.content-header -->
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
@@ -20,13 +21,11 @@ include "../mainsidebar.php";
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
-   <!-- /.content-header -->
-
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col">
+            <div class="col-12">
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -35,40 +34,39 @@ include "../mainsidebar.php";
                            <tr>
                               <th>#</th>
                               <th>SO Number</th>
-                              <th>Tgl Kirim</th>
                               <th>Customer</th>
+                              <th>Tgl Kirim</th>
                               <th>PO</th>
-                              <th>xQty</th>
-                              <th>Catatan</th>
-                              <th>Status</th>
-                              <th>Made By</th>
-                              <th>Actions</th>
+                              <th>Progress</th>
+                              <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer, users.fullname FROM salesorder
-                           JOIN customers ON do.idcustomer = customers.idcustomer
-                           JOIN users ON do.idusers = users.idusers
-                           ORDER BY idso DESC;
-                           ");
+                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
+                           FROM salesorder 
+                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
+                           ORDER BY idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
                                  <td class="text-center"><?= $tampil['sonumber']; ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
-                                 <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
-                                 <td><?= $tampil['note']; ?></td>
+                                 <td><?= $tampil['progress']; ?></td>
                                  <td class="text-center">
-
-                                 </td>
-                                 <td class="text-center"><?= $tampil['fullname']; ?></td>
-                                 <td class="text-center">
-
+                                    <a href="prinso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
+                                       <i class="far fa-eye text-primary"></i>
+                                    </a>
+                                    <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
+                                       <i class="far fa-edit text-success"></i>
+                                    </a>
+                                    <a href="deleteso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                       <i class="far fa-trash-alt text-danger"></i>
+                                    </a>
                                  </td>
                               </tr>
                            <?php $no++;
@@ -92,7 +90,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Delivery Order";
+   document.title = "Sales Order List";
 </script>
 <?php
 // require "../footnote.php";

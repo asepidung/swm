@@ -5,7 +5,8 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   // Ambil data dari formulir
    $idgr = $_POST['idgr'];
    $receivedate = $_POST['receivedate'];
    $idsupplier = $_POST['idsupplier'];
@@ -14,37 +15,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $xweight = $_POST['xweight'];
    $note = $_POST['note'];
 
-   // Update data ke tabel gr
-   $query_update_gr = "UPDATE gr SET receivedate = ?, idsupplier = ?, idnumber = ?, xbox = ?, xweight = ?, note = ?
-                       WHERE idgr = ?";
+   // Update data di tabel gr
+   $query_update_gr = "UPDATE gr SET receivedate = ?, idsupplier = ?, idnumber = ?, xbox = ?, xweight = ?, note = ? WHERE idgr = ?";
    $stmt_update_gr = $conn->prepare($query_update_gr);
-   $stmt_update_gr->bind_param("sisidsi", $receivedate, $idsupplier, $idnumber, $xbox, $xweight, $note, $idgr);
-   $stmt_update_gr->execute();
-   $stmt_update_gr->close();
+   $stmt_update_gr->bind_param("sissdsi", $receivedate, $idsupplier, $idnumber, $xbox, $xweight, $note, $idgr);
 
-   // Update data ke tabel grdetail
-   $idgrades = $_POST['idgrade'];
-   $idbarangs = $_POST['idbarang'];
-   $boxes = $_POST['box'];
-   $weights = $_POST['weight'];
-   $notes = $_POST['notes'];
+   if ($stmt_update_gr->execute()) {
+      // Update berhasil
+      echo "Data GR berhasil diupdate. ";
 
-   for ($i = 0; $i < count($idgrades); $i++) {
-      $idgrade = $idgrades[$i];
-      $idbarang = $idbarangs[$i];
-      $box = $boxes[$i];
-      $weight = $weights[$i];
-      $note = $notes[$i];
+      // Selanjutnya, Anda perlu mengupdate data di tabel grdetail. Loop melalui data yang dikirimkan melalui formulir.
+      $idgrade = $_POST['idgrade'];
+      $idbarang = $_POST['idbarang'];
+      $box = $_POST['box'];
+      $weight = $_POST['weight'];
+      $notes = $_POST['notes'];
 
-      $query_update_grdetail = "UPDATE grdetail SET idgrade = ?, idbarang = ?, box = ?, weight = ?, notes = ?
-                                WHERE idgrdetail = ?";
-      $stmt_update_grdetail = $conn->prepare($query_update_grdetail);
-      $stmt_update_grdetail->bind_param("iiidsi", $idgrade, $idbarang, $box, $weight, $note, $idgrdetail);
-      $stmt_update_grdetail->execute();
-      $stmt_update_grdetail->close();
+      // Hapus data lama dari grdetail
+      $query_delete_grdetail = "DELETE FROM grdetail WHERE idgr = ?";
+      $stmt_delete_grdetail = $conn->prepare($query_delete_grdetail);
+      $stmt_delete_grdetail->bind_param("i", $idgr);
+      $stmt_delete_grdetail->execute();
+
+      // Loop dan masukkan data baru ke grdetail
+      for ($i = 0; $i < count($idgrade); $i++) {
+         $query_insert_grdetail = "INSERT INTO grdetail (idgr, idgrade, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?, ?)";
+         $stmt_insert_grdetail = $conn->prepare($query_insert_grdetail);
+         $stmt_insert_grdetail->bind_param("iiidds", $idgr, $idgrade[$i], $idbarang[$i], $box[$i], $weight[$i], $notes[$i]);
+         $stmt_insert_grdetail->execute();
+      }
+
+      header("location: index.php");;
+   } else {
+      // Update gagal
+      echo "Gagal mengupdate data GR.";
    }
 
-   header("location: index.php"); // Redirect to the list page
+   $stmt_update_gr->close();
+   $conn->close();
 }
-
-// ...

@@ -88,7 +88,9 @@ CREATE TABLE customers (
   telepon VARCHAR(20) DEFAULT '-',
   email VARCHAR(100) DEFAULT '-',
   catatan VARCHAR(255) DEFAULT '-',
+  idgroup INT,
   tanggal_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup),
   FOREIGN KEY (idsegment) REFERENCES segment (idsegment)
 );
 -- do adalah transaksi keluar barang
@@ -488,15 +490,15 @@ ADD FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup);
 
 CREATE TABLE salesorder (
   idso INT PRIMARY KEY AUTO_INCREMENT,
-  noso  VARCHAR(30),
-  idgroup INT,
+  sonumber VARCHAR(30),
   idcustomer INT,
   deliverydate DATE,
-  progres,
+  po VARCHAR(30),
+  alamat VARCHAR(100),
   note VARCHAR(255),
+  progress VARCHAR(15),
   idusers INT,
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup),
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
@@ -508,5 +510,5 @@ CREATE TABLE salesorderdetail (
   price INT,
   notes VARCHAR(255),
   FOREIGN KEY (idso) REFERENCES salesorder (idso),
-  FOREIGN KEY idbarang REFERENCES barang (idbarang)
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
