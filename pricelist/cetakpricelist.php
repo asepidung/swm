@@ -7,14 +7,26 @@ require "../konak/conn.php";
 
 $idpricelist = $_GET['idpricelist'];
 
-$query = "SELECT p.*, c.nama_customer, c.top
+$query = "SELECT p.*, c.nmgroup
 FROM pricelist p
-INNER JOIN customers c ON p.idcustomer = c.idcustomer
-WHERE idpricelist = $idpricelist
-ORDER BY nama_customer ASC";
+INNER JOIN groupcs c ON p.idgroup = c.idgroup
+WHERE p.idpricelist = ?"; // Gunakan placeholder (?)
 
-$result = mysqli_query($conn, $query);
-$row = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($conn, $query);
+if ($stmt) {
+  mysqli_stmt_bind_param($stmt, "i", $idpricelist);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+} else {
+  die("Error in preparing the statement: " . mysqli_error($conn));
+}
+mysqli_stmt_bind_param($stmt, "i", $idpricelist);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) > 0) {
+  $row = mysqli_fetch_assoc($result);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +66,7 @@ $row = mysqli_fetch_assoc($result);
         <tr>
           <td>Customer</td>
           <td>:</td>
-          <th><?= $row['nama_customer']; ?></th>
+          <th><?= $row['nmgroup']; ?></th>
         </tr>
         <tr>
           <td>CP</td>
@@ -104,17 +116,19 @@ $row = mysqli_fetch_assoc($result);
       </div>
     </div>
     <script>
-      document.title = "<?= $row['nama_customer'] . " " . "Price List" ?>"
-      window.addEventListener("load", function() {
-        window.print();
+      document.title = "<?= $row['nmgroup'] . " " . "Price List" ?>";
 
-        // Redirect ke halaman do.php setelah 3 detik
-        setTimeout(function() {
-          window.location.href = "index.php";
-        }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
-      });
+      // Trigger the print dialog when the page loads
+      window.onload = function() {
+        window.print();
+      };
+
+      // Close the window after printing (optional)
+      window.onafterprint = function() {
+        window.location.href = 'index.php';
+      };
     </script>
 
+
     <?php
-    // require "../footnote.php";
     include "../footer.php" ?>

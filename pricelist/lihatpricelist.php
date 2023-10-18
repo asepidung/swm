@@ -109,4 +109,6 @@ $row = mysqli_fetch_assoc($result);
    document.title = "<?= $row['nama_customer'] . " " . "Price List" ?>"
 </script>
 <?php
-include "../footer.php" ?>
+
+include "../footer.php"
+?>
