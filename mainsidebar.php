@@ -1,7 +1,7 @@
 <?php $fullname = $_SESSION['fullname']; ?>
 
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4 ">
   <!-- Brand Logo -->
   <a href="../index.php" class="brand-link">
     <img src="../dist/img/logoSWM.png" alt="SWM Logo" class="brand-image">
@@ -73,9 +73,9 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="../do/do.php" class="nav-link">
+              <a href="../tally/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Delivery Order</p>
+                <p>Taly Sheet</p>
               </a>
             </li>
             <li class="nav-item">
@@ -216,6 +216,12 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../do/do.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Delivery Order</p>
+              </a>
+            </li>
             <li class="nav-item">
               <a href="../plandev/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>

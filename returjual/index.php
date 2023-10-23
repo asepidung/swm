@@ -45,17 +45,21 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer, do.donumber FROM returjual
-                           JOIN customers ON returjual.idcustomer = customers.idcustomer
-                           JOIN do ON returjual.iddo = do.iddo
-                           ORDER BY returnnumber DESC;
-                           ");
+                           $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer
+                         FROM returjual
+                         JOIN customers ON returjual.idcustomer = customers.idcustomer");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
                                  <td class="text-center"><?= $tampil['returnnumber']; ?></td>
-                                 <td class="text-center"><?= $tampil['donumber']; ?></td>
+                                 <td class="text-center">
+                                    <?php if ($tampil['donumber'] == null) { ?>
+                                       <span class="text-danger">Unindentified</span>
+                                    <?php } else {
+                                       echo $tampil['donumber'];
+                                    } ?>
+                                 </td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>

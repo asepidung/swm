@@ -10,67 +10,51 @@ include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
-   <!-- /.content-header -->
-   <div class="content-header">
-      <div class="container-fluid">
-         <div class="row">
-            <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newso.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-   </div>
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
             <div class="col-12">
-               <div class="card">
+               <div class="card mt-3">
                   <!-- /.card-header -->
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>SO Number</th>
                               <th>Customer</th>
                               <th>Tgl Kirim</th>
                               <th>PO</th>
-                              <th>Progress</th>
-                              <th>Action</th>
+                              <th>SO</th>
+                              <th>Catatan</th>
+                              <th>Actions</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
-                           FROM salesorder 
-                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
-                           ORDER BY idso DESC");
+                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer FROM salesorder
+                           JOIN customers ON salesorder.idcustomer = customers.idcustomer
+                           WHERE progress = 'Waiting'
+                           ORDER BY salesorder.sonumber ASC");
+
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
-                                 <td class="text-center"><?= $tampil['progress']; ?></td>
-                                 <td class="text-center">
-                                    <a href="prinso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-eye text-primary"></i>
-                                    </a>
-                                    <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-edit text-success"></i>
-                                    </a>
-                                    <a href="deleteso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                       <i class="far fa-trash-alt text-danger"></i>
-                                    </a>
+                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
+                                 <td><?= $tampil['note']; ?></td>
+                                 <td class="text-center text-primary">
+                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>">Buat Tally <i class="fas fa-arrow-circle-right"></i></a>
                                  </td>
                               </tr>
-                           <?php $no++;
-                           } ?>
+                           <?php
+                              $no++;
+                           }
+                           ?>
                         </tbody>
                      </table>
                   </div>
@@ -90,7 +74,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Sales Order List";
+   document.title = "DRAFT TALLY";
 </script>
 <?php
 // require "../footnote.php";

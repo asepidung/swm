@@ -44,7 +44,6 @@ include "returnnumber.php";
                                        <?php
                                        $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
                                        $result = mysqli_query($conn, $query);
-                                       // Generate options based on the retrieved data
                                        while ($row = mysqli_fetch_assoc($result)) {
                                           $idcustomer = $row['idcustomer'];
                                           $nama_customer = $row['nama_customer'];
@@ -57,10 +56,11 @@ include "returnnumber.php";
                            </div>
                            <div class="col">
                               <div class="form-group">
-                                 <label for="iddo">Nomor DO </label>
+                                 <label for="donumber">Nomor DO</label>
                                  <div class="input-group">
-                                    <select name="iddo" id="iddo" class="form-control">
-                                       <option value="">Pilih DO Terkait</option>
+                                    <select name="donumber" id="donumber" class="form-control">
+                                       <option value="">Pilih Nomor DO</option>
+                                       <!-- Populasi pilihan donumber dari database -->
                                     </select>
                                  </div>
                               </div>
@@ -179,6 +179,35 @@ include "returnnumber.php";
 <script src="../dist/js/movefocus.js"></script>
 <script src="../dist/js/calculateTotals.js"></script>
 <script>
+   document.getElementById("idcustomer").addEventListener("change", function() {
+      var idcustomer = this.value;
+
+      // Dapatkan elemen select box "Nomor DO"
+      var donumberSelect = document.getElementById("donumber");
+      donumberSelect.innerHTML = '<option value="">Pilih Nomor DO</option>';
+
+      if (idcustomer) {
+         // Menggunakan AJAX untuk mengambil data donumber berdasarkan idcustomer
+         var xhr = new XMLHttpRequest();
+         xhr.open("GET", "get_donumber.php?idcustomer=" + idcustomer, true);
+
+         xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+               var data = JSON.parse(xhr.responseText);
+               data.forEach(function(item) {
+                  var option = document.createElement("option");
+                  option.value = item.iddo;
+                  option.text = item.donumber;
+                  donumberSelect.appendChild(option);
+               });
+            }
+         };
+
+         xhr.send();
+      }
+   });
+
+
    function addItem() {
       var itemsContainer = document.getElementById('items-container');
 

@@ -512,3 +512,25 @@ CREATE TABLE salesorderdetail (
   FOREIGN KEY (idso) REFERENCES salesorder (idso),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE tally (
+  idtally INT PRIMARY KEY AUTO_INCREMENT,
+  idso INT,
+  sonumber VARCHAR(30),
+  notally VARCHAR(30),
+  deliverydate DATE,
+  idcustomer INT,
+  po VARCHAR (30),
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idso) REFERENCES salesorder (idso),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
+);
+CREATE TABLE tallydetail (
+  idtallydetail INT PRIMARY KEY AUTO_INCREMENT,
+  idtally INT,
+  barcode VARCHAR(30),
+  idbarang INT,
+  weight DECIMAL (6,2),
+  pcs INT,
+  pod DATE,
+  
+)

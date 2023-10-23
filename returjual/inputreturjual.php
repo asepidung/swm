@@ -5,72 +5,50 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-if (isset($_POST['submit'])) {
-   $returnnumber = $_POST['returnnumber'];
-   $returdate = $_POST['returdate'];
-   $xweight = $_POST['xweight'];
-   $xbox = $_POST['xbox'];
-   $note = $_POST['note'];
-   $iddo = $_POST['iddo'];
-   $idcustomer = $_POST['idcustomer'];
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   $returnnumber = $_POST["returnnumber"];
+   $returdate = $_POST["returdate"];
+   $idcustomer = $_POST["idcustomer"];
+   $donumber = $_POST["donumber"];
+   $note = $_POST["note"];
+   $xbox = $_POST["xbox"];
+   $xweight = $_POST["xweight"];
    $idusers = $_SESSION['idusers'];
 
-   $query_returjual = "INSERT INTO returjual (returnnumber, returdate, xweight, xbox, note, iddo, idusers, idcustomer)
-                        VALUES (?,?,?,?,?,?,?,?)";
-   $stmt_returjual = $conn->prepare($query_returjual);
-   if ($stmt_returjual === false) {
-      die("Error preparing returjual query: " . $conn->error);
-   }
-   $stmt_returjual->bind_param("ssdisiii", $returnnumber, $returdate, $xweight, $xbox, $note, $iddo, $idusers, $idcustomer);
-   if ($stmt_returjual->execute() === false) {
-      die("Error executing returjual query: " . $stmt_returjual->error);
-   }
-   $last_id = $stmt_returjual->insert_id;
-   $stmt_returjual->close();
+   // Insert data into 'returjual' table
+   $insertReturJualQuery = "INSERT INTO returjual (returnnumber, returdate, idcustomer, note, xbox, xweight, donumber, idusers)
+                            VALUES ('$returnnumber', '$returdate', $idcustomer, '$note', $xbox, $xweight, $donumber, $idusers)"; // Replace {your_idusers_value} with the actual value
 
-   // Data returjual
-   // echo "Return Number: $returnnumber<br>";
-   // echo "Retur Date: $returdate<br>";
-   // echo "X Weight: $xweight<br>";
-   // echo "X Box: $xbox<br>";
-   // echo "Note: $note<br>";
-   // echo "ID DO: $iddo<br>";
-   // echo "ID Customer: $idcustomer<br>";
-   // echo "ID Users: $idusers<br>";
+   if (mysqli_query($conn, $insertReturJualQuery)) {
+      $idreturjual = mysqli_insert_id($conn);
 
-   $idgrade = $_POST['idgrade'];
-   $idbarang = $_POST['idbarang'];
-   $box = $_POST['box'];
-   $weight = $_POST['weight'];
-   $notes = $_POST['notes'];
+      // Insert data into 'returjualdetail' table for each item
+      if (isset($_POST['idgrade']) && isset($_POST['idbarang']) && isset($_POST['box']) && isset($_POST['weight'])) {
+         $idgrades = $_POST['idgrade'];
+         $idbarangs = $_POST['idbarang'];
+         $boxes = $_POST['box'];
+         $weights = $_POST['weight'];
+         $notes = $_POST['notes'];
 
-   // Kueri returjualdetail (dikomentari)
-   $query_returjualdetail = "INSERT INTO returjualdetail (idreturjual, idgrade, idbarang, weight, box, notes) VALUES (?,?,?,?,?,?)";
-   $stmt_returjualdetail = $conn->prepare($query_returjualdetail);
-   if ($stmt_returjualdetail === false) {
-      die("Error preparing returjualdetail query: " . $conn->error);
-   }
+         for ($i = 0; $i < count($idgrades); $i++) {
+            $idgrade = $idgrades[$i];
+            $idbarang = $idbarangs[$i];
+            $box = $boxes[$i];
+            $weight = $weights[$i];
+            $note = $notes[$i];
 
-   for ($i = 0; $i < count($idgrade); $i++) {
-      $stmt_returjualdetail->bind_param("iiidis", $last_id, $idgrade[$i], $idbarang[$i], $weight[$i], $box[$i], $notes[$i]);
-      if ($stmt_returjualdetail->execute() === false) {
-         die("Error executing returjualdetail query: " . $stmt_returjualdetail->error);
+            // Insert data into 'returjualdetail' table
+            $insertReturJualDetailQuery = "INSERT INTO returjualdetail (idreturjual, idgrade, idbarang, box, weight, notes)
+                                          VALUES ($idreturjual, $idgrade, $idbarang, $box, $weight, '$note')";
+
+            mysqli_query($conn, $insertReturJualDetailQuery);
+         }
       }
+
+      // Redirect or display a success message
+      header("Location: index.php"); // Redirect to a success page
+   } else {
+      echo "Error: " . mysqli_error($conn);
    }
-
-   $stmt_returjualdetail->close();
-
-   // Data returjualdetail
-   // for ($i = 0; $i < count($idgrade); $i++) {
-   //    echo "<br>Retur Jual Detail $i:";
-   //    echo "<br>ID Grade: " . $idgrade[$i];
-   //    echo "<br>ID Barang: " . $idbarang[$i];
-   //    echo "<br>Box: " . $box[$i];
-   //    echo "<br>Weight: " . $weight[$i];
-   //    echo "<br>Notes: " . $notes[$i];
-   // }
-
-   $conn->close();
-
-   header("location: index.php");
 }

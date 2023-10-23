@@ -13,7 +13,7 @@ if (isset($_POST['submit'])) {
    $po = $_POST['po'];
    $alamat = $_POST['alamat'];
    $note = $_POST['note'];
-   $progress = 'Penyiapan';
+   $progress = 'Waiting';
    $idusers = $_SESSION['idusers'];
 
    $query_so = "INSERT INTO salesorder (sonumber, idcustomer, deliverydate, po, alamat, note, progress, idusers) VALUES (?,?,?,?,?,?,?,?)";
