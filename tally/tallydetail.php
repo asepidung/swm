@@ -5,10 +5,8 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 include "../header.php";
-// include "../navbar.php";
-// include "../mainsidebar.php";
+$idtally = $_GET['id'];
 ?>
-<!-- <div class="content-wrapper"> -->
 <div class="content-header">
    <div class="container-fluid">
       <div class="row">
@@ -23,75 +21,79 @@ include "../header.php";
    <div class="container-fluid">
       <div class="row">
          <div class="col">
-            <div class="card">
-               <div class="card-body">
-                  <div id="items-container">
-                     <div class="row mb-n2">
-                        <div class="col-2">
-                           <div class="form-group">
-                              <label>Barcode</label>
-                              <input type="text" class="form-control text-center" name="barcode" id="barcode" autofocus>
+            <form method="POST" action="inputtallydetail.php">
+               <div class="card">
+                  <div class="card-body">
+                     <div id="items-container">
+                        <div class="row mb-n2">
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <input type="text" placeholder="Scan Here" class="form-control text-center" name="barcode" id="barcode" autofocus>
+                              </div>
+                           </div>
+                           <input type="hidden" name="idtally" value="<?= $idtally ?>">
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <input type="text" class="form-control text-center" readonly>
+                              </div>
+                           </div>
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <button type="submit" class="btn btn-primary">Submit</button>
+                              </div>
+                           </div>
+                           <div class="col">
+                              <marquee behavior="" direction="">
+                                 <img src="../dist/img/ipin.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                              </marquee>
                            </div>
                         </div>
-                        <div class="col-2">
-                           <div class="form-group">
-                              <label>Product</label>
-                              <select class="form-control" name="idbarang[]" id="idbarang" required>
-                                 <option value="">--Pilih--</option>
-                                 <?php
-                                 $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                 $result = mysqli_query($conn, $query);
-                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    $idbarang = $row['idbarang'];
-                                    $nmbarang = $row['nmbarang'];
-                                    echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                                 }
-                                 ?>
-                              </select>
+                        <div class="row mb-n2">
+                           <!-- <div class="col-2">
+                              <div class="form-group">
+                                 <div class="input-group">
+                                    <select class="form-control" name="idbarang[]" id="idbarang" required>
+                                       <option value="">--Prod--</option>
+                                       <?php
+                                       $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                                       $result = mysqli_query($conn, $query);
+                                       while ($row = mysqli_fetch_assoc($result)) {
+                                          $idbarang = $row['idbarang'];
+                                          $nmbarang = $row['nmbarang'];
+                                          echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                                       }
+                                       ?>
+                                    </select>
+                                 </div>
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-1">
-                           <div class="form-group">
-                              <label>Weight</label>
-                              <input type="text" class="form-control text-center" name="weight" id="weight">
+                           <div class="col-1">
+                              <div class="form-group">
+                                 <input type="text" class="form-control text-right" name="weight" id="weight" required>
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-1">
-                           <div class="form-group">
-                              <label>Pcs</label>
-                              <input type="text" class="form-control text-center" name="pcs" id="pcs">
+                           <div class="col-1">
+                              <div class="form-group">
+                                 <input type="text" class="form-control tex-center" name="pcs" id="pcs">
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-2">
-                           <div class="form-group">
-                              <label>Origin</label>
-                              <input type="text" class="form-control text-center" name="origin" id="origin">
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <input type="date" class="form-control" name="pod" id="pod" required>
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-2">
-                           <div class="form-group">
-                              <label>P.O.D</label>
-                              <input type="date" class="form-control text-center" name="pod" id="pod">
-                           </div>
-                        </div>
-                        <div class="col-1">
-                           <div class="form-group">
-                              <label>Status</label>
-                              <input type="text" class="form-control text-center" readonly>
-                           </div>
-                        </div>
-                        <div class="col-1">
-                           <div class="form-group">
-                              <label for="add"></label>
-                              <button class="btn text-warning" name="add"><i class="fas fa-plus-circle"></i></button>
-                           </div>
+                           <div class="col-2">
+                              <div class="form-group">
+                                 <input type="text" class="form-control" name="origin" id="origin">
+                              </div>
+                           </div> -->
                         </div>
                      </div>
                   </div>
                </div>
-            </div>
+            </form>
             <div class="row">
-               <div class="col-lg-8">
+               <div class="col-lg-7">
                   <div class="card">
                      <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped table-sm">
@@ -108,12 +110,51 @@ include "../header.php";
                               </tr>
                            </thead>
                            <tbody>
+                              <?php
+                              $no = 1;
+                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang
+                              FROM tallydetail
+                              INNER JOIN barang ON tallydetail.idbarang = barang.idbarang WHERE idtally = $idtally ORDER BY idtallydetail DESC");
+                              while ($tampil = mysqli_fetch_array($ambildata)) {
+                                 $origin = $tampil['origin'];
+                                 $nmbarang = $tampil['nmbarang'];
+                              ?>
+                                 <tr>
+                                    <td class="text-center"><?= $no; ?></td>
+                                    <td class="text-center"><?= $tampil['barcode']; ?></td>
+                                    <td><?= $nmbarang; ?></td>
+                                    <td class="text-right"><?= $tampil['weight']; ?></td>
+                                    <td class="text-center"><?= $tampil['pcs']; ?></td>
+                                    <td class="text-center"><?= $tampil['pod']; ?></td>
+                                    <td class="text-center">
+                                       <?php
+                                       if ($origin == 1) {
+                                          echo "BONING";
+                                       } elseif ($origin == 2) {
+                                          echo "TRADING";
+                                       } elseif ($origin == 4) {
+                                          echo "REPACK";
+                                       } else {
+                                          echo "Unindentified";
+                                       }
+                                       ?>
+                                    </td>
+                                    <td class="text-center">
+                                       <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                                          <i class="far fa-times-circle"></i>
+                                       </a>
+                                    </td>
+                                 </tr>
+                              <?php
+                                 $no++;
+                              }
+                              ?>
                            </tbody>
                         </table>
                      </div>
                   </div>
                </div>
-               <div class="col-lg-4">
+               <div class="col-lg-5">
                   <div class="card">
                      <div class="card-body">
                         <table class="table table-bordered table-striped table-sm">
@@ -123,16 +164,85 @@ include "../header.php";
                                  <th>PO</th>
                                  <th>Qty</th>
                                  <th>Box</th>
+                                 <th>Balance</th>
                               </tr>
                            </thead>
                            <tbody>
-                              <tr>
-                                 <td></td>
-                                 <td class="text-center"></td>
-                                 <td class="text-right"></td>
-                                 <td class="text-center"></td>
-                              </tr>
+                              <?php
+                              $idso_query = "SELECT idso FROM tally WHERE idtally = $idtally";
+                              $idso_result = mysqli_query($conn, $idso_query);
+
+                              if ($idso_result && $idso_row = mysqli_fetch_assoc($idso_result)) {
+                                 $idso = $idso_row['idso'];
+
+                                 $query = "SELECT sodetail.idbarang, barang.nmbarang, sodetail.weight
+                                 FROM salesorderdetail AS sodetail
+                                 INNER JOIN barang ON sodetail.idbarang = barang.idbarang
+                                 WHERE sodetail.idso = $idso";
+
+                                 $result = mysqli_query($conn, $query);
+                                 while ($row = mysqli_fetch_assoc($result)) { ?>
+                                    <tr>
+                                       <td class="ml-1"> <?= $row['nmbarang'] ?></td>
+                                       <td class="text-center"><?= $row['weight'] ?></td>
+                                       <td class="text-right">
+                                          <?php
+                                          $totalWeightQuery = "SELECT SUM(weight) AS total_weight
+                                          FROM tallydetail
+                                          WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
+                                          $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
+                                          if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
+                                             echo $totalWeightRow['total_weight'];
+                                          } else {
+                                             echo "0"; // Jika tidak ada data, tampilkan 0
+                                          }
+                                          ?>
+                                       </td>
+                                       <td class="text-center">
+                                          <?php
+                                          $totalCountQuery = "SELECT COUNT(weight) AS total_weight
+                                          FROM tallydetail
+                                          WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
+                                          $totalCountResult = mysqli_query($conn, $totalCountQuery);
+                                          if ($totalCountResult && $totalCountRow = mysqli_fetch_assoc($totalCountResult)) {
+                                             echo $totalCountRow['total_weight'];
+                                          } else {
+                                             echo "0"; // Jika tidak ada data, tampilkan 0
+                                          }
+                                          ?>
+                                       </td>
+                                       <?php
+                                       $po = $row['weight'];
+                                       $scan = $totalWeightRow['total_weight'];
+                                       $sisa = $totalWeightRow['total_weight'] - $row['weight'];
+                                       ?>
+                                       <td class="text-right">
+                                          <?php if ($sisa > 0) { ?>
+                                             <span class="text-danger"><?= number_format($sisa, 2); ?></span>
+                                          <?php } else { ?>
+                                             <?= number_format($sisa, 2); ?>
+                                          <?php } ?>
+                                       </td>
+                                    </tr>
+                              <?php }
+                              }
+                              ?>
                            </tbody>
+                           <?php
+                           $totalPO = 0;
+                           $totalQty = 0;
+                           $totalBox = 0;
+                           $totalBalance = 0;
+                           ?>
+                           <tfoot>
+                              <tr class="text-right">
+                                 <th>Total</th>
+                                 <th class="text-center"><?= number_format($totalPO); ?></th>
+                                 <th><?= number_format($totalQty, 2); ?></th>
+                                 <th class="text-center"><?= number_format($totalBox); ?></th>
+                                 <th><?= number_format($totalBalance, 2); ?></th>
+                              </tr>
+                           </tfoot>
                         </table>
                      </div>
                   </div>
@@ -142,12 +252,8 @@ include "../header.php";
       </div>
    </div>
 </section>
-</div>
-
 <script>
-   // Mengubah judul halaman web
    document.title = "Tally Sheet";
 </script>
 <?php
-// require "../footnote.php";
 include "../footer.php" ?>

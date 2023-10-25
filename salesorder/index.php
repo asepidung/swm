@@ -56,7 +56,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
-                                 <td class="text-center"><?= $tampil['progress']; ?></td>
+                                 <td><i class="fas fa-spinner fa-pulse"></i> <?= $tampil['progress']; ?></td>
                                  <td class="text-center">
                                     <a href="prinso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
                                        <i class="far fa-eye text-primary"></i>

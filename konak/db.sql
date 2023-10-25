@@ -532,5 +532,7 @@ CREATE TABLE tallydetail (
   weight DECIMAL (6,2),
   pcs INT,
   pod DATE,
-  
-)
+  origin INT,
+  FOREIGN KEY (idtally) REFERENCES tally (idtally),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);
