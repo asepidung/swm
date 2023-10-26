@@ -45,9 +45,9 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT PRICELIST.*, groupcs.nmgroup, groupcs.terms 
-                                   FROM PRICELIST 
-                                   JOIN groupcs ON PRICELIST.idgroup = groupcs.idgroup");
+                           $ambildata = mysqli_query($conn, "SELECT pricelist.*, groupcs.nmgroup, groupcs.terms 
+                                   FROM pricelist 
+                                   JOIN groupcs ON pricelist.idgroup = groupcs.idgroup");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>

@@ -26,67 +26,20 @@ $idtally = $_GET['id'];
                   <div class="card-body">
                      <div id="items-container">
                         <div class="row mb-n2">
-                           <div class="col-2">
+                           <div class="col-xs-2">
                               <div class="form-group">
                                  <input type="text" placeholder="Scan Here" class="form-control text-center" name="barcode" id="barcode" autofocus>
                               </div>
                            </div>
                            <input type="hidden" name="idtally" value="<?= $idtally ?>">
-                           <div class="col-2">
+                           <div class="col-1">
                               <div class="form-group">
-                                 <input type="text" class="form-control text-center" readonly>
-                              </div>
-                           </div>
-                           <div class="col-2">
-                              <div class="form-group">
-                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                 <button type="submit" class="btn btn-block btn-primary">Submit</button>
                               </div>
                            </div>
                            <div class="col">
-                              <marquee behavior="" direction="">
-                                 <img src="../dist/img/ipin.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                              </marquee>
+                              **** peringatan disini ****
                            </div>
-                        </div>
-                        <div class="row mb-n2">
-                           <!-- <div class="col-2">
-                              <div class="form-group">
-                                 <div class="input-group">
-                                    <select class="form-control" name="idbarang[]" id="idbarang" required>
-                                       <option value="">--Prod--</option>
-                                       <?php
-                                       $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                       $result = mysqli_query($conn, $query);
-                                       while ($row = mysqli_fetch_assoc($result)) {
-                                          $idbarang = $row['idbarang'];
-                                          $nmbarang = $row['nmbarang'];
-                                          echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                                       }
-                                       ?>
-                                    </select>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-1">
-                              <div class="form-group">
-                                 <input type="text" class="form-control text-right" name="weight" id="weight" required>
-                              </div>
-                           </div>
-                           <div class="col-1">
-                              <div class="form-group">
-                                 <input type="text" class="form-control tex-center" name="pcs" id="pcs">
-                              </div>
-                           </div>
-                           <div class="col-2">
-                              <div class="form-group">
-                                 <input type="date" class="form-control" name="pod" id="pod" required>
-                              </div>
-                           </div>
-                           <div class="col-2">
-                              <div class="form-group">
-                                 <input type="text" class="form-control" name="origin" id="origin">
-                              </div>
-                           </div> -->
                         </div>
                      </div>
                   </div>
@@ -229,10 +182,30 @@ $idtally = $_GET['id'];
                               ?>
                            </tbody>
                            <?php
-                           $totalPO = 0;
-                           $totalQty = 0;
-                           $totalBox = 0;
-                           $totalBalance = 0;
+                           $totalPOQuery = "SELECT SUM(weight) AS total_weight FROM salesorderdetail WHERE idso = $idso";
+                           $totalPOResult = mysqli_query($conn, $totalPOQuery);
+                           if ($totalPOResult && $totalPORow = mysqli_fetch_assoc($totalPOResult)) {
+                              $totalPO = $totalPORow['total_weight'];
+                           } else {
+                              $totalPO = 0; // Atur ke 0 jika tidak ada hasil
+                           }
+
+                           $totalQtyQuery = "SELECT SUM(weight) AS total_qty FROM tallydetail WHERE idtally = $idtally";
+                           $totalQtyResult = mysqli_query($conn, $totalQtyQuery);
+                           if ($totalQtyResult && $totalQtyRow = mysqli_fetch_assoc($totalQtyResult)) {
+                              $totalQty = $totalQtyRow['total_qty'];
+                           } else {
+                              $totalQty = 0; // Atur ke 0 jika tidak ada hasil
+                           }
+
+                           $totalBoxQuery = "SELECT COUNT(weight) AS total_box FROM tallydetail WHERE idtally = $idtally";
+                           $totalBoxResult = mysqli_query($conn, $totalBoxQuery);
+                           if ($totalBoxResult && $totalBoxRow = mysqli_fetch_assoc($totalBoxResult)) {
+                              $totalBox = $totalBoxRow['total_box'];
+                           } else {
+                              $totalBox = 0; // Atur ke 0 jika tidak ada hasil
+                           }
+                           $totalBalance = $totalQty - $totalPO;
                            ?>
                            <tfoot>
                               <tr class="text-right">
@@ -240,7 +213,7 @@ $idtally = $_GET['id'];
                                  <th class="text-center"><?= number_format($totalPO); ?></th>
                                  <th><?= number_format($totalQty, 2); ?></th>
                                  <th class="text-center"><?= number_format($totalBox); ?></th>
-                                 <th><?= number_format($totalBalance, 2); ?></th>
+                                 <th><?= $totalBalance; ?></th>
                               </tr>
                            </tfoot>
                         </table>
