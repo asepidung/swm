@@ -15,7 +15,7 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
 
    // Periksa apakah penghapusan data berhasil dilakukan
    if ($hapusdata) {
-      header("Location: tallydetail.php?id=$id");
+      header("Location: tallydetail.php?id=$id&stat=undeleted");
    } else {
       // Jika gagal, tampilkan pesan error
       echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='tallydetail.php?id=$id';</script>";

@@ -12,6 +12,7 @@ $idtally = $_GET['id'];
       <div class="row">
          <div class="col">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Back To List</button></a>
+            <a href="printtally.php?id=<?= $idtally ?>"><button type="button" class="btn btn-outline-success float-right">Cetak Tally <i class="fas fa-arrow-alt-circle-right"></i></button></a>
          </div>
       </div>
    </div>
@@ -34,11 +35,27 @@ $idtally = $_GET['id'];
                            <input type="hidden" name="idtally" value="<?= $idtally ?>">
                            <div class="col-1">
                               <div class="form-group">
-                                 <button type="submit" class="btn btn-block btn-primary">Submit</button>
+                                 <button type="submit" class="btn btn-primary">Submit</button>
                               </div>
                            </div>
                            <div class="col">
-                              **** peringatan disini ****
+                              <?php if ($_GET['stat'] == "success") { ?>
+                                 <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
+                              <?php } elseif ($_GET['stat'] == "ready") { ?>
+                                 <h3 class="headline text-secondary"> Ready To Scan</h3>
+                              <?php } elseif ($_GET['stat'] == "undeleted") { ?>
+                                 <h3 class="headline text-success"> Data berhasil dihapus</h3>
+                              <?php } elseif ($_GET['stat'] == "duplicate") { ?>
+                                 <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
+                              <?php } elseif ($_GET['stat'] == "unlisted") { ?>
+                                 <h3 class="headline text-danger"><i class="fas fa-times-circle"></i> Barang Tidak ada di PO</h3>
+                              <?php } elseif ($_GET['stat'] == "unknown") { ?>
+                                 <a href="tallymanual.php?id=<?= $idtally ?>">
+                                    <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
+                                       Manual ADD <i class="fas fa-arrow-circle-right"></i>
+                                    </span>
+                                 </a>
+                              <?php } ?>
                            </div>
                         </div>
                      </div>
@@ -72,14 +89,14 @@ $idtally = $_GET['id'];
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
                               ?>
-                                 <tr>
-                                    <td class="text-center"><?= $no; ?></td>
-                                    <td class="text-center"><?= $tampil['barcode']; ?></td>
-                                    <td><?= $nmbarang; ?></td>
-                                    <td class="text-right"><?= $tampil['weight']; ?></td>
-                                    <td class="text-center"><?= $tampil['pcs']; ?></td>
-                                    <td class="text-center"><?= $tampil['pod']; ?></td>
-                                    <td class="text-center">
+                                 <tr class="text-center">
+                                    <td><?= $no; ?></td>
+                                    <td><?= $tampil['barcode']; ?></td>
+                                    <td class="text-left"><?= $nmbarang; ?></td>
+                                    <td><?= $tampil['weight']; ?></td>
+                                    <td><?= $tampil['pcs']; ?></td>
+                                    <td><?= $tampil['pod']; ?></td>
+                                    <td>
                                        <?php
                                        if ($origin == 1) {
                                           echo "BONING";

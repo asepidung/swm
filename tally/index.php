@@ -56,7 +56,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['notally']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-center">
-                                    <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally']; ?>'">
+                                    <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
                                        <i class="fas fa-tasks"></i>
                                     </a>
                                     <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Print" onclick="window.location.href='printtally.php?id=<?= $tampil['idtally']; ?>'">
