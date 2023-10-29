@@ -536,3 +536,11 @@ CREATE TABLE tallydetail (
   FOREIGN KEY (idtally) REFERENCES tally (idtally),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE cuts (
+  idcut INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  nmcut VARCHAR(20)
+);
+ALTER TABLE barang
+ADD COLUMN idcut INT;
+ALTER TABLE barang
+ADD FOREIGN KEY fk_idcut (idcut) REFERENCES cuts (idcut);

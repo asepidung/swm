@@ -13,10 +13,13 @@
       <!-- /.card-header -->
       <div class="card-body">
          <li>
-            Menambah dan atau menghilangkan item di Edit DO
+            Penambahan Modul Pricelist
          </li>
          <li>
-            Fitur Jadwal Kiriman
+            Penambahan Modul Sales Order
+         </li>
+         <li>
+            Penambahan Modul Tally Sheet scanning
          </li>
       </div>
    </div>

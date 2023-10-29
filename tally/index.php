@@ -58,6 +58,9 @@ include "../mainsidebar.php";
                                     <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
                                        <i class="fas fa-tasks"></i>
                                     </a>
+                                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Tally" onclick="window.location.href='lihattally.php?id=<?= $tampil['idtally']; ?>'">
+                                       <i class="fas fa-eye"></i>
+                                    </a>
                                     <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Print" onclick="window.location.href='printtally.php?id=<?= $tampil['idtally']; ?>'">
                                        <i class="fas fa-print"></i>
                                     </a>

@@ -34,13 +34,16 @@ include "../mainsidebar.php";
                                  <th>#</th>
                                  <th>Kode</th>
                                  <th>Nama Product</th>
+                                 <th>Kategori</th>
                                  <th>Actions</th>
                               </tr>
                            </thead>
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT * FROM barang");
+                              $ambildata = mysqli_query($conn, "SELECT barang.*, cuts.nmcut 
+                              FROM barang 
+                              LEFT JOIN cuts ON barang.idcut = cuts.idcut");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $idbarang = $tampil['idbarang'];
                               ?>
@@ -48,6 +51,7 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdbarang']; ?></td>
                                     <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                                    <td class="text-center"><?= $tampil['nmcut']; ?></td>
                                     <td class="text-center">
                                        <a href="editbarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-succes mx-auto p-2"><i class="fas fa-pencil-alt"></i></a>
                                        <a href="deletebarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="text-danger mx-auto p-2" onclick="return confirm('apakah anda yakin ingin menghapus barang ini?')"><i class="fas fa-minus-square"></i></a>

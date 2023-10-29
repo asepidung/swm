@@ -44,9 +44,25 @@ $row = mysqli_fetch_assoc($result);
                   <label for="nmbarang">Nama Product <span class="text-danger">*</span></label>
                   <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= $row['nmbarang']; ?>">
                 </div>
-              </div>
-              <div class="form-group mr-3 text-right">
-                <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-level-up-alt"></i> Update</button>
+                <div class="form-group">
+                  <label for="cut">Kategori <span class="text-danger">*</span></label>
+                  <select class="form-control" name="cut" id="cut">
+                    <option value="">Pilih Kategori</option>
+                    <?php
+                    $query = "SELECT * FROM cuts ORDER BY nmcut ASC";
+                    $result = mysqli_query($conn, $query);
+                    while ($cutRow = mysqli_fetch_assoc($result)) {
+                      $idcut = $cutRow['idcut'];
+                      $nmcut = $cutRow['nmcut'];
+                      $selected = ($idcut == $row['idcut']) ? "selected" : "";
+                      echo "<option value=\"$idcut\" $selected>$nmcut</option>";
+                    }
+                    ?>
+                  </select>
+                </div>
+                <div class="form-group text-right">
+                  <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-level-up-alt"></i> Update</button>
+                </div>
               </div>
             </form>
           </div>
@@ -56,10 +72,6 @@ $row = mysqli_fetch_assoc($result);
     </div>
   </section>
 </div><!-- /.container-fluid -->
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
-
 <?php
 include "../footer.php";
 include "../footnote.php";

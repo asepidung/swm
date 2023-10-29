@@ -34,6 +34,15 @@ include "../mainsidebar.php";
                            <label for="nmbarang">Nama Product <span class="text-danger">*</span></label>
                            <input type="text" class="form-control" name="nmbarang" id="nmbarang" placeholder="Gunakan Huruf BESAR !!!" required>
                         </div>
+                        <div class="form-group">
+                           <label for="cut">Kategori <span class="text-danger">*</span></label>
+                           <select class="form-control" name="cut" id="cut" required>
+                              <option value="">Pilih Kategori</option>
+                              <option value="1">PRIME CUT</option>
+                              <option value="2">SECONDARY CUT</option>
+                              <option value="3">BONES</option>
+                           </select>
+                        </div>
                      </div>
                      <div class="form-group mr-3 text-right">
                         <button type="submit" class="btn bg-gradient-primary">Submit</button>
