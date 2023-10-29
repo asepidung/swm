@@ -18,6 +18,23 @@ $query_tallydetail = "SELECT tallydetail.*, barang.nmbarang
                         INNER JOIN barang ON tallydetail.idbarang = barang.idbarang 
                         WHERE idtally = '$idtally'";
 $result_tallydetail = mysqli_query($conn, $query_tallydetail);
+
+$productData = [];
+
+while ($row_tallydetail = mysqli_fetch_assoc($result_tallydetail)) {
+   $currentProductName = $row_tallydetail['nmbarang'];
+   $weight = $row_tallydetail['weight'];
+
+   if (!isset($productData[$currentProductName])) {
+      $productData[$currentProductName] = [
+         'weights' => [],
+         'total' => 0,
+      ];
+   }
+
+   $productData[$currentProductName]['weights'][] = $weight;
+   $productData[$currentProductName]['total'] += $weight;
+}
 ?>
 
 <div class=" container">
@@ -60,37 +77,23 @@ $result_tallydetail = mysqli_query($conn, $query_tallydetail);
       <thead class="thead-dark">
          <tr class="text-center">
             <th>Product</th>
-            <?php
-            for ($i = 1; $i <= 10; $i++) {
-               $header = ($i < 10) ? '0' . $i : $i;
-               echo '<th>' . $header . '</th>';
-            }
-            echo '<th>TOTAL</th>';
-            ?>
+            <th>01</th>
+            <th>02</th>
+            <th>03</th>
+            <th>04</th>
+            <th>05</th>
+            <th>06</th>
+            <th>07</th>
+            <th>08</th>
+            <th>09</th>
+            <th>10</th>
+            <th>TOTAL</th>
          </tr>
       </thead>
       <tbody class="text-center">
          <?php
-         $productData = [];
-
-         while ($row_tallydetail = mysqli_fetch_assoc($result_tallydetail)) {
-            $currentProductName = $row_tallydetail['nmbarang'];
-            $weight = $row_tallydetail['weight'];
-
-            if (!isset($productData[$currentProductName])) {
-               $productData[$currentProductName] = [
-                  'weights' => [],
-                  'total' => 0,
-               ];
-            }
-
-            $productData[$currentProductName]['weights'][] = $weight;
-            $productData[$currentProductName]['total'] += $weight;
-         }
-
          foreach ($productData as $productName => $data) {
             $weightArray = $data['weights'];
-            $weightTotal = $data['total'];
             $count = count($weightArray);
             $rowsNeeded = ceil($count / 10);
 
@@ -111,8 +114,8 @@ $result_tallydetail = mysqli_query($conn, $query_tallydetail);
                   }
                }
 
-               if ($rowIndex === $rowsNeeded - 1) {
-                  echo '<td>' . $weightTotal . '</td>';
+               if ($rowIndex == $rowsNeeded - 1) {
+                  echo '<td class="text-right"> <strong>' . $data['total'] . '</strong></td>';
                } else {
                   echo '<td></td>';
                }
@@ -120,10 +123,10 @@ $result_tallydetail = mysqli_query($conn, $query_tallydetail);
                echo '</tr>';
             }
          }
-
          ?>
       </tbody>
    </table>
+
    <div class="row mt-4">
       <div class="col-6 text-center">
          WAREHOUSE <br><br><br><br> ( ..................................... )
