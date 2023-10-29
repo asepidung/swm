@@ -34,7 +34,7 @@ $row = mysqli_fetch_assoc($result);
       <h3 class="text-center">PRICE LIST</h3>
       <table class="table table-responsive table-borderless table-sm">
          <tr>
-            <td>Group</td>
+            <td>Customer</td>
             <td>:</td>
             <th><?= $row['nmgroup']; ?></th>
          </tr>

@@ -12,10 +12,9 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
+            <div class="col-1">
                <a href="drafttally.php"><button type="button" class="btn btn-outline-primary"><i class="fab fa-firstdraft"></i> Draft</button></a>
-            </div><!-- /.col -->
+            </div>
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
@@ -62,10 +61,7 @@ include "../mainsidebar.php";
                                     <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Print" onclick="window.location.href='printtally.php?id=<?= $tampil['idtally']; ?>'">
                                        <i class="fas fa-print"></i>
                                     </a>
-                                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit" onclick="window.location.href='edittallydetail.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="window.location.href='deletetallydetail.php?id=<?= $tampil['idtally']; ?>'">
+                                    <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="window.location.href='deletetally.php?id=<?= $tampil['idtally']; ?>'">
                                        <i class="fas fa-minus-square"></i>
                                     </a>
                                  </td>
