@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit();
-}
+// if (!isset($_SESSION['login'])) {
+//    header("location: ../verifications/login.php");
+//    exit();
+// }
 
 require "../konak/conn.php";
 ?>
