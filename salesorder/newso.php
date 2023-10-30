@@ -117,7 +117,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="price">Price</label>
                                     <div class="input-group">
-                                       <input type="text" name="price[]" class="form-control text-right price-input" required>
+                                       <input type="text" name="price[]" class="form-control text-right price-input">
                                     </div>
                                  </div>
                               </div>

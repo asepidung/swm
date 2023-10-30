@@ -58,7 +58,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td><i class="fas fa-spinner fa-pulse"></i> <?= $tampil['progress']; ?></td>
                                  <td class="text-center">
-                                    <a href="prinso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
+                                    <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
                                        <i class="far fa-eye text-primary"></i>
                                     </a>
                                     <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">

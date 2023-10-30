@@ -88,6 +88,11 @@ $idtally = $_GET['id'];
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
+                                 $pod = $tampil['pod'];
+                                 $podDate = new DateTime($pod);
+                                 $today = new DateTime();
+                                 $interval = $today->diff($podDate);
+                                 $daysDiff = $interval->days;
                               ?>
                                  <tr class="text-center">
                                     <td><?= $no; ?></td>
@@ -95,7 +100,12 @@ $idtally = $_GET['id'];
                                     <td class="text-left"><?= $nmbarang; ?></td>
                                     <td><?= $tampil['weight']; ?></td>
                                     <td><?= $tampil['pcs']; ?></td>
-                                    <td><?= $tampil['pod']; ?></td>
+                                    <?php
+                                    if ($daysDiff >= 14) { ?>
+                                       <td class="text-danger"><?= $daysDiff . " " . "Hari"; ?></td>
+                                    <?php } else { ?>
+                                       <td><?= $daysDiff . " " . "Hari"; ?></td>
+                                    <?php  } ?>
                                     <td>
                                        <?php
                                        if ($origin == 1) {
@@ -110,7 +120,7 @@ $idtally = $_GET['id'];
                                        ?>
                                     </td>
                                     <td class="text-center">
-                                       <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                                       <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-info" onclick="return confirm('Yakin Lu?')">
                                           <i class="far fa-times-circle"></i>
                                        </a>
                                     </td>

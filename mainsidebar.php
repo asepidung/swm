@@ -122,6 +122,29 @@
           </ul>
         </li>
         <li class="nav-item">
+          <a href="../404.php" class="nav-link">
+            <i class="nav-icon fas fa-truck"></i>
+            <p>
+              DISTRIBUTIONS
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../do/do.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Delivery Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../plandev/" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Schedule</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-shopping-cart"></i>
             <p>
@@ -203,29 +226,6 @@
               <a href="../404.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Piutang</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="../404.php" class="nav-link">
-            <i class="nav-icon fas fa-truck"></i>
-            <p>
-              DISTRIBUTIONS
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="../do/do.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Delivery Order</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../plandev/" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Schedule</p>
               </a>
             </li>
           </ul>
