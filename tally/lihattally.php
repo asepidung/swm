@@ -122,6 +122,6 @@ require "hitungantally.php";
       document.title = "Taly No : <?= $row_tally['notally']; ?>";
    </script>
    <?php
-   include "../footnote.php";
+   // include "../footnote.php";
    include "../footer.php";
    ?>

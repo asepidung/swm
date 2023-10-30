@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    if (mysqli_num_rows($result) == 1) {
       $row = mysqli_fetch_assoc($result);
       $hashedPassword = $row['passuser'];
+      $idusers = $row['idusers']; // Ambil idusers dari database
 
       // Memeriksa kecocokan password yang dimasukkan dengan hash yang ada dalam database
       if (password_verify($password, $hashedPassword)) {
@@ -19,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          session_start();
          $_SESSION['login'] = true;
          $_SESSION['userid'] = $userid;
+         $_SESSION['idusers'] = $idusers; // Simpan idusers ke dalam session
          $_SESSION['fullname'] = $row['fullname'];
          header("Location: ../index.php");
          exit();
