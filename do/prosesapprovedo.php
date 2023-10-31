@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $idusers = $_SESSION['idusers'];
    $status = "Approved";
    $alamat = $_POST['alamat'];
+   $sonumber = $_POST['sonumber'];
 
    // Insert data ke tabel doreceipt
    $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, donumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, idusers, status)
@@ -57,6 +58,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       if (!$resultUpdateDo) {
          die("Error saat mengupdate status pada tabel do: " . mysqli_error($conn));
+      }
+
+
+      // Update status pada tabel salesorder menjadi "Delivered"
+      $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE sonumber = '$sonumber'";
+      $resultUpdateSo = mysqli_query($conn, $queryUpdateSo);
+
+      if (!$resultUpdateSo) {
+         die("Error saat mengupdate progress pada tabel salesorder: " . mysqli_error($conn));
       }
 
       header("Location: do.php"); // Ganti do.php dengan halaman tujuan setelah data berhasil disimpan

@@ -49,16 +49,8 @@ include "../mainsidebar.php";
                                  </div>
                               </div>
                               <div class="form-group">
-                                 <label for="alamat">Alamat 1<span class="text-danger">*</label>
-                                 <input type="text" class="form-control" name="alamat1" id="alamat1" required>
-                              </div>
-                              <div class="form-group">
-                                 <label for="alamat">Alamat 2</label>
-                                 <input type="text" class="form-control" name="alamat2" id="alamat2">
-                              </div>
-                              <div class="form-group">
-                                 <label for="alamat">Alamat 3</label>
-                                 <input type="text" class="form-control" name="alamat3" id="alamat3">
+                                 <label for="alamat">Alamat<span class="text-danger">*</label>
+                                 <input type="text" class="form-control" name="alamat" id="alamat" required>
                               </div>
                               <div class="form-group">
                                  <label for="idsegment">Segment <span class="text-danger">*</span></label>
@@ -81,7 +73,6 @@ include "../mainsidebar.php";
                                     </div>
                                  </div>
                               </div>
-
                            </div>
                            <div class="col-6">
                               <div class="form-group">
@@ -91,17 +82,15 @@ include "../mainsidebar.php";
                               <div class="form-group">
                                  <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label>
                                  <select class="form-control" name="pajak" id="pajak" required>
-                                    <option>--Pilih Satu--</option>
-                                    <option value="YES">YES</option>
                                     <option value="NO">NO</option>
+                                    <option value="YES">YES</option>
                                  </select>
                               </div>
                               <div class="form-group">
                                  <label for="tukarfaktur">Tukar Faktur <span class="text-danger">*</label>
                                  <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
-                                    <option>--Pilih Satu--</option>
-                                    <option value="YES">YES</option>
                                     <option value="NO">NO</option>
+                                    <option value="YES">YES</option>
                                  </select>
                               </div>
                               <div class="form-group">

@@ -43,7 +43,7 @@ include "../mainsidebar.php";
                               </div>
                            </div>
                            <div class="col-2">
-                              <div class="form-group">
+                              <div class "form-group">
                                  <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                                  <div class="input-group">
                                     <input type="date" class="form-control" name="deliverydate" id="deliverydate" required autofocus>
@@ -72,9 +72,8 @@ include "../mainsidebar.php";
                         <div class="row">
                            <div class="col">
                               <div class="form-group">
-                                 <label for="note">Catatan Penyiapan Pengiriman</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Untuk Penyiapan">
                                  </div>
                               </div>
                            </div>
@@ -130,7 +129,6 @@ include "../mainsidebar.php";
                                  </div>
                               </div>
                               <div class="col">
-
                               </div>
                            </div>
                         </div>
@@ -193,7 +191,7 @@ include "../mainsidebar.php";
             <div class="col-2">
                <div class="form-group">
                   <div class="input-group">
-                     <input type="text" name="price[]" class="form-control text-right price-input" required>
+                     <input type="text" name="price[]" class="form-control text-right price-input">
                   </div>
                </div>
             </div>
@@ -213,6 +211,9 @@ include "../mainsidebar.php";
       `;
 
       itemsContainer.appendChild(newItemRow);
+
+      // Call the formatPriceInput function for the new Price input
+      formatPriceInput();
    }
 
    function removeItem(button) {
@@ -248,12 +249,8 @@ include "../mainsidebar.php";
 
    // Call the formatPriceInput function when the page loads
    document.addEventListener('DOMContentLoaded', formatPriceInput);
-
-
    document.title = "Sales Order";
 </script>
-
-
 <?php
 include "../footer.php";
 ?>

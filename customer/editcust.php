@@ -56,16 +56,8 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                            </div>
                         </div>
                         <div class="form-group">
-                           <label for="alamat">Alamat 1</label>
-                           <input type="text" class="form-control" name="alamat1" id="alamat" value="<?= $rowCustomer['alamat1']; ?>">
-                        </div>
-                        <div class="form-group">
-                           <label for="alamat">Alamat 2</label>
-                           <input type="text" class="form-control" name="alamat2" id="alamat2" value="<?= $rowCustomer['alamat2']; ?>">
-                        </div>
-                        <div class="form-group">
-                           <label for="alamat">Alamat 3</label>
-                           <input type="text" class="form-control" name="alamat3" id="alamat3" value="<?= $rowCustomer['alamat3']; ?>">
+                           <label for="alamat">Alamat</label>
+                           <input type="text" class="form-control" name="alamat" id="alamat" value="<?= $rowCustomer['alamat1']; ?>">
                         </div>
                         <div class="form-group">
                            <label for="idsegment">Segment <span class="text-danger">*</span></label>

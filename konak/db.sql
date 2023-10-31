@@ -544,3 +544,5 @@ ALTER TABLE barang
 ADD COLUMN idcut INT;
 ALTER TABLE barang
 ADD FOREIGN KEY fk_idcut (idcut) REFERENCES cuts (idcut);
+
+ALTER TABLE do ADD COLUMN sonumber VARCHAR(30);

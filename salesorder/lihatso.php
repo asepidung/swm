@@ -5,9 +5,8 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 include "../header.php";
-
 $idso = $_GET['idso'];
-
+include "totalpo.php";
 $query = "SELECT salesorder.*, customers.nama_customer, customers.alamat1, customers.alamat2, customers.alamat3
 FROM salesorder 
 INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
@@ -24,7 +23,7 @@ $row = mysqli_fetch_assoc($result);
    </div>
    <hr>
    <div class="row mt-2">
-      <div class="col-md">
+      <div class="col-5">
          <table class="table table-responsive table-borderless table-sm">
             <tr>
                <td>Customer</td>
@@ -32,23 +31,24 @@ $row = mysqli_fetch_assoc($result);
                <th><?= $row['nama_customer']; ?></th>
             </tr>
             <tr>
+               <td>Ship To</td>
+               <td>:</td>
+               <th><?= $row['alamat1']; ?></th>
+            </tr>
+         </table>
+      </div>
+      <div class="col-2"></div>
+      <div class="col-5">
+         <table class="table table-responsive table-borderless table-sm">
+            <tr>
                <td>PO Numb</td>
                <td>:</td>
                <th><?= $row['po']; ?></th>
             </tr>
-         </table>
-      </div>
-      <div class="col-xs">
-         <table class="table table-responsive table-borderless table-sm">
             <tr>
                <td>Delivery Date</td>
                <td>:</td>
                <th><?= date('d-M-Y', strtotime($row['deliverydate'])); ?></th>
-            </tr>
-            <tr>
-               <td>Ship To</td>
-               <td>:</td>
-               <th><?= $row['alamat1']; ?></th>
             </tr>
          </table>
       </div>
@@ -82,18 +82,26 @@ $row = mysqli_fetch_assoc($result);
          <?php $no++;
          } ?>
       </tbody>
+      <tfoot>
+         <tr>
+            <th colspan="2" class="text-right">Weight Total</th>
+            <th class="text-right"><?= number_format($totalPO, 2); ?></th>
+            <th colspan="2"></th>
+         </tr>
+      </tfoot>
    </table>
    <p class="mb-n1">
       <?php
       if ($row['note'] !== "") { ?>
          <strong>Catatan :</strong>
       <?php } else {
+         echo "-";
       } ?>
    </p>
    <p>
       <i><?= $row['note']; ?></i>
    </p>
-   <div class="row">
+   <div class="row mt-3">
       <div class="col-8"></div>
       <div class="col-1">
          <a href="hideprice.php?idso=<?= $idso ?>">

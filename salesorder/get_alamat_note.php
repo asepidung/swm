@@ -31,7 +31,7 @@ if (isset($_POST['idcustomer'])) {
    } else {
       echo json_encode(array(
          'alamatOptions' => '<option value="">Tidak Ada Alamat Tersedia</option>',
-         'catatan' => ''
+         // 'catatan' => ''
       ));
    }
 }

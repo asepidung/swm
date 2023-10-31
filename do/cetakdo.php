@@ -76,7 +76,7 @@ $result_detail = mysqli_query($conn, $query_detail);
     <tr>
       <td width="12%">So Number</td>
       <td width="2%" align="right">:</td>
-      <td width="30%"> -</td>
+      <td width="30%"><?= $row_do['sonumber']; ?></td>
       <td width="12%">PO Number</td>
       <td width="2%" align="right">:</td>
       <td width="30%"><?= $row_do['po']; ?></td>

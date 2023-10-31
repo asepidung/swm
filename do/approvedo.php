@@ -18,6 +18,7 @@ $querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.ids
             WHERE do.iddo = $iddo";
 $resultdo = mysqli_query($conn, $querydo);
 $row = mysqli_fetch_assoc($resultdo);
+$sonumber = $row['sonumber'];
 
 $querydodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
                   FROM dodetail
@@ -83,7 +84,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                            <div class="col-3">
                               <div class="form-group">
                                  <div class="input-group">
-                                    <input type="text" name="plat" class="form-control" value="<?= $row['plat'] ?>" readonly>
+                                    <input type="text" name="sonumber" class="form-control" value="<?= $row['sonumber'] ?>" readonly>
                                  </div>
                               </div>
                            </div>

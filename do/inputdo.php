@@ -18,14 +18,19 @@ if (isset($_POST['submit'])) {
    $xweight = $_POST['xweight'];
    $status = "Unapproved";
    $note = $_POST['note'];
+   $sonumber = $_POST['sonumber'];
    $idusers = $_SESSION['idusers'];
 
-   $query_do = "INSERT INTO do (donumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+   $query_do = "INSERT INTO do (donumber, sonumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("ssisssssidsi", $donumber, $deliverydate, $idcustomer, $alamat, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
-   $stmt_do->execute();
-
-   $last_id = $stmt_do->insert_id;
+   $stmt_do->bind_param("sssisssssidsi", $donumber, $sonumber, $deliverydate, $idcustomer, $alamat, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
+   if ($stmt_do->execute()) {
+      // Eksekusi berhasil
+      $last_id = $stmt_do->insert_id;
+   } else {
+      // Eksekusi gagal, tampilkan pesan kesalahan
+      echo "Error: " . $stmt_do->error;
+   }
 
    $idgrade = $_POST['idgrade'];
    $idbarang = $_POST['idbarang'];
@@ -41,6 +46,11 @@ if (isset($_POST['submit'])) {
       $stmt_dodetail->execute();
    }
 
+   $query_update_salesorder = "UPDATE salesorder SET progress = 'On Delivery' WHERE sonumber = ?";
+   $stmt_update_salesorder = $conn->prepare($query_update_salesorder);
+   $stmt_update_salesorder->bind_param("s", $sonumber);
+   $stmt_update_salesorder->execute();
+   $stmt_update_salesorder->close();
    $stmt_dodetail->close();
    $stmt_do->close();
    $conn->close();

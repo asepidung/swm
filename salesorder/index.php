@@ -49,6 +49,7 @@ include "../mainsidebar.php";
                            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
                            ORDER BY idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $progress = $tampil['progress'];
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -56,17 +57,33 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
-                                 <td><i class="fas fa-spinner fa-pulse"></i> <?= $tampil['progress']; ?></td>
+                                 <?php
+                                 if ($progress == "Delivered") { ?>
+                                    <td class="text-success"><i class="fas fa-check-circle"></i> Delivered </td>
+                                 <?php } elseif ($progress == "On Process") { ?>
+                                    <td class="text-info"><i class="fas fa-spinner fa-pulse"></i> On Process</td>
+                                 <?php } elseif ($progress == "On Delivery") { ?>
+                                    <td style="color: #92079c;"></i><i class="fas fa-truck"></i> On Delivery</td>
+                                 <?php } else { ?>
+                                    <td class="text-secondary"><i class="fas fa-clock"></i> Waiting</td>
+                                 <?php } ?>
                                  <td class="text-center">
-                                    <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-eye text-primary"></i>
-                                    </a>
-                                    <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-edit text-success"></i>
-                                    </a>
-                                    <a href="deleteso.php?idso=<?= $tampil['idso']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                       <i class="far fa-trash-alt text-danger"></i>
-                                    </a>
+                                    <?php
+                                    if ($progress == "Waiting") { ?>
+                                       <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
+                                          <i class="far fa-eye"></i>
+                                       </a>
+                                       <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-success">
+                                          <i class="far fa-edit"></i>
+                                       </a>
+                                       <a href="deleteso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                          <i class="far fa-trash-alt"></i>
+                                       </a>
+                                    <?php } else { ?>
+                                       <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-secondary">
+                                          <i class="far fa-eye"></i>
+                                       </a>
+                                    <?php } ?>
                                  </td>
                               </tr>
                            <?php $no++;

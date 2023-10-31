@@ -9,6 +9,18 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
+   <!-- Content Header (Page header) -->
+   <div class="content-header">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col">
+               <a href="invoice.php"><button type="button" class="btn btn-outline-secondary float right"><i class="fas fa-undo"></i> Summary</button></a>
+            </div><!-- /.col -->
+         </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+   </div>
+   <!-- /.content-header -->
+
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
