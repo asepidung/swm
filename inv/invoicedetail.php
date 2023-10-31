@@ -53,7 +53,7 @@ include "../mainsidebar.php";
                               <tr class="text-right">
                                  <td class="text-center"> <?= $row_number; ?> </td>
                                  <td class="text-left"> <?= $row["nama_customer"]; ?> </td>
-                                 <td class="text-center"> <?= $row["invoice_date"]; ?> </td>
+                                 <td class="text-center"> <?= date("d-M-y", strtotime($row["invoice_date"])); ?> </td>
                                  <td class="text-center"> <?= $row["noinvoice"]; ?> </td>
                                  <td class="text-center"> <?= $row["donumber"]; ?> </td>
                                  <td class="text-left"> <?= $row["pocustomer"]; ?> </td>

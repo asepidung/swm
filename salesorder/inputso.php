@@ -16,18 +16,27 @@ if (isset($_POST['submit'])) {
    $progress = 'Waiting';
    $idusers = $_SESSION['idusers'];
 
+   // Insert data into 'salesorder' table
    $query_so = "INSERT INTO salesorder (sonumber, idcustomer, deliverydate, po, alamat, note, progress, idusers) VALUES (?,?,?,?,?,?,?,?)";
    $stmt_so = $conn->prepare($query_so);
    $stmt_so->bind_param("sisssssi", $sonumber, $idcustomer, $deliverydate, $po, $alamat, $note, $progress, $idusers);
    $stmt_so->execute();
 
+   // Get the last inserted ID
    $last_id = $stmt_so->insert_id;
 
+   // Retrieve data from the form
    $idbarang = $_POST['idbarang'];
    $weight = $_POST['weight'];
-   $price = $_POST['price'];
    $notes = $_POST['notes'];
+   
+   // Remove commas from the 'price' array
+   $price = $_POST['price'];
+   $price = array_map(function($value) {
+       return str_replace(',', '', $value);
+   }, $price);
 
+   // Insert data into 'salesorderdetail' table
    $query_sodetail = "INSERT INTO salesorderdetail (idso, idbarang, weight, price, notes) VALUES (?,?,?,?,?)";
    $stmt_sodetail = $conn->prepare($query_sodetail);
 
@@ -36,6 +45,7 @@ if (isset($_POST['submit'])) {
       $stmt_sodetail->execute();
    }
 
+   // Close prepared statements
    $stmt_sodetail->close();
    $stmt_so->close();
    $conn->close();

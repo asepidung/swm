@@ -24,7 +24,7 @@ $row = mysqli_fetch_assoc($result);
    </div>
    <hr>
    <div class="row mt-2">
-      <div class="col-6">
+      <div class="col-md">
          <table class="table table-responsive table-borderless table-sm">
             <tr>
                <td>Customer</td>
@@ -38,7 +38,7 @@ $row = mysqli_fetch_assoc($result);
             </tr>
          </table>
       </div>
-      <div class="col-6">
+      <div class="col-xs">
          <table class="table table-responsive table-borderless table-sm">
             <tr>
                <td>Delivery Date</td>

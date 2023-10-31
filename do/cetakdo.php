@@ -159,10 +159,11 @@ $result_detail = mysqli_query($conn, $query_detail);
   </i>
   <table width="100%">
     <tr align="center">
-      <td width="25%">Warehouse <br><br><br><br><br> ....................................</td>
-      <td width="25%">Driver <br><br><br><br><br> ....................................</td>
-      <td width="25%">Security <br><br><br><br><br> ....................................</td>
-      <td width="25%">Customer <br><br><br><br><br> ....................................</td>
+      <td width="20%">Warehouse <br><br><br><br><br> ....................................</td>
+      <td width="20%">QC/QA <br><br><br><br><br> ....................................</td>
+      <td width="20%">Driver <br><br><br><br><br> ....................................</td>
+      <td width="20%">Security <br><br><br><br><br> ....................................</td>
+      <td width="20%">Customer <br><br><br><br><br> ....................................</td>
     </tr>
   </table>
   <br>

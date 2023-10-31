@@ -67,7 +67,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= $tampil['noinvoice']; ?></td>
-                                 <td class="text-center"><?= substr($tampil['donumber'], 15); ?></td>
+                                 <td class="text-center"><?= substr($tampil['donumber'], 12); ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
                                  <td><?= $tampil['pocustomer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
@@ -80,7 +80,7 @@ include "../mainsidebar.php";
                                           <span class="text-success" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Tukar Faktur">Belum TF</span>
                                        </a>
                                     <?php } else { ?>
-                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="<?= date("d-M-y", strtotime($tampil['tgltf'])); ?>"><?= $tampil['status']; ?></span>
+                                       <span class="text-primary" data-toggle="tooltip" data-placement="left" title="<?= date("d-M-y", strtotime($tampil['tgltf'])) . " " . $tampil['note']; ?>"><?= $tampil['status']; ?></span>
                                     <?php } ?>
                                  </td>
                                  <td class="text-center">

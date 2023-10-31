@@ -220,8 +220,39 @@ include "../mainsidebar.php";
       itemRow.remove();
    }
 
+   // Function to add digit grouping (thousands separator) to a number
+   function addDigitGrouping(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+   }
+
+   // Function to format the Price input
+   function formatPriceInput() {
+      const priceInputs = document.querySelectorAll('input[name="price[]"]');
+
+      priceInputs.forEach(function(input) {
+         input.addEventListener('input', function() {
+            // Remove any existing commas
+            let value = this.value.replace(/,/g, '');
+
+            // Convert the value to a number
+            let number = parseFloat(value);
+
+            // Check if it's a valid number
+            if (!isNaN(number)) {
+               // Add digit grouping to the number
+               this.value = addDigitGrouping(number);
+            }
+         });
+      });
+   }
+
+   // Call the formatPriceInput function when the page loads
+   document.addEventListener('DOMContentLoaded', formatPriceInput);
+
+
    document.title = "Sales Order";
 </script>
+
 
 <?php
 include "../footer.php";

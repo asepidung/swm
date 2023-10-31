@@ -45,14 +45,14 @@ $row = mysqli_fetch_assoc($result);
 <div class="wrapper">
 
    <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-      <div class=" container">
+      <div class="container">
          <div class="col text-center">
             <h4 class="mb-n1">SALES ORDER</h4>
             <span><strong><?= $row['sonumber']; ?></strong></span>
          </div>
          <hr>
          <div class="row mt-2">
-            <div class="col-6">
+            <div class="col-md">
                <table class="table table-responsive table-borderless table-sm">
                   <tr>
                      <td>Customer</td>
@@ -66,7 +66,7 @@ $row = mysqli_fetch_assoc($result);
                   </tr>
                </table>
             </div>
-            <div class="col-6">
+            <div class="col-xs">
                <table class="table table-responsive table-borderless table-sm">
                   <tr>
                      <td>Delivery Date</td>
