@@ -42,6 +42,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               <div class="form-group">
                                  <label for="invoice_date">Invoice Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
+                                    <input type="hidden" name="idinvoice" value="<?= $idinvoice; ?>">
                                     <input type="date" class="form-control" name="invoice_date" id="invoice_date" value="<?= $row_invoice['invoice_date']; ?>">
                                  </div>
                               </div>
@@ -158,7 +159,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="discount[]" value="0" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
+                                          <input type="text" class="form-control text-center" name="discount[]" value="<?= $row_invoicedetail['discount'] ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
                                        </div>
                                     </div>
                                  </div>
@@ -188,7 +189,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               Total Amount
                            </div>
                            <div class="col-2">
-                              <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly value="0">
+                              <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly value="<?= $row_invoice['xamount'] ?>">
                            </div>
                         </div>
                         <div class="row mt-1">
@@ -220,7 +221,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               Balance
                            </div>
                            <div class="col-2">
-                              <input type="text" name="balance" id="balance" class="form-control text-right" readonly value="0">
+                              <input type="text" name="balance" id="balance" class="form-control text-right" readonly value="<?= $row_invoice['balance'] ?>">
                               <input type="hidden" name="xdiscount" id="xdiscount" value="<?= $row_invoice['xdiscount'] ?>">
                            </div>
                         </div>
@@ -229,7 +230,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               <button type="button" class="btn btn-block bg-gradient-warning" onclick="calculateAmounts()">Calculate</button>
                            </div>
                            <div class="col-3">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Submit</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" disabled id="submit-btn">Update</button>
                            </div>
                         </div>
                      </div>

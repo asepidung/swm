@@ -148,10 +148,6 @@ $accnumber = $row_invoice['accnumber'];
 </head>
 
 <body>
-   <div class="floatingButtonContainer">
-      <button class="btn bg-gradient-warning floatingButton" onclick="printPage()">Print Invoice</button>
-   </div>
-   <!-- Header -->
    <img src="../dist/img/hib.png" alt="headerinvoice" width="100%">
 
    <!-- Invoice Number -->
@@ -302,9 +298,15 @@ $accnumber = $row_invoice['accnumber'];
    </table>
 
    <script>
-      function printPage() {
+      // Trigger the print dialog when the page loads
+      window.onload = function() {
          window.print();
-      }
+      };
+
+      // Close the window after printing (optional)
+      window.onafterprint = function() {
+         window.location.href = 'invoice.php';
+      };
    </script>
 </body>
 

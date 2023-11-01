@@ -79,6 +79,13 @@ include "../mainsidebar.php";
                                        <a href="deleteso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                           <i class="far fa-trash-alt"></i>
                                        </a>
+                                    <?php } elseif ($progress == "On Process") { ?>
+                                       <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
+                                          <i class="far fa-eye"></i>
+                                       </a>
+                                       <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-success">
+                                          <i class="far fa-edit"></i>
+                                       </a>
                                     <?php } else { ?>
                                        <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-secondary">
                                           <i class="far fa-eye"></i>

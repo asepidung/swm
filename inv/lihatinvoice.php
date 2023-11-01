@@ -211,13 +211,9 @@ $resultinvoicedetail = mysqli_query($conn, $queryinvoicedetail);
                         </div>
                         <div class="row mt-3">
                            <div class="col-2">
-                              <button type="button" name="approved" class="btn btn-block bg-gradient-success">Approve</button>
-                           </div>
-                           <!-- <div class="col-2">
-                              <button type="button" name="disapproved" class="btn btn-block bg-gradient-danger">Disapprove</button>
-                           </div> -->
-                           <div class="col-2">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Print</button>
+                              <a href="pib.php?idinvoice=<?= $rowInvoice['idinvoice']; ?>">
+                                 <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i> Print</button>
+                              </a>
                            </div>
                         </div>
                      </div>
