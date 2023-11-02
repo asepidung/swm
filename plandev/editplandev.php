@@ -29,40 +29,26 @@ if (isset($_GET['idplandev'])) {
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col mt-3">
+            <div class="col-sm mt-3">
                <form method="POST" action="updateplandev.php">
                   <input type="hidden" name="idplandev" value="<?= $idplandev; ?>">
                   <div class="card">
                      <div class="card-body">
                         <div class="form-group">
-                           <label for="plandelivery">Tgl Kirim <span class="text-danger">*</span></label>
+                           <label for="plandelivery">Tgl Kirim</span></label>
                            <div class="input-group">
-                              <input type="date" class="form-control" name="plandelivery" id="plandelivery" value="<?= $tampil['plandelivery']; ?>" required autofocus>
+                              <input type="date" class="form-control" name="plandelivery" id="plandelivery" value="<?= $tampil['plandelivery']; ?>" readonly>
                            </div>
                         </div>
                         <div class="form-group">
-                           <label for="idcustomer">Customer <span class="text-danger">*</span></label>
+                           <label for="idcustomer">Customer</span></label>
                            <div class="input-group">
-                              <select class="form-control" name="idcustomer" id="idcustomer" required>
-                                 <option value="">Pilih Customer</option>
-                                 <?php
-                                 $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
-                                 $result = mysqli_query($conn, $query);
-                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    $idcustomer = $row['idcustomer'];
-                                    $nama_customer = $row['nama_customer'];
-                                    $selected = ($idcustomer == $tampil['idcustomer']) ? "selected" : "";
-                                    echo "<option value=\"$idcustomer\" $selected>$nama_customer</option>";
-                                 }
-                                 ?>
-                              </select>
-                              <div class="input-group-append">
-                                 <a href="../customer/newcustomer.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
-                              </div>
+                              <input type="text" class="form-control" value="<?= $tampil['nama_customer']; ?>" readonly>
+                              <input type="hidden" name="idcustomer" id="idcustomer" value="<?= $tampil['idcustomer']; ?>">
                            </div>
                         </div>
                         <div class="form-group">
-                           <label for="weight">Weight <span class="text-danger">*</span></label>
+                           <label for="weight">Weight</span></label>
                            <div class="input-group">
                               <input type="number" class="form-control" name="weight" id="weight" value="<?= $tampil['weight']; ?>" required>
                            </div>

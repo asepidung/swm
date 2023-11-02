@@ -16,7 +16,6 @@ if (isset($_POST['submit'])) {
    $progress = 'Waiting';
    $idusers = $_SESSION['idusers'];
 
-   // Insert data into 'salesorder' table
    $query_so = "INSERT INTO salesorder (sonumber, idcustomer, deliverydate, po, alamat, note, progress, idusers) VALUES (?,?,?,?,?,?,?,?)";
    $stmt_so = $conn->prepare($query_so);
    $stmt_so->bind_param("sisssssi", $sonumber, $idcustomer, $deliverydate, $po, $alamat, $note, $progress, $idusers);
@@ -29,23 +28,30 @@ if (isset($_POST['submit'])) {
    $idbarang = $_POST['idbarang'];
    $weight = $_POST['weight'];
    $notes = $_POST['notes'];
-   
+
    // Remove commas from the 'price' array
    $price = $_POST['price'];
-   $price = array_map(function($value) {
-       return str_replace(',', '', $value);
+   $price = array_map(function ($value) {
+      return str_replace(',', '', $value);
    }, $price);
 
    // Insert data into 'salesorderdetail' table
+   $weighttotal = 0;
    $query_sodetail = "INSERT INTO salesorderdetail (idso, idbarang, weight, price, notes) VALUES (?,?,?,?,?)";
    $stmt_sodetail = $conn->prepare($query_sodetail);
 
    for ($i = 0; $i < count($idbarang); $i++) {
       $stmt_sodetail->bind_param("iiiis", $last_id, $idbarang[$i], $weight[$i], $price[$i], $notes[$i]);
       $stmt_sodetail->execute();
+      $weighttotal += $weight[$i];
    }
+   $query_plandev = "INSERT INTO plandev (plandelivery, idcustomer, weight, idso) VALUES (?,?,?,?)";
+   $stmt_plandev = $conn->prepare($query_plandev);
+   $stmt_plandev->bind_param("siii", $deliverydate, $idcustomer, $weighttotal, $last_id);
+   $stmt_plandev->execute();
 
    // Close prepared statements
+   $stmt_plandev->close();
    $stmt_sodetail->close();
    $stmt_so->close();
    $conn->close();

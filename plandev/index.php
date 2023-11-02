@@ -27,7 +27,7 @@ include "../mainsidebar.php";
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col">
+            <div class="col-xs">
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">

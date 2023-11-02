@@ -43,7 +43,7 @@ include "../mainsidebar.php";
                               </div>
                            </div>
                            <div class="col-2">
-                              <div class "form-group">
+                              <div class="form-group">
                                  <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                                  <div class="input-group">
                                     <input type="date" class="form-control" name="deliverydate" id="deliverydate" required autofocus>

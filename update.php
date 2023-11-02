@@ -19,7 +19,10 @@
             Penambahan Modul Sales Order
          </li>
          <li>
-            Penambahan Modul Tally Sheet scanning
+            Plan Delivery Otomatis berdasarkan SO
+         </li>
+         <li>
+            Penambahan Modul Tally Sheet scanning dan delivery order
          </li>
       </div>
    </div>

@@ -27,12 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       mysqli_query($conn, $deleteSalesOrderDetailQuery);
 
       // Tambahkan item salesorderdetail yang baru
+      $weighttotal = 0;
       for ($i = 0; $i < count($idbarang); $i++) {
          $insertSalesOrderDetailQuery = "INSERT INTO salesorderdetail (idso, idbarang, weight, price, notes) VALUES ($idso, " . $idbarang[$i] . ", " . $weight[$i] . ", " . $price[$i] . ", '" . $notes[$i] . "')";
          mysqli_query($conn, $insertSalesOrderDetailQuery);
+         $weighttotal += $weight[$i];
       }
 
-      echo "Data Sales Order berhasil diperbarui.";
+      // Update data plandev
+      $updatePlandevQuery = "UPDATE plandev SET idcustomer = $idcustomer, plandelivery = '$deliverydate', weight = $weighttotal  WHERE idso = $idso";
+      mysqli_query($conn, $updatePlandevQuery);
+
+      echo "Data Sales Order berhasil diperbarui, dan data PlanDev juga diperbarui.";
    } else {
       echo "Gagal memperbarui data Sales Order: " . mysqli_error($conn);
    }
