@@ -84,33 +84,28 @@ include "../mainsidebar.php";
                                     <?php } ?>
                                  </td>
                                  <td class="text-center">
-                                    <div class="row">
-                                       <div class="col">
-                                          <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                             <i class="fas fa-calendar-check"></i>
-                                          </a>
-                                       </div>
-                                       <div class="col">
-                                          <div class="dropleft">
-                                             <i class="fas fa-print text-success" data-toggle="dropdown" aria-expanded="false"></i>
-                                             <div class="dropdown-menu">
-                                                <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">Print BW</a>
-                                                <a href="pic.php?idinvoice=<?= $tampil['idinvoice']; ?>" class="dropdown-item">
-                                                   <span class="text-primary">Print Colour</span></a>
-                                             </div>
-                                          </div>
-                                       </div>
-                                       <div class="col">
-                                          <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                             <i class="fas fa-pencil-alt"></i>
-                                          </a>
-                                       </div>
-                                       <div class="col">
-                                          <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
-                                             <i class="fas fa-eject" style="color: #d50707;"></i>
-                                          </a>
-                                       </div>
-                                    </div>
+                                    <!-- <div class="row"> -->
+                                    <!-- <div class="col"> -->
+                                    <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                       <button type="button" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+                                    </a>
+                                    <!-- </div> -->
+                                    <!-- <div class="col"> -->
+                                    <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                       <button type="button" class="btn btn-sm btn-success"><i class="fas fa-print"></i></button>
+                                    </a>
+                                    <!-- </div>
+                                       <div class="col"> -->
+                                    <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                       <button type="button" class="btn btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></button>
+                                    </a>
+                                    <!-- </div>
+                                       <div class="col"> -->
+                                    <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
+                                       <button type="button" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                    </a>
+                                    <!-- </div> -->
+                                    <!-- </div> -->
                                  </td>
                               </tr>
                            <?php $no++;
