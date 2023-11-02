@@ -32,6 +32,18 @@ require "hitungantally.php";
    <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
    <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
    <link rel="stylesheet" href="../plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+   <style>
+      body {
+         font-size: 20px;
+         /* Atur ukuran font sesuai keinginan Anda */
+      }
+
+      table.table-bordered th,
+      table.table-bordered td {
+         border: 2px solid black;
+         /* Atur ketebalan garis sesuai kebutuhan Anda */
+      }
+   </style>
 </head>
 <div class="wrapper">
 
@@ -40,7 +52,6 @@ require "hitungantally.php";
          <h4 class="mb-n1">TALY SHEET</h4>
          <span><strong> Taly Number : <?= $row_tally['notally']; ?></strong></span>
       </div>
-      <hr>
       <div class="row mt-2">
          <div class="col-6">
             <table class="table table-responsive table-borderless table-sm">
@@ -71,7 +82,7 @@ require "hitungantally.php";
             </table>
          </div>
       </div>
-      <table class="table table-sm table-bordered">
+      <table width=100% border="1">
          <thead class="thead-dark">
             <tr class="text-center">
                <th>Product</th>

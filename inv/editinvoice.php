@@ -60,7 +60,7 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                               <div class="form-group">
                                  <label for="pocustomer">PO Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $row_invoice['pocustomer'] ?>" readonly>
+                                    <input type="text" class="form-control" name="pocustomer" id="pocustomer" value="<?= $row_invoice['pocustomer'] ?>">
                                  </div>
                               </div>
                            </div>
