@@ -6,13 +6,23 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 include "../header.php";
 $idtally = $_GET['id'];
+
+$querytally = "SELECT tally.*, customers.nama_customer
+            FROM tally
+            INNER JOIN customers ON tally.idcustomer = customers.idcustomer
+            WHERE tally.idtally = $idtally";
+$resulttally = mysqli_query($conn, $querytally);
+$rowtally = mysqli_fetch_assoc($resulttally);
 ?>
 <div class="content-header">
    <div class="container-fluid">
       <div class="row">
          <div class="col">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Back To List</button></a>
-            <a href="printtally.php?id=<?= $idtally ?>"><button type="button" class="btn btn-outline-success float-right">Cetak Tally <i class="fas fa-arrow-alt-circle-right"></i></button></a>
+            <a href="printtally.php?id=<?= $idtally ?>"><button type="button" class="btn btn-outline-success">Cetak Tally <i class="fas fa-arrow-alt-circle-right"></i></button></a>
+            <span class="text-info float-right">
+               <h4><?= $rowtally['nama_customer']; ?></h4>
+            </span>
          </div>
       </div>
    </div>
@@ -112,8 +122,12 @@ $idtally = $_GET['id'];
                                           echo "BONING";
                                        } elseif ($origin == 2) {
                                           echo "TRADING";
-                                       } elseif ($origin == 4) {
+                                       } elseif ($origin == 3) {
                                           echo "REPACK";
+                                       } elseif ($origin == 4) {
+                                          echo "RELABEL";
+                                       } elseif ($origin == 5) {
+                                          echo "IMPORT";
                                        } else {
                                           echo "Unindentified";
                                        }

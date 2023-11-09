@@ -16,7 +16,7 @@ include "../mainsidebar.php";
          <div class="row">
             <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newso.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <a href="newso.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->

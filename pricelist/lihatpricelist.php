@@ -54,6 +54,7 @@ $row = mysqli_fetch_assoc($result);
             <tr class="text-center">
                <th>#</th>
                <th>Product Desc</th>
+               <th>Product Kategory</th>
                <th>Brand</th>
                <th>Price</th>
                <th>Notes</th>
@@ -62,15 +63,17 @@ $row = mysqli_fetch_assoc($result);
          <tbody>
             <?php
             $no = 1;
-            $query_pricelistdetail = "SELECT pricelistdetail.*, barang.nmbarang
-             FROM pricelistdetail
-             INNER JOIN barang ON pricelistdetail.idbarang = barang.idbarang
-             WHERE idpricelist = '$idpricelist'";
+            $query_pricelistdetail = "SELECT pricelistdetail.*, barang.nmbarang, cuts.nmcut
+           FROM pricelistdetail
+           INNER JOIN barang ON pricelistdetail.idbarang = barang.idbarang
+           LEFT JOIN cuts ON barang.idcut = cuts.idcut
+           WHERE idpricelist = '$idpricelist'";
             $result_pricelistdetail = mysqli_query($conn, $query_pricelistdetail);
             while ($row_pricelistdetail = mysqli_fetch_assoc($result_pricelistdetail)) { ?>
                <tr>
                   <td class="text-center"><?= $no; ?></td>
                   <td><?= $row_pricelistdetail['nmbarang']; ?></td>
+                  <td><?= $row_pricelistdetail['nmcut']; ?></td>
                   <td class="text-center">Wijaya Meat</td>
                   <td class="text-right"><?= number_format($row_pricelistdetail['price']); ?></td>
                   <td><?= $row_pricelistdetail['notes']; ?></td>
@@ -81,7 +84,7 @@ $row = mysqli_fetch_assoc($result);
       </table>
       <div class="row">
          <div class="col-6">
-            Informasi Lebih Lanjut Silahkan Hubungi <br> Muryani 0818 0898 5323 yanimuryani1983@gmail.com
+            Informasi Lebih Lanjut Silahkan Hubungi <br> Muryani 0818 0898 5323<br>yani@wijayameat.co.id
          </div>
       </div>
       <div class="row">

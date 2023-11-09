@@ -60,7 +60,7 @@ $sonumber = $row['sonumber'];
                               <div class="form-group">
                                  <label for="po">Cust PO</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="po" id="po" value="<?= $row['po']; ?>" readonly>
+                                    <input type="text" class="form-control" name="po" id="po" value="<?= $row['po']; ?>">
                                  </div>
                               </div>
                            </div>
@@ -132,69 +132,67 @@ $sonumber = $row['sonumber'];
                            $result_tallydetail = mysqli_query($conn, $query_tallydetail);
 
                            while ($row_tallydetail = mysqli_fetch_assoc($result_tallydetail)) {
-                              // ...
-                              // Menampilkan data barang yang sudah digabung
+                              if ($row_tallydetail['total_weight'] > 0) {
                            ?>
-                              <div class="row mb-n2">
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <!-- Menampilkan select box dengan pilihan grade -->
-                                          <select class="form-control" name="idgrade[]" id="idgrade">
-                                             <option value=""></option>
-                                             <?php
-                                             // Query untuk mengambil data dari tabel grade
-                                             $sql = "SELECT * FROM grade";
-                                             $result = $conn->query($sql);
-                                             // Membuat pilihan dalam select box berdasarkan data yang diambil
-                                             if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
-                                                   echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+                                 <div class="row mb-n2">
+                                    <div class="col-1">
+                                       <div class="form-group">
+                                          <div class="input-group">
+                                             <!-- Menampilkan select box dengan pilihan grade -->
+                                             <select class="form-control" name="idgrade[]" id="idgrade">
+                                                <option value=""></option>
+                                                <?php
+                                                // Query untuk mengambil data dari tabel grade
+                                                $sql = "SELECT * FROM grade";
+                                                $result = $conn->query($sql);
+                                                // Membuat pilihan dalam select box berdasarkan data yang diambil
+                                                if ($result->num_rows > 0) {
+                                                   while ($row = $result->fetch_assoc()) {
+                                                      echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
+                                                   }
                                                 }
-                                             }
-                                             ?>
-                                          </select>
+                                                ?>
+                                             </select>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-4">
+                                       <div class="form-group">
+                                          <div class="input-group">
+                                             <!-- Menampilkan nama barang yang sudah digabung -->
+                                             <input type="hidden" name="idbarang[]" value="<?= $row_tallydetail['idbarang'] ?>">
+                                             <input type="text" class="form-control" value="<?= $row_tallydetail['nmbarang']; ?>" readonly>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-1">
+                                       <div class="form-group">
+                                          <div class="input-group">
+                                             <!-- Menampilkan total jumlah kotak yang sudah dihitung -->
+                                             <input type="text" name="box[]" class="form-control text-center" readonly value="<?= $row_tallydetail['total_box']; ?>">
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-2">
+                                       <div class="form-group">
+                                          <div class="input-group">
+                                             <!-- Menampilkan total berat yang sudah dihitung -->
+                                             <input type="text" name="weight[]" class="form-control text-right" readonly value="<?= $row_tallydetail['total_weight']; ?>">
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col">
+                                       <div class="form-group">
+                                          <div class="input-group">
+                                             <input type="text" name="notes[]" class="form-control">
+                                          </div>
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-4">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <!-- Menampilkan nama barang yang sudah digabung -->
-                                          <input type="hidden" name="idbarang[]" value="<?= $row_tallydetail['idbarang'] ?>">
-                                          <input type="text" class="form-control" value="<?= $row_tallydetail['nmbarang']; ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <!-- Menampilkan total jumlah kotak yang sudah dihitung -->
-                                          <input type="text" name="box[]" class="form-control text-center" readonly value="<?= $row_tallydetail['total_box']; ?>">
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-2">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <!-- Menampilkan total berat yang sudah dihitung -->
-                                          <input type="text" name="weight[]" class="form-control text-right" readonly value="<?= $row_tallydetail['total_weight']; ?>">
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" name="notes[]" class="form-control">
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
                            <?php
-                              // ...
+                              }
                            }
                            ?>
-
                            <div class="row">
                               <div class="col-5"></div>
                               <div class="col-1">
