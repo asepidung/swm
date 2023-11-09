@@ -13,7 +13,7 @@ $idrepack = $_GET['id'];
       <div class="row">
          <div class="col-3">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</button></a>
-            <a href="labelhasil.php?id=<?= $idrepack ?>"><button type="button" class="btn btn-outline-success">Cetak Hasil <i class="fas fa-arrow-alt-circle-right"></i></button></a>
+            <a href="detailhasil.php?id=<?= $idrepack ?>"><button type="button" class="btn btn-outline-success">Cetak Hasil <i class="fas fa-arrow-alt-circle-right"></i></button></a>
          </div>
          <div class="col-3">
             <?php if ($_GET['stat'] == "success") { ?>
@@ -103,8 +103,10 @@ $idrepack = $_GET['id'];
                                           echo "BONING";
                                        } elseif ($origin == 2) {
                                           echo "TRADING";
-                                       } elseif ($origin == 4) {
+                                       } elseif ($origin == 3) {
                                           echo "REPACK";
+                                       } elseif ($origin == 4) {
+                                          echo "RELABEL";
                                        } else {
                                           echo "Unindentified";
                                        }
@@ -164,7 +166,6 @@ $idrepack = $_GET['id'];
                                  <th><?= number_format($rowhasil['hasilqty'], 2); ?></th>
                               </tr>
                            </tfoot>
-
                         </table>
                      </div>
                   </div>

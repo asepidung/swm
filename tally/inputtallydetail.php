@@ -24,6 +24,9 @@ if (isset($_POST['barcode'])) {
    } elseif ($firstDigit == '2') {
       $query = "SELECT idbarang, qty, pcs, packdate FROM trading WHERE kdbarcode = '$barcode'";
       $origin = 2;
+   } elseif ($firstDigit == '3') {
+      $query = "SELECT idbarang, qty, pcs, packdate FROM detailhasil WHERE kdbarcode = '$barcode'";
+      $origin = 3;
    } elseif ($firstDigit == '4') {
       $query = "SELECT idbarang, qty, pcs, packdate FROM relabel WHERE kdbarcode = '$barcode'";
       $origin = 4;

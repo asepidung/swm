@@ -533,3 +533,17 @@ CREATE TABLE detailbahan (
   FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE detailhasil (
+  iddetailhasil INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  idrepack INT,
+  kdbarcode VARCHAR(30),
+  idbarang INT,
+  idgrade INT,
+  qty DECIMAL(6,2),
+  pcs INT,
+  packdate DATE,
+  exp DATE,
+  FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+);

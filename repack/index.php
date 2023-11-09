@@ -39,7 +39,7 @@ include "../mainsidebar.php";
                               <th>Tgl Proses</th>
                               <th>Bahan</th>
                               <th>Hasil</th>
-                              <th>Prod Lost</th>
+                              <th>Lost</th>
                               <th>Catatan</th>
                               <th>AKSI</th>
                            </tr>
@@ -52,29 +52,34 @@ include "../mainsidebar.php";
                            INNER JOIN users ON repack.idusers = users.idusers 
                            ORDER BY idrepack DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+                              include "hitungtotal.php";
                            ?>
                               <tr class="text-center">
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['norepack']; ?></td>
                                  <td><?= date("d-M-y", strtotime($tampil['tglrepack'])); ?></td>
-                                 <td class="text-right"></td>
-                                 <td class="text-right"></td>
-                                 <td class="text-right"></td>
+                                 <td class="text-right"><?= number_format($rowTotalBahan['total_bahan'], 2); ?></td>
+                                 <td class="text-right"><?= number_format($rowTotalHasil['total_hasil'], 2); ?></td>
+                                 <td class="text-right">
+                                    <?= $lost; ?>
+                                 </td>
                                  <td class="text-left"><?= $tampil['note']; ?></td>
                                  <td>
                                     <a href="detailbahan.php?id=<?= $tampil['idrepack'] ?>&stat=ready" class="btn btn-sm btn-warning">
                                        <i class="fas fa-box-open"></i>
                                     </a>
-                                    <a href="labelhasil.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-success">
+                                    <a href="detailhasil.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-success">
                                        <i class="fas fa-tags"></i>
                                     </a>
-                                    <a href="printrepack?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-primary">
+                                    <a href="printrepack.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-primary">
                                        <i class="fas fa-print"></i>
                                     </a>
                                  </td>
                               </tr>
                            <?php $no++;
-                           } ?>
+                           }
+                           ?>
+
                         </tbody>
                      </table>
                   </div>
