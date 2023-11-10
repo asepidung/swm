@@ -21,7 +21,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       <div class="row">
          <div class="col-3">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</button></a>
-            <a href="detailhasil.php?id=<?= $idrepack ?>&stat=ready"><button type="button" class="btn btn-outline-success">Tambah Bahan <i class="fas fa-arrow-alt-circle-right"></i></button></a>
+            <a href="detailbahan.php?id=<?= $idrepack ?>&stat=ready"><button type="button" class="btn btn-outline-success">Tambah Bahan <i class="fas fa-arrow-alt-circle-right"></i></button></a>
          </div>
          <div class="col">
             <span class="text-primary">
@@ -137,6 +137,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                            <th>Kode</th>
                            <th>Qty</th>
                            <th>Pcs</th>
+                           <th>Hapus</th>
                         </tr>
                      </thead>
                      <tbody>
@@ -153,6 +154,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                               <td><?= $tampil['nmgrade']; ?></td>
                               <td><?= $tampil['qty']; ?></td>
                               <td><?= $tampil['pcs']; ?></td>
+                              <td class="text-center">
+                                 <a href="deletedetailhasil.php?iddetail=<?= $tampil['iddetailhasil']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
+                                    <i class="far fa-times-circle"></i>
+                                 </a>
+                              </td>
                            </tr>
                         <?php
                         }

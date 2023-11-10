@@ -27,9 +27,8 @@ include "../mainsidebar.php";
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-xs">
+            <div class="col-md">
                <div class="card">
-                  <!-- /.card-header -->
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm table-hover">
                         <thead class="text-center">
@@ -78,12 +77,10 @@ include "../mainsidebar.php";
          <!-- /.row -->
       </div>
    </section>
-</div>
-
-<script>
-   // Mengubah judul halaman web
-   document.title = "Plan Delivery";
-</script>
-<?php
-require "../footnote.php";
-include "../footer.php" ?>
+   <script>
+      // Mengubah judul halaman web
+      document.title = "Plan Delivery";
+   </script>
+   <?php
+   require "../footnote.php";
+   include "../footer.php" ?>
