@@ -84,6 +84,7 @@ if (mysqli_num_rows($result) > 0) {
           <tr class="text-center">
             <th>#</th>
             <th>Product Desc</th>
+            <th>Product Kategory</th>
             <th>Brand</th>
             <th>Price</th>
             <th>Notes</th>
@@ -93,10 +94,10 @@ if (mysqli_num_rows($result) > 0) {
           <?php
           $no = 1;
           $query_pricelistdetail = "SELECT pricelistdetail.*, barang.nmbarang, cuts.nmcut
-            FROM pricelistdetail
-            INNER JOIN barang ON pricelistdetail.idbarang = barang.idbarang
-            LEFT JOIN cuts ON barang.idcut = cuts.idcut
-            WHERE idpricelist = '$idpricelist' ORDER BY idcut ASC";
+           FROM pricelistdetail
+           INNER JOIN barang ON pricelistdetail.idbarang = barang.idbarang
+           LEFT JOIN cuts ON barang.idcut = cuts.idcut
+           WHERE idpricelist = '$idpricelist'";
           $result_pricelistdetail = mysqli_query($conn, $query_pricelistdetail);
           while ($row_pricelistdetail = mysqli_fetch_assoc($result_pricelistdetail)) { ?>
             <tr>

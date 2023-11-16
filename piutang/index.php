@@ -20,9 +20,6 @@ include "../mainsidebar.php";
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
-   <!-- /.content-header -->
-
-   <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
@@ -34,14 +31,9 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>Customer</th>
-                              <th>No Invoice</th>
-                              <th>No DO</th>
-                              <th>Tgl Invoice</th>
-                              <th>PO</th>
-                              <th>Amount</th>
-                              <!-- <th>Due Date</th> -->
-                              <th>Status</th>
+                              <th>GROUP CUSTOMER</th>
+                              <th>JATUH TEMPO</th>
+                              <th>B. JATUH TEMPO</th>
                               <th>Action</th>
                            </tr>
                         </thead>
@@ -67,11 +59,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= $tampil['noinvoice']; ?></td>
-                                 <td class="text-center">
-                                    <a href="../do/lihatdo.php?iddo=<?= $iddo ?>">
-                                       <?= substr($tampil['donumber'], -5); ?>
-                                    </a>
-                                 </td>
+                                 <td class="text-center"><?= substr($tampil['donumber'], 12); ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
                                  <td><?= $tampil['pocustomer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
@@ -132,8 +120,7 @@ include "../mainsidebar.php";
 <!-- /.content-wrapper -->
 
 <script>
-   // Mengubah judul halaman web
-   document.title = "Invoice List";
+   document.title = "DATA PIUTANG";
 </script>
 <?php
 // require "../footnote.php";
