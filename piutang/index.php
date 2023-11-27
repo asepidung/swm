@@ -24,51 +24,66 @@ include "../mainsidebar.php";
                               <th>GROUP</th>
                               <th>BLM JATUH TEMPO</th>
                               <th>JATUH TEMPO</th>
-                              <th>BLM TUKAR FAKTUR</th>
+                              <th>TOTAL</th>
                            </tr>
                         </thead>
-                        <?php
-                        $no = 1;
-                        $ambildata = mysqli_query($conn, "SELECT piutang.idgroup, groupcs.nmgroup, SUM(piutang.balance) AS total_balance, invoice.noinvoice, invoice.invoice_date, piutang.duedate
-                        FROM piutang
-                        JOIN groupcs ON piutang.idgroup = groupcs.idgroup
-                        JOIN invoice ON piutang.idinvoice = invoice.idinvoice
-                        GROUP BY piutang.idgroup");
-                        while ($tampil = mysqli_fetch_array($ambildata)) {
-                           // Hitung selisih hari antara duedate dan hari ini
-                           $today = new DateTime();
-                           $dueDate = new DateTime($tampil['duedate']);
-                           $difference = $today->diff($dueDate);
-                           $daysDifference = $difference->days;
-                           // Tentukan status jatuh tempo
-                           $statusJatuhTempo = ($today > $dueDate) ? '<span class="text-red">J.T ' . $daysDifference . ' Hari</span>' : $daysDifference . ' Hari Lagi';
-                        ?>
+                        <tbody>
+                           <?php
+                           $no = 1;
+                           $total_belum_jatuh_tempo = 0;
+                           $total_sudah_jatuh_tempo = 0;
+
+                           $ambildata = mysqli_query($conn, "SELECT piutang.idgroup, groupcs.nmgroup, 
+                            SUM(CASE WHEN piutang.duedate > CURDATE() THEN piutang.balance ELSE 0 END) AS belum_jatuh_tempo,
+                            SUM(CASE WHEN piutang.duedate <= CURDATE() THEN piutang.balance ELSE 0 END) AS sudah_jatuh_tempo
+                           FROM piutang
+                           JOIN groupcs ON piutang.idgroup = groupcs.idgroup
+                           GROUP BY piutang.idgroup");
+                           while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $total_belum_jatuh_tempo += $tampil['belum_jatuh_tempo'];
+                              $total_sudah_jatuh_tempo += $tampil['sudah_jatuh_tempo'];
+                              $totalpiutang = $total_belum_jatuh_tempo + $total_sudah_jatuh_tempo;
+                           ?>
+                              <tr class="text-center">
+                                 <td><?= $no; ?></td>
+                                 <td class="text-left">
+                                    <a href="piutangcs.php?id=<?= $tampil['idgroup'] ?>">
+                                       <?= $tampil['nmgroup']; ?>
+                                    </a>
+                                 </td>
+                                 <td class="text-right">
+                                    <a href="bjt.php?id=<?= $tampil['idgroup'] ?>">
+                                       <?= number_format($tampil['belum_jatuh_tempo'], 2); ?>
+                                    </a>
+                                 </td>
+                                 <td class="text-right">
+                                    <a href="sjt.php?id=<?= $tampil['idgroup'] ?>">
+                                       <?= number_format($tampil['sudah_jatuh_tempo'], 2); ?>
+                                    </a>
+                                 </td>
+                                 <td class="text-right"><?= number_format($totalpiutang, 2); ?></td>
+                              </tr>
+                           <?php
+                              $no++;
+                           }
+                           ?>
+                        </tbody>
+                        <tfoot>
                            <tr class="text-center">
-                              <td><?= $no; ?></td>
-                              <td class="text-left"><?= $tampil['nmgroup']; ?></td>
-                              <td class="text-right"><?= ($today < $dueDate) ? number_format($tampil['total_balance'], 2) : ''; ?></td>
-                              <td class="text-right"><?= ($today >= $dueDate) ? number_format($tampil['total_balance'], 2) : ''; ?></td>
+                              <td colspan="2"><strong>SUB Total</strong></td>
+                              <td class="text-right"><strong><?= number_format($total_belum_jatuh_tempo, 2); ?></strong></td>
+                              <td class="text-right"><strong><?= number_format($total_sudah_jatuh_tempo, 2); ?></strong></td>
                               <td class="text-right"></td>
                            </tr>
-                        <?php
-                           $no++;
-                        }
-                        ?>
+                        </tfoot>
                      </table>
                   </div>
-                  <!-- /.card-body -->
                </div>
-               <!-- /.card -->
             </div>
-            <!-- /.col -->
          </div>
-         <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 
 <script>
    document.title = "DATA PIUTANG";

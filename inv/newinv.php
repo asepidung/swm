@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "invnumber.php";
+// include "invnumber.php";
 $iddoreceipt = $_GET['iddoreceipt'];
 
 // Mengambil data dari tabel do
@@ -40,7 +40,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
          <div class="row">
             <div class="col mt-3">
                <form method="POST" action="prosesinvoice.php">
-                  <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice">
+                  <!-- <input type="hidden" value="<?= $noinvoice ?>" name="noinvoice" id="noinvoice"> -->
                   <input type="hidden" value="<?= $iddoreceipt ?>" name="iddoreceipt" id="iddoreceipt">
                   <input type="hidden" value="<?= $idsegment; ?>" name="idsegment" id="idsegment">
                   <input type="hidden" value="<?= $idgroup; ?>" name="idgroup" id="idgroup">

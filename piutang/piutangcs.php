@@ -7,6 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -31,23 +32,17 @@ include "../mainsidebar.php";
                         </thead>
                         <tbody>
                            <?php
+                           $idgroup = $_GET['id'];
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT piutang.*, groupcs.nmgroup, invoice.noinvoice, invoice.invoice_date
-                           FROM piutang
-                           JOIN groupcs ON piutang.idgroup = groupcs.idgroup
-                           JOIN invoice ON piutang.idinvoice = invoice.idinvoice");
+                           $ambildata = mysqli_query($conn, "SELECT piutang.*, customers.nama_customer, invoice.noinvoice, invoice.invoice_date FROM piutang
+                                       JOIN customers ON piutang.idcustomer = customers.idcustomer
+                                       JOIN invoice ON piutang.idinvoice = invoice.idinvoice
+                                       WHERE piutang.idgroup = $idgroup");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
-                              // Hitung selisih hari antara duedate dan hari ini
-                              $today = new DateTime();
-                              $dueDate = new DateTime($tampil['duedate']);
-                              $difference = $today->diff($dueDate);
-                              $daysDifference = $difference->days;
-                              // Tentukan status jatuh tempo
-                              $statusJatuhTempo = ($today > $dueDate) ? '<span class="text-red">J.T ' . $daysDifference . ' Hari</span>' : $daysDifference . ' Hari Lagi';
                            ?>
                               <tr class="text-center">
                                  <td><?= $no; ?></td>
-                                 <td class="text-left"><?= $tampil['nmgroup']; ?></td>
+                                 <td class="text-left"><?= $tampil['nama_customer']; ?></td>
                                  <td><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
                                  <td>
                                     <a href="../inv/lihatinvoice.php?idinvoice=<?= $tampil['idinvoice'] ?>">
@@ -57,7 +52,7 @@ include "../mainsidebar.php";
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
                                  <td><?= date("d-M-y", strtotime($tampil['duedate'])); ?></td>
                                  <td class="text-center">
-                                    <?= $statusJatuhTempo; ?>
+                                    <!-- <?= $statusJatuhTempo; ?> -->
                                  </td>
                                  <td>
                                     <input class="form-check-input" type="checkbox" name="bayar" id="bayar">

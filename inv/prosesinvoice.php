@@ -4,12 +4,12 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-
+include "invnumber.php";
 // Check if the form is submitted
 if (isset($_POST['submit'])) {
    // Retrieve data from the form and remove commas
    $iddo = $_POST['iddo'];
-   $noinvoice = $_POST['noinvoice'];
+   // $noinvoice = $_POST['noinvoice'];
    $iddoreceipt = $_POST['iddoreceipt'];
    $idsegment = $_POST['idsegment'];
    $top = $_POST['top'];
