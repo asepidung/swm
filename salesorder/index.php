@@ -87,7 +87,7 @@ include "../mainsidebar.php";
                                           <i class="far fa-edit"></i>
                                        </a>
                                     <?php } else { ?>
-                                       <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-secondary">
+                                       <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
                                           <i class="far fa-eye"></i>
                                        </a>
                                     <?php } ?>

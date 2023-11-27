@@ -15,6 +15,7 @@ if (isset($_POST['submit'])) {
    $top = $_POST['top'];
    $invoice_date = $_POST['invoice_date'];
    $idcustomer = $_POST['idcustomer'];
+   $idgroup = $_POST['idgroup'];
    $pocustomer = $_POST['pocustomer'];
    $donumber = $_POST['donumber'];
    $note = $_POST['note'];
@@ -49,6 +50,13 @@ if (isset($_POST['submit'])) {
 
    // Retrieve the last inserted invoice ID
    $invoiceID = mysqli_insert_id($conn);
+
+   // Insert data into the 'piutang' table
+   $sql2 = "INSERT INTO piutang (idgroup, idinvoice, idcustomer, balance, duedate, progress) 
+           VALUES ('$idgroup', '$invoiceID', '$idcustomer', '$balance', '$duedate', '$status')";
+   // Execute the SQL query
+   mysqli_query($conn, $sql2);
+
 
    // Insert data into the 'invoicedetail' table
    $idgrade = $_POST['idgrade'];

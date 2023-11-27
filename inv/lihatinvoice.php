@@ -211,6 +211,11 @@ $resultinvoicedetail = mysqli_query($conn, $queryinvoicedetail);
                         </div>
                         <div class="row mt-3">
                            <div class="col-2">
+                              <a href="editinvoice.php?idinvoice=<?= $rowInvoice['idinvoice']; ?>">
+                                 <button type="button" class="btn btn-block btn-warning"><i class="fas fa-pencil"></i> Edit</button>
+                              </a>
+                           </div>
+                           <div class="col-2">
                               <a href="pib.php?idinvoice=<?= $rowInvoice['idinvoice']; ?>">
                                  <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i> Print</button>
                               </a>

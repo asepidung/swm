@@ -18,14 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $xamount = str_replace(',', '', $_POST['xamount']);
    $balance = str_replace(',', '', $_POST['balance']);
 
-
-   // echo "idinvoice: " . $_POST['idinvoice'] . "<br>";
-   // echo "invoice_date: " . $_POST['invoice_date'] . "<br>";
-   // echo "note: " . $_POST['note'] . "<br>";
-   // echo "charge: " . $_POST['charge'] . "<br>";
-   // echo "downpayment: " . $_POST['downpayment'] . "<br>";
-
-
    $delete_invoicedetail_query = "DELETE FROM invoicedetail WHERE idinvoice = '$idinvoice'";
    mysqli_query($conn, $delete_invoicedetail_query);
 
@@ -38,6 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 downpayment = '$downpayment'
                             WHERE idinvoice = '$idinvoice'";
    mysqli_query($conn, $update_invoice_query);
+
+   $update_piutang_query = "UPDATE piutang 
+   SET balance = '$balance'
+   WHERE idinvoice = '$idinvoice'";
+   mysqli_query($conn, $update_piutang_query);
+
 
    // Menambahkan data baru ke tabel invoicedetail (Anda harus mengambil data dari formulir dan melakukan loop untuk memasukkan setiap detail)
    $idgrade = $_POST['idgrade']; // Ini adalah contoh. Anda harus mengambil data dari formulir dengan benar.

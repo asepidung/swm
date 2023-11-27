@@ -4,7 +4,6 @@ if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-require "serialrelabel.php";
 require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
@@ -68,6 +67,29 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
+                  <label>Grade <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <select class="form-control" name="idgrade" id="idgrade" required>
+                      <?php
+                      if (isset($_SESSION['idgrade']) && $_SESSION['idgrade'] != '') {
+                        $selectedIdgrade = $_SESSION['idgrade'];
+                        echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                      } else {
+                        echo '<option value="" selected>--Pilih Grade--</option>';
+                      }
+                      $query = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                      $result = mysqli_query($conn, $query);
+                      while ($row = mysqli_fetch_assoc($result)) {
+                        $idgrade = $row['idgrade'];
+                        $nmgrade = $row['nmgrade'];
+                        $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                        echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label>Packed Date<span class="text-danger">*</span></label>
                   <div class="input-group">
                     <?php
@@ -97,7 +119,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <!-- ... -->
                 <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
                 <input type="hidden" name="product" id="product">
-                <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "4" . $kodeauto; ?>">
+                <!-- <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "4" . $kodeauto; ?>"> -->
                 <div class="form-group">
                   <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                   <div class="input-group col-lg-4">
@@ -121,6 +143,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <th>#</th>
                     <th>Barcode</th>
                     <th>Product</th>
+                    <th>Grade</th>
                     <th>Qty</th>
                     <th>Pcs</th>
                     <th>Author</th>
@@ -129,9 +152,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <tbody>
                   <?php
                   $no = 1;
-                  $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.fullname FROM relabel r
+                  $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.fullname, g.nmgrade FROM relabel r
                                                    INNER JOIN barang b ON r.idbarang = b.idbarang
                                                    INNER JOIN users u ON r.iduser = u.idusers
+                                                   LEFT JOIN grade g ON r.idgrade = g.idgrade
                                                    ORDER BY r.dibuat DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $fullname = $tampil['fullname'];
@@ -141,6 +165,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td><?= $no; ?></td>
                       <td><?= $tampil['kdbarcode']; ?></td>
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                      <td><?= $tampil['nmgrade']; ?></td>
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $fullname; ?></td>

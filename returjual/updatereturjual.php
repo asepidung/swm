@@ -4,7 +4,7 @@ if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-// ... (previous code)
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $idreturjual = $_POST['idreturjual'];

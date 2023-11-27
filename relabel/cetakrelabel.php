@@ -5,18 +5,20 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
+require "serialrelabel.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idusers = $_SESSION['idusers'];
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
+   $idgrade = $_POST['idgrade'];
    $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
    $result = mysqli_query($conn, $query);
    $row = mysqli_fetch_assoc($result);
    $nmbarang = $row['nmbarang'];
    $packdate = $_POST['packdate'];
    $exp = $_POST['exp'];
-   $kdbarcode = $_POST['kdbarcode'];
+   // $kodeauto = $_POST['kodeauto'];
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
    $pembulatan = isset($_POST['pembulatan']) ? true : false;
    // Memeriksa dan memecah nilai qty dan pcs
@@ -24,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $pcs = null;
    $qtyPcsInput = $_POST['qty'];
    $_SESSION['idbarang'] = $_POST['idbarang'];
+   $_SESSION['idgrade'] = $_POST['idgrade'];
    $_SESSION['packdate'] = $packdate;
    $_SESSION['tenderstreach'] = $tenderstreachActive;
    $_SESSION['pembulatan'] = $pembulatan;
@@ -38,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Memformat qty menjadi 2 digit desimal di belakang koma
    $qty = number_format($qty, 2, '.', '');
 
-   $query = "INSERT INTO relabel (idbarang, qty, pcs, packdate, exp, kdbarcode, iduser)
-          VALUES ($idbarang, $qty, '$pcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
+   $query = "INSERT INTO relabel (idbarang, qty, idgrade, pcs, packdate, exp, kdbarcode, iduser)
+          VALUES ($idbarang, $qty, '$idgrade', '$pcs', '$packdate', '$exp', '$kodeauto', $idusers)";
 
    if (!mysqli_query($conn, $query)) {
       echo "Error: " . mysqli_error($conn);
@@ -159,16 +162,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <td height="20" colspan="4" align="center" valign="middle">
                <?php
                $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-               $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
+               $barcode = $generator->getBarcode($kodeauto, $generator::TYPE_CODE_128);
                echo '<img src="data:image/jpeg;base64,' . base64_encode($barcode) . '" alt="Barcode">';
-               // echo $kdbarcode;
+               // echo $kodeauto;
                ?>
             </td>
          </tr>
          <tr>
             <td colspan="4" align="center">
                <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <?= $kdbarcode; ?>
+                  <?= $kodeauto; ?>
                </span>
             </td>
          </tr>

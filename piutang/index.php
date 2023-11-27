@@ -10,20 +10,10 @@ include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
-   <div class="content-header">
-      <div class="container-fluid">
-         <div class="row">
-            <div class="col">
-               <a href="invdraft.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Draft</button></a>
-               <a href="invoicedetail.php"><button type="button" class="btn btn-outline-secondary float right"><i class="fas fa-eye"></i> Detail Invoice</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-   </div>
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-12">
+            <div class="col-12 mt-2">
                <div class="card">
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -31,78 +21,39 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>GROUP CUSTOMER</th>
+                              <th>GROUP</th>
+                              <th>BLM JATUH TEMPO</th>
                               <th>JATUH TEMPO</th>
-                              <th>B. JATUH TEMPO</th>
-                              <th>Action</th>
+                              <th>BLM TUKAR FAKTUR</th>
                            </tr>
                         </thead>
-                        <tbody>
-                           <?php
-                           $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT invoice.*, customers.nama_customer, customers.tukarfaktur, do.iddo
-                           FROM invoice 
-                           INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
-                           LEFT JOIN do ON invoice.donumber = do.donumber
-                           ORDER BY idinvoice DESC");
-                           while ($tampil = mysqli_fetch_array($ambildata)) {
-                              $tukarfaktur = $tampil['tukarfaktur'];
-                              $status = $tampil['status'];
-                              $tgltf = $tampil['tgltf'];
-                              $top = $tampil['top'];
-                              $tgltf_timestamp = strtotime($tgltf);
-                              $duedate_timestamp = strtotime("+$top day", $tgltf_timestamp);
-                              $duedate = date('d-M-y', $duedate_timestamp);
-                              $iddo = $tampil['iddo'];
-                           ?>
-                              <tr>
-                                 <td class="text-center"><?= $no; ?></td>
-                                 <td><?= $tampil['nama_customer']; ?></td>
-                                 <td class="text-center"><?= $tampil['noinvoice']; ?></td>
-                                 <td class="text-center"><?= substr($tampil['donumber'], 12); ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
-                                 <td><?= $tampil['pocustomer']; ?></td>
-                                 <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
-                                 <!-- <td class="text-center"><?= date("d-M-y", strtotime($tampil['duedate'])); ?></td> -->
-                                 <td class="text-center">
-                                    <?php if ($tampil['status'] == '-') {
-                                       echo "-";
-                                    } else if ($tampil['status'] == 'Belum TF') { ?>
-                                       <a href="tukarfaktur.php?idinvoice=<?= $tampil['idinvoice'] ?>">
-                                          <span class="text-success" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Tukar Faktur">Belum TF</span>
-                                       </a>
-                                    <?php } else { ?>
-                                       <span class="text-primary" data-toggle="tooltip" data-placement="left" title="<?= date("d-M-y", strtotime($tampil['tgltf'])) . " " . $tampil['note']; ?>"><?= $tampil['status']; ?></span>
-                                    <?php } ?>
-                                 </td>
-                                 <td class="text-center">
-                                    <!-- <div class="row"> -->
-                                    <!-- <div class="col"> -->
-                                    <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                       <button type="button" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                    </a>
-                                    <!-- </div> -->
-                                    <!-- <div class="col"> -->
-                                    <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                       <button type="button" class="btn btn-sm btn-success"><i class="fas fa-print"></i></button>
-                                    </a>
-                                    <!-- </div>
-                                       <div class="col"> -->
-                                    <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                       <button type="button" class="btn btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></button>
-                                    </a>
-                                    <!-- </div>
-                                       <div class="col"> -->
-                                    <a href="deleteinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>&iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Anda yakin ingin Membatalkan invoice ini?');">
-                                       <button type="button" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
-                                    </a>
-                                    <!-- </div> -->
-                                    <!-- </div> -->
-                                 </td>
-                              </tr>
-                           <?php $no++;
-                           } ?>
-                        </tbody>
+                        <?php
+                        $no = 1;
+                        $ambildata = mysqli_query($conn, "SELECT piutang.idgroup, groupcs.nmgroup, SUM(piutang.balance) AS total_balance, invoice.noinvoice, invoice.invoice_date, piutang.duedate
+                        FROM piutang
+                        JOIN groupcs ON piutang.idgroup = groupcs.idgroup
+                        JOIN invoice ON piutang.idinvoice = invoice.idinvoice
+                        GROUP BY piutang.idgroup");
+                        while ($tampil = mysqli_fetch_array($ambildata)) {
+                           // Hitung selisih hari antara duedate dan hari ini
+                           $today = new DateTime();
+                           $dueDate = new DateTime($tampil['duedate']);
+                           $difference = $today->diff($dueDate);
+                           $daysDifference = $difference->days;
+                           // Tentukan status jatuh tempo
+                           $statusJatuhTempo = ($today > $dueDate) ? '<span class="text-red">J.T ' . $daysDifference . ' Hari</span>' : $daysDifference . ' Hari Lagi';
+                        ?>
+                           <tr class="text-center">
+                              <td><?= $no; ?></td>
+                              <td class="text-left"><?= $tampil['nmgroup']; ?></td>
+                              <td class="text-right"><?= ($today < $dueDate) ? number_format($tampil['total_balance'], 2) : ''; ?></td>
+                              <td class="text-right"><?= ($today >= $dueDate) ? number_format($tampil['total_balance'], 2) : ''; ?></td>
+                              <td class="text-right"></td>
+                           </tr>
+                        <?php
+                           $no++;
+                        }
+                        ?>
                      </table>
                   </div>
                   <!-- /.card-body -->

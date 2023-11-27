@@ -223,7 +223,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="../404.php" class="nav-link">
+              <a href="../piutang" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Piutang</p>
               </a>

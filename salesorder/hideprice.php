@@ -36,7 +36,7 @@ $row = mysqli_fetch_assoc($result);
                <tr>
                   <td>Ship To</td>
                   <td>:</td>
-                  <th class="text-justify"><?= $row['alamat1']; ?></th>
+                  <th><?= $row['alamat1']; ?></th>
                </tr>
             </table>
          </div>

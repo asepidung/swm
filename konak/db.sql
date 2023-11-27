@@ -547,3 +547,23 @@ CREATE TABLE detailhasil (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
+CREATE TABLE piutang (
+  idpiutang INT PRIMARY KEY AUTO_INCREMENT,
+  idgroup INT,
+  idinvoice INT,
+  idcustomer INT,
+  balance DECIMAL(12,2),
+  progress VARCHAR(15),
+  duedate DATE,
+  FOREIGN KEY (idgroup) REFERENCES groupcs (idgroup),
+  FOREIGN KEY (idinvoice) REFERENCES invoice (idinvoice),
+  FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer) 
+);
+ALTER TABLE relabel ADD COLUMN idgrade INT;
+ALTER TABLE relabel ADD FOREIGN KEY fk_idgrade (idgrade) REFERENCES grade (idgrade);
+CREATE TABLE bank (
+  idbank INT PRIMARY KEY AUTO_INCREMENT,
+  nmbank VARCHAR (30),
+  account VARCHAR(20),
+  note VARHCAR (30)
+);

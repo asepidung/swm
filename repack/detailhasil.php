@@ -146,7 +146,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               FROM detailhasil
                               INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
                               INNER JOIN grade ON detailhasil.idgrade = grade.idgrade
-                              WHERE idrepack = $idrepack ORDER BY iddetailhasil DESC");
+                              WHERE idrepack = $idrepack ORDER BY kdbarcode DESC");
                         while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                            <tr class="text-center">
                               <td><?= $tampil['kdbarcode']; ?></td>

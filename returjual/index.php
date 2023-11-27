@@ -65,7 +65,8 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="printreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-eye"></i> Print</a>
+                                    <a href="lihatreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-eye"></i> Lihat</a>
+                                    <a href="printreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-print"></i> Print</a>
                                     <a href="editreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-success"><i class="fas fa-pencil-alt"></i> Edit</a>
                                     <a href="deletereturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')"><i class="fas fa-minus-circle"></i> Delete</a>
                                  </td>
