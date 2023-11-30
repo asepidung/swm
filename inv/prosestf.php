@@ -35,6 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          $queryUpdateDuedate = "UPDATE invoice SET duedate = '$duedate' WHERE idinvoice = $idinvoice";
          $resultUpdateDuedate = mysqli_query($conn, $queryUpdateDuedate);
 
+         $PiutangUpdateDuedate = "UPDATE piutang SET duedate = '$duedate' WHERE idinvoice = $idinvoice";
+         $resultpiutangUpdateDuedate = mysqli_query($conn, $PiutangUpdateDuedate);
+
+
          if ($resultUpdateDuedate) {
             // Tambahkan nilai baru ke kolom 'note' tanpa menggantikan yang sudah ada
             $queryUpdateNote = "UPDATE invoice SET note = CONCAT(note, ' ','|', '$note') WHERE idinvoice = $idinvoice";

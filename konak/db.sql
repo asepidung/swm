@@ -567,3 +567,20 @@ CREATE TABLE bank (
   account VARCHAR(20),
   note VARHCAR (30)
 );
+CREATE TABLE stocktake (
+  idst INT PRIMARY KEY AUTO_INCREMENT,
+  nost VARCHAR (20),
+  tglst DATE,
+  note VARCHAR (255),
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE stocktakedetail (
+  idstdetail INT PRIMARY KEY AUTO_INCREMENT;
+  idst INT,
+  idgrade INT,
+  idbarang INT,
+  qty DECIMAL (6,2),
+  pcs INT,
+  pod DATE,
+  origin INT
+);

@@ -76,7 +76,7 @@ include "../mainsidebar.php";
 <!-- /.content-wrapper -->
 
 <script>
-   document.title = "DATA PIUTANG";
+   document.title = "Piutang Belum Jatuh Tempo";
 </script>
 <?php
 // require "../footnote.php";

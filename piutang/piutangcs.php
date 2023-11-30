@@ -37,7 +37,7 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT piutang.*, customers.nama_customer, invoice.noinvoice, invoice.invoice_date FROM piutang
                                        JOIN customers ON piutang.idcustomer = customers.idcustomer
                                        JOIN invoice ON piutang.idinvoice = invoice.idinvoice
-                                       WHERE piutang.idgroup = $idgroup");
+                                       WHERE piutang.idgroup = $idgroup ORDER BY piutang.duedate ASC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr class="text-center">
@@ -64,6 +64,11 @@ include "../mainsidebar.php";
                            ?>
                         </tbody>
                      </table>
+                  </div>
+               </div>
+               <div class="card">
+                  <div class="card-body">
+
                   </div>
                </div>
                <!-- /.card -->

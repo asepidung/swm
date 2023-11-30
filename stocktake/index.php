@@ -14,7 +14,7 @@ include "../mainsidebar.php";
          <div class="row">
             <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="drafttally.php"><button type="button" class="btn btn-outline-primary"><i class="fab fa-firstdraft"></i> Draft</button></a>
+               <a href="newst.php"><button type="button" class="btn btn-outline-primary"><i class="fab fa-firstdraft"></i> Baru</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -31,7 +31,7 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>Customer</th>
+                              <th>Barang</th>
                               <th>Tgl Kirim</th>
                               <th>SO Number</th>
                               <th>Tally ID</th>
