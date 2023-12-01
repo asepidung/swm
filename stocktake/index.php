@@ -31,42 +31,36 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>Barang</th>
-                              <th>Tgl Kirim</th>
-                              <th>SO Number</th>
-                              <th>Tally ID</th>
-                              <th>PO</th>
+                              <th>Taking Date</th>
+                              <th>Number</th>
+                              <th>J01</th>
+                              <th>J02</th>
+                              <th>J03</th>
+                              <th>P01</th>
+                              <th>P02</th>
+                              <th>P03</th>
                               <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer
-                           FROM tally 
-                           INNER JOIN customers ON tally.idcustomer = customers.idcustomer 
-                           ORDER BY idtally DESC");
+                           $ambildata = mysqli_query($conn, "SELECT * FROM stocktake");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
-                              <tr>
-                                 <td class="text-center"><?= $no; ?></td>
-                                 <td><?= $tampil['nama_customer']; ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
-                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
-                                 <td class="text-center"><?= $tampil['notally']; ?></td>
-                                 <td><?= $tampil['po']; ?></td>
+                              <tr class="text-right">
+                                 <td class="text-center"><?= $no ?></td>
+                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['tglst'])) ?></td>
+                                 <td class="text-center"><?= $tampil['nost'] ?></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
                                  <td class="text-center">
-                                    <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
-                                       <i class="fas fa-tasks"></i>
-                                    </a>
-                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Print" onclick="window.location.href='printtally.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-print"></i>
-                                    </a>
-                                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Edit" onclick="window.location.href='edittallydetail.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="window.location.href='deletetallydetail.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-minus-square"></i>
+                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-primary">
+                                       <i class="fas fa-play"></i>
                                     </a>
                                  </td>
                               </tr>

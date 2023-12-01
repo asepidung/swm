@@ -5,13 +5,13 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 include "../header.php";
-$idtally = $_GET['id'];
+$idst = $_GET['id'];
 ?>
 <div class="content-header">
    <div class="container-fluid">
       <div class="row">
          <div class="col">
-            <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Back To List</button></a>
+            <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i>Summary</button></a>
          </div>
       </div>
    </div>
@@ -21,17 +21,17 @@ $idtally = $_GET['id'];
    <div class="container-fluid">
       <div class="row">
          <div class="col">
-            <form method="POST" action="inputtallydetail.php">
+            <form method="POST" action="inputstdetail.php">
                <div class="card">
                   <div class="card-body">
                      <div id="items-container">
                         <div class="row mb-n2">
                            <div class="col-xs-2">
                               <div class="form-group">
-                                 <input type="text" placeholder="Scan Here" class="form-control text-center" name="barcode" id="barcode" autofocus>
+                                 <input type="text" placeholder="Scan Here" class="form-control text-center" name="kdbarcode" id="kdbarcode" autofocus>
                               </div>
                            </div>
-                           <input type="hidden" name="idtally" value="<?= $idtally ?>">
+                           <input type="hidden" name="idst" value="<?= $idst ?>">
                            <div class="col-1">
                               <div class="form-group">
                                  <button type="submit" class="btn btn-block btn-primary">Submit</button>
@@ -75,37 +75,43 @@ $idtally = $_GET['id'];
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang
-                              FROM tallydetail
-                              INNER JOIN barang ON tallydetail.idbarang = barang.idbarang WHERE idtally = $idtally ORDER BY idtallydetail DESC");
+                              $ambildata = mysqli_query($conn, "SELECT stocktakedetail.*, barang.nmbarang, grade.nmgrade
+                              FROM stocktakedetail
+                              INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
+                              LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
+                              WHERE idst = $idst ORDER BY idstdetail DESC");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
                               ?>
                                  <tr>
                                     <td class="text-center"><?= $no; ?></td>
-                                    <td class="text-center"><?= $tampil['barcode']; ?></td>
+                                    <td class="text-center"><?= $tampil['kdbarcode']; ?></td>
                                     <td><?= $nmbarang; ?></td>
-                                    <td class="text-right"><?= $tampil['weight']; ?></td>
+                                    <td class="text-right"><?= $tampil['qty']; ?></td>
                                     <td class="text-center"><?= $tampil['pcs']; ?></td>
                                     <td class="text-center"><?= $tampil['pod']; ?></td>
-                                    <td class="text-center">
+                                    <td>
                                        <?php
                                        if ($origin == 1) {
                                           echo "BONING";
                                        } elseif ($origin == 2) {
                                           echo "TRADING";
-                                       } elseif ($origin == 4) {
+                                       } elseif ($origin == 3) {
                                           echo "REPACK";
+                                       } elseif ($origin == 4) {
+                                          echo "RELABEL";
+                                       } elseif ($origin == 5) {
+                                          echo "IMPORT";
                                        } else {
                                           echo "Unindentified";
                                        }
                                        ?>
                                     </td>
                                     <td class="text-center">
-                                       <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                                       <!-- <a href="deletestdetail.php?iddetail=<?= $tampil['idstocktakedetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
                                           <i class="far fa-times-circle"></i>
-                                       </a>
+                                       </a> -->
                                     </td>
                                  </tr>
                               <?php
@@ -151,7 +157,7 @@ $idtally = $_GET['id'];
                                        <td class="text-right">
                                           <?php
                                           $totalWeightQuery = "SELECT SUM(weight) AS total_weight
-                                          FROM tallydetail
+                                          FROM stocktakedetail
                                           WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
                                           $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
                                           if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
@@ -164,7 +170,7 @@ $idtally = $_GET['id'];
                                        <td class="text-center">
                                           <?php
                                           $totalCountQuery = "SELECT COUNT(weight) AS total_weight
-                                          FROM tallydetail
+                                          FROM stocktakedetail
                                           WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
                                           $totalCountResult = mysqli_query($conn, $totalCountQuery);
                                           if ($totalCountResult && $totalCountRow = mysqli_fetch_assoc($totalCountResult)) {
@@ -200,7 +206,7 @@ $idtally = $_GET['id'];
                               $totalPO = 0; // Atur ke 0 jika tidak ada hasil
                            }
 
-                           $totalQtyQuery = "SELECT SUM(weight) AS total_qty FROM tallydetail WHERE idtally = $idtally";
+                           $totalQtyQuery = "SELECT SUM(weight) AS total_qty FROM stocktakedetail WHERE idtally = $idtally";
                            $totalQtyResult = mysqli_query($conn, $totalQtyQuery);
                            if ($totalQtyResult && $totalQtyRow = mysqli_fetch_assoc($totalQtyResult)) {
                               $totalQty = $totalQtyRow['total_qty'];
@@ -208,7 +214,7 @@ $idtally = $_GET['id'];
                               $totalQty = 0; // Atur ke 0 jika tidak ada hasil
                            }
 
-                           $totalBoxQuery = "SELECT COUNT(weight) AS total_box FROM tallydetail WHERE idtally = $idtally";
+                           $totalBoxQuery = "SELECT COUNT(weight) AS total_box FROM stocktakedetail WHERE idtally = $idtally";
                            $totalBoxResult = mysqli_query($conn, $totalBoxQuery);
                            if ($totalBoxResult && $totalBoxRow = mysqli_fetch_assoc($totalBoxResult)) {
                               $totalBox = $totalBoxRow['total_box'];
