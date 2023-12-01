@@ -32,6 +32,8 @@ if (isset($_POST['kdbarcode'])) {
          break;
    }
 
+   // ...
+
    if (!empty($query)) {
       $result = mysqli_query($conn, $query);
 
@@ -49,14 +51,16 @@ if (isset($_POST['kdbarcode'])) {
                // Barcode belum ada di stocktakedetail, lakukan insert
                $row = mysqli_fetch_assoc($result);
                $idgrade = $row['idgrade'];
-               // $kdbarcode = $row['kdbarcode']; // Ini seharusnya tidak diperlukan karena sudah diatur di atas
                $idbarang = $row['idbarang'];
                $qty = $row['qty'];
                $pcs = $row['pcs'];
                $pod = $row['packdate'];
 
+               // Handle NULL idgrade
+               $idgradeValue = ($idgrade !== null) ? "'$idgrade'" : "NULL";
+
                // Lakukan insert ke stocktakedetail
-               $insertQuery = "INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES ('$idst', '$kdbarcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$pod', '$origin')";
+               $insertQuery = "INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES ('$idst', '$kdbarcode', $idgradeValue, '$idbarang', '$qty', '$pcs', '$pod', '$origin')";
                $insertResult = mysqli_query($conn, $insertQuery);
 
                if (!$insertResult) {

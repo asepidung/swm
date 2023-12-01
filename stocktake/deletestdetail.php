@@ -11,13 +11,13 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $iddetail = $_GET['iddetail'];
 
    // Lakukan penghapusan data dari tabel labelboning
-   $hapusdata = mysqli_query($conn, "DELETE FROM tallydetail WHERE idtallydetail = '$iddetail'");
+   $hapusdata = mysqli_query($conn, "DELETE FROM stocktakedetail WHERE idstdetail = '$iddetail'");
 
    // Periksa apakah penghapusan data berhasil dilakukan
    if ($hapusdata) {
-      header("Location: tallydetail.php?id=$id");
+      header("Location: starttaking.php?id=$id&stat=deleted");
    } else {
       // Jika gagal, tampilkan pesan error
-      echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='tallydetail.php?id=$id';</script>";
+      echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='starttaking.php?id=$id';</script>";
    }
 }

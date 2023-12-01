@@ -11,7 +11,7 @@ $idst = $_GET['id'];
    <div class="container-fluid">
       <div class="row">
          <div class="col">
-            <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i>Summary</button></a>
+            <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Summary</button></a>
          </div>
       </div>
    </div>
@@ -42,12 +42,18 @@ $idst = $_GET['id'];
                                  <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
                               <?php } elseif ($_GET['stat'] == "ready") { ?>
                                  <h3 class="headline text-secondary"> Ready To Scan</h3>
+                              <?php } elseif ($_GET['stat'] == "deleted") { ?>
+                                 <h3 class="headline text-success"> Data berhasil dihapus</h3>
                               <?php } elseif ($_GET['stat'] == "duplicate") { ?>
                                  <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
                               <?php } elseif ($_GET['stat'] == "unlisted") { ?>
                                  <h3 class="headline text-danger"><i class="fas fa-times-circle"></i> Barang Tidak ada di PO</h3>
                               <?php } elseif ($_GET['stat'] == "unknown") { ?>
-                                 <h3 class="headline text-info">BARANG TIDAK TERDAFTAR <small><i class="fas fa-arrow-circle-right"></i> Manual ADD</small></h3>
+                                 <a href="inputmanual.php?id=<?= $idst ?>">
+                                    <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
+                                       Manual ADD <i class="fas fa-arrow-circle-right"></i>
+                                    </span>
+                                 </a>
                               <?php } ?>
                            </div>
                         </div>
@@ -109,9 +115,9 @@ $idst = $_GET['id'];
                                        ?>
                                     </td>
                                     <td class="text-center">
-                                       <!-- <a href="deletestdetail.php?iddetail=<?= $tampil['idstocktakedetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
+                                       <a href="deletestdetail.php?iddetail=<?= $tampil['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
                                           <i class="far fa-times-circle"></i>
-                                       </a> -->
+                                       </a>
                                     </td>
                                  </tr>
                               <?php
@@ -129,110 +135,57 @@ $idst = $_GET['id'];
                         <table class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
+                                 <th>No</th>
                                  <th>Prod</th>
-                                 <th>PO</th>
                                  <th>Qty</th>
                                  <th>Box</th>
-                                 <th>Balance</th>
                               </tr>
                            </thead>
                            <tbody>
                               <?php
-                              $idso_query = "SELECT idso FROM tally WHERE idtally = $idtally";
-                              $idso_result = mysqli_query($conn, $idso_query);
+                              $no = 1;
+                              $ambildata = mysqli_query($conn, "SELECT stocktakedetail.*, barang.nmbarang, grade.nmgrade
+                              FROM stocktakedetail
+                              INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
+                              LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
+                              WHERE idst = $idst
+                              ORDER BY idstdetail DESC");
 
-                              if ($idso_result && $idso_row = mysqli_fetch_assoc($idso_result)) {
-                                 $idso = $idso_row['idso'];
+                              // Inisialisasi array untuk mengelompokkan data berdasarkan idbarang
+                              $groupedData = array();
 
-                                 $query = "SELECT sodetail.idbarang, barang.nmbarang, sodetail.weight
-                                 FROM salesorderdetail AS sodetail
-                                 INNER JOIN barang ON sodetail.idbarang = barang.idbarang
-                                 WHERE sodetail.idso = $idso";
+                              while ($tampil = mysqli_fetch_array($ambildata)) {
+                                 $idbarang = $tampil['idbarang'];
 
-                                 $result = mysqli_query($conn, $query);
-                                 while ($row = mysqli_fetch_assoc($result)) { ?>
-                                    <tr>
-                                       <td class="ml-1"> <?= $row['nmbarang'] ?></td>
-                                       <td class="text-center"><?= $row['weight'] ?></td>
-                                       <td class="text-right">
-                                          <?php
-                                          $totalWeightQuery = "SELECT SUM(weight) AS total_weight
-                                          FROM stocktakedetail
-                                          WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
-                                          $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
-                                          if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
-                                             echo $totalWeightRow['total_weight'];
-                                          } else {
-                                             echo "0"; // Jika tidak ada data, tampilkan 0
-                                          }
-                                          ?>
-                                       </td>
-                                       <td class="text-center">
-                                          <?php
-                                          $totalCountQuery = "SELECT COUNT(weight) AS total_weight
-                                          FROM stocktakedetail
-                                          WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
-                                          $totalCountResult = mysqli_query($conn, $totalCountQuery);
-                                          if ($totalCountResult && $totalCountRow = mysqli_fetch_assoc($totalCountResult)) {
-                                             echo $totalCountRow['total_weight'];
-                                          } else {
-                                             echo "0"; // Jika tidak ada data, tampilkan 0
-                                          }
-                                          ?>
-                                       </td>
-                                       <?php
-                                       $po = $row['weight'];
-                                       $scan = $totalWeightRow['total_weight'];
-                                       $sisa = $totalWeightRow['total_weight'] - $row['weight'];
-                                       ?>
-                                       <td class="text-right">
-                                          <?php if ($sisa > 0) { ?>
-                                             <span class="text-danger"><?= number_format($sisa, 2); ?></span>
-                                          <?php } else { ?>
-                                             <?= number_format($sisa, 2); ?>
-                                          <?php } ?>
-                                       </td>
-                                    </tr>
-                              <?php }
+                                 // Menyusun data dalam array berdasarkan idbarang
+                                 if (!isset($groupedData[$idbarang])) {
+                                    $groupedData[$idbarang] = array(
+                                       'nmbarang' => $tampil['nmbarang'],
+                                       'qty' => 0,
+                                       'box' => 0,
+                                    );
+                                 }
+
+                                 $groupedData[$idbarang]['qty'] += $tampil['qty'];
+                                 $groupedData[$idbarang]['box'] += 1; // Menghitung jumlah unik idbarang
+                                 $groupedData[$idbarang]['pod'] = $tampil['pod'];
+                              }
+
+                              foreach ($groupedData as $idbarang => $data) {
+                              ?>
+                                 <tr>
+                                    <td class="text-center"><?= $no; ?></td>
+                                    <td><?= $data['nmbarang']; ?></td>
+                                    <td class="text-right"><?= $data['qty']; ?></td>
+                                    <td class="text-center"><?= $data['box']; ?></td>
+                                 </tr>
+                              <?php
+                                 $no++;
                               }
                               ?>
                            </tbody>
-                           <?php
-                           $totalPOQuery = "SELECT SUM(weight) AS total_weight FROM salesorderdetail WHERE idso = $idso";
-                           $totalPOResult = mysqli_query($conn, $totalPOQuery);
-                           if ($totalPOResult && $totalPORow = mysqli_fetch_assoc($totalPOResult)) {
-                              $totalPO = $totalPORow['total_weight'];
-                           } else {
-                              $totalPO = 0; // Atur ke 0 jika tidak ada hasil
-                           }
-
-                           $totalQtyQuery = "SELECT SUM(weight) AS total_qty FROM stocktakedetail WHERE idtally = $idtally";
-                           $totalQtyResult = mysqli_query($conn, $totalQtyQuery);
-                           if ($totalQtyResult && $totalQtyRow = mysqli_fetch_assoc($totalQtyResult)) {
-                              $totalQty = $totalQtyRow['total_qty'];
-                           } else {
-                              $totalQty = 0; // Atur ke 0 jika tidak ada hasil
-                           }
-
-                           $totalBoxQuery = "SELECT COUNT(weight) AS total_box FROM stocktakedetail WHERE idtally = $idtally";
-                           $totalBoxResult = mysqli_query($conn, $totalBoxQuery);
-                           if ($totalBoxResult && $totalBoxRow = mysqli_fetch_assoc($totalBoxResult)) {
-                              $totalBox = $totalBoxRow['total_box'];
-                           } else {
-                              $totalBox = 0; // Atur ke 0 jika tidak ada hasil
-                           }
-                           $totalBalance = $totalQty - $totalPO;
-                           ?>
-                           <tfoot>
-                              <tr class="text-right">
-                                 <th>Total</th>
-                                 <th class="text-center"><?= number_format($totalPO); ?></th>
-                                 <th><?= number_format($totalQty, 2); ?></th>
-                                 <th class="text-center"><?= number_format($totalBox); ?></th>
-                                 <th><?= $totalBalance; ?></th>
-                              </tr>
-                           </tfoot>
                         </table>
+
                      </div>
                   </div>
                </div>
@@ -242,7 +195,7 @@ $idst = $_GET['id'];
    </div>
 </section>
 <script>
-   document.title = "Tally Sheet";
+   document.title = "STOCK OPNAME";
 </script>
 <?php
 include "../footer.php" ?>
