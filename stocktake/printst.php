@@ -76,8 +76,6 @@ $idst = $_GET['id'];
                                     $filteredCategoryQty = array_filter($categoryQty, function ($value) {
                                        return $value > 0;
                                     });
-
-                                    // Tampilkan total qty berdasarkan kategori
                                     foreach (array('J01', 'J02', 'J03', 'P01', 'P02', 'P03', 'UNLISTED') as $category) {
                                        $formattedQty = isset($filteredCategoryQty[$category]) ? number_format($filteredCategoryQty[$category], 2) : '';
                                        echo "<td>$formattedQty</td>";
