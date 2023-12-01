@@ -59,7 +59,13 @@ include "../mainsidebar.php";
                                  <td></td>
                                  <td></td>
                                  <td class="text-center">
-                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-primary">
+                                    <a href="lihatst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-success">
+                                       <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="printst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-primary">
+                                       <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-warning">
                                        <i class="fas fa-play"></i>
                                     </a>
                                  </td>

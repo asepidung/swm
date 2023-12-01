@@ -171,10 +171,18 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="discount[]" value="0" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
+                                          <?php
+                                          // Menentukan nilai discount berdasarkan nama_customer
+                                          $discountValue = 0;
+                                          if (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false) {
+                                             $discountValue = 2;
+                                          }
+                                          ?>
+                                          <input type="text" class="form-control text-right" name="discount[]" value="<?= $discountValue ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
                                        </div>
                                     </div>
                                  </div>
+
                                  <div class=" col-2">
                                     <div class="form-group">
                                        <div class="input-group">

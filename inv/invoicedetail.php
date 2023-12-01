@@ -37,7 +37,7 @@ include "../mainsidebar.php";
                       INNER JOIN customers c ON i.idcustomer = c.idcustomer
                       LEFT JOIN invoicedetail id ON i.idinvoice = id.idinvoice
                       LEFT JOIN barang b ON id.idbarang = b.idbarang
-                      ORDER BY i.idinvoice";  // Urutkan berdasarkan idinvoice
+                      ORDER BY i.noinvoice DESC";  // Urutkan berdasarkan idinvoice
                      $result = $conn->query($query);
                      ?>
                      <!-- Bagian HTML -->

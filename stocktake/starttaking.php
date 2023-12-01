@@ -12,6 +12,7 @@ $idst = $_GET['id'];
       <div class="row">
          <div class="col">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Summary</button></a>
+            <a href="lihatst.php?id=<?= $idst ?>"><button type="button" class="btn btn-outline-success"><i class="fas fa-arrow-alt-circle-right"></i> Lihat </button></a>
          </div>
       </div>
    </div>
@@ -62,7 +63,7 @@ $idst = $_GET['id'];
                </div>
             </form>
             <div class="row">
-               <div class="col-lg-7">
+               <div class="col-lg-8">
                   <div class="card">
                      <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped table-sm">
@@ -71,6 +72,7 @@ $idst = $_GET['id'];
                                  <th>#</th>
                                  <th>Barcode</th>
                                  <th>Item</th>
+                                 <th>Grade</th>
                                  <th>Weight</th>
                                  <th>Pcs</th>
                                  <th>POD</th>
@@ -94,6 +96,7 @@ $idst = $_GET['id'];
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdbarcode']; ?></td>
                                     <td><?= $nmbarang; ?></td>
+                                    <td><?= $tampil['nmgrade']; ?></td>
                                     <td class="text-right"><?= $tampil['qty']; ?></td>
                                     <td class="text-center"><?= $tampil['pcs']; ?></td>
                                     <td class="text-center"><?= $tampil['pod']; ?></td>
@@ -129,7 +132,7 @@ $idst = $_GET['id'];
                      </div>
                   </div>
                </div>
-               <div class="col-lg-5">
+               <div class="col-lg-4">
                   <div class="card">
                      <div class="card-body">
                         <table class="table table-bordered table-striped table-sm">
@@ -185,7 +188,6 @@ $idst = $_GET['id'];
                               ?>
                            </tbody>
                         </table>
-
                      </div>
                   </div>
                </div>
