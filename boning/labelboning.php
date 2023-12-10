@@ -4,7 +4,7 @@ if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-require "seriallabelboning.php";
+// require "seriallabelboning.php";
 require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
@@ -124,7 +124,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <input type="hidden" name="product" id="product">
                 <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
-                <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>">
+                <!-- <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>"> -->
                 <div class="form-group">
                   <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
                   <div class="input-group col-lg-4">

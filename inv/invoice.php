@@ -52,7 +52,7 @@ include "../mainsidebar.php";
                            FROM invoice 
                            INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
                            LEFT JOIN do ON invoice.donumber = do.donumber
-                           ORDER BY invoice_date DESC");
+                           ORDER BY idinvoice DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $tukarfaktur = $tampil['tukarfaktur'];
                               $status = $tampil['status'];

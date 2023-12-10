@@ -4,6 +4,7 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
+require "seriallabelboning.php";
 require "../dist/vendor/autoload.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $exp = $_POST['exp'];
    $idboning = $_POST['idboning'];
    $idboningWithPrefix = $_POST['idboningWithPrefix'];
-   $kdbarcode = $_POST['kdbarcode'];
+   $kdbarcode = "1" . $idboningWithPrefix . $kodeauto;
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
 
    // Memeriksa dan memecah nilai qty dan pcs
