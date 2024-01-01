@@ -61,6 +61,7 @@ $totalStock = 0;
                         <th><?= ($totalstockperitem < 0) ? '<span class="text-danger">' . number_format($totalstockperitem, 2) . '</span>' : (($totalstockperitem == 0) ? '' : number_format($totalstockperitem, 2)); ?></th>
                       </tr>
                     <?php } ?>
+                  </tbody>
                   <tfoot>
                     <tr class="text-right">
                       <th colspan="2">SUBTOTAL</th>
@@ -73,7 +74,6 @@ $totalStock = 0;
                       <th><?= number_format($totalStock, 2); ?></th>
                     </tr>
                   </tfoot>
-                  </tbody>
                 </table>
               </div>
             </div>

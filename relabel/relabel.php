@@ -156,7 +156,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                    INNER JOIN barang b ON r.idbarang = b.idbarang
                                                    INNER JOIN users u ON r.iduser = u.idusers
                                                    LEFT JOIN grade g ON r.idgrade = g.idgrade
-                                                   ORDER BY r.dibuat DESC");
+                                                   ORDER BY r.kdbarcode DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $fullname = $tampil['fullname'];
                     $nmbarang = $tampil['nmbarang'];

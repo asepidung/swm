@@ -591,3 +591,19 @@ CREATE TABLE stocktakedetail (
 
  alter table trading add column idgrade INT;
   ALTER TABLE trading ADD FOREIGN KEY (idgrade) REFERENCES grade (idgrade);
+
+  CREATE TABLE stock (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    idst INT,
+    kdbarcode VARCHAR(50),
+    idgrade INT,
+    idbarang INT,
+    qty DECIMAL (6,2),
+    pcs INT,
+    pod DATE,
+    origin INT,
+    creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idst) REFERENCES stocktake (idst),
+    FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+    FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
+  );

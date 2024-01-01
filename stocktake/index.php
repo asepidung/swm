@@ -33,40 +33,34 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Taking Date</th>
                               <th>Number</th>
-                              <th>J01</th>
-                              <th>J02</th>
-                              <th>J03</th>
-                              <th>P01</th>
-                              <th>P02</th>
-                              <th>P03</th>
+                              <th>Catatan</th>
                               <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT * FROM stocktake");
+                           $ambildata = mysqli_query($conn, "SELECT * FROM stocktake ORDER BY nost DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr class="text-right">
                                  <td class="text-center"><?= $no ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['tglst'])) ?></td>
                                  <td class="text-center"><?= $tampil['nost'] ?></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
+                                 <td class="text-left"><?= $tampil['note'] ?></td>
+
                                  <td class="text-center">
+                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-warning">
+                                       <i class="fas fa-barcode"></i>
+                                    </a>
                                     <a href="lihatst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-success">
                                        <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="printst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-primary">
+                                    <a href="printst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-secondary">
                                        <i class="fas fa-print"></i>
                                     </a>
-                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-warning">
-                                       <i class="fas fa-play"></i>
+                                    <a href="stockin.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-primary">
+                                       <i class="fas fa-upload"></i>
                                     </a>
                                  </td>
                               </tr>
@@ -91,7 +85,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Tally Sheet";
+   document.title = "STOCK TAKE";
 </script>
 <?php
 // require "../footnote.php";

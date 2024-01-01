@@ -47,7 +47,7 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
                            FROM salesorder 
                            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
-                           ORDER BY idso DESC");
+                           ORDER BY deliverydate DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
                            ?>
@@ -86,9 +86,18 @@ include "../mainsidebar.php";
                                        <a href="editso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-success">
                                           <i class="far fa-edit"></i>
                                        </a>
+                                       <a href="#" class="btn btn-sm btn-secondary">
+                                          <i class="far fa-trash-alt"></i>
+                                       </a>
                                     <?php } else { ?>
                                        <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
                                           <i class="far fa-eye"></i>
+                                       </a>
+                                       <a href="#" class="btn btn-sm btn-secondary" disabled>
+                                          <i class="far fa-edit"></i>
+                                       </a>
+                                       <a href="#" class="btn btn-sm btn-secondary" disabled>
+                                          <i class="far fa-trash-alt"></i>
                                        </a>
                                     <?php } ?>
                                  </td>

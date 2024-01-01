@@ -55,7 +55,6 @@ $origin = substr($barcodeValue, 0, 1);
                                     <?php
                                     $sql = "SELECT * FROM grade";
                                     $result = $conn->query($sql);
-
                                     // Membuat pilihan dalam select box berdasarkan data yang diambil
                                     if ($result->num_rows > 0) {
                                        while ($row = $result->fetch_assoc()) {

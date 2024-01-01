@@ -88,18 +88,25 @@ $idst = $_GET['id'];
                               INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
                               LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
                               WHERE idst = $idst ORDER BY idstdetail DESC");
+
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
+                                 $pod =  $tampil['pod'];
+
+                                 // Create DateTime objects for each iteration
+                                 $podDate = new DateTime($pod);
+                                 $currentDate = new DateTime();
+                                 $umur = $currentDate->diff($podDate)->days;
                               ?>
                                  <tr>
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdbarcode']; ?></td>
                                     <td><?= $nmbarang; ?></td>
-                                    <td><?= $tampil['nmgrade']; ?></td>
+                                    <td class="text-center"><?= $tampil['nmgrade']; ?></td>
                                     <td class="text-right"><?= $tampil['qty']; ?></td>
                                     <td class="text-center"><?= $tampil['pcs']; ?></td>
-                                    <td class="text-center"><?= $tampil['pod']; ?></td>
+                                    <td class="text-center" title="<?= date("d-M-y", strtotime($pod)); ?>"><?= $umur; ?></td>
                                     <td>
                                        <?php
                                        if ($origin == 1) {

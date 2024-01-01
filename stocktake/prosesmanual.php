@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $pod = $_POST['pod'];
    $origin = $_POST['origin'];
 
-   $insertQuery = "INSERT INTO stocktakedetail (idst, kdbarcode, idbarang, qty, pcs, pod, origin) VALUES ('$idst', '$kdbarcode', '$idbarang', '$qty', '$pcs', '$pod', '$origin')";
+   $insertQuery = "INSERT INTO stocktakedetail (idst, kdbarcode, idbarang, idgrade, qty, pcs, pod, origin) VALUES ('$idst', '$kdbarcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$pod', '$origin')";
    mysqli_query($conn, $insertQuery);
    header("location: starttaking.php?id=$idst&stat=success");
 }
