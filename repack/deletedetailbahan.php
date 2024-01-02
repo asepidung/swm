@@ -10,14 +10,48 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $id = $_GET['id'];
    $iddetail = $_GET['iddetail'];
 
-   // Lakukan penghapusan data dari tabel labelboning
-   $hapusdata = mysqli_query($conn, "DELETE FROM detailbahan WHERE iddetailbahan = '$iddetail'");
+   // Ambil data dari tabel detailbahan berdasarkan iddetailbahan
+   $getDataQuery = "SELECT * FROM detailbahan WHERE iddetailbahan = ?";
+   $getDataStmt = $conn->prepare($getDataQuery);
 
-   // Periksa apakah penghapusan data berhasil dilakukan
-   if ($hapusdata) {
-      header("Location: detailbahan.php?id=$id&stat=deleted");
+   if ($getDataStmt) {
+      $getDataStmt->bind_param('i', $iddetail);
+      $getDataStmt->execute();
+      $result = $getDataStmt->get_result();
+      $detailbahanData = $result->fetch_assoc();
+
+      // Insert data ke tabel stock
+      $insertStockQuery = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      $insertStockStmt = $conn->prepare($insertStockQuery);
+
+      if ($insertStockStmt) {
+         // Sesuaikan nama kolom 'qty' dengan 'weight' dalam bind_param
+         $insertStockStmt->bind_param('siidisi', $detailbahanData['barcode'], $detailbahanData['idgrade'], $detailbahanData['idbarang'], $detailbahanData['qty'], $detailbahanData['pcs'], $detailbahanData['pod'], $detailbahanData['origin']);
+         $insertStockStmt->execute();
+
+         // Hapus data dari tabel detailbahan
+         $deleteQuery = "DELETE FROM detailbahan WHERE iddetailbahan = ?";
+         $deleteStmt = $conn->prepare($deleteQuery);
+
+         if ($deleteStmt) {
+            $deleteStmt->bind_param('i', $iddetail);
+            $deleteStmt->execute();
+
+            // Redirect ke halaman detailbahan.php dengan status "deleted"
+            header("Location: detailbahan.php?id=$id&stat=deleted");
+         } else {
+            // Jika gagal, tampilkan pesan error
+            echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='detailbahan.php?id=$id';</script>";
+         }
+      } else {
+         // Jika gagal, tampilkan pesan error
+         echo "<script>alert('Maaf, terjadi kesalahan saat menyisipkan data ke tabel stock.'); window.location='detailbahan.php?id=$id';</script>";
+      }
    } else {
       // Jika gagal, tampilkan pesan error
-      echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='tallydetail.php?id=$id';</script>";
+      echo "<script>alert('Maaf, terjadi kesalahan saat mengambil data.'); window.location='detailbahan.php?id=$id';</script>";
    }
+} else {
+   // Jika tidak ada ID atau IDDetail yang diberikan, tampilkan pesan atau arahkan ke halaman kesalahan
+   echo "ID atau IDDetail tidak valid.";
 }

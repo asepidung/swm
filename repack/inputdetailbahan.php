@@ -6,54 +6,46 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 if (isset($_POST['barcode'])) {
    $barcode = $_POST['barcode'];
-   $firstDigit = substr($barcode, 0, 1);
    $idrepack = $_POST['idrepack'];
 
-   $query = '';
-   if ($firstDigit == '1') {
-      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM labelboning WHERE kdbarcode = '$barcode'";
-      $origin = 1;
-   } elseif ($firstDigit == '2') {
-      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM trading WHERE kdbarcode = '$barcode'";
-      $origin = 2;
-   } elseif ($firstDigit == '3') {
-      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM detailhasil WHERE kdbarcode = '$barcode'";
-      $origin = 2;
-   } elseif ($firstDigit == '4') {
-      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM relabel WHERE kdbarcode = '$barcode'";
-      $origin = 4;
-   }
+   // Langsung query ke tabel stock berdasarkan barcode
+   $query = "SELECT idbarang, idgrade, qty, pcs, pod, origin FROM stock WHERE kdbarcode = '$barcode'";
 
-   if (!empty($query)) {
-      $result = mysqli_query($conn, $query);
-      if ($result && mysqli_num_rows($result) > 0) {
-         $row = mysqli_fetch_assoc($result);
-         $idbarang = $row['idbarang'];
-         $idgrade = $row['idgrade'];
-         $qty = $row['qty']; // Menyesuaikan nama kolom di tabel
-         $pcs = $row['pcs'];
-         $pod = $row['packdate'];
+   // Eksekusi query
+   $result = mysqli_query($conn, $query);
 
-         // Selanjutnya, kita akan melakukan pengecekan apakah $barcode sudah ada di tabel detailbahan
-         $cekBarcodeQuery = "SELECT iddetailbahan FROM detailbahan WHERE idrepack = $idrepack AND barcode = '$barcode'";
-         $cekBarcodeResult = mysqli_query($conn, $cekBarcodeQuery);
+   if ($result && $row = mysqli_fetch_assoc($result)) {
+      $idbarang = $row['idbarang'];
+      $idgrade = $row['idgrade'];
+      $qty = $row['qty']; // Menyesuaikan nama kolom di tabel
+      $pcs = $row['pcs'];
+      $pod = $row['pod'];
+      $origin = $row['origin'];
 
-         if (mysqli_num_rows($cekBarcodeResult) > 0) {
-            // Barcode sudah ada di tabel detailbahan, arahkan kembali ke halaman dengan status "duplicate"
-            header("location: detailbahan.php?id=$idrepack&stat=duplicate");
-            exit;
-         } else {
-            // Barcode belum ada di tabel detailbahan, lanjutkan dengan query insert
-            $insertQuery = "INSERT INTO detailbahan (idrepack, barcode, idbarang, idgrade, qty, pcs, pod, origin) VALUES ('$idrepack', '$barcode', '$idbarang',  '$idgrade', '$qty', '$pcs', '$pod', '$origin')";
-            mysqli_query($conn, $insertQuery);
+      // Selanjutnya, kita akan melakukan pengecekan apakah $barcode sudah ada di tabel detailbahan
+      $cekBarcodeQuery = "SELECT iddetailbahan FROM detailbahan WHERE idrepack = $idrepack AND barcode = '$barcode'";
+      $cekBarcodeResult = mysqli_query($conn, $cekBarcodeQuery);
 
-            // Redirect kembali ke halaman detailbahan.php dengan status "success"
-            header("location: detailbahan.php?id=$idrepack&stat=success");
-         }
-      } else {
-         $_SESSION['barcode'] = $barcode;
-         header("location: detailbahan.php?id=$idrepack&stat=unknown");
+      if (mysqli_num_rows($cekBarcodeResult) > 0) {
+         // Barcode sudah ada di tabel detailbahan, arahkan kembali ke halaman dengan status "duplicate"
+         header("location: detailbahan.php?id=$idrepack&stat=duplicate");
          exit;
+      } else {
+         // Barcode belum ada di tabel detailbahan, lanjutkan dengan query insert
+         $insertQuery = "INSERT INTO detailbahan (idrepack, barcode, idbarang, idgrade, qty, pcs, pod, origin) VALUES ('$idrepack', '$barcode', '$idbarang',  '$idgrade', '$qty', '$pcs', '$pod', '$origin')";
+         mysqli_query($conn, $insertQuery);
+
+         // Hapus data dari tabel stock
+         $deleteQuery = "DELETE FROM stock WHERE kdbarcode = '$barcode'";
+         mysqli_query($conn, $deleteQuery);
+
+         // Redirect kembali ke halaman detailbahan.php dengan status "success"
+         header("location: detailbahan.php?id=$idrepack&stat=success");
       }
+   } else {
+      // Barcode tidak ditemukan di tabel stock
+      $_SESSION['barcode'] = $barcode;
+      header("location: detailbahan.php?id=$idrepack&stat=unknown");
+      exit;
    }
 }

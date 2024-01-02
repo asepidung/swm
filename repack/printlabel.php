@@ -6,6 +6,7 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 require "seriallabelrepack.php";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
@@ -35,10 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Memformat qty menjadi 2 digit desimal di belakang koma
    $qty = number_format($qty, 2, '.', '');
 
-   $query = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp)
+   // Query insert untuk tabel detailhasil
+   $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp)
             VALUES ('$idrepack', '$barcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate', '$exp')";
 
-   if (!mysqli_query($conn, $query)) {
+   // Query insert untuk tabel stock
+   $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
+                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
+
+   // Eksekusi query
+   if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {
       echo "Error: " . mysqli_error($conn);
    }
 }
