@@ -48,7 +48,7 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer FROM plandev
                                        JOIN customers ON plandev.idcustomer = customers.idcustomer
-                                       WHERE plandelivery > CURDATE()
+                                       WHERE plandelivery >= CURDATE()
                                        ORDER BY plandelivery ASC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {

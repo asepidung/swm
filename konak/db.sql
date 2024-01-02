@@ -526,10 +526,12 @@ CREATE TABLE detailbahan (
   idrepack INT,
   barcode VARCHAR(30),
   idbarang INT,
+  idgrade INT,
   qty DECIMAL(6,2),
   pcs INT,
   pod DATE,
   origin INT,
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
@@ -594,7 +596,6 @@ CREATE TABLE stocktakedetail (
 
   CREATE TABLE stock (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    idst INT,
     kdbarcode VARCHAR(50),
     idgrade INT,
     idbarang INT,
@@ -603,7 +604,6 @@ CREATE TABLE stocktakedetail (
     pod DATE,
     origin INT,
     creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idst) REFERENCES stocktake (idst),
     FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
     FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
   );

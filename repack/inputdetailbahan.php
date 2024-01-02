@@ -11,16 +11,16 @@ if (isset($_POST['barcode'])) {
 
    $query = '';
    if ($firstDigit == '1') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM labelboning WHERE kdbarcode = '$barcode'";
+      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM labelboning WHERE kdbarcode = '$barcode'";
       $origin = 1;
    } elseif ($firstDigit == '2') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM trading WHERE kdbarcode = '$barcode'";
+      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM trading WHERE kdbarcode = '$barcode'";
       $origin = 2;
    } elseif ($firstDigit == '3') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM detailhasil WHERE kdbarcode = '$barcode'";
+      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM detailhasil WHERE kdbarcode = '$barcode'";
       $origin = 2;
    } elseif ($firstDigit == '4') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM relabel WHERE kdbarcode = '$barcode'";
+      $query = "SELECT idbarang, idgrade, qty, pcs, packdate FROM relabel WHERE kdbarcode = '$barcode'";
       $origin = 4;
    }
 
@@ -29,6 +29,7 @@ if (isset($_POST['barcode'])) {
       if ($result && mysqli_num_rows($result) > 0) {
          $row = mysqli_fetch_assoc($result);
          $idbarang = $row['idbarang'];
+         $idgrade = $row['idgrade'];
          $qty = $row['qty']; // Menyesuaikan nama kolom di tabel
          $pcs = $row['pcs'];
          $pod = $row['packdate'];
@@ -43,7 +44,7 @@ if (isset($_POST['barcode'])) {
             exit;
          } else {
             // Barcode belum ada di tabel detailbahan, lanjutkan dengan query insert
-            $insertQuery = "INSERT INTO detailbahan (idrepack, barcode, idbarang, qty, pcs, pod, origin) VALUES ('$idrepack', '$barcode', '$idbarang', '$qty', '$pcs', '$pod', '$origin')";
+            $insertQuery = "INSERT INTO detailbahan (idrepack, barcode, idbarang, idgrade, qty, pcs, pod, origin) VALUES ('$idrepack', '$barcode', '$idbarang',  '$idgrade', '$qty', '$pcs', '$pod', '$origin')";
             mysqli_query($conn, $insertQuery);
 
             // Redirect kembali ke halaman detailbahan.php dengan status "success"

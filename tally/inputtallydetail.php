@@ -6,7 +6,6 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 if (isset($_POST['barcode'])) {
    $barcode = $_POST['barcode'];
-   $firstDigit = substr($barcode, 0, 1);
    $idtally = $_POST['idtally'];
    $idso_query = "SELECT idso FROM tally WHERE idtally = $idtally";
    $idso_result = mysqli_query($conn, $idso_query);
@@ -16,44 +15,21 @@ if (isset($_POST['barcode'])) {
       $idso = $idso_row['idso'];
    }
 
-   // Buat query sesuai dengan digit pertama
-   $query = '';
-   if ($firstDigit == '1') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM labelboning WHERE kdbarcode = '$barcode'";
-      $origin = 1;
-   } elseif ($firstDigit == '2') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM trading WHERE kdbarcode = '$barcode'";
-      $origin = 2;
-   } elseif ($firstDigit == '3') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM detailhasil WHERE kdbarcode = '$barcode'";
-      $origin = 3;
-   } elseif ($firstDigit == '4') {
-      $query = "SELECT idbarang, qty, pcs, packdate FROM relabel WHERE kdbarcode = '$barcode'";
-      $origin = 4;
-   }
-
-   if (!empty($query)) {
-      $result = mysqli_query($conn, $query);
-      if ($result) {
-         if (mysqli_num_rows($result) > 0) {
-         } else {
-            $_SESSION['barcode'] = $barcode;
-            header("location: tallydetail.php?id=$idtally&stat=unknown");
-            exit;
-         }
-      } else {
-      }
-   }
+   // Langsung query ke tabel stock berdasarkan barcode
+   $query = "SELECT idbarang, idgrade, qty, pcs, pod, origin FROM stock WHERE kdbarcode = '$barcode'";
 
    // Eksekusi query
    $result = mysqli_query($conn, $query);
 
    if ($result && $row = mysqli_fetch_assoc($result)) {
       $idbarang = $row['idbarang'];
+      $idgrade = $row['idgrade'];
       $weight = $row['qty']; // Menyesuaikan nama kolom di tabel
       $pcs = $row['pcs'];
-      $pod = $row['packdate'];
-      // Mengecek apakah data barang sudah ada dalam salesorderdetail
+      $pod = $row['pod'];
+      $origin = $row['origin'];
+
+      // Pengecekan apakah idbarang ada dalam salesorderdetail
       $cekBarangQuery = "SELECT idbarang FROM salesorderdetail WHERE idso = $idso AND idbarang = $idbarang";
       $cekBarangResult = mysqli_query($conn, $cekBarangQuery);
 
@@ -72,12 +48,20 @@ if (isset($_POST['barcode'])) {
             exit;
          } else {
             // Barcode belum ada di tabel tallydetail, lanjutkan dengan query insert
-            $insertQuery = "INSERT INTO tallydetail (idtally, barcode, idbarang, weight, pcs, pod, origin) VALUES ('$idtally', '$barcode', '$idbarang', '$weight', '$pcs', '$pod', '$origin')";
+            $insertQuery = "INSERT INTO tallydetail (idtally, barcode, idbarang, idgrade, weight, pcs, pod, origin) VALUES ('$idtally', '$barcode', '$idbarang',  '$idgrade', '$weight', '$pcs', '$pod', '$origin')";
             mysqli_query($conn, $insertQuery);
 
+            // Hapus data dari tabel stock
+            $deleteQuery = "DELETE FROM stock WHERE kdbarcode = '$barcode'";
+            mysqli_query($conn, $deleteQuery);
             // Redirect kembali ke halaman tallydetail.php dengan status "success"
             header("location: tallydetail.php?id=$idtally&stat=success");
          }
       }
+   } else {
+      // Barcode tidak ditemukan di tabel stock
+      $_SESSION['barcode'] = $barcode;
+      header("location: tallydetail.php?id=$idtally&stat=unknown");
+      exit;
    }
 }

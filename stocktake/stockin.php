@@ -28,9 +28,9 @@ $result = $stmt->get_result();
 
 // Loop melalui hasil query dan sisipkan data ke dalam tabel stock
 while ($row = $result->fetch_assoc()) {
-   $insertSql = "INSERT INTO stock (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+   $insertSql = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)";
    $insertStmt = $conn->prepare($insertSql);
-   $insertStmt->bind_param("isiidisi", $row['idst'], $row['kdbarcode'], $row['idgrade'], $row['idbarang'], $row['qty'], $row['pcs'], $row['pod'], $row['origin']);
+   $insertStmt->bind_param("siidisi", $row['kdbarcode'], $row['idgrade'], $row['idbarang'], $row['qty'], $row['pcs'], $row['pod'], $row['origin']);
    $insertStmt->execute();
 }
 
