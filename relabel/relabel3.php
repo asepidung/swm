@@ -8,7 +8,6 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// check if idboning is set in $_GET array
 $idusers = $_SESSION['idusers'];
 // Mengambil daftar barang
 $query = "SELECT * FROM barang ORDER BY nmbarang ASC";

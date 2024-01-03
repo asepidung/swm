@@ -1,0 +1,58 @@
+ / Mengambil daftar barang
+// $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+// $result = mysqli_query($conn, $query);
+// $barangOptions = "";
+// while ($row = mysqli_fetch_assoc($result)) {
+//    $idbarang = $row['idbarang'];
+//    $nmbarang = $row['nmbarang'];
+//    $barangOptions .= "<option value=\"$idbarang\">$nmbarang</option>";
+// }
+
+
+
+
+<!-- <div class="col-lg-9">
+               <div class="card">
+                  <div class="card-body">
+                     <table id="example1" class="table table-bordered table-striped table-sm">
+                        <thead class="text-center">
+                           <tr>
+                              <th>#</th>
+                              <th>Barcode</th>
+                              <th>Product</th>
+                              <th>Grade</th>
+                              <th>Qty</th>
+                              <th>Pcs</th>
+                              <th>Author</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <?php
+                           $no = 1;
+                           $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.fullname, g.nmgrade FROM relabel r
+                                                   INNER JOIN barang b ON r.idbarang = b.idbarang
+                                                   INNER JOIN users u ON r.iduser = u.idusers
+                                                   LEFT JOIN grade g ON r.idgrade = g.idgrade
+                                                   ORDER BY r.kdbarcode DESC");
+                           while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $fullname = $tampil['fullname'];
+                              $nmbarang = $tampil['nmbarang'];
+                           ?>
+                              <tr class="text-center">
+                                 <td><?= $no; ?></td>
+                                 <td><?= $tampil['kdbarcode']; ?></td>
+                                 <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                                 <td><?= $tampil['nmgrade']; ?></td>
+                                 <td><?= $tampil['qty']; ?></td>
+                                 <td><?= $tampil['pcs']; ?></td>
+                                 <td><?= $fullname; ?></td>
+                              </tr>
+                           <?php
+                              $no++;
+                           }
+                           ?>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div> -->
