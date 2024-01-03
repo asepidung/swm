@@ -18,12 +18,15 @@ if (isset($_POST['submit'])) {
    $stmt_tally->bind_param("isssis", $idso, $sonumber, $notally, $deliverydate, $idcustomer, $po);
    $stmt_tally->execute();
 
+   // Dapatkan idtally yang baru saja diinput
+   $last_id = mysqli_insert_id($conn);
+
    $updateSql = "UPDATE salesorder SET progress = 'On Process' WHERE idso = '$idso'";
    mysqli_query($conn, $updateSql);
 
    $stmt_tally->close();
    $conn->close();
 
-   // header("location: tallydetail.php?idtally=$last_id");
-   header("location: index.php");
+   // Redirect ke halaman tallydetail.php dengan idtally baru
+   header("location: tallydetail.php?id=$last_id&stat=ready");
 }

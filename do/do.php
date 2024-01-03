@@ -15,7 +15,7 @@ include "../mainsidebar.php";
          <div class="row">
             <div class="col">
                <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <!-- <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a> -->
                <a href="dodetail.php"><button type="button" class="btn btn-outline-secondary"><i class="fas fa-eye"></i> Detail</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->

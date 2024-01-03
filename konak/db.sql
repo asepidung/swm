@@ -531,6 +531,7 @@ CREATE TABLE detailbahan (
   pcs INT,
   pod DATE,
   origin INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idrepack) REFERENCES repack (idrepack),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)

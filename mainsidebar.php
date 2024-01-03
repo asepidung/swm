@@ -58,7 +58,7 @@
             <li class="nav-item">
               <a href="../relabel/relabel.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Buat Label</p>
+                <p>Relabel</p>
               </a>
             </li>
           </ul>

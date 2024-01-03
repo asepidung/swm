@@ -8,18 +8,24 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// check if idboning is set in $_GET array
-$idusers = $_SESSION['idusers'];
-// Mengambil daftar barang
-$query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-$result = mysqli_query($conn, $query);
-$barangOptions = "";
-while ($row = mysqli_fetch_assoc($result)) {
-   $idbarang = $row['idbarang'];
-   $nmbarang = $row['nmbarang'];
-   $barangOptions .= "<option value=\"$idbarang\">$nmbarang</option>";
+if (isset($_POST['submit'])) {
+   $kdbarcode = $_POST['kdbarcode'];
+
+   // Query untuk mengecek apakah kdbarcode ada di tabel stock
+   $checkStockQuery = "SELECT * FROM stock WHERE kdbarcode = '$kdbarcode'";
+   $checkStockResult = mysqli_query($conn, $checkStockQuery);
+
+   if ($checkStockResult && mysqli_num_rows($checkStockResult) > 0) {
+      // Kdbarcode ada di tabel stock, lanjutkan ke halaman editrelabel2.php
+      header("location: editrelabel2.php?kdbarcode=$kdbarcode");
+      exit;
+   } else {
+      // Kdbarcode tidak ada di tabel stock, tampilkan pesan
+      echo "Data tidak ada di stock.";
+   }
 }
 ?>
+
 <div class="content-wrapper">
    <!-- /.content-header -->
    <div class="content-header">
@@ -36,10 +42,10 @@ while ($row = mysqli_fetch_assoc($result)) {
    <div class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                <div class="card">
                   <div class="card-body">
-                     <form method="POST" action="editrelabel.php">
+                     <form method="POST" action="editrelabel2.php">
                         <div class="form-group">
                            <label>Scan Here</label>
                            <input type="text" class="form-control text-center" name="kdbarcode" id="kdbarcode" autofocus>
@@ -50,52 +56,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                </div>
                <!-- /.card -->
             </div>
-            <div class="col-lg-8">
-               <div class="card">
-                  <div class="card-body">
-                     <table id="example1" class="table table-bordered table-striped table-sm">
-                        <thead class="text-center">
-                           <tr>
-                              <th>#</th>
-                              <th>Barcode</th>
-                              <th>Product</th>
-                              <th>Grade</th>
-                              <th>Qty</th>
-                              <th>Pcs</th>
-                              <th>Author</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           <?php
-                           $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT r.*, b.nmbarang, u.fullname, g.nmgrade FROM relabel r
-                                                   INNER JOIN barang b ON r.idbarang = b.idbarang
-                                                   INNER JOIN users u ON r.iduser = u.idusers
-                                                   LEFT JOIN grade g ON r.idgrade = g.idgrade
-                                                   ORDER BY r.kdbarcode DESC");
-                           while ($tampil = mysqli_fetch_array($ambildata)) {
-                              $fullname = $tampil['fullname'];
-                              $nmbarang = $tampil['nmbarang'];
-                           ?>
-                              <tr class="text-center">
-                                 <td><?= $no; ?></td>
-                                 <td><?= $tampil['kdbarcode']; ?></td>
-                                 <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                 <td><?= $tampil['nmgrade']; ?></td>
-                                 <td><?= $tampil['qty']; ?></td>
-                                 <td><?= $tampil['pcs']; ?></td>
-                                 <td><?= $fullname; ?></td>
-                              </tr>
-                           <?php
-                              $no++;
-                           }
-                           ?>
-                        </tbody>
-                     </table>
-                  </div>
-               </div>
-               <!-- /.card -->
-            </div>
+            <!-- tampilan -->
          </div>
       </div>
       <!-- /.container-fluid -->
@@ -104,6 +65,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <script>
    document.title = "Relabel";
 </script>
+
 <?php
 // require "../footnote.php";
 require "../footer.php";

@@ -88,9 +88,9 @@ $idrepack = $_GET['id'];
                               <?php
                               $ambildata = mysqli_query($conn, "SELECT detailbahan.*, barang.nmbarang
                               FROM detailbahan
-                              INNER JOIN barang ON detailbahan.idbarang = barang.idbarang
+                              JOIN barang ON detailbahan.idbarang = barang.idbarang
                               WHERE idrepack = $idrepack
-                              ORDER BY iddetailbahan DESC");
+                              ORDER BY detailbahan.creatime DESC");
 
                               while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                                  <tr class="text-center">
