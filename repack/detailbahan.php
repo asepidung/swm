@@ -91,6 +91,7 @@ $idrepack = $_GET['id'];
                               INNER JOIN barang ON detailbahan.idbarang = barang.idbarang
                               WHERE idrepack = $idrepack
                               ORDER BY iddetailbahan DESC");
+
                               while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                                  <tr class="text-center">
                                     <td><?= $tampil['barcode']; ?></td>
