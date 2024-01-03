@@ -41,7 +41,7 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
          throw new Exception("Query Insert Prepare Error: " . $conn->error);
       }
 
-      // Sesuaikan nama kolom 'weight' dengan 'qty' dalam bind_param
+      // Sesuaikan nama kolom 'weight' dengan 'qty', 'barcode' dengan 'kdbarcode' dalam bind_param
       $stmtInsert->bind_param('siidisi', $tallyDetailData['barcode'], $tallyDetailData['idgrade'], $tallyDetailData['idbarang'], $tallyDetailData['weight'], $tallyDetailData['pcs'], $tallyDetailData['pod'], $tallyDetailData['origin']);
       $stmtInsert->execute();
 
@@ -61,7 +61,7 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
       $conn->commit();
 
       // Kembalikan ke halaman tallydetail.php
-      header("Location: tallydetail.php?id=$id&stat=undeleted");
+      header("location: tallydetail.php?id=$id&stat=deleted");
    } catch (Exception $e) {
       // Rollback transaksi jika terjadi kesalahan
       $conn->rollback();

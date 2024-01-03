@@ -53,7 +53,7 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                  <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
                               <?php } elseif ($_GET['stat'] == "ready") { ?>
                                  <h3 class="headline text-secondary"> Ready To Scan</h3>
-                              <?php } elseif ($_GET['stat'] == "undeleted") { ?>
+                              <?php } elseif ($_GET['stat'] == "deleted") { ?>
                                  <h3 class="headline text-success"> Data berhasil dihapus</h3>
                               <?php } elseif ($_GET['stat'] == "duplicate") { ?>
                                  <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
