@@ -5,32 +5,25 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
-require "serialrelabel.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idusers = $_SESSION['idusers'];
-   // Query untuk mendapatkan nama barang
+   $kdbarcode = $_POST['kdbarcode'];
    $idbarang = $_POST['idbarang'];
-   $idgrade = $_POST['idgrade'];
+   $idgrade = $_POST['idgrade'][0]; // Ambil nilai pertama dari array idgrade
    $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
    $result = mysqli_query($conn, $query);
    $row = mysqli_fetch_assoc($result);
    $nmbarang = $row['nmbarang'];
    $packdate = $_POST['packdate'];
    $exp = $_POST['exp'];
-   // $kodeauto = $_POST['kodeauto'];
+
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
    $pembulatan = isset($_POST['pembulatan']) ? true : false;
-   // Memeriksa dan memecah nilai qty dan pcs
+
    $qty = null;
    $pcs = null;
    $qtyPcsInput = $_POST['qty'];
-   $_SESSION['idbarang'] = $_POST['idbarang'];
-   $_SESSION['idgrade'] = $_POST['idgrade'];
-   $_SESSION['packdate'] = $packdate;
-   $_SESSION['tenderstreach'] = $tenderstreachActive;
-   $_SESSION['pembulatan'] = $pembulatan;
-   $_SESSION['exp'] = $exp;
 
    if (strpos($qtyPcsInput, "/") !== false) {
       list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
@@ -38,17 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $qty = $qtyPcsInput;
    }
 
-   // Memformat qty menjadi 2 digit desimal di belakang koma
    $qty = number_format($qty, 2, '.', '');
 
    $query = "INSERT INTO relabel (idbarang, qty, idgrade, pcs, packdate, exp, kdbarcode, iduser)
-          VALUES ($idbarang, $qty, '$idgrade', '$pcs', '$packdate', '$exp', '$kodeauto', $idusers)";
+          VALUES ($idbarang, $qty, '$idgrade', '$pcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
 
    if (!mysqli_query($conn, $query)) {
       echo "Error: " . mysqli_error($conn);
    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -162,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <td height="20" colspan="4" align="center" valign="middle">
                <?php
                $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-               $barcode = $generator->getBarcode($kodeauto, $generator::TYPE_CODE_128);
+               $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
                echo '<img src="data:image/jpeg;base64,' . base64_encode($barcode) . '" alt="Barcode">';
                // echo $kodeauto;
                ?>
@@ -171,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          <tr>
             <td colspan="4" align="center">
                <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <?= $kodeauto; ?>
+                  <?= $kdbarcode; ?>
                </span>
             </td>
          </tr>
@@ -181,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       window.onload = function() {
          window.print();
          window.onafterprint = function() {
-            window.location.href = 'relabel.php';
+            window.location.href = 'index.php';
          };
          setTimeout(function() {
             window.close();
