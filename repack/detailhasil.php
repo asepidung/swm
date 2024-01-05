@@ -132,6 +132,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <table id="example1" class="table table-bordered table-striped table-sm">
                      <thead class="text-center">
                         <tr>
+                           <th>#</th>
                            <th>Barcode</th>
                            <th>Product</th>
                            <th>Kode</th>
@@ -142,6 +143,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                      </thead>
                      <tbody>
                         <?php
+                        $no = 1;
                         $ambildata = mysqli_query($conn, "SELECT detailhasil.*, barang.nmbarang, grade.nmgrade
                               FROM detailhasil
                               INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
@@ -149,11 +151,19 @@ while ($row = mysqli_fetch_assoc($result)) {
                               WHERE idrepack = $idrepack ORDER BY iddetailhasil DESC");
                         while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                            <tr class="text-center">
+                              <td><?= $no; ?></td>
                               <td><?= $tampil['kdbarcode']; ?></td>
                               <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                               <td><?= $tampil['nmgrade']; ?></td>
                               <td><?= $tampil['qty']; ?></td>
-                              <td><?= $tampil['pcs']; ?></td>
+                              <?php
+                              if ($tampil['pcs'] < 1) {
+                                 $pcs = "";
+                              } else {
+                                 $pcs = $tampil['pcs'];
+                              }
+                              ?>
+                              <td><?= $pcs; ?></td>
                               <td class="text-center">
                                  <a href="deletedetailhasil.php?iddetail=<?= $tampil['iddetailhasil']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
                                     <i class="far fa-times-circle"></i>
@@ -161,6 +171,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               </td>
                            </tr>
                         <?php
+                           $no++;
                         }
                         ?>
                      </tbody>

@@ -64,7 +64,7 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                               <?php } elseif ($_GET['stat'] == "unknown") { ?>
                                  <a href="tallymanual.php?id=<?= $idtally ?>">
                                     <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
-                                       Manual ADD <i class="fas fa-arrow-circle-right"></i>
+                                       Stock In Manual <i class="fas fa-arrow-circle-right"></i>
                                     </span>
                                  </a>
                               <?php } ?>
@@ -112,7 +112,14 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                     <td><?= $barcode; ?></td>
                                     <td class="text-left"><?= $nmbarang; ?></td>
                                     <td><?= $tampil['weight']; ?></td>
-                                    <td><?= $tampil['pcs']; ?></td>
+                                    <?php
+                                    if ($tampil['pcs'] < 1) {
+                                       $pcs = "";
+                                    } else {
+                                       $pcs = $tampil['pcs'];
+                                    }
+                                    ?>
+                                    <td><?= $pcs; ?></td>
                                     <?php
                                     if ($daysDiff >= 14) { ?>
                                        <td class="text-danger">

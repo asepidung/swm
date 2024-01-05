@@ -49,6 +49,24 @@ $origin = substr($barcodeValue, 0, 1);
                         </div>
                         <div class="col">
                            <div class="form-group">
+                              <div class="input-group">
+                                 <select class="form-control" name="idgrade[]" id="idgrade" required>
+                                    <option value="">--Pilih Grade--</option>
+                                    <?php
+                                    $querygrade = "SELECT * FROM grade ORDER BY nmgrade ASC";
+                                    $resultgrade = mysqli_query($conn, $querygrade);
+                                    while ($row = mysqli_fetch_assoc($resultgrade)) {
+                                       $idgrade = $row['idgrade'];
+                                       $nmgrade = $row['nmgrade'];
+                                       echo '<option value="' . $idgrade . '">' . $nmgrade . '</option>';
+                                    }
+                                    ?>
+                                 </select>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col">
+                           <div class="form-group">
                               <input type="text" placeholder="Kg" class="form-control text-center" name="weight" id="weight" required>
                            </div>
                         </div>

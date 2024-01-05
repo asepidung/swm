@@ -72,9 +72,25 @@ $idrepack = $_GET['id'];
                <div class="col-lg-8">
                   <div class="card">
                      <div class="card-body">
+                        <?php
+                        $no = 1;
+                        // Contoh query SQL dengan JOIN untuk mengambil data detailbahan dan nama barang
+                        $query = "SELECT detailbahan.*, barang.nmbarang
+                        FROM detailbahan
+                        JOIN barang ON detailbahan.idbarang = barang.idbarang
+                        WHERE detailbahan.idrepack = $idrepack
+                        ORDER BY detailbahan.creatime DESC, detailbahan.iddetailbahan DESC";
+                        $result = mysqli_query($conn, $query);
+
+                        // Mengecek apakah query berhasil dijalankan
+                        if (!$result) {
+                           die("Query Error: " . mysqli_error($conn));
+                        }
+                        ?>
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
+                                 <th>#</th>
                                  <th>Barcode</th>
                                  <th>Item</th>
                                  <th>Kg</th>
@@ -86,42 +102,60 @@ $idrepack = $_GET['id'];
                            </thead>
                            <tbody>
                               <?php
-                              $ambildata = mysqli_query($conn, "SELECT detailbahan.*, barang.nmbarang
-                              FROM detailbahan
-                              JOIN barang ON detailbahan.idbarang = barang.idbarang
-                              WHERE idrepack = $idrepack
-                              ORDER BY detailbahan.creatime DESC");
-
-                              while ($tampil = mysqli_fetch_array($ambildata)) { ?>
+                              // Loop untuk menampilkan data ke dalam tabel HTML
+                              while ($row = mysqli_fetch_assoc($result)) {
+                                 $barcode = $row['barcode'];
+                                 $nmbarang = $row['nmbarang'];
+                                 $qty = $row['qty'];
+                                 $pod = $row['pod'];
+                                 $origin = $row['origin'];
+                              ?>
                                  <tr class="text-center">
-                                    <td><?= $tampil['barcode']; ?></td>
-                                    <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                    <td><?= $tampil['qty']; ?></td>
-                                    <td><?= $tampil['pcs']; ?></td>
-                                    <td><?= $tampil['pod']; ?></td>
+                                    <td><?= $no; ?></td>
+                                    <td><?= $barcode ?></td>
+                                    <td class="text-left"><?= $nmbarang; ?></td>
+                                    <td><?= $qty; ?></td>
+                                    <?php
+                                    if ($row['pcs'] < 1) {
+                                       $pcs = "";
+                                    } else {
+                                       $pcs = $row['pcs'];
+                                    }
+                                    ?>
+                                    <td><?= $pcs; ?></td>
+                                    <td><?= $pod; ?></td>
                                     <td>
                                        <?php
-                                       $origin = $tampil['origin'];
-                                       if ($origin == 1) {
-                                          echo "BONING";
-                                       } elseif ($origin == 2) {
-                                          echo "TRADING";
-                                       } elseif ($origin == 3) {
-                                          echo "REPACK";
-                                       } elseif ($origin == 4) {
-                                          echo "RELABEL";
-                                       } else {
-                                          echo "Unindentified";
+                                       // Konversi nilai origin menjadi teks
+                                       switch ($origin) {
+                                          case 1:
+                                             echo "BONING";
+                                             break;
+                                          case 2:
+                                             echo "TRADING";
+                                             break;
+                                          case 3:
+                                             echo "REPACK";
+                                             break;
+                                          case 4:
+                                             echo "RELABEL";
+                                             break;
+                                          default:
+                                             echo "Unidentified";
+                                             break;
                                        }
                                        ?>
                                     </td>
                                     <td class="text-center">
-                                       <a href="deletedetailbahan.php?iddetail=<?= $tampil['iddetailbahan']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
+                                       <a href="deletedetailbahan.php?iddetail=<?= $row['iddetailbahan']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
                                           <i class="far fa-times-circle"></i>
                                        </a>
                                     </td>
                                  </tr>
-                              <?php } ?>
+                              <?php
+                                 $no++;
+                              }
+                              ?>
                            </tbody>
                         </table>
                      </div>
