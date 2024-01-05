@@ -53,6 +53,8 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                  <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
                               <?php } elseif ($_GET['stat'] == "ready") { ?>
                                  <h3 class="headline text-secondary"> Ready To Scan</h3>
+                              <?php } elseif ($_GET['stat'] == "updated") { ?>
+                                 <h3 class="headline text-success"> Data Updated</h3>
                               <?php } elseif ($_GET['stat'] == "deleted") { ?>
                                  <h3 class="headline text-success"> Data berhasil dihapus</h3>
                               <?php } elseif ($_GET['stat'] == "duplicate") { ?>
@@ -98,6 +100,7 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
+                                 $barcode = $tampil['barcode'];
                                  $pod = $tampil['pod'];
                                  $podDate = new DateTime($pod);
                                  $today = new DateTime();
@@ -106,15 +109,23 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                               ?>
                                  <tr class="text-center">
                                     <td><?= $no; ?></td>
-                                    <td><?= $tampil['barcode']; ?></td>
+                                    <td><?= $barcode; ?></td>
                                     <td class="text-left"><?= $nmbarang; ?></td>
                                     <td><?= $tampil['weight']; ?></td>
                                     <td><?= $tampil['pcs']; ?></td>
                                     <?php
                                     if ($daysDiff >= 14) { ?>
-                                       <td class="text-danger"><?= $daysDiff . " " . "Hari"; ?></td>
+                                       <td class="text-danger">
+                                          <a href="editlabel.php?kdbarcode=<?= $barcode ?>&idtally=<?= $idtally ?>">
+                                             <?= $daysDiff . " " . "Hari"; ?>
+                                          </a>
+                                       </td>
                                     <?php } else { ?>
-                                       <td><?= $daysDiff . " " . "Hari"; ?></td>
+                                       <td>
+                                          <a href="editlabel.php?kdbarcode=<?= $barcode ?>&idtally=<?= $idtally ?>">
+                                             <?= $daysDiff . " " . "Hari"; ?>
+                                          </a>
+                                       </td>
                                     <?php  } ?>
                                     <td>
                                        <?php
@@ -144,6 +155,7 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                               }
                               ?>
                            </tbody>
+
                         </table>
                      </div>
                   </div>
