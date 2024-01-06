@@ -55,6 +55,7 @@ require "boningtotal.php";
         <div class="col-sm-6">
           <!-- <h1 class="m-0">DATA BONING</h1> -->
           <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> BONING</button></a>
+          <!-- <a href="stockin.php?id=<?= $idboning ?>" onclick="return confirmStockIn()"><button type="button" class="btn btn-sm btn-warning"><i class="fas fa-boxes"></i> STOCK IN</button></a> -->
         </div><!-- /.col -->
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->

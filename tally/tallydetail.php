@@ -55,6 +55,8 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                  <h3 class="headline text-secondary"> Ready To Scan</h3>
                               <?php } elseif ($_GET['stat'] == "updated") { ?>
                                  <h3 class="headline text-success"> Data Updated</h3>
+                              <?php } elseif ($_GET['stat'] == "manual") { ?>
+                                 <h3 class="headline text-danger"> Silahkan Scan Ulang !</h3>
                               <?php } elseif ($_GET['stat'] == "deleted") { ?>
                                  <h3 class="headline text-success"> Data berhasil dihapus</h3>
                               <?php } elseif ($_GET['stat'] == "duplicate") { ?>

@@ -10,12 +10,13 @@ require "../konak/conn.php";
 if (isset($_GET['id']) && isset($_GET['idboning'])) {
    $idlabelboning = $_GET['id'];
    $idboning = $_GET['idboning'];
+   $kdbarcode = $_GET['kdbarcode'];
 
    // Lakukan penghapusan data dari tabel labelboning
    $hapusdata = mysqli_query($conn, "DELETE FROM labelboning WHERE idlabelboning = '$idlabelboning'");
-
+   $hapusstock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
    // Periksa apakah penghapusan data berhasil dilakukan
-   if ($hapusdata) {
+   if ($hapusstock) {
       // Jika berhasil, arahkan kembali ke halaman sebelumnya dengan pesan sukses dan idboning yang dilewatkan sebagai parameter query string
       echo "<script>alert('Data berhasil dihapus.'); window.location='labelboning.php?id=$idboning';</script>";
    } else {

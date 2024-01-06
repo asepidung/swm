@@ -116,7 +116,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 </div>
                 <!-- ... -->
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
+                  <input class="form-check-input" checked type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
                   <label class="form-check-label">Aktifkan Tenderstreatch</label>
                 </div>
                 <!-- ... -->
@@ -178,7 +178,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $fullname; ?></td>
                       <td>
-                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                           <i class="far fa-times-circle"></i>
                         </a>
                       </td>

@@ -44,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade)
 VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')");
+
+$stockin = mysqli_query($conn, "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
+VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
 ?>
 
 <!DOCTYPE html>

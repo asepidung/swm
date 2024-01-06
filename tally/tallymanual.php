@@ -67,7 +67,7 @@ $origin = substr($barcodeValue, 0, 1);
                         </div>
                         <div class="col">
                            <div class="form-group">
-                              <input type="text" placeholder="Kg" class="form-control text-center" name="weight" id="weight" required>
+                              <input type="text" placeholder="Kg" class="form-control text-center" name="qty" id="qty" required>
                            </div>
                         </div>
                         <div class="col">
