@@ -139,7 +139,7 @@ require "hitungantally.php";
                <th colspan="9" class="">Box</th>
                <th class="text-center "><?= $totalBox ?></th>
                <th class="">Kg</th>
-               <th class=""><?= $totalQty ?></th>
+               <th class=""><?= number_format($totalQty, 2) ?></th>
             </tr>
          </tfoot>
       </table>

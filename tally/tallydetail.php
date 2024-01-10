@@ -275,7 +275,7 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                  <th class="text-center"><?= number_format($totalPO); ?></th>
                                  <th><?= number_format($totalQty, 2); ?></th>
                                  <th class="text-center"><?= number_format($totalBox); ?></th>
-                                 <th><?= $totalBalance; ?></th>
+                                 <th><?= number_format($totalBalance, 2); ?></th>
                               </tr>
                            </tfoot>
                         </table>
