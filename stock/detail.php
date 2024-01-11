@@ -32,6 +32,7 @@ $sql = "SELECT
         GROUP BY s.idbarang, s.idgrade, b.nmbarang, g.nmgrade
         ORDER BY b.nmbarang";
 
+
 $result = $conn->query($sql);
 
 // Close the database connection
@@ -43,7 +44,8 @@ $conn->close();
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-12 mt-3">
+        <div class="col-8 mt-3">
+          <a href="index.php" class="btn btn-primary mb-2">Summary</a>
           <div class="card">
             <div class="card-body">
               <div class="col">
@@ -64,30 +66,38 @@ $conn->close();
 
                     if ($result->num_rows > 0) {
                       while ($row = $result->fetch_assoc()) {
+                        // echo "Processing data for idbarang: " . $row['idbarang'] . " and nmgrade: " . $row['nmgrade'] . "<br>";
+
                         if ($currentIdbarang !== $row['idbarang']) {
                           // Start a new group with a new nmgrade
                           $currentIdbarang = $row['idbarang'];
                     ?>
                           <tr class="text-center">
                             <td><?= $no; ?></td>
-                            <td><?= $row['nmgrade']; ?></td>
-                            <td class="text-left"><?= $row['nmbarang']; ?></td>
+                            <td><?= $row['nmgrade'] ? $row['nmgrade'] : '-'; ?></td>
+                            <td class="text-left">
+                              <a href="detailitem.php?id=<?= $row['idbarang']; ?>">
+                                <?= $row['nmbarang']; ?>
+                              </a>
+                            </td>
                             <td><?= $row['total_box']; ?></td>
                             <td class="text-right"><?= number_format($row['total_qty'], 2); ?></td>
                           </tr>
                         <?php
+                          // echo "Processed data for idbarang: " . $row['idbarang'] . " and nmgrade: " . $row['nmgrade'] . "<br>";
                           $no++;
                         } else {
                           // For subsequent rows in the same idbarang group, only display nmbarang, total_box, and total_qty
                         ?>
                           <tr class="text-center">
                             <td><?= $no; ?></td>
-                            <td></td> <!-- Leave this cell empty for subsequent rows in the same idbarang group -->
+                            <td><?= $row['nmgrade'] ? $row['nmgrade'] : '-'; ?></td> <!-- Leave this cell empty for subsequent rows in the same idbarang group -->
                             <td class="text-left"><?= $row['nmbarang']; ?></td>
                             <td><?= $row['total_box']; ?></td>
                             <td class="text-right"><?= number_format($row['total_qty'], 2); ?></td>
                           </tr>
                     <?php
+                          // echo "Processed data for idbarang: " . $row['idbarang'] . " and nmgrade: " . $row['nmgrade'] . "<br>";
                           $no++;
                         }
                       }

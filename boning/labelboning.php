@@ -153,21 +153,29 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <th>Qty</th>
                     <th>Pcs</th>
                     <th>Author</th>
-                    <th>Hapus</th>
                     <th>Create</th>
+                    <th>Hapus</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade FROM labelboning l
-                  JOIN barang b ON l.idbarang = b.idbarang 
-                  JOIN boning bo ON l.idboning = bo.idboning
-                  JOIN grade g ON l.idgrade = g.idgrade
-                  JOIN users u ON l.iduser = u.idusers
-                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+  JOIN barang b ON l.idbarang = b.idbarang 
+  JOIN boning bo ON l.idboning = bo.idboning
+  JOIN grade g ON l.idgrade = g.idgrade
+  JOIN users u ON l.iduser = u.idusers
+  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $fullname = $tampil['fullname'];
+
+                    // Query untuk memeriksa keberadaan kdbarcode di tabel tallydetail
+                    $kdbarcode = $tampil['kdbarcode'];
+                    $checkBarcodeQuery = "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'";
+                    $result = mysqli_query($conn, $checkBarcodeQuery);
+                    $row = mysqli_fetch_assoc($result);
+                    $barcodeExist = $row['total'] > 0;
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -177,18 +185,21 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td><?= $tampil['qty']; ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $fullname; ?></td>
+                      <td><?= date("H:i:s", strtotime($tampil['dibuat'])); ?></td>
                       <td>
-                        <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
-                          <i class="far fa-times-circle"></i>
-                        </a>
+                        <?php if ($barcodeExist) { ?>
+                          <i class="fas fa-poo fa-lg"></i>
+                        <?php } else { ?>
+                          <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
+                            <i class="far fa-times-circle"></i>
+                          </a>
+                        <?php } ?>
                       </td>
-                      <td><?= date("d-M-y H:i:s", strtotime($tampil['dibuat'])); ?></td>
                     </tr>
                   <?php
                     $no++;
                   }
                   ?>
-
                 </tbody>
               </table>
             </div>

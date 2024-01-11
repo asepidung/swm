@@ -139,6 +139,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                            <th>Qty</th>
                            <th>Pcs</th>
                            <th>Hapus</th>
+                           <th>Create</th>
                         </tr>
                      </thead>
                      <tbody>
@@ -165,10 +166,31 @@ while ($row = mysqli_fetch_assoc($result)) {
                               ?>
                               <td><?= $pcs; ?></td>
                               <td class="text-center">
-                                 <a href="deletedetailhasil.php?iddetail=<?= $tampil['iddetailhasil']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
-                                    <i class="far fa-times-circle"></i>
-                                 </a>
+                                 <?php
+                                 $kdbarcode = $tampil['kdbarcode'];
+                                 $idrepack = $tampil['idrepack'];
+
+                                 // Query untuk memeriksa keberadaan kdbarcode di tabel tallydetail
+                                 $queryCheckExistence = "SELECT COUNT(*) as count FROM tallydetail WHERE barcode = '$kdbarcode'";
+                                 $resultCheckExistence = mysqli_query($conn, $queryCheckExistence);
+                                 $rowCheckExistence = mysqli_fetch_assoc($resultCheckExistence);
+
+                                 // Jika kdbarcode sudah ada di tabel tallydetail, tampilkan ikon abu-abu
+                                 if ($rowCheckExistence['count'] > 0) {
+                                 ?>
+                                    <i class="fas fa-poo fa-lg"></i>
+                                 <?php
+                                 } else {
+                                    // Jika kdbarcode belum ada di tabel tallydetail, tampilkan tautan penghapusan
+                                 ?>
+                                    <a href="deletedetailhasil.php?iddetail=<?= $tampil['iddetailhasil']; ?>&id=<?= $idrepack; ?>" class="text-danger" onclick="return confirm('Yakin?')">
+                                       <i class="far fa-times-circle"></i>
+                                    </a>
+                                 <?php
+                                 }
+                                 ?>
                               </td>
+                              <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
                            </tr>
                         <?php
                            $no++;
@@ -183,6 +205,48 @@ while ($row = mysqli_fetch_assoc($result)) {
          <div class="col-md-3">
             <div class="card">
                <div class="card-body">
+                  <strong>BAHAN</strong>
+                  <table class="table table-bordered table-striped table-sm mb-3">
+                     <thead class="text-center">
+                        <tr>
+                           <th>NAMA BARANG</th>
+                           <th>BOX</th>
+                           <th>QTY</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <?php
+                        $query = "SELECT detailbahan.idbarang, barang.nmbarang, SUM(detailbahan.qty) AS total_qty, COUNT(detailbahan.qty) AS count_qty
+                              FROM detailbahan
+                              INNER JOIN barang ON detailbahan.idbarang = barang.idbarang
+                              WHERE detailbahan.idrepack = $idrepack
+                              GROUP BY detailbahan.idbarang, barang.nmbarang";
+                        $result = mysqli_query($conn, $query);
+                        while ($row = mysqli_fetch_assoc($result)) { ?>
+                           <tr>
+                              <td><?= $row['nmbarang'] ?></td>
+                              <td class="text-center"><?= $row['count_qty'] ?></td>
+                              <td class="text-right"><?= number_format($row['total_qty'], 2) ?></td>
+                           </tr>
+                        <?php }
+                        ?>
+                     </tbody>
+                     <tfoot>
+                        <?php
+                        $queryhasil = "SELECT SUM(detailbahan.qty) AS hasilqty, COUNT(detailbahan.qty) AS hasilbox
+                              FROM detailbahan
+                              WHERE detailbahan.idrepack = $idrepack";
+                        $resulthasil = mysqli_query($conn, $queryhasil);
+                        $rowhasil = mysqli_fetch_assoc($resulthasil);
+                        ?>
+                        <tr class="text-right">
+                           <th>TOTAL</th>
+                           <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
+                           <th><?= number_format($rowhasil['hasilqty'], 2); ?></th>
+                        </tr>
+                     </tfoot>
+                  </table>
+                  <strong>HASIL</strong>
                   <table class="table table-bordered table-striped table-sm">
                      <thead class="text-center">
                         <tr>

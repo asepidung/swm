@@ -336,15 +336,7 @@ CREATE TABLE returjualdetail (
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
 );
--- stock adalah jumlah sisa barang dari transaksi diatas
-CREATE TABLE stock (
-  idstock INT PRIMARY KEY AUTO_INCREMENT,
-  idgrade INT,
-  idbarang INT,
-  jumlah DECIMAL (12,2),
-  FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
-  FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
-);
+
 CREATE TABLE rawmate (
   idrawmate INT PRIMARY KEY AUTO_INCREMENT,
   kdrawmate VARCHAR(10),

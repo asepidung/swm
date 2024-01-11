@@ -164,7 +164,8 @@ $idrepack = $_GET['id'];
                <div class="col-lg-4">
                   <div class="card">
                      <div class="card-body">
-                        <table class="table table-bordered table-striped table-sm">
+                        <strong>BAHAN</strong>
+                        <table class="table table-bordered table-striped table-sm mb-3">
                            <thead class="text-center">
                               <tr>
                                  <th>NAMA BARANG</th>
@@ -194,6 +195,47 @@ $idrepack = $_GET['id'];
                               $queryhasil = "SELECT SUM(detailbahan.qty) AS hasilqty, COUNT(detailbahan.qty) AS hasilbox
                               FROM detailbahan
                               WHERE detailbahan.idrepack = $idrepack";
+                              $resulthasil = mysqli_query($conn, $queryhasil);
+                              $rowhasil = mysqli_fetch_assoc($resulthasil);
+                              ?>
+                              <tr class="text-right">
+                                 <th>TOTAL</th>
+                                 <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
+                                 <th><?= number_format($rowhasil['hasilqty'], 2); ?></th>
+                              </tr>
+                           </tfoot>
+                        </table>
+                        <strong>HASIL</strong>
+                        <table class="table table-bordered table-striped table-sm">
+                           <thead class="text-center">
+                              <tr>
+                                 <th>NAMA BARANG</th>
+                                 <th>BOX</th>
+                                 <th>QTY</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <?php
+                              $query = "SELECT detailhasil.idbarang, barang.nmbarang, SUM(detailhasil.qty) AS total_qty, COUNT(detailhasil.qty) AS count_qty
+                              FROM detailhasil
+                              INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
+                              WHERE detailhasil.idrepack = $idrepack
+                              GROUP BY detailhasil.idbarang, barang.nmbarang";
+                              $result = mysqli_query($conn, $query);
+                              while ($row = mysqli_fetch_assoc($result)) { ?>
+                                 <tr>
+                                    <td><?= $row['nmbarang'] ?></td>
+                                    <td class="text-center"><?= $row['count_qty'] ?></td>
+                                    <td class="text-right"><?= number_format($row['total_qty'], 2) ?></td>
+                                 </tr>
+                              <?php }
+                              ?>
+                           </tbody>
+                           <tfoot>
+                              <?php
+                              $queryhasil = "SELECT SUM(detailhasil.qty) AS hasilqty, COUNT(detailhasil.qty) AS hasilbox
+                              FROM detailhasil
+                              WHERE detailhasil.idrepack = $idrepack";
                               $resulthasil = mysqli_query($conn, $queryhasil);
                               $rowhasil = mysqli_fetch_assoc($resulthasil);
                               ?>

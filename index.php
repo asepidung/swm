@@ -530,7 +530,7 @@ include "kebutuhanindex.php";
                      <div class="small-box bg-info">
                         <div class="inner">
                            <?php
-                           $query = "SELECT COUNT(*) as jumlah_plandev FROM plandev WHERE plandelivery >= CURDATE()";
+                           $query = "SELECT COUNT(*) as jumlah_plandev FROM plandev WHERE plandelivery > CURDATE()";
                            $result = mysqli_query($conn, $query);
                            $row = mysqli_fetch_assoc($result);
                            $jumlah_plandev = $row['jumlah_plandev'];
