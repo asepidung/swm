@@ -41,9 +41,11 @@ $result = $conn->query($sql);
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 mt-3">
+               <a href="detail.php" class="btn btn-primary mb-2">Detail</a>
                <div class="card">
                   <div class="card-body">
                      <div class="col">
+
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
@@ -113,7 +115,6 @@ $result = $conn->query($sql);
                                  ?>
                               </tr>
                            </tfoot>
-
                         </table>
                      </div>
                   </div>

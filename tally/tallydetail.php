@@ -148,6 +148,8 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                           echo "RELABEL";
                                        } elseif ($origin == 5) {
                                           echo "IMPORT";
+                                       } elseif ($origin == 6) {
+                                          echo "RTN";
                                        } else {
                                           echo "Unindentified";
                                        }

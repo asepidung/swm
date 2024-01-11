@@ -320,13 +320,9 @@ CREATE TABLE returjual (
   returdate DATE,
   idcustomer INT,
   note VARCHAR(255),
-  xbox INT,
-  xweight DECIMAL(12,2),
-  iddo INT,
   idusers INT,
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
-  FOREIGN KEY (iddo) REFERENCES do (iddo),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
 );
 CREATE TABLE returjualdetail (
@@ -334,9 +330,8 @@ CREATE TABLE returjualdetail (
   idreturjual INT,
   idgrade INT,
   idbarang INT,
-  box INT,
-  weight DECIMAL(6,2),
-  notes VARCHAR(100),
+  kdbarcode VARCHAR(30),
+  qty DECIMAL(6,2),
   FOREIGN KEY (idreturjual) REFERENCES returjual (idreturjual),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)

@@ -128,7 +128,7 @@ $result_detail = mysqli_query($conn, $query_detail);
     ?>
       <tr align="center">
         <td><?= $no ?></td>
-        <td><?= $row_detail['nmgrade'] . $row_detail['kdbarang']; ?></td>
+        <td><?= $row_detail['kdbarang']; ?></td>
         <td align="left"><span class="data"><?= $row_detail['nmbarang']; ?></span></td>
         <td><?= $row_detail['box']; ?></td>
         <td align="right"><span class="data"><?= number_format($row_detail['weight'], 2); ?></span></td>

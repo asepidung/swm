@@ -157,6 +157,19 @@ $result_detail = mysqli_query($conn, $query_detail);
          ?>
       </p>
    </i>
+   <table width="100%">
+      <tr align="center">
+         <td width="20%">Warehouse <br><br><br><br><br> ....................................</td>
+         <td width="20%">QC/QA <br><br><br><br><br> ....................................</td>
+         <td width="20%">Driver <br><br><br><br><br> ....................................</td>
+         <td width="20%">Security <br><br><br><br><br> ....................................</td>
+         <td width="20%">Customer <br><br><br><br><br> ....................................</td>
+      </tr>
+   </table>
+   <br>
+   <p class="small-text" align="right">
+      Made By <?= $row_do['fullname'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
+   </p>
    <script>
       document.title = "<?php echo $row_do['donumber']; ?>";
    </script>

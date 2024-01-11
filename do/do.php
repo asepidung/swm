@@ -9,27 +9,20 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
-   <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
             <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
-               <!-- <a href="newdo.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a> -->
                <a href="dodetail.php"><button type="button" class="btn btn-outline-secondary"><i class="fas fa-eye"></i> Detail</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
-   <!-- /.content-header -->
-
-   <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
             <div class="col-12">
                <div class="card">
-                  <!-- /.card-header -->
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
@@ -86,20 +79,27 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
-                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="mx-auto p-2">
-                                          <span class="text-info"><i class="fas fa-print"></i></span>
+                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary">
+                                          <i class="fas fa-print"></i>
                                        </a>
-                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="mx-auto p-2">
-                                          <span class="text-success"><i class="fas fa-edit"></i></span>
+                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning">
+                                          <i class="fas fa-edit"></i>
                                        </a>
-                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="mx-auto p-2">
-                                          <span class="text-danger"><i class="fas fa-trash"></i></span>
+                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-sm btn-danger">
+                                          <i class="fas fa-trash"></i>
                                        </a>
                                     <?php } else { ?>
                                        <div class="row">
                                           <div class="col">
-                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" target="_blank" class="btn btn-sm btn-success">
-                                                <i class="fas fa-edit"></i> print </a>
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-print"></i>
+                                             </a>
+                                             <a href="#" class="btn btn-sm btn-secondary">
+                                                <i class="fas fa-edit"></i>
+                                             </a>
+                                             <a href="#" class="btn btn-sm btn-secondary">
+                                                <i class="fas fa-trash"></i>
+                                             </a>
                                           </div>
                                        </div>
                                     <?php } ?>
@@ -117,24 +117,15 @@ include "../mainsidebar.php";
                         </tfoot>
                      </table>
                   </div>
-                  <!-- /.card-body -->
                </div>
-               <!-- /.card -->
             </div>
-            <!-- /.col -->
          </div>
-         <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 
 <script>
-   // Mengubah judul halaman web
    document.title = "Delivery Order";
 </script>
 <?php
-// require "../footnote.php";
 include "../footer.php" ?>

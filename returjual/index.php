@@ -34,9 +34,8 @@ include "../mainsidebar.php";
                            <tr>
                               <th>#</th>
                               <th>Return Number</th>
-                              <th>DO Number</th>
                               <th>Customer</th>
-                              <th>xQty</th>
+                              <th>Total qty</th>
                               <th>Catatan</th>
                               <th>Made By</th>
                               <th>Actions</th>
@@ -53,22 +52,23 @@ include "../mainsidebar.php";
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
                                  <td class="text-center"><?= $tampil['returnnumber']; ?></td>
-                                 <td class="text-center">
-                                    <?php if ($tampil['donumber'] == null) { ?>
-                                       <span class="text-danger">Unindentified</span>
-                                    <?php } else {
-                                       echo $tampil['donumber'];
-                                    } ?>
-                                 </td>
                                  <td><?= $tampil['nama_customer']; ?></td>
-                                 <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
+                                 <td></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="lihatreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-eye"></i> Lihat</a>
-                                    <a href="printreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-primary"><i class="fas fa-print"></i> Print</a>
-                                    <a href="editreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-success"><i class="fas fa-pencil-alt"></i> Edit</a>
-                                    <a href="deletereturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="mx-auto p-1 text-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')"><i class="fas fa-minus-circle"></i> Delete</a>
+                                    <a href="detailrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-secondary">
+                                       <i class="fas fa-barcode"></i>
+                                    </a>
+                                    <a href="lihatrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-primary">
+                                       <i class="far fa-eye"></i>
+                                    </a>
+                                    <a href="printrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-success">
+                                       <i class="fas fa-print"></i></a>
+                                    <a href="editrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-warning">
+                                       <i class="fas fa-pencil-alt"></i></a>
+                                    <a href="editrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
+                                       <i class="fas fa-minus-circle"></i></a>
                                  </td>
                               </tr>
                            <?php $no++;

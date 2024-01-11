@@ -24,6 +24,17 @@
   <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <link rel="stylesheet" href="../plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+  <style>
+    body {
+      font-size: 13px;
+      /* Sesuaikan dengan ukuran font yang diinginkan */
+    }
+
+    .fas {
+      font-size: 0.85em;
+    }
+  </style>
+
 </head>
 <div class="wrapper">
 
