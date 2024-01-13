@@ -124,8 +124,8 @@ $rowtally = mysqli_fetch_assoc($resulttally);
                                     <td><?= $pcs; ?></td>
                                     <?php
                                     if ($daysDiff >= 14) { ?>
-                                       <td class="text-danger">
-                                          <a href="editlabel.php?kdbarcode=<?= $barcode ?>&idtally=<?= $idtally ?>">
+                                       <td>
+                                          <a href="editlabel.php?kdbarcode=<?= $barcode ?>&idtally=<?= $idtally ?>" class="text-danger">
                                              <?= $daysDiff . " " . "Hari"; ?>
                                           </a>
                                        </td>

@@ -42,7 +42,7 @@ require "../mainsidebar.php";
                               <th>Qty</th>
                               <th>Pcs</th>
                               <th>Time</th>
-                              <!-- <th>Author</th> -->
+                              <th>Hapus</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -65,7 +65,11 @@ require "../mainsidebar.php";
                                  <td><?= $tampil['qty']; ?></td>
                                  <td><?= $tampil['pcs']; ?></td>
                                  <td><?= date('d-M-Y', strtotime($tampil['dibuat'])); ?></td>
-                                 <!-- <td><?= $fullname; ?></td> -->
+                                 <td>
+                                    <a href="hapusrelabel.php?id=<?= $tampil['idrelabel']; ?>" class="text-danger">
+                                       <i class="far fa-times-circle"></i>
+                                    </a>
+                                 </td>
                               </tr>
                            <?php
                               $no++;

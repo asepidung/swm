@@ -165,6 +165,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               }
                               ?>
                               <td><?= $pcs; ?></td>
+                              <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
                               <td class="text-center">
                                  <?php
                                  $kdbarcode = $tampil['kdbarcode'];
@@ -190,7 +191,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                  }
                                  ?>
                               </td>
-                              <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
                            </tr>
                         <?php
                            $no++;
