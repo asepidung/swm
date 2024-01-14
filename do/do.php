@@ -12,11 +12,35 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col">
-               <a href="dodetail.php"><button type="button" class="btn btn-outline-secondary"><i class="fas fa-eye"></i> Detail</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+            <div class="col-7">
+               <a href="dodetail.php"><button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Detail Delivery</button></a>
+            </div>
+            <div class="col-5 row">
+               <div class="col">
+                  <form method="POST" action="your_action_page.php">
+                     <div class="form-group row align-items-center">
+                        <label for="awal" class="col-form-label col-sm-4">Periode :</label>
+                        <div class="col-8">
+                           <input type="date" class="form-control form-control-sm" name="awal" value="<?= date('Y-m-01'); ?>">
+                        </div>
+                     </div>
+                     <!-- ... (form action and submit button can be added here) ... -->
+                  </form>
+               </div>
+               <div class="col">
+                  <form method="POST" action="your_action_page.php">
+                     <div class="form-group row align-items-center">
+                        <label for="akhir" class="col-form-label col-sm-4">Sampai</label>
+                        <div class="col-8">
+                           <input type="date" class="form-control form-control-sm" name="akhir" value="<?= date('Y-m-d'); ?>">
+                        </div>
+                     </div>
+                     <!-- ... (form action and submit button can be added here) ... -->
+                  </form>
+               </div>
+            </div>
+         </div><!-- /.container-fluid -->
+      </div>
    </div>
    <section class="content">
       <div class="container-fluid">
@@ -49,10 +73,15 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
+                           $awal = mysqli_real_escape_string($conn, $_POST["awal"]); // Pastikan untuk melindungi dari SQL injection
+                           $akhir = mysqli_real_escape_string($conn, $_POST["akhir"]); // Pastikan untuk melindungi dari SQL injection
+
+                           $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
-                           JOIN customers ON do.idcustomer = customers.idcustomer
-                           JOIN users ON do.idusers = users.idusers
-                           ORDER BY iddo DESC;
+                              JOIN customers ON do.idcustomer = customers.idcustomer
+                              JOIN users ON do.idusers = users.idusers
+                              WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
+                              ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
@@ -128,4 +157,5 @@ include "../mainsidebar.php";
    document.title = "Delivery Order";
 </script>
 <?php
-include "../footer.php" ?>
+include "../footer.php";
+?>

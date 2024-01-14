@@ -250,35 +250,6 @@ include "kebutuhanindex.php";
                            </a>
                         </li>
                         <li class="nav-item">
-                           <a href="#" class="nav-link">
-                              <i class="far fa-circle nav-icon"></i>
-                              <p>
-                                 Bound Procces
-                                 <i class="right fas fa-angle-left"></i>
-                              </p>
-                           </a>
-                           <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                 <a href="inbound/" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>Inbound</p>
-                                 </a>
-                              </li>
-                              <li class="nav-item">
-                                 <a href="outbond/" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>Outbond</p>
-                                 </a>
-                              </li>
-                           </ul>
-                        </li>
-                        <li class="nav-item">
-                           <a href="adjustment" class="nav-link">
-                              <i class="far fa-circle nav-icon"></i>
-                              <p>Adjustment</p>
-                           </a>
-                        </li>
-                        <li class="nav-item">
                            <a href="stocktake" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Stock Take</p>
