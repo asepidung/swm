@@ -20,11 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $idusers = $_SESSION['idusers'];
    $status = "Approved";
    $alamat = $_POST['alamat'];
-   $sonumber = $_POST['sonumber'];
+   $idso = $_POST['idso'];
 
    // Insert data ke tabel doreceipt
-   $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, donumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, idusers, status)
-   VALUES ('$iddo', '$donumber', '$deliverydate', '$idcustomer', '$alamat', '$po', '$driver', '$plat', '$note', '$xbox', '$xweight', '$idusers', '$status')";
+   $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, idso, donumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, idusers, status)
+   VALUES ('$iddo', '$idso', '$donumber', '$deliverydate', '$idcustomer', '$alamat', '$po', '$driver', '$plat', '$note', '$xbox', '$xweight', '$idusers', '$status')";
    $resultInsertDoreceipt = mysqli_query($conn, $queryInsertDoreceipt);
 
    if ($resultInsertDoreceipt) {

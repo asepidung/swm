@@ -169,8 +169,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                  <?php
                                  $kdbarcode = $tampil['kdbarcode'];
                                  $idrepack = $tampil['idrepack'];
-
-                                 // Query untuk memeriksa keberadaan kdbarcode di tabel tallydetail
                                  $queryCheckExistence = "SELECT COUNT(*) as count FROM tallydetail WHERE barcode = '$kdbarcode'";
                                  $resultCheckExistence = mysqli_query($conn, $queryCheckExistence);
                                  $rowCheckExistence = mysqli_fetch_assoc($resultCheckExistence);

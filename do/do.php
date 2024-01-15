@@ -73,14 +73,9 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $awal = mysqli_real_escape_string($conn, $_POST["awal"]); // Pastikan untuk melindungi dari SQL injection
-                           $akhir = mysqli_real_escape_string($conn, $_POST["akhir"]); // Pastikan untuk melindungi dari SQL injection
-
-                           $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
                               JOIN customers ON do.idcustomer = customers.idcustomer
                               JOIN users ON do.idusers = users.idusers
-                              WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
                               ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {

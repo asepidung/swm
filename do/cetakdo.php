@@ -7,8 +7,9 @@ require "../konak/conn.php";
 
 $iddo = $_GET['iddo'];
 // Query untuk mengambil data dari tabel do
-$query = "SELECT do.*, customers.nama_customer, users.fullname
+$query = "SELECT do.*, customers.nama_customer, customers.alamat1, users.fullname, salesorder.sonumber
           FROM do 
+          INNER JOIN salesorder ON do.idso = salesorder.idso
           INNER JOIN customers ON do.idcustomer = customers.idcustomer 
           INNER JOIN users ON do.idusers = users.idusers
           WHERE do.iddo = '$iddo'";
@@ -95,7 +96,7 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="30%"> <?= $row_do['driver']; ?></td>
       <td class="border-collapse" width="12%" valign="top">Address</td>
       <td class="border-collapse" width="2%" valign="top" align="right">:</td>
-      <td width="30%" align="justify" valign="top"><?= $row_do['alamat']; ?></td>
+      <td width="30%" align="justify" valign="top"><?= $row_do['alamat1']; ?></td>
     </tr>
     <tr>
       <td width="12%">No POL</td>

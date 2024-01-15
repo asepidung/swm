@@ -9,7 +9,7 @@ include "../navbar.php";
 include "../mainsidebar.php";
 
 $idtally = $_GET['id'];
-$query = "SELECT tally.*, customers.nama_customer, customers.alamat1, customers.alamat2, customers.alamat3
+$query = "SELECT tally.*, customers.nama_customer, customers.alamat1
 FROM tally 
 INNER JOIN customers ON tally.idcustomer = customers.idcustomer
 WHERE idtally = $idtally";
@@ -32,7 +32,8 @@ $sonumber = $row['sonumber'];
                               <div class="form-group">
                                  <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="hidden" name="sonumber" value="<?= $sonumber; ?>">
+                                    <input type="hidden" name="idso" value="<?= $row['idso']; ?>">
+                                    <input type="hidden" name="idtally" value="<?= $idtally; ?>">
                                     <input type="date" class="form-control" name="deliverydate" id="deliverydate" value="<?= $row['deliverydate'] ?>">
                                  </div>
                               </div>
@@ -50,9 +51,10 @@ $sonumber = $row['sonumber'];
                               <div class="form-group">
                                  <label for="alamat">Alamat <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <select class="form-control" name="alamat" id="alamat" required>
+                                    <input type="text" class="form-control" value="<?= $row['alamat1']; ?>" readonly>
+                                    <!-- <select class="form-control" name="alamat" id="alamat" required>
                                        <option value="">Pilih Alamat</option>
-                                    </select>
+                                    </select> -->
                                  </div>
                               </div>
                            </div>
@@ -68,6 +70,13 @@ $sonumber = $row['sonumber'];
                         <div class="row">
                            <div class="col-2">
                               <div class="form-group">
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" name="sonumber" id="sonumber" value="<?= $sonumber; ?>" readonly>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class=" col-2">
+                              <div class="form-group">
                                  <select class="form-control" name="driver" id="driver">
                                     <option value="">Pilih Driver</option>
                                     <option value="H. MPE">H. MPE</option>
@@ -76,7 +85,7 @@ $sonumber = $row['sonumber'];
                                  </select>
                               </div>
                            </div>
-                           <div class="col-3">
+                           <div class="col-2">
                               <div class="form-group">
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="plat" id="plat" placeholder="Police Number">
@@ -217,7 +226,7 @@ $sonumber = $row['sonumber'];
       </div>
    </section>
 </div>
-<script src="../dist/js/fill_alamat_note.js"></script>
+<!-- <script src="../dist/js/fill_alamat_note.js"></script> -->
 <script src="../dist/js/movefocus.js"></script>
 <script src="../dist/js/calculateTotals.js"></script>
 <script>

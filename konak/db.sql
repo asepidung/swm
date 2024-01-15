@@ -105,6 +105,8 @@ CREATE TABLE do (
   plat VARCHAR (12),
   note VARCHAR (255),
   status VARCHAR(20),
+  sonumber VARCHAR(30),
+  idso INT,
   xbox INT,
   xweight DECIMAL(12.2),
   rweight DECIMAL(12.2),
@@ -113,6 +115,7 @@ CREATE TABLE do (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer),
   FOREIGN KEY (idusers) REFERENCES users (idusers)
+  FOREIGN KEY (idso) REFERENCES salesorder (idso)
 );
 CREATE TABLE dodetail (
   iddodetail INT PRIMARY KEY AUTO_INCREMENT,

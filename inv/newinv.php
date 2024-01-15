@@ -24,6 +24,7 @@ $pajak = $rowDo['pajak'];
 $top = $rowDo['top'];
 $idsegment = $rowDo['idsegment'];
 $iddo = $rowDo['iddo'];
+$idso = $rowDo['idso'];
 $idgroup = $rowDo['idgroup'];
 // Mengambil data dari tabel doreceiptdetail, grade, dan barang
 $querydoreceiptdetail = "SELECT doreceiptdetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
@@ -46,6 +47,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                   <input type="hidden" value="<?= $idgroup; ?>" name="idgroup" id="idgroup">
                   <input type="hidden" value="<?= $top; ?>" name="top">
                   <input type="hidden" value="<?= $iddo; ?>" name="iddo">
+                  <!-- <input type="text" value="<?= $idso; ?>" name="iddo"> -->
                   <input type="hidden" value="<?= $pajak; ?>" name="pajak">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">

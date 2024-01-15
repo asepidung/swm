@@ -11,9 +11,10 @@ $iddo = isset($_GET['iddo']) ? intval($_GET['iddo']) : 0;
 if ($iddo <= 0) {
    die("ID DO tidak valid.");
 }
-$querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.idsegment
+$querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.idsegment, salesorder.sonumber
             FROM do
             INNER JOIN customers ON do.idcustomer = customers.idcustomer
+            INNER JOIN salesorder ON do.idso = salesorder.idso
             INNER JOIN segment ON customers.idsegment = segment.idsegment
             WHERE do.iddo = $iddo";
 $resultdo = mysqli_query($conn, $querydo);
@@ -51,7 +52,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <label>Customer </label>
                                  <div class="input-group">
                                     <input type="hidden" name="idcustomer" value="<?= $row['idcustomer'] ?>">
-                                    <input type="hidden" name="alamat" value="<?= $row['alamat'] ?>">
+                                    <!-- <input type="hidden" name="alamat" value="<?= $row['alamat1'] ?>"> -->
                                     <input type="text" class="form-control" value="<?= $row['nama_customer'] ?>" readonly>
                                  </div>
                               </div>
@@ -77,14 +78,8 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                            <div class="col-2">
                               <div class="form-group">
                                  <div class="input-group">
-                                    <input type="text" name="driver" class="form-control" value="<?= $row['driver'] ?>" readonly>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-3">
-                              <div class="form-group">
-                                 <div class="input-group">
-                                    <input type="text" name="sonumber" class="form-control" value="<?= $row['sonumber'] ?>" readonly>
+                                    <input type="hidden" name="idso" value="<?= $row['idso'] ?>">
+                                    <input type="text" class="form-control" value="<?= $row['sonumber'] ?>" readonly>
                                  </div>
                               </div>
                            </div>

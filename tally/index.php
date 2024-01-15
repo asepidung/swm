@@ -61,15 +61,26 @@ include "../mainsidebar.php";
                                     <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Tally" onclick="window.location.href='lihattally.php?id=<?= $tampil['idtally']; ?>'">
                                        <i class="fas fa-eye"></i>
                                     </a>
-                                    <!-- <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Print" onclick="window.location.href='printtally.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-print"></i>
-                                    </a> -->
-                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat DO" onclick="window.location.href='../do/doissue.php?id=<?= $tampil['idtally'] ?>'">
-                                       <i class="fas fa-truck"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="window.location.href='deletetally.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-minus-square"></i>
-                                    </a>
+                                    <?php
+                                    $query_check_do = "SELECT COUNT(*) as do_count FROM do WHERE idtally = {$tampil['idtally']}";
+                                    $result_check_do = mysqli_query($conn, $query_check_do);
+                                    $row_check_do = mysqli_fetch_assoc($result_check_do);
+                                    $do_count = $row_check_do['do_count'];
+                                    if ($do_count > 0) { ?>
+                                       <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="DO Sudah Dibuat">
+                                          <i class="fas fa-truck"></i>
+                                       </a>
+                                       <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="DO Sudah Dibuat">
+                                          <i class="fas fa-minus-square"></i>
+                                       </a>
+                                    <?php } else { ?>
+                                       <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat DO" onclick="window.location.href='../do/doissue.php?id=<?= $tampil['idtally'] ?>'">
+                                          <i class="fas fa-truck"></i>
+                                       </a>
+                                       <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="window.location.href='deletetally.php?id=<?= $tampil['idtally']; ?>'">
+                                          <i class="fas fa-minus-square"></i>
+                                       </a>
+                                    <?php } ?>
                                  </td>
                               </tr>
                            <?php $no++;

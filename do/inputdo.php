@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
    $donumber =  $kodeauto;
    $deliverydate = $_POST['deliverydate'];
    $idcustomer = $_POST['idcustomer'];
-   $alamat = $_POST['alamat'];
+   // $alamat = $_POST['alamat'];
    $po = $_POST['po'];
    $driver = $_POST['driver'];
    $plat = $_POST['plat'];
@@ -18,12 +18,13 @@ if (isset($_POST['submit'])) {
    $xweight = $_POST['xweight'];
    $status = "Unapproved";
    $note = $_POST['note'];
-   $sonumber = $_POST['sonumber'];
+   $idso = $_POST['idso'];
+   $idtally = $_POST['idtally'];
    $idusers = $_SESSION['idusers'];
 
-   $query_do = "INSERT INTO do (donumber, sonumber, deliverydate, idcustomer, alamat, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+   $query_do = "INSERT INTO do (donumber, idso, idtally, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("sssisssssidsi", $donumber, $sonumber, $deliverydate, $idcustomer, $alamat, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
+   $stmt_do->bind_param("siisissssidsi", $donumber, $idso, $idtally, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
    if ($stmt_do->execute()) {
       // Eksekusi berhasil
       $last_id = $stmt_do->insert_id;
