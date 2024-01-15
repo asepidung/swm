@@ -31,7 +31,6 @@ while ($row = mysqli_fetch_assoc($result)) {
       </div>
    </div>
 </div>
-</div>
 <div class="content">
    <div class="container-fluid">
       <div class="row">
@@ -293,7 +292,6 @@ while ($row = mysqli_fetch_assoc($result)) {
       </div>
    </div>
    <!-- /.container-fluid -->
-</div>
 </div>
 <script>
    document.title = "CETAK HASIL REPACK";

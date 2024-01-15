@@ -332,6 +332,10 @@ CREATE TABLE returjualdetail (
   idbarang INT,
   kdbarcode VARCHAR(30),
   qty DECIMAL(6,2),
+  pcs INT,
+  pod DATE,
+  origin INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idreturjual) REFERENCES returjual (idreturjual),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
