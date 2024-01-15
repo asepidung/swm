@@ -334,7 +334,6 @@ CREATE TABLE returjualdetail (
   qty DECIMAL(6,2),
   pcs INT,
   pod DATE,
-  origin INT,
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idreturjual) REFERENCES returjual (idreturjual),
   FOREIGN KEY (idgrade) REFERENCES grade (idgrade),

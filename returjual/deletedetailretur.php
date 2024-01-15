@@ -3,35 +3,24 @@ session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
-// Koneksi ke database
 require "../konak/conn.php";
 
 if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $id = $_GET['id'];
    $iddetail = $_GET['iddetail'];
-
-   // Ambil kdbarcode dari tabel returjualdetail
    $getBarcodeQuery = "SELECT kdbarcode FROM returjualdetail WHERE idreturjualdetail = '$iddetail'";
    $getBarcodeResult = mysqli_query($conn, $getBarcodeQuery);
 
    if ($getBarcodeResult && $rowBarcode = mysqli_fetch_assoc($getBarcodeResult)) {
       $kdbarcode = $rowBarcode['kdbarcode'];
-
-      // Lakukan penghapusan data dari tabel returjualdetail
       $hapusDataDetail = mysqli_query($conn, "DELETE FROM returjualdetail WHERE idreturjualdetail = '$iddetail'");
-
-      // Lakukan penghapusan data dari tabel stock
       $hapusDataStock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
-
-      // Periksa apakah penghapusan data berhasil dilakukan di kedua tabel
       if ($hapusDataDetail && $hapusDataStock) {
          header("Location: detailrj.php?idreturjual=$id");
       } else {
-         // Jika gagal, tampilkan pesan error
          echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='detailrj.php?idreturjual=$id';</script>";
       }
    } else {
-      // Jika tidak berhasil mendapatkan kdbarcode, tampilkan pesan error
       echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='detailrj.php?idreturjual=$id';</script>";
    }
 }
