@@ -61,7 +61,11 @@ include "../mainsidebar.php";
                                  <td class="text-right"><?= number_format($rowTotalBahan['total_bahan'], 2); ?></td>
                                  <td class="text-right"><?= number_format($rowTotalHasil['total_hasil'], 2); ?></td>
                                  <td class="text-right">
-                                    <?= $lost; ?>
+                                    <?php if ($lost < 0) { ?>
+                                       <span class="text-danger"><?= number_format($lost, 2); ?></span>
+                                    <?php } else {
+                                       echo number_format($lost, 2);
+                                    } ?>
                                  </td>
                                  <td class="text-left"><?= $tampil['note']; ?></td>
                                  <td>

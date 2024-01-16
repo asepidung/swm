@@ -14,4 +14,4 @@ WHERE idrepack = " . $tampil['idrepack'];
 $resultTotalHasil = mysqli_query($conn, $queryTotalHasil);
 $rowTotalHasil = mysqli_fetch_assoc($resultTotalHasil);
 
-$lost =  $rowTotalBahan['total_bahan'] - $rowTotalHasil['total_hasil'];
+$lost = $rowTotalHasil['total_hasil'] - $rowTotalBahan['total_bahan'];
