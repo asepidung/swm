@@ -601,3 +601,26 @@ CREATE TABLE stocktakedetail (
     FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
     FOREIGN KEY (idbarang) REFERENCES barang (idbarang)
   );
+  CREATE TABLE mutasi (
+    idmutasi INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nomutasi VARCHAR (30),
+    tglmutasi DATE,
+    note VARCHAR (255),
+    creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    idusers INT,
+    FOREIGN KEY (idusers) REFERENCES users (idusers)
+  );
+  CREATE TABLE mutasidetail (
+    idmutasidetail INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    idmutasi INT,
+    kdbarcode VARCHAR(30),
+    idbarang INT,
+    idgrade INT,
+    qty DECIMAL(6,2),
+    pcs INT,
+    pod DATE,
+    creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idgrade) REFERENCES grade (idgrade),
+    FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
+    FOREIGN KEY (idmutasi) REFERENCES mutasi (idmutasi)
+  );
