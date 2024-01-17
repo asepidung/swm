@@ -93,6 +93,18 @@ $idst = $_GET['id'];
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
                                  $pod =  $tampil['pod'];
+                                 $kdbarcode = $tampil['kdbarcode'];
+                                 $checkTallyDetailQuery = "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'";
+                                 $checkDetailBahanQuery = "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'";
+
+                                 $resultTallyDetail = mysqli_query($conn, $checkTallyDetailQuery);
+                                 $resultDetailBahan = mysqli_query($conn, $checkDetailBahanQuery);
+
+                                 $rowTallyDetail = mysqli_fetch_assoc($resultTallyDetail);
+                                 $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
+
+                                 $barcodeExistInTallyDetail = $rowTallyDetail['total'] > 0;
+                                 $barcodeExistInDetailBahan = $rowDetailBahan['total'] > 0;
 
                                  // Create DateTime objects for each iteration
                                  $podDate = new DateTime($pod);
@@ -125,10 +137,21 @@ $idst = $_GET['id'];
                                        ?>
                                     </td>
                                     <td class="text-center">
+                                       <?php if ($barcodeExistInTallyDetail) { ?>
+                                          <i class="fas fa-check-circle"></i>
+                                       <?php } elseif ($barcodeExistInDetailBahan) { ?>
+                                          <i class="fas fa-box-open text-success"></i>
+                                       <?php } else { ?>
+                                          <a href="deletestdetail.php?iddetail=<?= $tampil['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
+                                             <i class="far fa-times-circle"></i>
+                                          </a>
+                                       <?php } ?>
+                                    </td>
+                                    <!-- <td class="text-center">
                                        <a href="deletestdetail.php?iddetail=<?= $tampil['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
                                           <i class="far fa-times-circle"></i>
                                        </a>
-                                    </td>
+                                    </td> -->
                                  </tr>
                               <?php
                                  $no++;

@@ -10,7 +10,10 @@ include "../mainsidebar.php";
 
 $iddo = $_GET['iddo'];
 
-$query = "SELECT * FROM do WHERE iddo = '$iddo'";
+$query = "SELECT do.*, customers.alamat1, customers.nama_customer
+          FROM do
+          INNER JOIN customers ON do.idcustomer = customers.idcustomer
+          WHERE do.iddo = '$iddo'";
 $result = mysqli_query($conn, $query);
 $row = mysqli_fetch_assoc($result);
 
@@ -38,19 +41,8 @@ $row = mysqli_fetch_assoc($result);
                     <div class="form-group">
                       <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                       <div class="input-group">
-                        <select class="form-control" name="idcustomer" id="idcustomer">
-                          <option value="">Pilih Customer</option>
-                          <?php
-                          $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
-                          $result = mysqli_query($conn, $query);
-                          while ($customerRow = mysqli_fetch_assoc($result)) {
-                            $idcustomer = $customerRow['idcustomer'];
-                            $nama_customer = $customerRow['nama_customer'];
-                            $selected = ($idcustomer == $row['idcustomer']) ? "selected" : "";
-                            echo "<option value=\"$idcustomer\" $selected>$nama_customer</option>";
-                          }
-                          ?>
-                        </select>
+                        <input type="text" class="form-control" readonly value="<?= $row['nama_customer']; ?>">
+                        <input type="hidden" value="<?= $row['idcustomer']; ?>">
                       </div>
                     </div>
                   </div>
@@ -58,9 +50,7 @@ $row = mysqli_fetch_assoc($result);
                     <div class="form-group">
                       <label for="alamat">Alamat <span class="text-danger">*</span></label>
                       <div class="input-group">
-                        <select class="form-control" name="alamat" id="alamat" required>
-                          <option value="">Pilih Alamat</option>
-                        </select>
+                        <input type="text" readonly class="form-control" value="<?= $row['alamat1']; ?>">
                       </div>
                     </div>
                   </div>

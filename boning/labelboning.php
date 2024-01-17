@@ -161,21 +161,26 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <?php
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade FROM labelboning l
-                  JOIN barang b ON l.idbarang = b.idbarang 
-                  JOIN boning bo ON l.idboning = bo.idboning
-                  JOIN grade g ON l.idgrade = g.idgrade
-                  JOIN users u ON l.iduser = u.idusers
-                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+  JOIN barang b ON l.idbarang = b.idbarang 
+  JOIN boning bo ON l.idboning = bo.idboning
+  JOIN grade g ON l.idgrade = g.idgrade
+  JOIN users u ON l.iduser = u.idusers
+  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
 
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $fullname = $tampil['fullname'];
-
-                    // Query untuk memeriksa keberadaan kdbarcode di tabel tallydetail
                     $kdbarcode = $tampil['kdbarcode'];
-                    $checkBarcodeQuery = "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'";
-                    $result = mysqli_query($conn, $checkBarcodeQuery);
-                    $row = mysqli_fetch_assoc($result);
-                    $barcodeExist = $row['total'] > 0;
+                    $checkTallyDetailQuery = "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'";
+                    $checkDetailBahanQuery = "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'";
+
+                    $resultTallyDetail = mysqli_query($conn, $checkTallyDetailQuery);
+                    $resultDetailBahan = mysqli_query($conn, $checkDetailBahanQuery);
+
+                    $rowTallyDetail = mysqli_fetch_assoc($resultTallyDetail);
+                    $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
+
+                    $barcodeExistInTallyDetail = $rowTallyDetail['total'] > 0;
+                    $barcodeExistInDetailBahan = $rowDetailBahan['total'] > 0;
                   ?>
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -187,8 +192,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                       <td><?= $fullname; ?></td>
                       <td><?= date("H:i:s", strtotime($tampil['dibuat'])); ?></td>
                       <td>
-                        <?php if ($barcodeExist) { ?>
-                          <i class="fas fa-poo fa-lg"></i>
+                        <?php if ($barcodeExistInTallyDetail) { ?>
+                          <i class="fas fa-check-circle"></i>
+                        <?php } elseif ($barcodeExistInDetailBahan) { ?>
+                          <i class="fas fa-box-open text-success"></i>
                         <?php } else { ?>
                           <a href="hapus_labelboning.php?id=<?php echo $tampil['idlabelboning']; ?>&idboning=<?php echo $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger" onclick="return confirm('Yakin Lu?')">
                             <i class="far fa-times-circle"></i>
