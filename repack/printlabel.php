@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    // Query insert untuk tabel stock
    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
-                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
+                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '3')"; // Sesuaikan 'origin' sesuai kebutuhan
 
    // Eksekusi query
    if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {

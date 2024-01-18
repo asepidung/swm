@@ -225,8 +225,6 @@ CREATE TABLE gr (
   receivedate DATE,
   idsupplier INT,
   idnumber VARCHAR(30),
-  xbox INT,
-  xweight DECIMAL(6,2),
   note VARCHAR(255),
   iduser INT,
   creatime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -235,14 +233,16 @@ CREATE TABLE gr (
 CREATE TABLE grdetail (
   idgrdetail INT PRIMARY KEY AUTO_INCREMENT,
   idgr INT,
+  kdbarcode VARCHAR(50),
   idgrade INT,
   idbarang INT,
-  box INT,
-  weight  DECIMAL(6,2),
-  notes VARCHAR(100),
+  qty DECIMAL (6,2),
+  pcs INT,
+  pod DATE,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idgr) REFERENCES gr (idgr),
   FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
-  FOREIGN KEY (idgrade) REFERENCES GRADE (idgrade)
+  FOREIGN KEY (idgrade) REFERENCES grade (idgrade)
 );
 -- adjustment adalah transaksi masuk barang
 CREATE TABLE adjustment (

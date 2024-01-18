@@ -37,7 +37,6 @@ include "../mainsidebar.php";
                               <th>Receiving Date</th>
                               <th>Supplier</th>
                               <th>ID Number</th>
-                              <th>xQty</th>
                               <th>Catatan</th>
                               <th>Made By</th>
                               <th>Actions</th>
@@ -59,18 +58,20 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['receivedate'])); ?></td>
                                  <td><?= $tampil['nmsupplier']; ?></td>
                                  <td><?= $tampil['idnumber']; ?></td>
-                                 <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-eye text-primary"></i>
+                                    <a href="grdetail.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-primary">
+                                       <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="mx-auto p-2">
-                                       <i class="far fa-edit text-success"></i>
+                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-success">
+                                       <i class="far fa-eye"></i>
                                     </a>
-                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                       <i class="far fa-trash-alt text-danger"></i>
+                                    <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-warning">
+                                       <i class="far fa-edit"></i>
+                                    </a>
+                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                       <i class="far fa-trash-alt"></i>
                                     </a>
                                  </td>
                               </tr>
