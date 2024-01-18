@@ -59,7 +59,7 @@ include "../mainsidebar.php";
                                     <a href="printst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-secondary">
                                        <i class="fas fa-print"></i>
                                     </a>
-                                    <a href="stockin.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-primary">
+                                    <a href="#" class="btn btn-sm btn-primary" onclick="confirmStockIn(<?= $tampil['idst']; ?>)">
                                        <i class="fas fa-upload"></i>
                                     </a>
                                  </td>
@@ -84,6 +84,22 @@ include "../mainsidebar.php";
 <!-- /.content-wrapper -->
 
 <script>
+   function confirmStockIn(idst) {
+      // Menampilkan peringatan pertama
+      var confirmFirst = confirm("Apakah kamu sudah yakin dengan data stock opname yang ada? (ingat data tidak bisa dikembalikan)");
+
+      // Jika pengguna memilih OK pada peringatan pertama
+      if (confirmFirst) {
+         // Menampilkan peringatan kedua
+         var confirmSecond = confirm("Ketika anda melanjutkan, maka data di stock akan dihapus dan diganti dengan data baru dari hasil stock opname");
+
+         // Jika pengguna memilih OK pada peringatan kedua
+         if (confirmSecond) {
+            // Redirect ke halaman stockin.php
+            window.location.href = "stockin.php?id=" + idst;
+         }
+      }
+   }
    // Mengubah judul halaman web
    document.title = "STOCK TAKE";
 </script>
