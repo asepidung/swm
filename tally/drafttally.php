@@ -48,7 +48,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['sonumber']; ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center text-primary">
-                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>">Buat Tally <i class="fas fa-arrow-circle-right"></i></a>
+                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">Buat Tally <i class="fas fa-arrow-circle-right"></i></a>
                                  </td>
                               </tr>
                            <?php

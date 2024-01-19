@@ -46,6 +46,7 @@ include "../mainsidebar.php";
                            INNER JOIN customers ON tally.idcustomer = customers.idcustomer 
                            ORDER BY idtally DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $idso = $tampil['idso'];
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -55,6 +56,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['notally']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
                                  <td class="text-center">
+                                    <a href="printso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-info"><i class="fas fa-cart-arrow-down"></i></a>
                                     <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
                                        <i class="fas fa-tasks"></i>
                                     </a>

@@ -311,9 +311,9 @@ include "kebutuhanindex.php";
                                  </a>
                               </li>
                               <li class="nav-item">
-                                 <a href="#" class="nav-link">
+                                 <a href="pomaterial/" class="nav-link">
                                     <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>PO Non Product</p>
+                                    <p>PO Material Support</p>
                                  </a>
                               </li>
                            </ul>

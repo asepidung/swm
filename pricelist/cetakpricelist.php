@@ -83,8 +83,8 @@ if (mysqli_num_rows($result) > 0) {
         <thead class="thead-dark">
           <tr class="text-center">
             <th>#</th>
-            <th>Product Desc</th>
-            <th>Product Kategory</th>
+            <th>Prod Desc</th>
+            <th>Prod Kategory</th>
             <th>Brand</th>
             <th>Price</th>
             <th>Notes</th>

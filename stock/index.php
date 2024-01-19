@@ -41,7 +41,8 @@ $result = $conn->query($sql);
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 mt-3">
-               <a href="detail.php" class="btn btn-primary mb-2">Detail</a>
+               <a href="detail.php" class="btn btn-primary mb-2">Detail By Box</a>
+               <a href="aging.php" class="btn btn-primary mb-2">Group By Age</a>
                <div class="card">
                   <div class="card-body">
                      <div class="col">
@@ -73,7 +74,7 @@ $result = $conn->query($sql);
                                     (float)$row['total_qty'] != 0.00
                                  ) {
                                     echo "<tr class='text-right'>";
-                                    echo "<td class='text-left'>{$row['nmbarang']}</td>";
+                                    echo "<td class='text-left'><a href='detailitem.php?id={$row['idbarang']}'>{$row['nmbarang']}</a></td>";
                                     echo "<td" . ((float)$row['grade1'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade1'] != 0.00 ? number_format((float)$row['grade1'], 2) : '') . "</td>";
                                     echo "<td" . ((float)$row['grade2'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade2'] != 0.00 ? number_format((float)$row['grade2'], 2) : '') . "</td>";
                                     echo "<td" . ((float)$row['grade5'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade5'] != 0.00 ? number_format((float)$row['grade5'], 2) : '') . "</td>";

@@ -18,6 +18,7 @@ if ($conn->connect_error) {
 }
 
 $id = $_GET['id'];
+$idusers = $_SESSION['idusers'];
 
 // Fetch data from the stock table
 $sql = "SELECT s.*, b.nmbarang, g.nmgrade
@@ -39,7 +40,7 @@ $conn->close();
     <div class="container-fluid">
       <div class="row">
         <div class="col mt-3">
-          <a href="detail.php" class="btn btn-primary mb-2">Kembali</a>
+          <a href="index.php" class="btn btn-primary mb-2">Kembali</a>
           <div class="card">
             <div class="card-body">
               <div class="col">
@@ -54,6 +55,11 @@ $conn->close();
                       <th>P.O.D</th>
                       <th>Umur</th>
                       <th>ORIGIN</th>
+                      <?php if ($idusers == 1) { ?>
+                        <th>
+                          Hapus
+                        </th>
+                      <?php } ?>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,6 +106,13 @@ $conn->close();
                             }
                             ?>
                           </td>
+                          <?php if ($idusers == 1) { ?>
+                            <td>
+                              <a href="deletethis.php?id=<?= $row['id']; ?>" class="text-info" onclick="return confirm('Apakah Anda Asep Idung?')">
+                                <i class="far fa-times-circle"></i>
+                              </a>
+                            </td>
+                          <?php } ?>
                         </tr>
                     <?php
                         $no++;

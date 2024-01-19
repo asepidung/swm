@@ -60,7 +60,7 @@ include "../mainsidebar.php";
                                     <a href="lihatst.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-success">
                                        <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="printst.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-secondary">
+                                    <a href="printmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-secondary">
                                        <i class="fas fa-print"></i>
                                     </a>
                                     <a href="stockin.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-primary">

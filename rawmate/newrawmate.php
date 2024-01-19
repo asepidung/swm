@@ -32,7 +32,7 @@ include "../mainsidebar.php";
                         </div>
                         <div class="form-group">
                            <label for="nmrawmate">Nama Material <span class="text-danger">*</span></label>
-                           <input type="text" class="form-control" name="nmrawmate" id="nmrawmate" placeholder="Gunakan Huruf BESAR !!!" required>
+                           <input type="text" class="form-control" autofocus name="nmrawmate" id="nmrawmate" placeholder="Gunakan Huruf BESAR !!!" required>
                         </div>
                      </div>
                      <div class="form-group mr-3 text-right">

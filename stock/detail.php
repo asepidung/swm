@@ -9,9 +9,6 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
-// Make sure to establish a connection before running the query
-$conn = new mysqli($servername, $username, $password, $dbname);
-
 // Check the connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
@@ -76,9 +73,7 @@ $conn->close();
                             <td><?= $no; ?></td>
                             <td><?= $row['nmgrade'] ? $row['nmgrade'] : '-'; ?></td>
                             <td class="text-left">
-                              <a href="detailitem.php?id=<?= $row['idbarang']; ?>">
-                                <?= $row['nmbarang']; ?>
-                              </a>
+                              <?= $row['nmbarang']; ?>
                             </td>
                             <td><?= $row['total_box']; ?></td>
                             <td class="text-right"><?= number_format($row['total_qty'], 2); ?></td>
