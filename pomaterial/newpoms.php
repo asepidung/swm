@@ -16,7 +16,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="prosespoproduct.php">
+               <form method="POST" action="prosespoms.php">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -28,7 +28,7 @@ include "../mainsidebar.php";
                                     // Set the default value of packdate to today's date
                                     $defaultPackdate = date('Y-m-d'); // Set the format according to your needs
                                     ?>
-                                    <input type="date" class="form-control" name="tglpoproduct" id="tglpoproduct" required value="<?= $defaultPackdate ?>">
+                                    <input type="date" class="form-control" name="tglpomaterial" id="tglpomaterial" required value="<?= $defaultPackdate ?>">
                                  </div>
                               </div>
                            </div>
@@ -66,13 +66,7 @@ include "../mainsidebar.php";
                               <div class="form-group">
                                  <label for="terms">Terms</label>
                                  <div class="input-group">
-                                    <select id="termsDropdown" class="form-control" name="terms">
-                                       <option value="select">Pilih Terms</option>
-                                       <option value="custom">Custom</option>
-                                       <option value="COD">C.O.D</option>
-                                       <option value="CBD">C.B.D</option>
-                                    </select>
-                                    <input type="number" id="customTermInput" name="custom_terms" class="form-control" placeholder="Jumlah Hari" style="display: none;">
+                                    <input type="number" id="terms" name="terms" class="form-control" placeholder="Jumlah Hari">
                                  </div>
                               </div>
                            </div>
@@ -95,17 +89,17 @@ include "../mainsidebar.php";
                            <div class="row mb-n2">
                               <div class="col-3">
                                  <div class="form-group">
-                                    <label for="idbarang">Product</label>
+                                    <label for="idrawmate">Product</label>
                                     <div class="input-group">
-                                       <select class="form-control" name="idbarang[]" required>
+                                       <select class="form-control" name="idrawmate[]" required>
                                           <option value="">--Pilih--</option>
                                           <?php
                                           $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
                                           $result = mysqli_query($conn, $query);
                                           while ($row = mysqli_fetch_assoc($result)) {
-                                             $idbarang = $row['kdrawmate'];
-                                             $nmbarang = $row['nmrawmate'];
-                                             echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                                             $idrawmate = $row['idrawmate'];
+                                             $nmrawmate = $row['nmrawmate'];
+                                             echo '<option value="' . $idrawmate . '">' . $nmrawmate . '</option>';
                                           }
                                           ?>
                                        </select>
@@ -124,7 +118,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="weight">Price</label>
                                     <div class="input-group">
-                                       <input type="text" name="price[]" placeholder="Tanpa Titik/Koma" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
+                                       <input type="text" name="price[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
                                     </div>
                                  </div>
                               </div>
@@ -203,15 +197,15 @@ include "../mainsidebar.php";
          <div class="col-3">
             <div class="form-group">
                <div class="input-group">
-                  <select class="form-control" name="idbarang[]" required>
+                  <select class="form-control" name="idrawmate[]" required>
                      <option value="">--Pilih--</option>
                      <?php
                      $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
                      $result = mysqli_query($conn, $query);
                      while ($row = mysqli_fetch_assoc($result)) {
-                        $idbarang = $row['kdrawmate'];
-                        $nmbarang = $row['nmrawmate'];
-                        echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                        $idrawmate = $row['idrawmate'];
+                        $nmrawmate = $row['nmrawmate'];
+                        echo '<option value="' . $idrawmate . '">' . $nmrawmate . '</option>';
                      }
                      ?>
                   </select>

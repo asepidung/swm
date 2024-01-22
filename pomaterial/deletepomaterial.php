@@ -10,15 +10,15 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 
 // Periksa apakah ada parameter ID yang diberikan
-if (isset($_GET['idpoproduct'])) {
-   $idpoproduct = $_GET['idpoproduct'];
+if (isset($_GET['idpomaterial'])) {
+   $idpomaterial = $_GET['idpomaterial'];
 
    // Hapus data dari tabel poproductdetail
-   $deleteDetailQuery = "DELETE FROM poproductdetail WHERE idpoproduct = $idpoproduct";
+   $deleteDetailQuery = "DELETE FROM pomaterialdetail WHERE idpomaterial = $idpomaterial";
    mysqli_query($conn, $deleteDetailQuery);
 
    // Hapus data dari tabel poproduct
-   $deleteQuery = "DELETE FROM poproduct WHERE idpoproduct = $idpoproduct";
+   $deleteQuery = "DELETE FROM pomaterial WHERE idpomaterial = $idpomaterial";
    mysqli_query($conn, $deleteQuery);
 
    // Alihkan ke halaman index.php setelah berhasil menghapus data

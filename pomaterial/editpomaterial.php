@@ -13,18 +13,18 @@ include "../navbar.php";
 include "../mainsidebar.php";
 
 // Periksa apakah ada parameter ID yang diberikan
-if (isset($_GET['idpoproduct'])) {
-   $idpoproduct = $_GET['idpoproduct'];
+if (isset($_GET['idpomaterial'])) {
+   $idpomaterial = $_GET['idpomaterial'];
 
-   // Query untuk mengambil data poproduct berdasarkan ID
-   $query = "SELECT * FROM poproduct WHERE idpoproduct = $idpoproduct";
+   // Query untuk mengambil data pomaterial berdasarkan ID
+   $query = "SELECT * FROM pomaterial WHERE idpomaterial = $idpomaterial";
    $result = mysqli_query($conn, $query);
 
-   // Periksa apakah data poproduct ditemukan
+   // Periksa apakah data pomaterial ditemukan
    if ($result && mysqli_num_rows($result) > 0) {
-      $poproduct_data = mysqli_fetch_assoc($result);
-      $nopoproduct = $poproduct_data['nopoproduct'];
-      $tglpoproduct = $poproduct_data['tglpoproduct'];
+      $pomaterial_data = mysqli_fetch_assoc($result);
+      $nopomaterial = $pomaterial_data['nopomaterial'];
+      $tglpomaterial = $pomaterial_data['tglpomaterial'];
    } else {
       // Redirect jika data tidak ditemukan
       echo "Data Tidak Ditemukan";
@@ -43,16 +43,16 @@ if (isset($_GET['idpoproduct'])) {
       <div class="container-fluid">
          <div class="row">
             <div class="col mt-3">
-               <form method="POST" action="updatepoproduct.php">
-                  <input type="hidden" name="idpoproduct" value="<?php echo $idpoproduct; ?>">
+               <form method="POST" action="updatepomaterial.php">
+                  <input type="hidden" name="idpomaterial" value="<?php echo $idpomaterial; ?>">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-2">
                               <div class="form-group">
-                                 <label for="tglpoproduct">PO Date <span class="text-danger">*</span></label>
+                                 <label for="tglpomaterial">PO Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="tglpoproduct" id="tglpoproduct" required value="<?= $tglpoproduct ?>">
+                                    <input type="date" class="form-control" name="tglpomaterial" id="tglpomaterial" required value="<?= $tglpomaterial ?>">
                                  </div>
                               </div>
                            </div>
@@ -60,7 +60,7 @@ if (isset($_GET['idpoproduct'])) {
                               <div class="form-group">
                                  <label for="deliveryat">Delivery Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="deliveryat" id="deliveryat" required value="<?= $poproduct_data['deliveryat']; ?>">
+                                    <input type="date" class="form-control" name="deliveryat" id="deliveryat" required value="<?= $pomaterial_data['deliveryat']; ?>">
                                  </div>
                               </div>
                            </div>
@@ -76,7 +76,7 @@ if (isset($_GET['idpoproduct'])) {
                                        while ($supplierRow = mysqli_fetch_assoc($result)) {
                                           $idsupplier = $supplierRow['idsupplier'];
                                           $nmsupplier = $supplierRow['nmsupplier'];
-                                          $selected = ($idsupplier == $poproduct_data['idsupplier']) ? "selected" : "";
+                                          $selected = ($idsupplier == $pomaterial_data['idsupplier']) ? "selected" : "";
                                           echo "<option value=\"$idsupplier\" $selected>$nmsupplier</option>";
                                        }
                                        ?>
@@ -91,7 +91,7 @@ if (isset($_GET['idpoproduct'])) {
                               <div class="form-group">
                                  <label for="terms">Terms</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" value="<?= $poproduct_data['Terms'] ?>" name="terms">
+                                    <input type="text" class="form-control" value="<?= $pomaterial_data['Terms'] ?>" name="terms">
                                     <input type="number" id="customTermInput" name="custom_terms" class="form-control" placeholder="Jumlah Hari" style="display: none;">
                                  </div>
                               </div>
@@ -101,7 +101,7 @@ if (isset($_GET['idpoproduct'])) {
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan" value="<?= $poproduct_data['note'] ?>">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan" value="<?= $pomaterial_data['note'] ?>">
                                  </div>
                               </div>
                            </div>
@@ -114,7 +114,7 @@ if (isset($_GET['idpoproduct'])) {
                            <div class="row mb-n2">
                               <div class="col-3">
                                  <div class="form-group">
-                                    <label for="idbarang">Product</label>
+                                    <label for="idrawmate">Product</label>
                                  </div>
                               </div>
                               <div class="col-1">
@@ -140,12 +140,12 @@ if (isset($_GET['idpoproduct'])) {
                               <div class="col-1"></div>
                            </div>
                            <?php
-                           // Query untuk mengambil item penyesuaian dari tabel poproductdetail
-                           $item_query = "SELECT * FROM poproductdetail WHERE idpoproduct = $idpoproduct";
+                           // Query untuk mengambil item penyesuaian dari tabel pomaterialdetail
+                           $item_query = "SELECT * FROM pomaterialdetail WHERE idpomaterial = $idpomaterial";
                            $item_result = mysqli_query($conn, $item_query);
                            if ($item_result && mysqli_num_rows($item_result) > 0) {
                               while ($item_row = mysqli_fetch_assoc($item_result)) {
-                                 $idbarang = $item_row['idbarang'];
+                                 $idrawmate = $item_row['idrawmate'];
                                  $weight = $item_row['qty'];
                                  $price = $item_row['price'];
                                  $amount = $item_row['amount'];
@@ -155,14 +155,14 @@ if (isset($_GET['idpoproduct'])) {
                                     <div class="col-3">
                                        <div class="form-group">
                                           <div class="input-group">
-                                             <select class="form-control" name="idbarang[]" required>
+                                             <select class="form-control" name="idrawmate[]" required>
                                                 <?php
-                                                // Query untuk mengambil data dari tabel barang
-                                                $barang_query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                                $barang_result = mysqli_query($conn, $barang_query);
-                                                while ($barang_row = mysqli_fetch_assoc($barang_result)) {
-                                                   $selected = ($idbarang == $barang_row['idbarang']) ? "selected" : "";
-                                                   echo '<option value="' . $barang_row['idbarang'] . '" ' . $selected . '>' . $barang_row['nmbarang'] . '</option>';
+                                                // Query untuk mengambil data dari tabel rawmate
+                                                $rawmate_query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
+                                                $rawmate_result = mysqli_query($conn, $rawmate_query);
+                                                while ($rawmate_row = mysqli_fetch_assoc($rawmate_result)) {
+                                                   $selected = ($idrawmate == $rawmate_row['idrawmate']) ? "selected" : "";
+                                                   echo '<option value="' . $rawmate_row['idrawmate'] . '" ' . $selected . '>' . $rawmate_row['nmrawmate'] . '</option>';
                                                 }
                                                 ?>
                                              </select>
@@ -258,15 +258,15 @@ if (isset($_GET['idpoproduct'])) {
          <div class="col-3">
             <div class="form-group">
                <div class="input-group">
-                  <select class="form-control" name="idbarang[]" required>
+                  <select class="form-control" name="idrawmate[]" required>
                      <option value="">--Pilih--</option>
                      <?php
-                     $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                     $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
                      $result = mysqli_query($conn, $query);
                      while ($row = mysqli_fetch_assoc($result)) {
-                        $idbarang = $row['idbarang'];
-                        $nmbarang = $row['nmbarang'];
-                        echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                        $idrawmate = $row['idrawmate'];
+                        $nmrawmate = $row['nmrawmate'];
+                        echo '<option value="' . $idrawmate . '">' . $nmrawmate . '</option>';
                      }
                      ?>
                   </select>

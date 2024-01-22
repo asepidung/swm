@@ -73,6 +73,12 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
+              <a href="../stock/" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Stock</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="../tally/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Taly Sheet</p>

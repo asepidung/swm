@@ -36,12 +36,10 @@ include "../mainsidebar.php";
                               <th>PO Number</th>
                               <th>Supplier</th>
                               <th>Delivery Date</th>
-                              <th>Qty</th>
-                              <th>Amount</th>
                               <th>Terms</th>
                               <th>Notes</th>
                               <th>Status</th>
-                              <!-- <th>Users</th> -->
+                              <th>Users</th>
                               <th>Action</th>
                            </tr>
                         </thead>
@@ -49,22 +47,18 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT p.*, u.fullname, s.nmsupplier
-                           FROM poproduct p
+                           FROM pomaterial p
                            JOIN users u ON p.idusers = u.idusers
                            LEFT JOIN supplier s ON p.idsupplier = s.idsupplier
-                           ORDER BY p.idpoproduct DESC;");
+                           ORDER BY p.idpomaterial DESC;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
-                              $xweight = $tampil['xweight'];
-                              $xamount = $tampil['xamount'];
                               $Terms = $tampil['Terms'];
-                              $idpo = $tampil['idpoproduct'];
+                              $idpo = $tampil['idpomaterial'];
                            ?>
                               <td class="text-center"><?= $no; ?></td>
-                              <td><?= $tampil['nopoproduct']; ?></td>
+                              <td><?= $tampil['nopomaterial']; ?></td>
                               <td><?= $tampil['nmsupplier']; ?></td>
                               <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliveryat'])); ?></td>
-                              <td class="text-right"><?= number_format($xweight, 2); ?></td>
-                              <td class="text-right"><?= number_format($xamount, 2); ?></td>
                               <?php if ($Terms === "COD" || $Terms === "CBD") { ?>
                                  <td class="text-center"><?= $Terms; ?> </td>
                               <?php } else { ?>
@@ -72,19 +66,17 @@ include "../mainsidebar.php";
                               <?php } ?>
                               <td><?= $tampil['note']; ?></td>
                               <td><?= $tampil['stat']; ?></td>
-                              <!-- <td><?= $tampil['fullname']; ?></td> -->
+                              <td><?= $tampil['fullname']; ?></td>
                               <td class="text-center">
-                                 <a href="printpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2">
-                                    <i class="fas fa-print text-primary"></i>
+                                 <a href="lihatpomaterial.php?idpomaterial=<?= $idpo; ?>" class="btn btn-sm btn-success">
+                                    <i class="fas fa-eye"></i>
                                  </a>
-                                 <a href="editpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2">
-                                    <i class="far fa-edit text-success"></i>
+                                 <a href="printpomaterial.php?idpomaterial=<?= $idpo ?>" class="btn btn-sm btn-primary"><i class="fas fa-print"></i></a>
+                                 <a href="editpomaterial.php?idpomaterial=<?= $idpo; ?>" class="btn btn-sm btn-warning">
+                                    <i class="far fa-edit"></i>
                                  </a>
-                                 <!-- <a href="#" class="mx-auto p-2">
-                                    <i class="far fa-edit text-success"></i>
-                                 </a> -->
-                                 <a href="deletepoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                    <i class="far fa-trash-alt text-danger"></i>
+                                 <a href="deletepomaterial.php?idpomaterial=<?= $idpo; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                    <i class="far fa-trash-alt"></i>
                                  </a>
                               </td>
                               </tr>

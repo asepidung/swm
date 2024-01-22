@@ -624,3 +624,28 @@ CREATE TABLE stocktakedetail (
     FOREIGN KEY (idbarang) REFERENCES barang (idbarang),
     FOREIGN KEY (idmutasi) REFERENCES mutasi (idmutasi)
   );
+  CREATE TABLE pomaterial (
+  idpomaterial INT PRIMARY KEY AUTO_INCREMENT,
+  nopomaterial VARCHAR(30),
+  idsupplier INT,
+  tglpomaterial DATE,
+  deliveryat DATE,
+  Terms VARCHAR (10),
+  note VARCHAR (255),
+  stat VARCHAR (10),
+  idusers INT,
+  creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier),
+  FOREIGN KEY (idusers) REFERENCES users (idusers)
+);
+CREATE TABLE pomaterialdetail (
+  idpomaterialdetail INT PRIMARY KEY AUTO_INCREMENT,
+  idpomaterial INT,
+  idrawmate INT,
+  qty DECIMAL (12,2),
+  price DECIMAL (12,2),
+  amount DECIMAL (12,2),
+  notes VARCHAR (100),
+  FOREIGN KEY (idpomaterial) REFERENCES pomaterial (idpomaterial),
+  FOREIGN KEY (idrawmate) REFERENCES rawmate (idrawmate)
+);

@@ -20,11 +20,11 @@ if ($conn->connect_error) {
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col mt-3">
+            <div class="col-8 mt-3">
                <a href="index.php" class="btn btn-primary mb-2">Summary</a>
                <div class="card">
                   <div class="card-body">
-                     <div class="col-6">
+                     <div class="col">
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
@@ -32,6 +32,7 @@ if ($conn->connect_error) {
                                  <th>Pack On Date</th>
                                  <th>Days</th>
                                  <th>Qty</th>
+                                 <th>Pilih</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -48,6 +49,10 @@ if ($conn->connect_error) {
                                     echo "<td>" . date('d-M-Y', strtotime($row['pod'])) . "</td>";
                                     echo "<td>" . $row['days_since_pod'] . " " . "Days" . "</td>";
                                     echo "<td class='text-right'>" . number_format($row['total_qty'], 2) . "</td>";
+                                    echo "<td>
+                                    <a href='lihat.php?pod=" . urlencode($row['pod']) . "' class='btn btn-xs btn-success'><i class='fas fa-eye'></i></a>
+                                    <a href='lihatsatuan.php?pod=" . urlencode($row['pod']) . "' class='btn btn-xs btn-primary'><i class='fas fa-meh-rolling-eyes'></i></a>
+                                    </td>";
                                     echo "</tr>";
                                     $count++;
                                  }
@@ -55,7 +60,6 @@ if ($conn->connect_error) {
                                  echo "<tr><td colspan='3'>No data available</td></tr>";
                               }
                               ?>
-
                            </tbody>
                         </table>
                      </div>

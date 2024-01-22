@@ -5,23 +5,26 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 require "../inv/terbilang.php";
-$idpoproduct = $_GET['idpoproduct'];
+
+$idpomaterial = $_GET['idpomaterial'];
 $idusers = $_SESSION['idusers'];
 
-// Tampilkan data dari tabel poproduct
-$query_poproduct = "SELECT poproduct.*, supplier.nmsupplier 
-                  FROM poproduct 
-                  INNER JOIN supplier ON poproduct.idsupplier = supplier.idsupplier 
-                  WHERE poproduct.idpoproduct = '$idpoproduct'";
-$result_poproduct = mysqli_query($conn, $query_poproduct);
-$row_poproduct = mysqli_fetch_assoc($result_poproduct);
-$Terms = $row_poproduct['Terms'];
-// Tampilkan data dari tabel poproductdetail
-$query_poproductdetail = "SELECT poproductdetail.*, barang.nmbarang 
-                        FROM poproductdetail 
-                        INNER JOIN barang ON poproductdetail.idbarang = barang.idbarang 
-                        WHERE idpoproduct = '$idpoproduct'";
-$result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
+// Tampilkan data dari tabel pomaterial
+$query_pomaterial = "SELECT pomaterial.*, supplier.nmsupplier 
+                  FROM pomaterial 
+                  INNER JOIN supplier ON pomaterial.idsupplier = supplier.idsupplier 
+                  WHERE pomaterial.idpomaterial = '$idpomaterial'";
+$result_pomaterial = mysqli_query($conn, $query_pomaterial);
+$row_pomaterial = mysqli_fetch_assoc($result_pomaterial);
+$Terms = $row_pomaterial['Terms'];
+// Tampilkan data dari tabel pomaterialdetail
+$query_pomaterialdetail = "SELECT pomaterialdetail.*, rawmate.nmrawmate 
+                        FROM pomaterialdetail 
+                        INNER JOIN rawmate ON pomaterialdetail.idrawmate = rawmate.idrawmate 
+                        WHERE idpomaterial = '$idpomaterial'";
+$result_pomaterialdetail = mysqli_query($conn, $query_pomaterialdetail);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +32,7 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
 <head>
    <meta charset="utf-8">
    <meta name="viewport" content="widtd=device-widtd, initial-scale=1">
-   <title><?= $row_poproduct['nopoproduct'] . " " . $row_poproduct['nmsupplier']; ?></title>
+   <title><?= $row_pomaterial['nopomaterial'] . " " . $row_pomaterial['nmsupplier']; ?></title>
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
@@ -42,71 +45,55 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
    <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
    <link rel="stylesheet" href="../plugins/summernote/summernote-bs4.min.css">
    <style>
-      .mt-0 {
-         margin: 0 0 0 0;
-      }
-
-      .floatingButton {
+      .floating-buttons {
          position: fixed;
-         top: 20px;
-         right: 20px;
-         z-index: 9999;
-      }
-
-      .floatingLeft {
-         position: fixed;
-         top: 20px;
+         bottom: 20px;
          left: 20px;
-         /* Mengubah right menjadi left */
          z-index: 9999;
       }
 
-
-      /* Media query untuk tampilan cetak */
-      @media print {
-         .floatingButton {
-            display: none;
-         }
-      }
-
-      /* Media query untuk tampilan cetak */
-      @media print {
-         .floatingLeft {
-            display: none;
-         }
+      .floating-buttons .btn {
+         margin-bottom: 5px;
+         display: block;
       }
    </style>
+
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-   <button class="btn bg-gradient-success floatingButton" onclick="printPage()" media="print">Print PO</button>
-   <a class="btn bg-gradient-danger floatingLeft" href="index.php">Back</a>
+   <div class="row">
+      <div class="col-xs floating-buttons">
+         <a href="index.php" class="btn btn-warning"><i class="fas fa-undo-alt"></i> Kembali</a>
+         <a href="printpomaterial.php?idpomaterial=<?= $idpomaterial ?>" class="btn btn-primary"><i class="fas fa-print"></i> Print</a>
+      </div>
+   </div>
    <div class="wrapper">
       <div class="container">
          <div class="row mb-2">
-            <img src="../dist/img/headerpo.png" alt=" Logo-poproduct" class="img-fluid">
+            <img src="../dist/img/headerpo.png" alt=" Logo-pomaterial" class="img-fluid">
          </div>
          <!-- <span class="mt-3 mb-2">
-            <h5><?= $row_poproduct['nopoproduct']; ?></h5>
+            <h5><?= $row_pomaterial['nopomaterial']; ?></h5>
          </span> -->
          <table class="table table-borderless table-sm">
             <tr>
                <td width="15%">PO Number</td>
                <td width="1%">:</td>
-               <td width="30%"><?= $row_poproduct['nopoproduct']; ?></td>
+               <td width="30%"><?= $row_pomaterial['nopomaterial']; ?></td>
                <td></td>
                <td width="15%">Delivery Date</td>
                <td width="1%">:</td>
-               <td width="30%"><?= date('d-M-Y', strtotime($row_poproduct['deliveryat'])); ?></td>
+               <td width="30%"><?= date('d-M-Y', strtotime($row_pomaterial['deliveryat'])); ?></td>
             </tr>
             <tr>
                <td width="15%">PO Date</td>
                <td width="1%">:</td>
-               <td width="30%"><?= date('d-M-Y', strtotime($row_poproduct['deliveryat'])); ?></td>
+               <td width="30%"><?= date('d-M-Y', strtotime($row_pomaterial['deliveryat'])); ?></td>
                <td></td>
                <td width="15%">Supplier</td>
                <td width="1%">:</td>
-               <td width="30%"><?= $row_poproduct['nmsupplier']; ?></td>
+               <td width="30%"><?= $row_pomaterial['nmsupplier']; ?></td>
             </tr>
             <tr>
                <td width="15%">Delivery Address</td>
@@ -118,7 +105,7 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
                <?php if ($Terms === "COD" || $Terms === "CBD") { ?>
                   <td><?= $Terms; ?> </td>
                <?php } else { ?>
-                  <td><?= $Terms . " " . "Hari"; ?> </td>
+                  <td><?= $Terms . " " . "Hari Dari Kedatangan"; ?> </td>
                <?php } ?>
             </tr>
 
@@ -131,42 +118,52 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
                   <th>Weight</th>
                   <th>Price</th>
                   <th>Total</th>
+                  <th>Notes</th>
                </tr>
             </thead>
             <tbody>
                <?php $no = 1;
-               while ($row_poproductdetail = mysqli_fetch_assoc($result_poproductdetail)) { ?>
+               $xweight = 0;
+               $xamount = 0;
+               while ($row_pomaterialdetail = mysqli_fetch_assoc($result_pomaterialdetail)) {
+                  $xweight += $row_pomaterialdetail['qty'];
+                  $xamount += $row_pomaterialdetail['amount'];
+               ?>
                   <tr class="text-right">
                      <td class="text-center"><?= $no; ?></td>
-                     <td class="text-left"><?= $row_poproductdetail['nmbarang']; ?></td>
-                     <td><?= number_format($row_poproductdetail['qty'], 2); ?></td>
-                     <td><?= number_format($row_poproductdetail['price'], 2); ?></td>
-                     <td><?= number_format($row_poproductdetail['amount'], 2); ?></td>
+                     <td class="text-left"><?= $row_pomaterialdetail['nmrawmate']; ?></td>
+                     <td><?= number_format($row_pomaterialdetail['qty'], 2); ?></td>
+                     <td><?= number_format($row_pomaterialdetail['price'], 2); ?></td>
+                     <td><?= number_format($row_pomaterialdetail['amount'], 2); ?></td>
+                     <td><?= $row_pomaterialdetail['notes']; ?></td>
                   </tr>
                <?php $no++;
                } ?>
             </tbody>
             <tfoot class="text-right">
+
+
                <tr>
                   <th colspan="2" class="border-0">Qty Total</th>
-                  <th class="border-0"><?= number_format($row_poproduct['xweight'], 2); ?></th>
+                  <th class="border-0"><?= number_format($xweight, 2); ?></th>
                   <th class="border-0">Total Amount</th>
-                  <th colspan="3" class="border-0"><?= number_format($row_poproduct['xamount'], 2); ?></th>
+                  <th class="border-0"><?= number_format($xamount, 2); ?></th>
                </tr>
             </tfoot>
          </table>
+         <hr>
          <div class="row">
             <div class="col-6">
                <strong>
                   Says :
                </strong>
-               <?= terbilang($row_poproduct['xamount']) . " " . "Rupiah" ?>
+               <?= terbilang($xamount) . " " . "Rupiah" ?>
             </div>
          </div>
          <div class="row mt-3">
             <div class="col-6 float-right text-justify">
                <strong>Catatan :</strong>
-               <?= $row_poproduct['note']; ?>
+               <?= $row_pomaterial['note']; ?>
             </div>
          </div>
          <div class="row">
@@ -178,11 +175,6 @@ $result_poproductdetail = mysqli_query($conn, $query_poproductdetail);
          </div>
       </div>
    </div>
-   <script>
-      function printPage() {
-         window.print();
-      }
-   </script>
    <script src="../plugins/jquery/jquery.min.js"></script>
    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
    <script src="../plugins/select2/js/select2.full.min.js"></script>
