@@ -49,8 +49,8 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= $tampil['kdrawmate']; ?></td>
                                     <td class="text-left"><?= $tampil['nmrawmate']; ?></td>
                                     <td class="text-center">
-                                       <a href="editrawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="text-succes mx-auto p-2"><i class="fas fa-pencil-alt"></i></a>
-                                       <a href="deleterawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="text-danger mx-auto p-2" onclick="return confirm('apakah anda yakin ingin menghapus rawmate ini?')"><i class="fas fa-minus-square"></i></a>
+                                       <a href="editrawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+                                       <a href="deleterawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus rawmate ini?')"><i class="fas fa-minus-square"></i></a>
                                     </td>
                                  </tr>
                               <?php $no++;

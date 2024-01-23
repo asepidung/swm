@@ -57,9 +57,6 @@ include "../mainsidebar.php";
                                     <a href="mutasidetail.php?id=<?= $tampil['idmutasi']; ?>&stat=ready" class="btn btn-sm btn-warning">
                                        <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="lihatst.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-success">
-                                       <i class="fas fa-eye"></i>
-                                    </a>
                                     <a href="printmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-secondary">
                                        <i class="fas fa-print"></i>
                                     </a>

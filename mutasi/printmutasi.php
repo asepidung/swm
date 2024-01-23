@@ -7,23 +7,22 @@ require "../konak/conn.php";
 
 $id = $_GET['id'];
 // Query untuk mengambil data dari tabel do
-$query = "SELECT do.*, customers.nama_customer, customers.alamat1, users.fullname, salesorder.sonumber
-          FROM do 
-          INNER JOIN salesorder ON do.idso = salesorder.idso
-          INNER JOIN customers ON do.idcustomer = customers.idcustomer 
-          INNER JOIN users ON do.idusers = users.idusers
-          WHERE do.iddo = '$iddo'";
+$query = "SELECT * FROM mutasi WHERE idmutasi = '$id'";
 $result = mysqli_query($conn, $query);
-$row_do = mysqli_fetch_assoc($result);
+$row_mutasi = mysqli_fetch_assoc($result);
 
 
-// Query untuk mengambil data dari tabel dodetail berdasarkan iddo
-$query_detail = "SELECT dodetail.*, barang.kdbarang, barang.nmbarang, grade.nmgrade
-                FROM dodetail
-                INNER JOIN grade ON dodetail.idgrade = grade.idgrade
-                INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-                WHERE dodetail.iddo = '$iddo'";
+// Query untuk mengambil data dari tabel mutasidetail berdasarkan id
+$query_detail = "SELECT mutasidetail.idbarang, barang.nmbarang, 
+                        SUM(mutasidetail.qty) as total_qty,
+                        COUNT(mutasidetail.qty) as total_box
+                FROM mutasidetail
+                INNER JOIN barang ON mutasidetail.idbarang = barang.idbarang
+                WHERE idmutasi = '$id'
+                GROUP BY mutasidetail.idbarang";
 $result_detail = mysqli_query($conn, $query_detail);
+$xbox = 0;
+$xweight = 0
 
 ?>
 <!DOCTYPE html>
@@ -60,50 +59,43 @@ $result_detail = mysqli_query($conn, $query_detail);
 </head>
 
 <body>
-   <p>Delivery Order<br />
+   <p>Mutasi Order<br />
       <strong>PT. SANTI WIJAYA MEAT</strong><br />
       Jl. Perum Asabri Blok B Desa Sukasirna Kec. Jonggol Kab. Bogor Telp. 021-89935103
    </p>
    <hr />
-   <table width="100%">
+   <table width="100%" border="0">
       <tr>
-         <td width="12%">Do Number</td>
+         <td width="12%">Mutasi Number</td>
          <td width="2%" align="right">:</td>
-         <td width="30%"><?= $row_do['donumber']; ?></td>
+         <td width="30%"><?= $row_mutasi['nomutasi']; ?></td>
          <td width="12%">Delivery Date</td>
          <td width="2%" align="right">:</td>
-         <td width="30%"><?= date('d-M-Y', strtotime($row_do['deliverydate'])); ?></td>
-      </tr>
-      <tr>
-         <td width="12%">So Number</td>
-         <td width="2%" align="right">:</td>
-         <td width="30%"><?= $row_do['sonumber']; ?></td>
-         <td width="12%">PO Number</td>
-         <td width="2%" align="right">:</td>
-         <td width="30%"><?= $row_do['po']; ?></td>
-      </tr>
-      <tr>
-         <td width="12%">Sales Ref</td>
-         <td width="2%" align="right">:</td>
-         <td width="30%"> Muryani</td>
-         <td width="12%">Customer</td>
-         <td width="2%" align="right">:</td>
-         <td width="30%"><?= $row_do['nama_customer']; ?></td>
+         <td width="30%"><?= date('d-M-Y', strtotime($row_mutasi['tglmutasi'])); ?></td>
       </tr>
       <tr>
          <td width="12%">Driver</td>
          <td width="2%" align="right">:</td>
-         <td width="30%"> <?= $row_do['driver']; ?></td>
-         <td class="border-collapse" width="12%" valign="top">Address</td>
-         <td class="border-collapse" width="2%" valign="top" align="right">:</td>
-         <td width="30%" align="justify" valign="top"><?= $row_do['alamat1']; ?></td>
+         <td width="30%"> <?= $row_mutasi['driver']; ?></td>
+         <td width="12%">Gudang Tujuan</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= $row_mutasi['gudang']; ?></td>
       </tr>
       <tr>
          <td width="12%">No POL</td>
          <td width="2%" align="right">:</td>
-         <td width="30%"> <?= $row_do['plat']; ?></td>
-         <td></td>
-         <td></td>
+         <td width="30%"> <?= $row_mutasi['nopol']; ?></td>
+         <td class="border-collapse" width="12%" valign="top">Address</td>
+         <td class="border-collapse" width="2%" valign="top" align="right">:</td>
+         <td width="30%" align="justify" valign="top" rowspan="2">
+            <?php
+            if ($row_mutasi['gudang'] == "Perum") {
+               echo "Jl. Perum Asabri Blok B Desa Sukasirna Kec. Jonggol Kab. Bogor Telp. 021-89935103";
+            } else {
+               echo "RPHR Jonggol Jl. SMPN 1 Jonggol Kp. Menan Rt. 04/01 Ds. Sukamaju Kec. Jonggol - Bogor";
+            }
+            ?>
+         </td>
       </tr>
       <tr height="30px">
          <td width="12%"></td>
@@ -117,41 +109,38 @@ $result_detail = mysqli_query($conn, $query_detail);
    <table width="100%" border="1" cellpadding="2" class="border-collapse">
       <tr>
          <th width="5%">No</th>
-         <th width="10%">Code</th>
          <th width="30%">Item Descriptions</th>
          <th width="10%">Box</th>
          <th width="15%">Weight</th>
-         <th width="30%">Notes</th>
       </tr>
       <?php
       $no = 1; // Inisialisasi nomor urut
       while ($row_detail = mysqli_fetch_assoc($result_detail)) {
+         $xweight += $row_detail['total_qty'];
+         $xbox += $row_detail['total_box'];
       ?>
          <tr align="center">
             <td><?= $no ?></td>
-            <td><?= $row_detail['kdbarang']; ?></td>
             <td align="left"><span class="data"><?= $row_detail['nmbarang']; ?></span></td>
-            <td><?= $row_detail['box']; ?></td>
-            <td align="right"><span class="data"><?= number_format($row_detail['weight'], 2); ?></span></td>
-            <td align="left"><span class="data"><?= $row_detail['notes']; ?></span></td>
+            <td><?= $row_detail['total_box'] ?></td>
+            <td align="right"><span class="data"><?= number_format($row_detail['total_qty'], 2); ?></span></td>
          </tr>
       <?php
          $no++; // Increment nomor urut
       }
       ?>
       <tr align="right">
-         <th colspan="3">Total</th>
-         <th align="center"><?= number_format($row_do['xbox']); ?></th>
-         <th><span class="data"><?= number_format($row_do['xweight'], 2); ?></span></th>
-         <th></th>
+         <th colspan="2">Total</th>
+         <th align="center"><?= $xbox; ?></th>
+         <th><span class="data"><?= number_format(($xweight), 2); ?></span></th>
       </tr>
    </table>
    <i>
       <p align="justify" class="half-width">
          <strong>Note !</strong><br>
          <?php
-         if ($row_do['note'] !== "") {
-            echo $row_do['note'];
+         if ($row_mutasi['note'] !== "") {
+            echo $row_mutasi['note'];
          } else {
             echo "-";
          }
@@ -167,18 +156,14 @@ $result_detail = mysqli_query($conn, $query_detail);
          <td width="20%">Customer <br><br><br><br><br> ....................................</td>
       </tr>
    </table>
-   <br>
-   <p class="small-text" align="right">
-      Made By <?= $row_do['fullname'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
-   </p>
    <script>
-      document.title = "<?php echo $row_do['donumber']; ?>";
+      document.title = "<?php echo "Mutasi" . " " . $row_mutasi['nomutasi']; ?>";
       window.addEventListener("load", function() {
          window.print();
 
          // Redirect ke halaman do.php setelah 3 detik
          setTimeout(function() {
-            window.location.href = "do.php";
+            window.location.href = "index.php";
          }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
       });
    </script>

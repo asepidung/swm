@@ -143,27 +143,16 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>
-                  Purchase Order
-                  <i class="right fas fa-angle-left"></i>
-                </p>
+              <a href="../poproduct/" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>PO Product</p>
               </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="../poproduct/" class="nav-link">
-                    <i class="far fa-dot-circle nav-icon"></i>
-                    <p>PO Product</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="../pomaterial/" class="nav-link">
-                    <i class="far fa-dot-circle nav-icon"></i>
-                    <p>PO Material Support</p>
-                  </a>
-                </li>
-              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="../pomaterial/" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>PO Material Support</p>
+              </a>
             </li>
           </ul>
         </li>

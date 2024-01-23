@@ -52,6 +52,7 @@ $conn->close();
                       <th>Item Desc</th>
                       <th>Grade</th>
                       <th>Qty</th>
+                      <th>Pcs</th>
                       <th>P.O.D</th>
                       <th>Umur</th>
                       <th>ORIGIN</th>
@@ -83,6 +84,7 @@ $conn->close();
                           <td class="text-left"><?= $row['nmbarang']; ?></td>
                           <td><?= $row['nmgrade']; ?></td>
                           <td class="text-right"><?= $row['qty']; ?></td>
+                          <td><?= $row['pcs']; ?></td>
                           <td><?= date("d-M-y", strtotime($row['pod'])); ?></td>
                           <td>
                             <?= $podInterval; ?>
