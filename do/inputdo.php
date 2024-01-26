@@ -33,26 +33,28 @@ if (isset($_POST['submit'])) {
       echo "Error: " . $stmt_do->error;
    }
 
-   // $idgrade = $_POST['idgrade'];
+   $idgrade = $_POST['idgrade'];
    $idbarang = $_POST['idbarang'];
    $box = $_POST['box'];
    $weight = $_POST['weight'];
    $notes = $_POST['notes'];
 
-   $query_dodetail = "INSERT INTO dodetail (iddo, idbarang, box, weight, notes) VALUES (?,?,?,?,?)";
+   $query_dodetail = "INSERT INTO dodetail (iddo, idgrade, idbarang, box, weight, notes) VALUES (?,?,?,?,?,?)";
    $stmt_dodetail = $conn->prepare($query_dodetail);
 
-   for ($i = 0; $i < count($idbarang); $i++) {
-      $stmt_dodetail->bind_param("iiids", $last_id, $idbarang[$i], $box[$i], $weight[$i], $notes[$i]);
+   for ($i = 0; $i < count($idgrade); $i++) {
+      $stmt_dodetail->bind_param("iiiids", $last_id, $idgrade[$i], $idbarang[$i], $box[$i], $weight[$i], $notes[$i]);
       $stmt_dodetail->execute();
    }
 
-   $query_update_salesorder = "UPDATE salesorder SET progress = 'On Delivery' WHERE idso = ?";
+   $query_update_salesorder = "UPDATE salesorder SET progress = 'On Delivery' WHERE sonumber = ?";
    $stmt_update_salesorder = $conn->prepare($query_update_salesorder);
-   $stmt_update_salesorder->bind_param("i", $idso);
+   $stmt_update_salesorder->bind_param("s", $sonumber);
    $stmt_update_salesorder->execute();
    $stmt_update_salesorder->close();
-
+   $stmt_dodetail->close();
+   $stmt_do->close();
+   $conn->close();
 
    header("location: do.php");
 }
