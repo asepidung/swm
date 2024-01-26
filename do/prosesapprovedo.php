@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
       // Update status pada tabel salesorder menjadi "Delivered"
-      $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE sonumber = '$sonumber'";
+      $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE idso = '$idso'";
       $resultUpdateSo = mysqli_query($conn, $queryUpdateSo);
 
       if (!$resultUpdateSo) {

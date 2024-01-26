@@ -158,14 +158,6 @@ $xweight = 0
    </table>
    <script>
       document.title = "<?php echo "Mutasi" . " " . $row_mutasi['nomutasi']; ?>";
-      window.addEventListener("load", function() {
-         window.print();
-
-         // Redirect ke halaman do.php setelah 3 detik
-         setTimeout(function() {
-            window.location.href = "index.php";
-         }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
-      });
    </script>
 </body>
 

@@ -33,6 +33,8 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Mutasi Date</th>
                               <th>Number</th>
+                              <th>Tujuan</th>
+                              <th>Driver</th>
                               <th>Catatan</th>
                               <th>User</th>
                               <th>Action</th>
@@ -51,17 +53,19 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $no ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['tglmutasi'])) ?></td>
                                  <td class="text-center"><?= $tampil['nomutasi'] ?></td>
+                                 <td class="text-center"><?= $tampil['gudang'] ?></td>
+                                 <td class="text-center"><?= $tampil['driver'] ?></td>
                                  <td class="text-left"><?= $tampil['note'] ?></td>
                                  <td class="text-left"><?= $tampil['fullname'] ?></td>
                                  <td class="text-center">
-                                    <a href="mutasidetail.php?id=<?= $tampil['idmutasi']; ?>&stat=ready" class="btn btn-sm btn-warning">
+                                    <a href="mutasidetail.php?id=<?= $tampil['idmutasi']; ?>&stat=ready" class="btn btn-xs btn-warning">
                                        <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="printmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-secondary">
-                                       <i class="fas fa-print"></i>
+                                    <a href="lihatmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-xs btn-success">
+                                       <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="stockin.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-sm btn-primary">
-                                       <i class="fas fa-upload"></i>
+                                    <a href="printmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-xs btn-secondary">
+                                       <i class="fas fa-print"></i>
                                     </a>
                                  </td>
                               </tr>

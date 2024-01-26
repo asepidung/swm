@@ -21,7 +21,11 @@ include "../mainsidebar.php";
                      <div class="form-group row align-items-center">
                         <label for="awal" class="col-form-label col-sm-4">Periode :</label>
                         <div class="col-8">
-                           <input type="date" class="form-control form-control-sm" name="awal" value="<?= date('Y-m-01'); ?>">
+                           <?php
+                           $awal = date('Y-m-01');
+                           $akhir = date('Y-m-d');
+                           ?>
+                           <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
                         </div>
                      </div>
                      <!-- ... (form action and submit button can be added here) ... -->
@@ -32,7 +36,7 @@ include "../mainsidebar.php";
                      <div class="form-group row align-items-center">
                         <label for="akhir" class="col-form-label col-sm-4">Sampai</label>
                         <div class="col-8">
-                           <input type="date" class="form-control form-control-sm" name="akhir" value="<?= date('Y-m-d'); ?>">
+                           <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
                         </div>
                      </div>
                      <!-- ... (form action and submit button can be added here) ... -->
@@ -73,9 +77,11 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
+                           // Perbaikan pada bagian query
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
                               JOIN customers ON do.idcustomer = customers.idcustomer
                               JOIN users ON do.idusers = users.idusers
+                              WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
                               ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {

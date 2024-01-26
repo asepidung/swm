@@ -13,6 +13,7 @@ $querytally = "SELECT tally.*, customers.nama_customer
             WHERE tally.idtally = $idtally";
 $resulttally = mysqli_query($conn, $querytally);
 $rowtally = mysqli_fetch_assoc($resulttally);
+$idso = $rowtally['idso'];
 ?>
 <div class="content-header">
    <div class="container-fluid">
@@ -21,7 +22,13 @@ $rowtally = mysqli_fetch_assoc($resulttally);
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Back To List</button></a>
             <a href="printtally.php?id=<?= $idtally ?>"><button type="button" class="btn btn-outline-success">Cetak Tally <i class="fas fa-arrow-alt-circle-right"></i></button></a>
             <span class="text-info float-right">
-               <h4><?= $rowtally['nama_customer']; ?></h4>
+               <?php if ($rowtally['nama_customer'] == "ASEP OFFAL") { ?>
+                  <a href="istimewa.php?idso=<?= $idso ?>&idtally=<?= $idtally ?>">
+                     <h4><?= $rowtally['nama_customer']; ?></h4>
+                  </a>
+               <?php  } else { ?>
+                  <h4><?= $rowtally['nama_customer']; ?></h4>
+               <?php } ?>
             </span>
          </div>
       </div>

@@ -19,6 +19,7 @@ $querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.ids
             WHERE do.iddo = $iddo";
 $resultdo = mysqli_query($conn, $querydo);
 $row = mysqli_fetch_assoc($resultdo);
+$idso = $row['idso'];
 $sonumber = $row['sonumber'];
 
 $querydodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
