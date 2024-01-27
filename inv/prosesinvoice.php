@@ -5,11 +5,8 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 include "invnumber.php";
-// Check if the form is submitted
 if (isset($_POST['submit'])) {
-   // Retrieve data from the form and remove commas
    $iddo = $_POST['iddo'];
-   // $noinvoice = $_POST['noinvoice'];
    $iddoreceipt = $_POST['iddoreceipt'];
    $idsegment = $_POST['idsegment'];
    $top = $_POST['top'];
@@ -59,7 +56,6 @@ if (isset($_POST['submit'])) {
 
 
    // Insert data into the 'invoicedetail' table
-   $idgrade = $_POST['idgrade'];
    $idbarang = $_POST['idbarang'];
    $weight = $_POST['weight'];
    $price = $_POST['price'];
@@ -67,8 +63,7 @@ if (isset($_POST['submit'])) {
    $discountrp = $_POST['discountrp'];
    $amount = $_POST['amount'];
 
-   for ($i = 0; $i < count($idgrade); $i++) {
-      $idgrade[$i] = $idgrade[$i];
+   for ($i = 0; $i < count($idbarang); $i++) {
       $idbarang[$i] = $idbarang[$i];
       $weight[$i] = $weight[$i];
       $price[$i] = str_replace(',', '', $price[$i]);
@@ -76,10 +71,15 @@ if (isset($_POST['submit'])) {
       $discountrp[$i] = str_replace(',', '', $discountrp[$i]);
       $amount[$i] = str_replace(',', '', $amount[$i]);
 
-      $sql = "INSERT INTO invoicedetail (idinvoice, idgrade, idbarang, weight, price, discount, discountrp, amount) 
-              VALUES ('$invoiceID', '{$idgrade[$i]}', '{$idbarang[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
-      // Execute the SQL query
-      mysqli_query($conn, $sql);
+      $sql = "INSERT INTO invoicedetail (idinvoice, idbarang, weight, price, discount, discountrp, amount) 
+              VALUES ('$invoiceID', '{$idbarang[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
+
+      // Execute the SQL query with error handling
+      if (mysqli_query($conn, $sql)) {
+         echo "Record inserted successfully into invoicedetail<br>";
+      } else {
+         echo "Error inserting record into invoicedetail: " . mysqli_error($conn) . "<br>";
+      }
    }
 
    $updateSql1 = "UPDATE doreceipt SET status = 'Invoiced' WHERE iddoreceipt = '$iddoreceipt'";

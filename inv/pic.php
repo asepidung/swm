@@ -9,7 +9,7 @@ $idinvoice = $_GET['idinvoice'];
 $idusers = $_SESSION['idusers'];
 
 // Tampilkan data dari tabel invoice
-$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, doreceipt.alamat, customers.nama_customer, segment.banksegment, segment.accname, segment.accnumber 
+$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, customers.nama_customer, customers.alamat1, segment.banksegment, segment.accname, segment.accnumber 
                   FROM invoice 
                   INNER JOIN doreceipt ON invoice.iddoreceipt = doreceipt.iddoreceipt 
                   INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
@@ -38,30 +38,42 @@ $accnumber = $row_invoice['accnumber'];
 <html lang="en">
 
 <head>
-   <meta charset="utf-8">
-   <meta name="viewport" content="widtd=device-widtd, initial-scale=1">
-   <title>SWM Welcome</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title><?= $row_invoice['nama_customer'] . " " . $row_invoice['noinvoice']; ?></title>
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
-   <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-   <link rel="stylesheet" href="../https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-   <link rel="stylesheet" href="../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-   <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-   <link rel="stylesheet" href="../plugins/jqvmap/jqvmap.min.css">
-   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
-   <link rel="stylesheet" href="../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-   <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
-   <link rel="stylesheet" href="../plugins/summernote/summernote-bs4.min.css">
    <style>
-      .mt-0 {
-         margin: 0 0 0 0;
+      body {
+         font-family: Cambria, sans-serif;
+         font-size: 14px;
+      }
+
+      tfoot {
+         padding: 20 0 0 0;
+      }
+
+      .floatingButtonContainer {
+         position: fixed;
+         bottom: 20px;
+         left: 50%;
+         transform: translateX(-50%);
+         z-index: 9999;
       }
 
       .floatingButton {
-         position: fixed;
-         top: 20px;
-         right: 20px;
-         z-index: 9999;
+         background-color: #f0ad4e;
+         color: #fff;
+         padding: 12px 20px;
+         border: none;
+         border-radius: 5px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+         font-size: 16px;
+         cursor: pointer;
+      }
+
+      /* Hover effect */
+      .floatingButton:hover {
+         background-color: #e69537;
       }
 
       /* Media query untuk tampilan cetak */
@@ -70,184 +82,232 @@ $accnumber = $row_invoice['accnumber'];
             display: none;
          }
       }
+
+      .noinvoice {
+         font-size: 14px;
+         font-weight: bold;
+         margin-top: -2px;
+         /* Atur nilai negatif sesuai kebutuhan Anda */
+         margin-bottom: -5px;
+         /* Atur nilai negatif sesuai kebutuhan Anda */
+      }
+
+      .tableContainer {
+         padding: 20 0 0 0;
+      }
+
+      /* Styling for table with border-collapse */
+      .tablecollapse {
+         border-collapse: collapse;
+         width: 100%;
+      }
+
+      /* Styling for table headers (th) */
+      .thcollapse {
+         border: 1px solid black;
+         padding: 4px;
+      }
+
+      /* Styling for data cells (td) with border */
+      .tdcollapse {
+         border: 1px solid black;
+         padding: 4px;
+      }
+
+      /* Styling for data cells (td) without border */
+      .noborder {
+         border: none;
+         padding: 4px;
+      }
+
+      /* Styling for h1 and h2 elements */
+      .h1tea {
+         margin: 5px 0 10px 0;
+      }
+
+      .mt {
+         margin: 40px 0 0 0;
+      }
+
+      .h2tea {
+         margin: 5px 0 0 0;
+      }
+
+      .pad {
+         padding: 2px;
+      }
+
+      .pad1 {
+         padding: 15px 0 15px 0;
+      }
+
+      .bggelap {
+         background-color: #C1C1C1;
+      }
    </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
-   <button class="btn bg-gradient-warning floatingButton" onclick="printPage()" media="print">Print Invoice</button>
-   <div class="wrapper">
-      <div class="container">
-         <div class="row mb-2">
-            <img src="../dist/img/hic.png" alt=" Logo-Invoice" class="img-fluid">
-         </div>
-         <span class="float-right mt-3 mb-2">
-            <h4><?= $row_invoice['noinvoice']; ?></h4>
-         </span>
-         <table class="table table-borderless table-sm">
-            <tr>
-               <td width="15%">Do Number</td>
-               <td width="1%">:</td>
-               <td width="30%"><?= $row_invoice['donumber']; ?></td>
-               <td></td>
-               <td width="15%">Invoice Date</td>
-               <td width="1%">:</td>
-               <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['invoice_date'])); ?></td>
+<body>
+   <img src="../dist/img/hic.png" alt="headerinvoice" width="100%">
+   <br>
+   <!-- Invoice Number -->
+   <p class="noinvoice" align="right"><?= $row_invoice['noinvoice']; ?></p>
+
+   <!-- Table 1 (Information) -->
+   <table width="100%">
+      <tr>
+         <td width="12%">Do Number</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= $row_invoice['donumber']; ?></td>
+         <td width="12%">Invoice Date</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['invoice_date'])); ?></td>
+      </tr>
+      <tr>
+         <td width="12%">Delivery Date</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['deliverydate'])); ?></td>
+         <td width="12%">Bill To</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= $row_invoice['nama_customer']; ?></td>
+      </tr>
+      <tr>
+         <td width="12%">Terms</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= $row_invoice['top']; ?> Days</td>
+         <td width="12%" valign="top" rowspan="5">Address</td>
+         <td width="2%" align="right" valign="top" rowspan="5">:</td>
+         <td width="30%" valign="top" align="justify" rowspan="5"> <?= $row_invoice['alamat1']; ?></td>
+      </tr>
+      <tr>
+         <td width="12%">Duedate</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['duedate'])); ?></td>
+      </tr>
+      <tr>
+         <td width="12%">Sales Ref</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%">Muryani</td>
+      </tr>
+      <tr>
+         <td width="12%">Cust PO</td>
+         <td width="2%" align="right">:</td>
+         <td width="30%"><?= $row_invoice['pocustomer']; ?></td>
+      </tr>
+   </table>
+   <div class="tableContainer">
+      <table class="tablecollapse" width="100%">
+         <tr>
+            <th class="tdcollapse">#</th>
+            <th class="tdcollapse">Prod Descriptions</th>
+            <th class="tdcollapse">Weight</th>
+            <th class="tdcollapse">Price</th>
+            <th class="tdcollapse">Disc %</th>
+            <th class="tdcollapse">Disc Rp</th>
+            <th class="tdcollapse">Total</th>
+         </tr>
+         <?php
+         $no = 1;
+         while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
+            <tr align="right">
+               <td class="tdcollapse" align="center"><?= $no; ?></td>
+               <td class="tdcollapse" align="left"><?= $row_invoicedetail['nmbarang']; ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['weight'], 2); ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['price'], 2); ?></td>
+               <td class="tdcollapse" align="center"><?= $row_invoicedetail['discount']; ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['discountrp'], 2); ?></td>
+               <td class="tdcollapse"><?= number_format($row_invoicedetail['amount'], 2); ?></td>
             </tr>
+         <?php $no++;
+         } ?>
+         <tfoot>
             <tr>
-               <td width="15%">Delivery Date</td>
-               <td width="1%">:</td>
-               <td width="30%"><?= date('d-M-Y', strtotime($row_invoice['deliverydate'])); ?></td>
-               <td></td>
-               <td width="15%">Bill To</td>
-               <td width="1%">:</td>
-               <td width="30%"><?= $row_invoice['nama_customer']; ?></td>
+               <th colspan="3" align="right"><?= number_format($row_invoice['xweight'], 2); ?></th>
+               <td colspan="3" align="right">Grand Total :</td>
+               <th class="noborder pad" align="right"><?= number_format($row_invoice['xamount'], 2); ?></th>
             </tr>
-            <tr>
-               <td width="15%">Terms</td>
-               <td width="1%">:</td>
-               <td width="30%"><?= $row_invoice['top']; ?> Days</td>
-               <td></td>
-               <td width="15%" valign="top">Address</td>
-               <td width="1%" valign="top">:</td>
-               <td rowspan="4" width="30%" valign="top" class="text-jutify"><?= $row_invoice['alamat']; ?></td>
+            <tr class="noborder">
+               <td colspan="6" align="right">Tax 11% :</td>
+               <th class="pad" align="right"><?= number_format($row_invoice['tax'], 2); ?></th>
             </tr>
-            <tr>
-               <td width="15%">Due Date</td>
-               <td width="1%">:</td>
-               <td width="30%" colspan="4"><?= date('d-M-Y', strtotime($row_invoice['duedate'])); ?></td>
+            <tr class="noborder">
+               <td colspan="6" align="right">Charge :</td>
+               <th class="pad" align="right"><?= number_format($row_invoice['charge'], 2); ?></th>
             </tr>
-            <tr>
-               <td width="15%">Sales Ref</td>
-               <td width="1%">:</td>
-               <td width="30%" colspan="4">Muryani</td>
+            <tr class="noborder">
+               <td colspan="6" align="right">DownPayment :</td>
+               <th class="pad" align="right"><?= number_format($row_invoice['downpayment'], 2); ?></th>
             </tr>
-            <tr>
-               <td width="15%">Customer PO</td>
-               <td width="1%">:</td>
-               <td width="30%" colspan="4"><?= $row_invoice['pocustomer']; ?></td>
+            <tr class="noborder">
+               <td colspan="6" align="right">Balance :</td>
+               <th class="pad" align="right"><?= number_format($row_invoice['balance'], 2); ?></th>
             </tr>
-         </table>
-         <table class="table table-sm border-0">
-            <thead class="thead-dark">
-               <tr class="text-center">
-                  <th>#</th>
-                  <th>Prod Descriptions</th>
-                  <th>Weight</th>
-                  <th>Price</th>
-                  <th>Disc %</th>
-                  <th>Disc Rp</th>
-                  <th>Total</th>
-               </tr>
-            </thead>
-            <tbody>
-               <?php $no = 1;
-               while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
-                  <tr class="text-right">
-                     <td class="text-center"><?= $no; ?></td>
-                     <td class="text-left"><?= $row_invoicedetail['nmbarang']; ?></td>
-                     <td><?= number_format($row_invoicedetail['weight'], 2); ?></td>
-                     <td><?= number_format($row_invoicedetail['price'], 2); ?></td>
-                     <td class="text-center"><?= $row_invoicedetail['discount']; ?></td>
-                     <td><?= number_format($row_invoicedetail['discountrp'], 2); ?></td>
-                     <td><?= number_format($row_invoicedetail['amount'], 2); ?></td>
-                  </tr>
-               <?php $no++;
-               } ?>
-            </tbody>
-            <tfoot class="text-right">
-               <tr>
-                  <th colspan="2"></th>
-                  <th class="thead-light"><?= number_format($row_invoice['xweight'], 2); ?></th>
-                  <td colspan="3">Grand Total :</td>
-                  <th colspan="3" class="thead-light"><?= number_format($row_invoice['xamount'], 2); ?></th>
-               </tr>
-               <tr class="border-0">
-                  <td colspan="4" rowspan="4" class="text-justify border-0" valign="top">
-                     Catatan : <br>
-                     <i>
-                        <strong>
-                           <!-- <?= terbilang($row_invoice['balance']) . " " . "Rupiah"; ?> -->
-                           <?= $row_invoice['note']; ?>
-                        </strong>
-                     </i>
-                  </td>
-                  <td colspan="2" class="border-0">Tax 11% :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_invoice['tax'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">Charge :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_invoice['charge'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">DownPayment :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_invoice['downpayment'], 2); ?></th>
-               </tr>
-               <tr>
-                  <td colspan="2" class="border-0">Balance :</td>
-                  <th colspan="3" class="border-0"><?= number_format($row_invoice['balance'], 2); ?></th>
-               </tr>
-            </tfoot>
-         </table>
-         <div class="row">
-            <div class="col-4">
-               <table class="table table-borderless table-sm">
-                  <tr>
-                     <th>Payment Methods</th>
-                  </tr>
-                  <tr>
-                     <td colspan="4"><?= $banksegment; ?></td>
-                  </tr>
-                  <tr>
-                     <td>ACC. NAME</td>
-                     <td>:</td>
-                     <td><strong><?= $accname; ?></strong></td>
-                  </tr>
-                  <tr>
-                     <td>ACC. NUMBER</td>
-                     <td>:</td>
-                     <td><strong><?= $accnumber; ?></strong></td>
-                  </tr>
-               </table>
-            </div>
-            <div class="col-4"></div>
-            <div class="col text-center mt-4">
-               F I N A N C E
-               <br><br><br><br><br>
-               ( ............................ )
-            </div>
-         </div>
-      </div>
+         </tfoot>
+      </table>
    </div>
+   <br>
+   <table class="h2tea tablecollapse">
+      <!-- <tr class="tablecollapse">
+         <td align="right">Says :</td>
+      </tr> -->
+      <tr>
+         <td width="50%"></td>
+         <td scope="col" align="right">
+            <b class="bggelap">
+               Says :
+               <i>
+                  <?= terbilang($row_invoice['balance']) . " " . "Rupiah" ?>
+               </i>
+            </b>
+         </td>
+         <td></td>
+      </tr>
+      <?php if ($row_invoice['note'] !== "") { ?>
+         <tr class="pad1">
+            <td align="justify">
+               <i>Note :<br> <b><?= $row_invoice['note'] ?></b></i>
+            </td>
+         </tr>
+      <?php } ?>
+   </table>
+   <br>
+   <div class=" h2tea">Payment Methods</div>
+   <table width="100%">
+      <tr>
+         <td colspan="4"><?= $banksegment; ?></td>
+         <td valign="top" align="center" rowspan="2">
+            F I N A N C E
+         </td>
+      </tr>
+      <tr>
+         <td width="20%">ACC Name</td>
+         <td width="5%">:</td>
+         <td width="25%"><strong><?= $accname; ?></strong></td>
+         <td width="25%"></td>
+      </tr>
+      <tr>
+         <td width="20%">ACC. NUMBER</td>
+         <td width="5%">:</td>
+         <td width="25%"><strong><?= $accnumber; ?></strong></td>
+         <td></td>
+      </tr>
+      <tr>
+         <td colspan="4"></td>
+         <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
+      </tr>
+   </table>
+
    <script>
-      function printPage() {
+      // Trigger the print dialog when the page loads
+      window.onload = function() {
          window.print();
-      }
+      };
+
+      // Close the window after printing (optional)
+      window.onafterprint = function() {
+         window.location.href = 'invoice.php';
+      };
    </script>
-   <script src="../plugins/jquery/jquery.min.js"></script>
-   <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-   <script src="../plugins/select2/js/select2.full.min.js"></script>
-   <script src="../plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
-   <script src="../plugins/moment/moment.min.js"></script>
-   <script src="../plugins/inputmask/jquery.inputmask.min.js"></script>
-   <script src="../plugins/daterangepicker/daterangepicker.js"></script>
-   <script src="../plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-   <script src="../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-   <script src="../plugins/bs-stepper/js/bs-stepper.min.js"></script>
-   <script src="../plugins/dropzone/min/dropzone.min.js"></script>
-   <script src="../dist/js/adminlte.min.js"></script>
-   <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
-   <script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-   <script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-   <script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-   <script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-   <script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-   <script src="../plugins/jszip/jszip.min.js"></script>
-   <script src="../plugins/pdfmake/pdfmake.min.js"></script>
-   <script src="../plugins/pdfmake/vfs_fonts.js"></script>
-   <script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-   <script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-
-
 </body>
 
 </html>

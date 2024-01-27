@@ -21,9 +21,8 @@ $resultdo = mysqli_query($conn, $querydo);
 $row = mysqli_fetch_assoc($resultdo);
 $sonumber = $row['sonumber'];
 
-$querydodetail = "SELECT dodetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
+$querydodetail = "SELECT dodetail.*, barang.nmbarang, barang.kdbarang
                   FROM dodetail
-                  INNER JOIN grade ON dodetail.idgrade = grade.idgrade
                   INNER JOIN barang ON dodetail.idbarang = barang.idbarang
                   WHERE dodetail.iddo = $iddo";
 $resultdodetail = mysqli_query($conn, $querydodetail);
@@ -97,11 +96,6 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row">
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <label>Code</label>
-                                 </div>
-                              </div>
                               <div class="col-3">
                                  <div class="form-group">
                                     <label>Product</label>
@@ -125,14 +119,6 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                            </div>
                            <?php while ($rowdodetail = mysqli_fetch_assoc($resultdodetail)) { ?>
                               <div class="row mt-n2">
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="hidden" name="idgrade[]" value="<?= $rowdodetail['idgrade'] ?>">
-                                          <input type="text" class="form-control text-center" value="<?= $rowdodetail['nmgrade'] ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
                                  <div class="col-3">
                                     <div class="form-group">
                                        <div class="input-group">
@@ -166,17 +152,18 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                            <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-2">
-                              <button type="button" class="btn btn-block btn-warning" id="calculate-btn">Calculate</button>
-                           </div>
-                           <div class="col-2">
-                              <button type="submit" disabled name="approve" id="submit-btn" class="btn btn-block btn-success" onclick="return confirm('Pastikan semua data sudah sesuai')">Receipt</button>
-                           </div>
+                           <div class="col-3"></div>
                            <div class="col-1">
                               <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
                            </div>
                            <div class="col-2">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
+                           </div>
+                           <div class="col-2">
+                              <button type="button" class="btn btn-block btn-warning" id="calculate-btn">Calculate</button>
+                           </div>
+                           <div class="col-2">
+                              <button type="submit" disabled name="approve" id="submit-btn" class="btn btn-block btn-success" onclick="return confirm('Pastikan semua data sudah sesuai')">Receipt</button>
                            </div>
                         </div>
                      </div>

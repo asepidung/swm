@@ -27,9 +27,8 @@ $iddo = $rowDo['iddo'];
 $idso = $rowDo['idso'];
 $idgroup = $rowDo['idgroup'];
 // Mengambil data dari tabel doreceiptdetail, grade, dan barang
-$querydoreceiptdetail = "SELECT doreceiptdetail.*, grade.nmgrade, barang.nmbarang, barang.kdbarang
+$querydoreceiptdetail = "SELECT doreceiptdetail.*, barang.nmbarang, barang.kdbarang
                   FROM doreceiptdetail
-                  INNER JOIN grade ON doreceiptdetail.idgrade = grade.idgrade
                   INNER JOIN barang ON doreceiptdetail.idbarang = barang.idbarang
                   WHERE doreceiptdetail.iddoreceipt = $iddoreceipt";
 $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
@@ -140,14 +139,6 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                            </div>
                            <?php while ($rowdoreceiptdetail = mysqli_fetch_assoc($resultdoreceiptdetail)) { ?>
                               <div class="row mt-n2">
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $rowdoreceiptdetail['nmgrade'] ?>" readonly>
-                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $rowdoreceiptdetail['idgrade'] ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">

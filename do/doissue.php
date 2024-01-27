@@ -101,11 +101,6 @@ $sonumber = $row['sonumber'];
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row mb-n3">
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <label for="idgrade">Code</label>
-                                 </div>
-                              </div>
                               <div class="col-4">
                                  <div class="form-group">
                                     <label for="idbarang">Product</label>

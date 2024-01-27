@@ -120,7 +120,7 @@ $idso = $rowtally['idso'];
                                     <td><?= $no; ?></td>
                                     <td><?= $barcode; ?></td>
                                     <td class="text-left"><?= $nmbarang; ?></td>
-                                    <td><?= $tampil['weight']; ?></td>
+                                    <td><?= number_format($tampil['weight'], 2); ?></td>
                                     <?php
                                     if ($tampil['pcs'] < 1) {
                                        $pcs = "";
@@ -208,7 +208,7 @@ $idso = $rowtally['idso'];
                                  while ($row = mysqli_fetch_assoc($result)) { ?>
                                     <tr>
                                        <td class="ml-1"> <?= $row['nmbarang'] ?></td>
-                                       <td class="text-center"><?= $row['weight'] ?></td>
+                                       <td class="text-center"><?= number_format($row['weight'], 2) ?></td>
                                        <td class="text-right">
                                           <?php
                                           $totalWeightQuery = "SELECT SUM(weight) AS total_weight
@@ -216,7 +216,7 @@ $idso = $rowtally['idso'];
                                           WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
                                           $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
                                           if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
-                                             echo $totalWeightRow['total_weight'];
+                                             echo number_format($totalWeightRow['total_weight'], 2);
                                           } else {
                                              echo "0"; // Jika tidak ada data, tampilkan 0
                                           }

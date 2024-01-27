@@ -9,7 +9,7 @@ $idinvoice = $_GET['idinvoice'];
 $idusers = $_SESSION['idusers'];
 
 // Tampilkan data dari tabel invoice
-$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, doreceipt.alamat, customers.nama_customer, segment.banksegment, segment.accname, segment.accnumber 
+$query_invoice = "SELECT invoice.*, doreceipt.deliverydate, customers.nama_customer, customers.alamat1, segment.banksegment, segment.accname, segment.accnumber 
                   FROM invoice 
                   INNER JOIN doreceipt ON invoice.iddoreceipt = doreceipt.iddoreceipt 
                   INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
@@ -177,7 +177,7 @@ $accnumber = $row_invoice['accnumber'];
          <td width="30%"><?= $row_invoice['top']; ?> Days</td>
          <td width="12%" valign="top" rowspan="5">Address</td>
          <td width="2%" align="right" valign="top" rowspan="5">:</td>
-         <td width="30%" valign="top" align="justify" rowspan="5"> <?= $row_invoice['alamat']; ?></td>
+         <td width="30%" valign="top" align="justify" rowspan="5"> <?= $row_invoice['alamat1']; ?></td>
       </tr>
       <tr>
          <td width="12%">Duedate</td>

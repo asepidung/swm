@@ -46,9 +46,10 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer FROM plandev
+                           $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer, salesorder.progress FROM plandev
                                        JOIN customers ON plandev.idcustomer = customers.idcustomer
-                                       WHERE plandelivery >= CURDATE()
+                                       JOIN salesorder ON plandev.idso = salesorder.idso
+                                       WHERE progress = 'Waiting' OR progress = 'On Process'
                                        ORDER BY plandelivery ASC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
