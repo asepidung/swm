@@ -77,12 +77,7 @@ $sonumber = $row['sonumber'];
                            </div>
                            <div class=" col-2">
                               <div class="form-group">
-                                 <select class="form-control" name="driver" id="driver">
-                                    <option value="">Pilih Driver</option>
-                                    <option value="H. MPE">H. MPE</option>
-                                    <option value="H. TAUFIQ">H. TAUFIQ</option>
-                                    <option value="H. ZAINAL">H. ZAINAL</option>
-                                 </select>
+                                 <input type="text" class="form-control" name="driver" id="driver">
                               </div>
                            </div>
                            <div class="col-2">
@@ -144,27 +139,6 @@ $sonumber = $row['sonumber'];
                               if ($row_tallydetail['total_weight'] > 0) {
                            ?>
                                  <div class="row mb-n2">
-                                    <div class="col-1">
-                                       <div class="form-group">
-                                          <div class="input-group">
-                                             <!-- Menampilkan select box dengan pilihan grade -->
-                                             <select class="form-control" name="idgrade[]" id="idgrade">
-                                                <option value=""></option>
-                                                <?php
-                                                // Query untuk mengambil data dari tabel grade
-                                                $sql = "SELECT * FROM grade";
-                                                $result = $conn->query($sql);
-                                                // Membuat pilihan dalam select box berdasarkan data yang diambil
-                                                if ($result->num_rows > 0) {
-                                                   while ($row = $result->fetch_assoc()) {
-                                                      echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
-                                                   }
-                                                }
-                                                ?>
-                                             </select>
-                                          </div>
-                                       </div>
-                                    </div>
                                     <div class="col-4">
                                        <div class="form-group">
                                           <div class="input-group">
@@ -203,7 +177,7 @@ $sonumber = $row['sonumber'];
                            }
                            ?>
                            <div class="row">
-                              <div class="col-5"></div>
+                              <div class="col-4"></div>
                               <div class="col-1">
                                  <input type="text" name="xbox" id="xbox" class="text-center form-control" readonly>
                               </div>

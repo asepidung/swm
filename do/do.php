@@ -13,6 +13,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col-7">
+               <a href="../tally/"><button type="button" class="btn btn-sm btn-outline-success"><i class="fas fa-eye"></i> Tally</button></a>
                <a href="dodetail.php"><button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Detail Delivery</button></a>
             </div>
             <div class="col-5 row">

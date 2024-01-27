@@ -18,9 +18,8 @@ $row_do = mysqli_fetch_assoc($result);
 
 
 // Query untuk mengambil data dari tabel dodetail berdasarkan iddo
-$query_detail = "SELECT dodetail.*, barang.kdbarang, barang.nmbarang, grade.nmgrade
+$query_detail = "SELECT dodetail.*, barang.kdbarang, barang.nmbarang
                 FROM dodetail
-                INNER JOIN grade ON dodetail.idgrade = grade.idgrade
                 INNER JOIN barang ON dodetail.idbarang = barang.idbarang
                 WHERE dodetail.iddo = '$iddo'";
 $result_detail = mysqli_query($conn, $query_detail);
@@ -96,7 +95,7 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="30%"> <?= $row_do['driver']; ?></td>
       <td class="border-collapse" width="12%" valign="top">Address</td>
       <td class="border-collapse" width="2%" valign="top" align="right">:</td>
-      <td width="30%" align="justify" valign="top"><?= $row_do['alamat1']; ?></td>
+      <td width="30%" align="justify" valign="top" rowspan="3"><?= $row_do['alamat1']; ?></td>
     </tr>
     <tr>
       <td width="12%">No POL</td>

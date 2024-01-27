@@ -47,7 +47,7 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
                            FROM salesorder 
                            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
-                           ORDER BY deliverydate DESC");
+                           ORDER BY idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
                            ?>
