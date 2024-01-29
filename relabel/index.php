@@ -8,7 +8,7 @@ require "../konak/conn.php";
 require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
-
+$today = date('Y-m-d');
 ?>
 <div class="content-wrapper">
    <!-- Bagian Header Konten -->
@@ -52,6 +52,7 @@ require "../mainsidebar.php";
                                                    INNER JOIN barang b ON r.idbarang = b.idbarang
                                                    INNER JOIN users u ON r.iduser = u.idusers
                                                    LEFT JOIN grade g ON r.idgrade = g.idgrade
+                                                   WHERE r.dibuat = $today
                                                    ORDER BY r.dibuat DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $fullname = $tampil['fullname'];

@@ -27,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if ($rowCount == 0) {
          // Data barang tidak ditemukan
          echo '<script>alert("Data Barang Tidak Ditemukan");</script>';
-         header("location: index.php"); // Kembali ke halaman index.php
+         echo '<script>window.location.href = "index.php";</script>'; // Redirect ke halaman index.php menggunakan JavaScript
+         exit(); // Hentikan eksekusi script setelah redirect
       } else {
          // Data barang ditemukan, lanjutkan dengan menampilkan data dari tabel stock
          $row = mysqli_fetch_assoc($checkStockResult);

@@ -187,7 +187,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                  // Jika kdbarcode sudah ada di tabel tallydetail, tampilkan ikon abu-abu
                                  if ($rowCheckExistence['count'] > 0) {
                                  ?>
-                                    <i class="fas fa-poo fa-lg"></i>
+                                    <i class="far fa-check-circle"></i>
                                  <?php
                                  } else {
                                     // Jika kdbarcode belum ada di tabel tallydetail, tampilkan tautan penghapusan

@@ -126,6 +126,12 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="../do/dodetail.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Delivery Detail</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="../plandev/" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Schedule</p>
@@ -198,6 +204,12 @@
               <a href="../inv/invoice.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Invoice</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../inv/invoicedetail.php" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Invoice Detail</p>
               </a>
             </li>
             <li class="nav-item">

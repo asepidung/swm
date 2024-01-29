@@ -7,26 +7,26 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 ?>
 <div class="content-wrapper">
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
             <div class="col-2">
-               <input type="date" class="form-control form-control-sm" name="awal" value="<?= date('Y-m-01'); ?>">
+               <form method="GET" action="">
+                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
             </div>
             <div class="col-2">
-               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= date('Y-m-d'); ?>">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
             </div>
-            <div class="col-4 ">
-               <button class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
-            </div>
-
-            <div class="col-2">
-               <a href="../tally/"><button type="button" class="btn btn-block btn-sm btn-outline-success"><i class="fas fa-eye"></i> Tally</button></a>
+            <div class="col">
+               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+               </form>
             </div>
             <div class="col-2">
-               <a href="dodetail.php"><button type="button" class="btn btn-block btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Detail Delivery</button></a>
+               <a href="../tally/" class="btn btn-sm btn-outline-success float-right"><i class="fas fa-eye"></i> List Taly</a>
             </div>
          </div>
       </div>
@@ -65,6 +65,7 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
                               JOIN customers ON do.idcustomer = customers.idcustomer
                               JOIN users ON do.idusers = users.idusers
+                              WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
                               ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
