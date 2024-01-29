@@ -10,11 +10,12 @@ require "seriallabelrepack.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
+   $origin = $_POST['origin'];
    $idrepack = $_POST['idrepack'];
    $idgrade = $_POST['idgrade'];
    $packdate = $_POST['packdate'];
-   $exp = $_POST['exp'];
-   $barcode = $kodeauto;
+   $exp = null;
+   $barcode = $origin . $kodeauto;
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
    $pembulatan = isset($_POST['pembulatan']) ? true : false;
    $qty = null;
@@ -23,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $_SESSION['idbarang'] = $_POST['idbarang'];
    $_SESSION['idgrade'] = $_POST['idgrade'];
    $_SESSION['packdate'] = $packdate;
+   $_SESSION['origin'] = $_POST['origin'];
    $_SESSION['tenderstreach'] = $tenderstreachActive;
    $_SESSION['pembulatan'] = $pembulatan;
    $_SESSION['exp'] = $exp;
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    // Query insert untuk tabel stock
    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
-                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '3')"; // Sesuaikan 'origin' sesuai kebutuhan
+                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '$origin')"; // Sesuaikan 'origin' sesuai kebutuhan
 
    // Eksekusi query
    if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {

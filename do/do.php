@@ -12,35 +12,23 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-7">
-               <a href="../tally/"><button type="button" class="btn btn-sm btn-outline-success"><i class="fas fa-eye"></i> Tally</button></a>
-               <a href="dodetail.php"><button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Detail Delivery</button></a>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="awal" value="<?= date('Y-m-01'); ?>">
             </div>
-            <div class="col-5 row">
-               <div class="col">
-                  <form method="POST" action="your_action_page.php">
-                     <div class="form-group row align-items-center">
-                        <label for="awal" class="col-form-label col-sm-4">Periode :</label>
-                        <div class="col-8">
-                           <input type="date" class="form-control form-control-sm" name="awal" value="<?= date('Y-m-01'); ?>">
-                        </div>
-                     </div>
-                     <!-- ... (form action and submit button can be added here) ... -->
-                  </form>
-               </div>
-               <div class="col">
-                  <form method="POST" action="your_action_page.php">
-                     <div class="form-group row align-items-center">
-                        <label for="akhir" class="col-form-label col-sm-4">Sampai</label>
-                        <div class="col-8">
-                           <input type="date" class="form-control form-control-sm" name="akhir" value="<?= date('Y-m-d'); ?>">
-                        </div>
-                     </div>
-                     <!-- ... (form action and submit button can be added here) ... -->
-                  </form>
-               </div>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= date('Y-m-d'); ?>">
             </div>
-         </div><!-- /.container-fluid -->
+            <div class="col-4 ">
+               <button class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="col-2">
+               <a href="../tally/"><button type="button" class="btn btn-block btn-sm btn-outline-success"><i class="fas fa-eye"></i> Tally</button></a>
+            </div>
+            <div class="col-2">
+               <a href="dodetail.php"><button type="button" class="btn btn-block btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Detail Delivery</button></a>
+            </div>
+         </div>
       </div>
    </div>
    <section class="content">

@@ -37,7 +37,7 @@
                 <p>Boning</p>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="../trading/trading.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Label Trading</p>
@@ -48,11 +48,11 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p>Repack Import</p>
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="../repack" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Repack Stock</p>
+                <p>Repack</p>
               </a>
             </li>
             <li class="nav-item">

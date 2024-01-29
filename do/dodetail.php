@@ -19,12 +19,11 @@ include "../mainsidebar.php";
                   <div class="card-body">
                      <?php
                      $query = "SELECT i.iddo, c.nama_customer, i.deliverydate, i.donumber, i.po,
-                     b.nmbarang, id.weight, g.nmgrade, id.notes
+                     b.nmbarang, id.weight, id.notes
                      FROM do i
                      INNER JOIN customers c ON i.idcustomer = c.idcustomer
                      LEFT JOIN dodetail id ON i.iddo = id.iddo
                      LEFT JOIN barang b ON id.idbarang = b.idbarang
-                     LEFT JOIN grade g ON id.idgrade = g.idgrade
                      ORDER BY i.iddo DESC";  // Urutkan berdasarkan iddo
                      $result = $conn->query($query);
                      ?>
@@ -37,7 +36,6 @@ include "../mainsidebar.php";
                               <th>Tgl do</th>
                               <th>No DO</th>
                               <th>PO</th>
-                              <th>Kode</th>
                               <th>Barang</th>
                               <th>Weight</th>
                               <th>Notes</th>
@@ -53,7 +51,6 @@ include "../mainsidebar.php";
                                  <td class="text-center"> <?= $row["deliverydate"]; ?> </td>
                                  <td class="text-center"> <?= $row["donumber"]; ?> </td>
                                  <td class="text-left"> <?= $row["po"]; ?> </td>
-                                 <td class="text-center"> <?= $row["nmgrade"]; ?> </td>
                                  <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
                                  <td> <?= number_format($row["weight"], 2); ?> </td>
                                  <td class="text-left"> <?= $row["notes"]; ?> </td>

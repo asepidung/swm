@@ -9,4 +9,4 @@ $currentYear = date("y");  // Mendapatkan dua digit tahun saat ini (misalnya 23 
 $currentMonth = date("m");  // Mendapatkan dua digit bulan saat ini
 $currentDay = date("d");  // Mendapatkan dua digit tanggal saat ini
 
-$kodeauto = "3" . $currentYear . $currentMonth . $currentDay . $seriallabel;
+$kodeauto = $currentYear . $currentMonth . $currentDay . $seriallabel;

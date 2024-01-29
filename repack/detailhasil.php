@@ -40,6 +40,17 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <form method="POST" action="printlabel.php" onsubmit="submitForm(event)">
                      <input type="hidden" name="idrepack" value="<?= $idrepack; ?>">
                      <div class="form-group">
+                        <label>Origin Barang <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                           <select class="form-control" name="origin" id="origin" required>
+                              <option value="">** Pilih Asal Barang **</option>
+                              <option value="3" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 3) ? 'selected' : ''; ?>>REPACK</option>
+                              <option value="2" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 2) ? 'selected' : ''; ?>>TRADING</option>
+                              <option value="5" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 5) ? 'selected' : ''; ?>>IMPORT</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group">
                         <label>Product <span class="text-danger">*</span></label>
                         <div class="input-group">
                            <select class="form-control" name="idbarang" id="idbarang" required autofocus>
@@ -100,12 +111,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                            <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                         </div>
                      </div>
-                     <div class="form-group">
+                     <!-- <div class="form-group">
                         <label>Expired Date</label>
                         <div class="input-group">
                            <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
                         </div>
-                     </div>
+                     </div> -->
                      <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
                         <label class="form-check-label">Aktifkan Tenderstreatch</label>

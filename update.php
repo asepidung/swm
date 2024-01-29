@@ -13,16 +13,13 @@
       <!-- /.card-header -->
       <div class="card-body">
          <li>
-            Penambahan Modul Pricelist
+            Pembaharuan System Repack dan Good Receipt
          </li>
          <li>
-            Penambahan Modul Sales Order
+            Penghapusan Kode pada DO
          </li>
          <li>
-            Plan Delivery Otomatis berdasarkan SO
-         </li>
-         <li>
-            Penambahan Modul Tally Sheet scanning dan delivery order
+            sortir do berdasarkan period
          </li>
       </div>
    </div>
