@@ -41,8 +41,15 @@ $result = $conn->query($sql);
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 mt-3">
-               <!-- <a href="detail.php" class="btn btn-primary mb-2">Detail By Box</a> -->
-               <a href="aging.php" class="btn btn-sm btn-primary mb-2">Stock By Aging</a>
+               <div class="btn-group mb-2">
+                  <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     Sort By
+                  </button>
+                  <div class="dropdown-menu">
+                     <a class="dropdown-item" href="aging.php">Stock By Aging</a>
+                     <a class="dropdown-item" href="detail.php">Box Detail</a>
+                  </div>
+               </div>
                <div class="card">
                   <div class="card-body">
                      <div class="col">

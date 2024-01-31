@@ -161,11 +161,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <?php
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade FROM labelboning l
-  JOIN barang b ON l.idbarang = b.idbarang 
-  JOIN boning bo ON l.idboning = bo.idboning
-  JOIN grade g ON l.idgrade = g.idgrade
-  JOIN users u ON l.iduser = u.idusers
-  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
+                  JOIN barang b ON l.idbarang = b.idbarang 
+                  JOIN boning bo ON l.idboning = bo.idboning
+                  JOIN grade g ON l.idgrade = g.idgrade
+                  JOIN users u ON l.iduser = u.idusers
+                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC");
 
                   while ($tampil = mysqli_fetch_array($ambildata)) {
                     $fullname = $tampil['fullname'];

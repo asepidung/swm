@@ -128,7 +128,7 @@
             <li class="nav-item">
               <a href="../do/dodetail.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Delivery Detail</p>
+                <p>Do Detail</p>
               </a>
             </li>
             <li class="nav-item">

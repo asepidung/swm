@@ -108,7 +108,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                              <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary">
                                                 <i class="fas fa-print"></i>
                                              </a>
-                                             <a href="#" class="btn btn-sm btn-secondary">
+                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i>
                                              </a>
                                              <a href="#" class="btn btn-sm btn-secondary">

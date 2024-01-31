@@ -15,28 +15,9 @@ $idrepack = $_GET['id'];
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</button></a>
             <a href="detailhasil.php?id=<?= $idrepack ?>"><button type="button" class="btn btn-outline-success">Cetak Hasil <i class="fas fa-arrow-alt-circle-right"></i></button></a>
          </div>
-         <div class="col-3">
-            <?php if ($_GET['stat'] == "success") { ?>
-               <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
-            <?php } elseif ($_GET['stat'] == "ready") { ?>
-               <h3 class="headline text-secondary"> Ready To Scan</h3>
-            <?php } elseif ($_GET['stat'] == "deleted") { ?>
-               <h3 class="headline text-success"> Data berhasil dihapus</h3>
-            <?php } elseif ($_GET['stat'] == "duplicate") { ?>
-               <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
-            <?php } elseif ($_GET['stat'] == "unknown") { ?>
-               <a href="bahanmanual.php?id=<?= $idrepack ?>">
-                  <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
-                     Manual ADD <i class="fas fa-arrow-circle-right"></i>
-                  </span>
-               </a>
-            <?php } ?>
-         </div>
          <div class="col">
-            <span class="text-danger">
-               <marquee behavior="scroll" direction="left">
-                  <h4>SCAN BAHAN REPACK</h4>
-               </marquee>
+            <span class="text-danger text-center">
+               <h4>BAHAN REPACK</h4>
             </span>
          </div>
       </div>
@@ -62,6 +43,23 @@ $idrepack = $_GET['id'];
                               <div class="form-group">
                                  <button type="submit" class="btn btn-primary">Submit</button>
                               </div>
+                           </div>
+                           <div class="col-3">
+                              <?php if ($_GET['stat'] == "success") { ?>
+                                 <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
+                              <?php } elseif ($_GET['stat'] == "ready") { ?>
+                                 <h3 class="headline text-secondary"> Ready To Scan</h3>
+                              <?php } elseif ($_GET['stat'] == "deleted") { ?>
+                                 <h3 class="headline text-success"> Data berhasil dihapus</h3>
+                              <?php } elseif ($_GET['stat'] == "duplicate") { ?>
+                                 <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
+                              <?php } elseif ($_GET['stat'] == "unknown") { ?>
+                                 <a href="bahanmanual.php?id=<?= $idrepack ?>">
+                                    <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
+                                       Manual ADD <i class="fas fa-arrow-circle-right"></i>
+                                    </span>
+                                 </a>
+                              <?php } ?>
                            </div>
                         </div>
                      </div>

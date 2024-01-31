@@ -102,32 +102,33 @@ $row = mysqli_fetch_assoc($result);
       <i><?= $row['note']; ?></i>
    </p>
    <div class="row mt-3">
-      <div class="col-8"></div>
-      <div class="col-1">
+      <div class="col-2"></div>
+      <div class="col-2">
          <a href="hideprice.php?idso=<?= $idso ?>">
             <button type="button" class="btn btn-block btn-secondary"><i class="fas fa-eye-slash"></i></button>
          </a>
       </div>
-      <div class="col-1">
+      <div class="col-2 ml-1">
          <a href="index.php">
-            <button type="button" class="btn btn-block btn-warning"><i class="fas fa-undo"></i> Back</button>
+            <button type="button" class="btn btn-block btn-warning"><i class="fas fa-undo"></i></button>
          </a>
       </div>
-      <div class="col-1">
+      <div class="col-2 ml-1">
          <a href="editso.php?idso=<?= $idso ?>">
-            <button type="button" class="btn btn-block btn-info"><i class="fas fa-edit"></i> Edit</button>
+            <button type="button" class="btn btn-block btn-info"><i class="fas fa-edit"></i></button>
          </a>
       </div>
-      <div class="col-1">
+      <div class="col-2 ml-1">
          <a href="printso.php?idso=<?= $idso ?>">
-            <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i> Print</button>
+            <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i></button>
          </a>
       </div>
+      <div class="col-2"></div>
    </div>
 </div>
 </body>
 <script>
-   document.title = "<?= $row['nama_customer'] . " " . "Price List" ?>"
+   document.title = "<?= $row['nama_customer'] . " " . $row['sonumber'] ?>"
 </script>
 <?php
 

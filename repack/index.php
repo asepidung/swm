@@ -39,7 +39,7 @@ include "../mainsidebar.php";
                               <th>Tgl Proses</th>
                               <th>Bahan</th>
                               <th>Hasil</th>
-                              <th>Lost</th>
+                              <th>Balance</th>
                               <th>Catatan</th>
                               <th>AKSI</th>
                            </tr>
