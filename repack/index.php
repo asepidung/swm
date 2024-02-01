@@ -78,6 +78,9 @@ include "../mainsidebar.php";
                                     <a href="printrepack.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-primary">
                                        <i class="fas fa-print"></i>
                                     </a>
+                                    <a href="editrepack.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-secondary">
+                                       <i class="fas fa-edit"></i>
+                                    </a>
                                  </td>
                               </tr>
                            <?php $no++;

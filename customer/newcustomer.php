@@ -14,7 +14,7 @@ include "../mainsidebar.php";
    <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                <div class="card card-dark mt-3">
                   <div class="card-header">
                      <h3 class="card-title">Data Customer Baru</h3>
@@ -22,13 +22,13 @@ include "../mainsidebar.php";
                   <form method="POST" action="inputcustomer.php">
                      <div class=" card-body">
                         <div class="row">
-                           <div class="col-6">
+                           <div class="col">
                               <div class="form-group">
-                                 <label for="nama_customer">Nama Customer <span class="text-danger">*</span></label>
-                                 <input type="text" class="form-control" name="nama_customer" id="nama_customer" autofocus required>
+                                 <!-- <label for="nama_customer">Nama Customer <span class="text-danger">*</span></label> -->
+                                 <input type="text" class="form-control" placeholder="Isi Nama Customer" name="nama_customer" id="nama_customer" autofocus required>
                               </div>
                               <div class="form-group">
-                                 <label for="groupcs">Group <span class="text-danger">*</span></label>
+                                 <!-- <label for="groupcs">Group <span class="text-danger">*</span></label> -->
                                  <div class="input-group">
                                     <select class="form-control" name="idgroup" id="idgroup" required>
                                        <option value="">Pilih Group</option>
@@ -49,14 +49,14 @@ include "../mainsidebar.php";
                                  </div>
                               </div>
                               <div class="form-group">
-                                 <label for="alamat">Alamat<span class="text-danger">*</label>
-                                 <input type="text" class="form-control" name="alamat" id="alamat" required>
+                                 <!-- <label for="alamat">Alamat<span class="text-danger">*</label> -->
+                                 <input type="text" class="form-control" name="alamat" id="alamat" required placeholder="Isikan Alamat">
                               </div>
                               <div class="form-group">
-                                 <label for="idsegment">Segment <span class="text-danger">*</span></label>
+                                 <!-- <label for="idsegment">Segment <span class="text-danger">*</span></label> -->
                                  <div class="input-group">
                                     <select class="form-control" name="idsegment" id="idsegment" required>
-                                       <option value="">Pilih Segment</option>
+                                       <option value="">Payment Method</option>
                                        <?php
                                        $query = "SELECT * FROM segment";
                                        $result = mysqli_query($conn, $query);
@@ -73,37 +73,44 @@ include "../mainsidebar.php";
                                     </div>
                                  </div>
                               </div>
-                           </div>
-                           <div class="col-6">
-                              <div class="form-group">
-                                 <label for="top">T.O.P <span class="text-danger">*</label>
-                                 <input type="number" class="form-control" name="top" id="top" required>
+                              <div class="col">
+                                 <div class="row">
+                                    <div class="col">
+                                       <div class="form-group">
+                                          <!-- <label for="top">T.O.P <span class="text-danger">*</label> -->
+                                          <input type="number" class="form-control" name="top" id="top" required placeholder="T.O.P">
+                                       </div>
+                                    </div>
+                                    <div class="col">
+                                       <div class="form-group">
+                                          <!-- <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label> -->
+                                          <select class="form-control" name="pajak" id="pajak" required>
+                                             <option value="">Pajak</option>
+                                             <option value="NO">NO</option>
+                                             <option value="YES">YES</option>
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <div class="col">
+                                       <div class="form-group">
+                                          <!-- <label for="tukarfaktur">Tukar Faktur <span class="text-danger">*</label> -->
+                                          <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
+                                             <option value="">Tukar Faktur</option>
+                                             <option value="NO">NO</option>
+                                             <option value="YES">YES</option>
+                                          </select>
+                                       </div>
+                                    </div>
+                                 </div>
                               </div>
                               <div class="form-group">
-                                 <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label>
-                                 <select class="form-control" name="pajak" id="pajak" required>
-                                    <option value="NO">NO</option>
-                                    <option value="YES">YES</option>
-                                 </select>
+                                 <input type="tel" class="form-control" name="telepon" id="telepon" placeholder="Telepon">
                               </div>
                               <div class="form-group">
-                                 <label for="tukarfaktur">Tukar Faktur <span class="text-danger">*</label>
-                                 <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
-                                    <option value="NO">NO</option>
-                                    <option value="YES">YES</option>
-                                 </select>
+                                 <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                               </div>
                               <div class="form-group">
-                                 <label for="telepon">Telepon</label>
-                                 <input type="tel" class="form-control" name="telepon" id="telepon">
-                              </div>
-                              <div class="form-group">
-                                 <label for="email">Email</label>
-                                 <input type="email" class="form-control" name="email" id="email">
-                              </div>
-                              <div class="form-group">
-                                 <label for="catatan">Catatan</label>
-                                 <input type="text" class="form-control" name="catatan" id="catatan" value="-">
+                                 <input type="text" class="form-control" name="catatan" id="catatan" placeholder="Catatan">
                               </div>
                            </div>
                         </div>

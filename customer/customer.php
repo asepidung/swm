@@ -37,7 +37,7 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Nama Customer</th>
                               <th>Alamat</th>
-                              <th>Segment</th>
+                              <th>Bank</th>
                               <th>Group</th>
                               <th>T.O.P</th>
                               <!-- <th>Sales</th> -->
@@ -70,9 +70,8 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['tukarfaktur']; ?></td>
                                  <td><?= $tampil['catatan']; ?></td>
                                  <td class="text-center">
-                                    <a href="editcust.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-pen"></i></a>
-                                    |
-                                    <a href="deletecustomer.php?id=<?= $tampil['idcustomer']; ?>"><i class="fas fa-trash-alt text-danger"></i></a>
+                                    <a href="editcust.php?id=<?= $tampil['idcustomer']; ?>" class="btn btn-sm btn-warning"><i class="fas fa-pen"></i></a>
+                                    <a href="deletecustomer.php?id=<?= $tampil['idcustomer']; ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
                                  </td>
                               </tr>
                            <?php

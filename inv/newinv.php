@@ -175,7 +175,6 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                        </div>
                                     </div>
                                  </div>
-
                                  <div class=" col-2">
                                     <div class="form-group">
                                        <div class="input-group">
@@ -194,7 +193,12 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                            <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-4 text-right">Weight Total</div>
+                           <div class="col-1">
+                              <button type="button" class="btn btn-link text-success" id="addRowButton">
+                                 <i class="fas fa-plus-circle"></i>
+                              </button>
+                           </div>
+                           <div class="col-3 text-right">Weight Total</div>
                            <div class="col-1">
                               <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly>
                            </div>
@@ -258,9 +262,82 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
 <script src="../dist/js/hitunginvoice.js"></script>
 <script src="../dist/js/movefocus.js"></script>
 <script>
-   document.title = "<?= $noinvoice ?>";
+   document.title = "Invoice Baru";
+
+   document.addEventListener('DOMContentLoaded', function() {
+      // Dapatkan elemen tombol dan container
+      var addRowButton = document.getElementById('addRowButton');
+      var itemsContainer = document.getElementById('items-container');
+
+      // Tambahkan event listener untuk tombol
+      addRowButton.addEventListener('click', function() {
+         // Buat elemen-elemen baru untuk row
+         var newRow = document.createElement('div');
+         newRow.classList.add('row', 'mt-n2');
+
+         // Sesuaikan elemen-elemen baru dengan struktur row yang ada
+         var html = `
+            <div class="col">
+               <div class="form-group">
+                  <div class="input-group">
+                     <select class="form-control" name="idbarang[]" id="idbarang" required>
+                        <option value="">--Pilih--</option>
+                        <?php
+                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                        $result = mysqli_query($conn, $query);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                           $idbarang = $row['idbarang'];
+                           $nmbarang = $row['nmbarang'];
+                           echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                        }
+                        ?>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="col-1">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" class="form-control text-right" name="weight[]" value="">
+                  </div>
+               </div>
+            </div>
+            <div class="col-2">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" class="form-control text-right" name="price[]" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
+                  </div>
+               </div>
+            </div>
+            <div class="col-1">
+               <div class="form-group">
+                  <div class="input-group">
+                   
+                     <input type="text" class="form-control text-right" name="discount[]" value="0" onkeydown="moveFocusToNextInput(event, this, 'discount[]')" readonly>
+                  </div>
+               </div>
+            </div>
+            <div class="col-2">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" class="form-control text-right" name="discountrp[]" value="0" readonly>
+                  </div>
+               </div>
+            </div>
+            <div class="col-2">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input type="text" class="form-control text-right" name="amount[]" readonly value="0">
+                  </div>
+               </div>
+            </div>`;
+
+         newRow.innerHTML = html;
+         itemsContainer.appendChild(newRow);
+      });
+   });
 </script>
+
 <?php
-// require "../footnotes.php";
 include "../footer.php";
 ?>

@@ -41,6 +41,10 @@ include "../mainsidebar.php";
                               <option value="1">PRIME CUT</option>
                               <option value="2">SECONDARY CUT</option>
                               <option value="3">BONES</option>
+                              <option value="4">OFFAL</option>
+                              <option value="5">FAT</option>
+                              <option value="6">GRADES</option>
+                              <option value="7">MATERIAL SUPPORT</option>
                            </select>
                         </div>
                      </div>
