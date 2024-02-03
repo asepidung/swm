@@ -7,9 +7,30 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 ?>
 <div class="content-wrapper">
-   <!-- Main content -->
+   <div class="content-header">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-2">
+               <form method="GET" action="">
+                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+            </div>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+            </div>
+            <div class="col">
+               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+            <div class="col-2">
+               <a href="do.php" class="btn btn-sm btn-outline-success float-right"><i class="fas fa-eye"></i> Kembali</a>
+            </div>
+         </div>
+      </div>
+   </div>
    <section class="content">
       <div class="container-fluid">
          <div class="row">
@@ -24,6 +45,7 @@ include "../mainsidebar.php";
                      INNER JOIN customers c ON i.idcustomer = c.idcustomer
                      LEFT JOIN dodetail id ON i.iddo = id.iddo
                      LEFT JOIN barang b ON id.idbarang = b.idbarang
+                     WHERE i.deliverydate BETWEEN '$awal' AND '$akhir'
                      ORDER BY i.iddo DESC";  // Urutkan berdasarkan iddo
                      $result = $conn->query($query);
                      ?>

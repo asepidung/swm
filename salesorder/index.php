@@ -70,6 +70,9 @@ include "../mainsidebar.php";
                                  <td class="text-center">
                                     <?php
                                     if ($progress == "Waiting") { ?>
+                                       <a href="hideprice.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-warning">
+                                          <i class="fas fa-eye-slash"></i>
+                                       </a>
                                        <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
                                           <i class="far fa-eye"></i>
                                        </a>
@@ -80,6 +83,9 @@ include "../mainsidebar.php";
                                           <i class="far fa-trash-alt"></i>
                                        </a>
                                     <?php } elseif ($progress == "On Process") { ?>
+                                       <a href="hideprice.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-warning">
+                                          <i class="fas fa-eye-slash"></i>
+                                       </a>
                                        <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
                                           <i class="far fa-eye"></i>
                                        </a>
@@ -90,6 +96,9 @@ include "../mainsidebar.php";
                                           <i class="far fa-trash-alt"></i>
                                        </a>
                                     <?php } else { ?>
+                                       <a href="hideprice.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-warning">
+                                          <i class="fas fa-eye-slash"></i>
+                                       </a>
                                        <a href="lihatso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">
                                           <i class="far fa-eye"></i>
                                        </a>

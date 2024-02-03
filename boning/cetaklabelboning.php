@@ -90,7 +90,7 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
                </span>
             </td>
             <td colspan="2" rowspan="5" align="center" valign="middle">
-               <img src=" ../dist/img/hi2.svg" alt="HALAL" height="100" align="absmiddle">
+               <img src=" ../dist/img/halal.png" alt="HALAL" height="100" align="absmiddle">
             </td>
          </tr>
          <tr>
@@ -145,7 +145,7 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
                </span>
             </td>
             <td style="font-size: 10px; text-align: center; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               NO. 01011263450821<br>NKV CS-3201170-027
+               ID00310000134840521<br>RPHR 3201170-027
             </td>
          </tr>
          <tr>

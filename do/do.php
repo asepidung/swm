@@ -93,25 +93,31 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                  <td class="text-center"><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] !== "Invoiced") { ?>
-                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary">
+                                       <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-success">
+                                          <i class="fas fa-eye"></i>
+                                       </a>
+                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-primary">
                                           <i class="fas fa-print"></i>
                                        </a>
-                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning">
+                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-warning">
                                           <i class="fas fa-edit"></i>
                                        </a>
-                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-sm btn-danger">
+                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-xs btn-danger">
                                           <i class="fas fa-trash"></i>
                                        </a>
                                     <?php } else { ?>
                                        <div class="row">
                                           <div class="col">
-                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary">
+                                             <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-success">
+                                                <i class="fas fa-eye"></i>
+                                             </a>
+                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-primary">
                                                 <i class="fas fa-print"></i>
                                              </a>
-                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning">
+                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-warning">
                                                 <i class="fas fa-edit"></i>
                                              </a>
-                                             <a href="#" class="btn btn-sm btn-secondary">
+                                             <a href="#" class="btn btn-xs btn-secondary">
                                                 <i class="fas fa-trash"></i>
                                              </a>
                                           </div>

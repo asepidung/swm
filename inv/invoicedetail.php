@@ -7,16 +7,29 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
+            <div class="col-2">
+               <form method="GET" action="">
+                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+            </div>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+            </div>
             <div class="col">
-               <a href="invoice.php"><button type="button" class="btn btn-outline-secondary float right"><i class="fas fa-undo"></i> Summary</button></a>
-            </div><!-- /.col -->
-         </div><!-- /.row -->
+               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+            <div class="col-1">
+               <a href="invoice.php" class="btn btn-sm btn-outline-primary float right"><i class="fas fa-plus"></i> Back</button></a>
+            </div>
+         </div>
       </div><!-- /.container-fluid -->
    </div>
    <!-- /.content-header -->
@@ -37,6 +50,7 @@ include "../mainsidebar.php";
                       INNER JOIN customers c ON i.idcustomer = c.idcustomer
                       LEFT JOIN invoicedetail id ON i.idinvoice = id.idinvoice
                       LEFT JOIN barang b ON id.idbarang = b.idbarang
+                      WHERE i.invoice_date BETWEEN '$awal' AND '$akhir'
                       ORDER BY i.noinvoice DESC";  // Urutkan berdasarkan idinvoice
                      $result = $conn->query($query);
                      ?>
