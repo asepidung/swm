@@ -85,7 +85,6 @@ include "../mainsidebar.php";
                                        <div class="form-group">
                                           <!-- <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label> -->
                                           <select class="form-control" name="pajak" id="pajak" required>
-                                             <option value="">Pajak</option>
                                              <option value="NO">NO</option>
                                              <option value="YES">YES</option>
                                           </select>
@@ -95,7 +94,6 @@ include "../mainsidebar.php";
                                        <div class="form-group">
                                           <!-- <label for="tukarfaktur">Tukar Faktur <span class="text-danger">*</label> -->
                                           <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
-                                             <option value="">Tukar Faktur</option>
                                              <option value="NO">NO</option>
                                              <option value="YES">YES</option>
                                           </select>

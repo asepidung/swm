@@ -45,6 +45,7 @@ include "../mainsidebar.php";
                         </thead>
                         <tbody>
                            <?php
+                           $total_qty = 0;
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer, salesorder.progress FROM plandev
                                        JOIN customers ON plandev.idcustomer = customers.idcustomer
@@ -53,12 +54,13 @@ include "../mainsidebar.php";
                                        ORDER BY plandelivery ASC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $total_qty += $tampil['weight'];
                            ?>
                               <tr class="text-center" onclick="window.location.href='editplandev.php?idplandev=<?= $tampil['idplandev']; ?>';" style="cursor: pointer;" title="KLIK UNTUK EDIT">
                                  <td><?= $no; ?></td>
                                  <td><?= date("D, d-M-y", strtotime($tampil['plandelivery'])); ?></td>
                                  <td class="text-left"><?= $tampil['nama_customer']; ?></td>
-                                 <td><?= number_format($tampil['weight']) . " " . "Kg"; ?></td>
+                                 <td class="text-right"><?= number_format($tampil['weight']) . " " . "Kg"; ?></td>
                                  <td><?= $tampil['driver_name']; ?></td>
                                  <td><?= $tampil['armada']; ?></td>
                                  <td><?= $tampil['loadtime']; ?></td>
@@ -67,6 +69,13 @@ include "../mainsidebar.php";
                            <?php $no++;
                            } ?>
                         </tbody>
+                        <tfoot>
+                           <tr>
+                              <th class="text-right" colspan="3">TOTAL</th>
+                              <th class="text-right"><?= number_format($total_qty) . " " . "Kg"; ?></th>
+                              <td colspan="4"></td>
+                           </tr>
+                        </tfoot>
                      </table>
                   </div>
                   <!-- /.card-body -->

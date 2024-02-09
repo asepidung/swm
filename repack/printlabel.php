@@ -10,6 +10,7 @@ require "seriallabelrepack.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
+   $note  = $_POST['note'];
    $origin = $_POST['origin'];
    $idrepack = $_POST['idrepack'];
    $idgrade = $_POST['idgrade'];
@@ -39,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $qty = number_format($qty, 2, '.', '');
 
    // Query insert untuk tabel detailhasil
-   $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp)
-            VALUES ('$idrepack', '$barcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate', '$exp')";
+   $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp, note)
+            VALUES ('$idrepack', '$barcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate', '$exp', '$note')";
 
    // Query insert untuk tabel stock
    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 

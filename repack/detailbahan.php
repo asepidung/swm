@@ -35,7 +35,7 @@ $idrepack = $_GET['id'];
                         <div class="row mb-n2">
                            <div class="col-xs-2">
                               <div class="form-group">
-                                 <input type="text" placeholder="Scan Here" class="form-control text-center" name="barcode" id="barcode" autofocus>
+                                 <input type="number" placeholder="Scan Here" class="form-control text-center" name="barcode" id="barcode" autofocus>
                               </div>
                            </div>
                            <input type="hidden" name="idrepack" value="<?= $idrepack ?>">

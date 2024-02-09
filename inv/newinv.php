@@ -46,7 +46,6 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                   <input type="hidden" value="<?= $idgroup; ?>" name="idgroup" id="idgroup">
                   <input type="hidden" value="<?= $top; ?>" name="top">
                   <input type="hidden" value="<?= $iddo; ?>" name="iddo">
-                  <!-- <input type="text" value="<?= $idso; ?>" name="iddo"> -->
                   <input type="hidden" value="<?= $pajak; ?>" name="pajak">
                   <input type="hidden" value="<?= $tukarfaktur; ?>" name="tukarfaktur" id="tukarfaktur">
                   <div class="card">
@@ -101,11 +100,6 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row">
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <label>Code</label>
-                                 </div>
-                              </div>
                               <div class="col">
                                  <div class="form-group">
                                     <label>Products</label>

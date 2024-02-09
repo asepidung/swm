@@ -7,6 +7,8 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -14,10 +16,21 @@ include "../mainsidebar.php";
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col">
-               <!-- <h1 class="m-0">DATA BONING</h1> -->
+            <div class="col-1">
                <a href="newso.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
-            </div><!-- /.col -->
+            </div>
+            <div class="col-2">
+               <form method="GET" action="">
+                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+            </div>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+            </div>
+            <div class="col-1">
+               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
@@ -46,7 +59,8 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
                            FROM salesorder 
-                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer 
+                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
+                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir'
                            ORDER BY idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];

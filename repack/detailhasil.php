@@ -40,7 +40,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <form method="POST" action="printlabel.php" onsubmit="submitForm(event)">
                      <input type="hidden" name="idrepack" value="<?= $idrepack; ?>">
                      <div class="form-group">
-                        <label>Origin Barang <span class="text-danger">*</span></label>
                         <div class="input-group">
                            <select class="form-control" name="origin" id="origin" required>
                               <option value="">** Pilih Asal Barang **</option>
@@ -51,7 +50,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </div>
                      </div>
                      <div class="form-group">
-                        <label>Product <span class="text-danger">*</span></label>
                         <div class="input-group">
                            <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                               <?php
@@ -77,7 +75,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </div>
                      </div>
                      <div class="form-group">
-                        <label>Grade <span class="text-danger">*</span></label>
                         <div class="input-group">
                            <select class="form-control" name="idgrade" id="idgrade" required>
                               <?php
@@ -100,23 +97,20 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </div>
                      </div>
                      <div class="form-group">
-                        <label>Packed Date<span class="text-danger">*</span></label>
                         <div class="input-group">
                            <?php
-                           // Set the default value of $_SESSION['packdate'] to today's date
                            if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
-                              $_SESSION['packdate'] = date('Y-m-d'); // Set the format according to your needs
+                              $_SESSION['packdate'] = date('Y-m-d');
                            }
                            ?>
                            <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                         </div>
                      </div>
-                     <!-- <div class="form-group">
-                        <label>Expired Date</label>
+                     <div class="form-group">
                         <div class="input-group">
-                           <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
+                           <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Item">
                         </div>
-                     </div> -->
+                     </div>
                      <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
                         <label class="form-check-label">Aktifkan Tenderstreatch</label>
@@ -125,9 +119,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <input class="form-check-input" type="checkbox" name="pembulatan" id="pembulatan" <?php echo isset($_SESSION['pembulatan']) && $_SESSION['pembulatan'] ? 'checked' : ''; ?>>
                         <label class="form-check-label">1 Digit Koma</label>
                      </div>
-                     <div class="form-group">
-                        <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
-                        <div class="input-group col">
+                     <div class="form-group mt-1">
+                        <div class="input-group">
                            <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
                         </div>
                      </div>
@@ -150,6 +143,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                            <th>Pcs</th>
                            <th>Create</th>
                            <th>Hapus</th>
+                           <th>Note</th>
                         </tr>
                      </thead>
                      <tbody>
@@ -199,6 +193,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                  }
                                  ?>
                               </td>
+                              <td><?= $tampil['note']; ?></td>
                            </tr>
                         <?php
                            $no++;
