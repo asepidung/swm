@@ -18,33 +18,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $row = mysqli_fetch_assoc($result);
    $nmbarang = $row['nmbarang'];
    $packdate = $_POST['packdate'];
+   $xpackdate = $_POST['xpackdate'];
    $exp = $_POST['exp'];
+   $qty = $_POST['qty'];
+   $pcs = $_POST['pcs'];
+   $xpcs = $_POST['xpcs'];
 
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
    $pembulatan = isset($_POST['pembulatan']) ? true : false;
 
-   $qty = null;
-   $pcs = null;
-   $qtyPcsInput = $_POST['qty'];
-
-   if (strpos($qtyPcsInput, "/") !== false) {
-      list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
-   } else {
-      $qty = $qtyPcsInput;
-   }
-
-   $qty = number_format($qty, 2, '.', '');
-
    $query = "UPDATE tallydetail 
-          SET idbarang = $idbarang, 
-              weight = $qty, 
-              idgrade = '$idgrade', 
-              pcs = '$pcs', 
-              pod = '$packdate', 
-              barcode = '$kdbarcode' 
+          SET pcs = '$pcs', 
+              pod = '$packdate' 
           WHERE idtallydetail = $idtallydetail";
+
    if (!mysqli_query($conn, $query)) {
       echo "Error: " . mysqli_error($conn);
+   } else {
+      // Jika query UPDATE sukses, lakukan query INSERT
+      $insertQuery = "INSERT INTO relabel (idbarang, qty, xpackdate, idgrade, pcs, xpcs, packdate, exp, kdbarcode, iduser)
+                    VALUES ($idbarang, $qty, '$xpackdate', '$idgrade', '$pcs', '$xpcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
+
+      if (!mysqli_query($conn, $insertQuery)) {
+         echo "Error: " . mysqli_error($conn);
+      }
    }
 }
 ?>

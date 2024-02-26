@@ -93,6 +93,7 @@ $idso = $rowtally['idso'];
                                  <th>#</th>
                                  <th>Barcode</th>
                                  <th>Item</th>
+                                 <th>Code</th>
                                  <th>Weight</th>
                                  <th>Pcs</th>
                                  <th>POD</th>
@@ -103,12 +104,15 @@ $idso = $rowtally['idso'];
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang
+                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang, grade.nmgrade
                               FROM tallydetail
-                              INNER JOIN barang ON tallydetail.idbarang = barang.idbarang WHERE idtally = $idtally ORDER BY idtallydetail DESC");
+                              INNER JOIN barang ON tallydetail.idbarang = barang.idbarang
+                              INNER JOIN grade ON tallydetail.idgrade = grade.idgrade
+                              WHERE idtally = $idtally ORDER BY idtallydetail DESC");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $origin = $tampil['origin'];
                                  $nmbarang = $tampil['nmbarang'];
+                                 $nmgrade = $tampil['nmgrade'];
                                  $barcode = $tampil['barcode'];
                                  $pod = $tampil['pod'];
                                  $podDate = new DateTime($pod);
@@ -120,6 +124,7 @@ $idso = $rowtally['idso'];
                                     <td><?= $no; ?></td>
                                     <td><?= $barcode; ?></td>
                                     <td class="text-left"><?= $nmbarang; ?></td>
+                                    <td><?= $nmgrade; ?></td>
                                     <td><?= number_format($tampil['weight'], 2); ?></td>
                                     <?php
                                     if ($tampil['pcs'] < 1) {

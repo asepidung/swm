@@ -13,8 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    if (isset($_GET['kdbarcode'])) {
       $kdbarcode = $_GET['kdbarcode'];
 
-      // Query untuk mengecek apakah kdbarcode ada di tabel stock
-      $checkStockQuery = "SELECT * FROM stock WHERE kdbarcode = '$kdbarcode'";
+      $checkStockQuery = "SELECT stock.*, barang.nmbarang, grade.nmgrade
+      FROM stock 
+      INNER JOIN barang ON stock.idbarang = barang.idbarang
+      INNER JOIN grade ON stock.idgrade = grade.idgrade
+      WHERE stock.kdbarcode = '$kdbarcode'";
+
       $checkStockResult = mysqli_query($conn, $checkStockQuery);
 
       if (!$checkStockResult) {
@@ -43,53 +47,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               <form method="POST" action="cetakrelabel.php" onsubmit="submitForm(event)">
                                  <!-- ... -->
                                  <div class="form-group">
-                                    <label>Product <span class="text-danger">*</span></label>
+                                    <!-- <label>Product <span class="text-danger">*</span></label> -->
                                     <div class="input-group">
-                                       <select class="form-control" name="idbarang" id="idbarang">
-                                          <?php
-                                          $querybarang = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                          $resultbarang = mysqli_query($conn, $querybarang);
-                                          while ($barangRow = mysqli_fetch_assoc($resultbarang)) {
-                                             $idbarang = $barangRow['idbarang'];
-                                             $nmbarang = $barangRow['nmbarang'];
-                                             $selectedbarang = ($idbarang == $row['idbarang']) ? "selected" : "";
-                                             echo "<option value=\"$idbarang\" $selectedbarang>$nmbarang</option>";
-                                          }
-                                          ?>
-                                       </select>
+                                       <input type="hidden" name="idbarang" value="<?= $row['idbarang']; ?>">
+                                       <input type=" text" class="form-control" readonly value="<?= $row['nmbarang']; ?>">
                                     </div>
                                  </div>
                                  <div class="form-group">
-                                    <label>Grade <span class="text-danger">*</span></label>
+                                    <!-- <label>Grade <span class="text-danger">*</span></label> -->
                                     <div class="input-group">
-                                       <select class="form-control" name="idgrade[]" id="idgrade">
-                                          <?php
-                                          $querygrade = "SELECT * FROM grade ORDER BY nmgrade ASC";
-                                          $resultgrade = mysqli_query($conn, $querygrade);
-                                          while ($gradeRow = mysqli_fetch_assoc($resultgrade)) {
-                                             $idgrade = $gradeRow['idgrade'];
-                                             $nmgrade = $gradeRow['nmgrade'];
-                                             $selectedgrade = ($idgrade == $row['idgrade']) ? "selected" : "";
-                                             echo "<option value=\"$idgrade\" $selectedgrade>$nmgrade</option>";
-                                          }
-                                          ?>
-                                       </select>
+                                       <input type="hidden" name="idgrade" value="<?= $row['idgrade']; ?>">
+                                       <input type="text" class="form-control" readonly value="<?= $row['nmgrade']; ?>">
                                     </div>
                                  </div>
                                  <div class="form-group">
-                                    <label>Packed Date<span class="text-danger">*</span></label>
+                                    <!-- <label>Packed Date<span class="text-danger">*</span></label> -->
                                     <div class="input-group">
+                                       <input type="hidden" name="xpackdate" id="xpackdate" value="<?= $row['pod']; ?>">
                                        <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $row['pod']; ?>">
                                     </div>
                                  </div>
                                  <div class="form-group">
-                                    <label>Expired Date</label>
+                                    <!-- <label>Expired Date</label> -->
                                     <div class="input-group">
-                                       <input type="date" class="form-control" name="exp" id="exp">
+                                       <input type="date" class="form-control" name="exp" id="exp" readonly>
                                     </div>
                                  </div>
                                  <div class="form-check">
-                                    <input class="form-check-input" checked type="checkbox" name="tenderstreach" id="tenderstreach">
+                                    <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach">
                                     <label class="form-check-label">Aktifkan Tenderstreatch</label>
                                  </div>
                                  <div class="form-check">
@@ -100,17 +85,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                  <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
                                  <!-- <input type="hidden" name="product" id="product"> -->
                                  <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= $kdbarcode ?>">
-                                 <div class="form-group">
-                                    <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
-                                    <div class="input-group col-lg-4">
-                                       <?php
-                                       if ($row['pcs'] > 0) {
-                                          $qty = $row['qty'] . '/' . $row['pcs'];
-                                       } else {
-                                          $qty = $row['qty'];
-                                       }
-                                       ?>
-                                       <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required value="<?= $qty; ?>" autofocus>
+                                 <div class="row">
+                                    <div class="col-8">
+                                       <div class="form-group mt-1">
+                                          <input type="text" class="form-control" name="qty" id="qty" readonly value="<?= $row['qty'] ?>">
+                                       </div>
+                                    </div>
+                                    <div class="col">
+                                       <div class="form-group mt-1">
+                                          <input type="hidden" name="xpcs" id="xpcs" value="<?= $row['pcs'] ?>">
+                                          <input type="number" class="form-control" name="pcs" id="pcs" value="<?= $row['pcs'] ?>">
+                                       </div>
                                     </div>
                                  </div>
                                  <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Print</button>

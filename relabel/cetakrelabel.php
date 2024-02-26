@@ -10,31 +10,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idusers = $_SESSION['idusers'];
    $kdbarcode = $_POST['kdbarcode'];
    $idbarang = $_POST['idbarang'];
-   $idgrade = $_POST['idgrade'][0]; // Ambil nilai pertama dari array idgrade
+   $idgrade = $_POST['idgrade']; // Ambil nilai pertama dari array idgrade
    $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
    $result = mysqli_query($conn, $query);
    $row = mysqli_fetch_assoc($result);
    $nmbarang = $row['nmbarang'];
    $packdate = $_POST['packdate'];
+   $xpackdate = $_POST['xpackdate'];
    $exp = $_POST['exp'];
+   $qty = $_POST['qty'];
+   $pcs = $_POST['pcs'];
+   $xpcs = $_POST['xpcs'];
 
    $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
    $pembulatan = isset($_POST['pembulatan']) ? true : false;
-
-   $qty = null;
-   $pcs = null;
-   $qtyPcsInput = $_POST['qty'];
-
-   if (strpos($qtyPcsInput, "/") !== false) {
-      list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
-   } else {
-      $qty = $qtyPcsInput;
-   }
-
    $qty = number_format($qty, 2, '.', '');
 
-   $query = "INSERT INTO relabel (idbarang, qty, idgrade, pcs, packdate, exp, kdbarcode, iduser)
-          VALUES ($idbarang, $qty, '$idgrade', '$pcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
+   $query = "INSERT INTO relabel (idbarang, qty, xpackdate, idgrade, pcs, xpcs, packdate, exp, kdbarcode, iduser)
+          VALUES ($idbarang, $qty, '$xpackdate', '$idgrade', '$pcs', '$xpcs', '$packdate', '$exp', '$kdbarcode', $idusers)";
 
    if (!mysqli_query($conn, $query)) {
       echo "Error: " . mysqli_error($conn);
@@ -98,7 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <strong><i><?= $pcs; ?></i></strong>
+               <?php if ($pcs == 0) {
+                  echo " ";
+               } else { ?>
+                  <strong><i><?= $pcs . " " . "-Pcs"; ?></i></strong>
+               <?php } ?>
             </td>
          </tr>
          <tr>

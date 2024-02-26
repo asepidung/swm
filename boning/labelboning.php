@@ -48,7 +48,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="card-body">
               <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
                 <div class="form-group">
-                  <label>Product <span class="text-danger">*</span></label>
+                  <!-- <label>Product <span class="text-danger">*</span></label> -->
                   <div class="input-group">
                     <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                       <?php
@@ -74,7 +74,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Grade <span class="text-danger">*</span></label>
+                  <!-- <label>Grade <span class="text-danger">*</span></label> -->
                   <div class="input-group">
                     <select class="form-control" name="idgrade" id="idgrade" required>
                       <?php
@@ -97,7 +97,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Packed Date<span class="text-danger">*</span></label>
+                  <!-- <label>Packed Date<span class="text-danger">*</span></label> -->
                   <div class="input-group">
                     <?php
                     // Set the default value of $_SESSION['packdate'] to today's date
@@ -109,9 +109,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Expired Date</label>
+                  <!-- <label>Expired Date</label> -->
                   <div class="input-group">
-                    <input type="date" class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
+                    <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= isset($_SESSION['exp']) ? $_SESSION['exp'] : ''; ?>">
                   </div>
                 </div>
                 <!-- ... -->
@@ -124,13 +124,20 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <input type="hidden" name="product" id="product">
                 <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
                 <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
-                <!-- <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= "1" . $idboningWithPrefix . $kodeauto; ?>"> -->
-                <div class="form-group">
-                  <label class="mt-2">Weight & Pcs <span class="text-danger">*</span></label>
-                  <div class="input-group col-lg-4">
-                    <!-- <div class="col-lg-4"> -->
-                    <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
-                    <!-- </div> -->
+                <div class="row">
+                  <div class="col-8">
+                    <div class="form-group">
+                      <div class="input-group mt-2">
+                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <div class="input-group mt-2">
+                        <input type="number" class="form-control" name="count" id="count" value="1" readonly>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>

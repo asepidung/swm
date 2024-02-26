@@ -8,20 +8,19 @@ require "../konak/conn.php";
 require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
-$today = date('Y-m-d');
 ?>
 <div class="content-wrapper">
-   <!-- Bagian Header Konten -->
-   <!-- Bagian Konten Utama -->
-   <div class="content">
+   <div class="content-header">
+
+   </div>
+   <section class="content">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-lg-4 mt-3">
+            <div class="col-lg-3">
                <div class="card">
                   <div class="card-body">
                      <form method="GET" action="editlabel.php">
                         <div class="form-group">
-                           <!-- <label>Scan Here</label> -->
                            <input type="text" placeholder="Scan Disini" class="form-control text-center" name="kdbarcode" id="kdbarcode" autofocus>
                         </div>
                         <button type="submit" class="btn btn-block bg-gradient-primary">Ubah</button>
@@ -29,7 +28,7 @@ $today = date('Y-m-d');
                   </div>
                </div>
             </div>
-            <div class="col-lg-8 mt-3">
+            <div class="col-lg">
                <div class="card">
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
@@ -41,8 +40,9 @@ $today = date('Y-m-d');
                               <th>Grade</th>
                               <th>Qty</th>
                               <th>Pcs</th>
+                              <th>P.O.D</th>
                               <th>Time</th>
-                              <th>Hapus</th>
+                              <th>User</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -52,7 +52,6 @@ $today = date('Y-m-d');
                                                    INNER JOIN barang b ON r.idbarang = b.idbarang
                                                    INNER JOIN users u ON r.iduser = u.idusers
                                                    LEFT JOIN grade g ON r.idgrade = g.idgrade
-                                                   WHERE r.dibuat = $today
                                                    ORDER BY r.dibuat DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $fullname = $tampil['fullname'];
@@ -64,18 +63,23 @@ $today = date('Y-m-d');
                                  <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                                  <td><?= $tampil['nmgrade']; ?></td>
                                  <td><?= $tampil['qty']; ?></td>
-                                 <td><?= $tampil['pcs']; ?></td>
-                                 <td><?= date('d-M-Y', strtotime($tampil['dibuat'])); ?></td>
+                                 <td title="<?= $tampil['xpcs']; ?>" class="text-primary"><?= $tampil['pcs']; ?></td>
+                                 <td title="<?= date('d-M-y', strtotime($tampil['xpackdate'])); ?>" class="text-primary"><?= date('d-M-y', strtotime($tampil['packdate'])); ?></td>
+                                 <td><?= date('d-M-y H:m:s', strtotime($tampil['dibuat'])); ?></td>
                                  <td>
+                                    <?= $tampil['fullname']; ?>
+                                 </td>
+                                 <!-- <td>
                                     <a href="hapusrelabel.php?id=<?= $tampil['idrelabel']; ?>" class="text-danger">
                                        <i class="far fa-times-circle"></i>
                                     </a>
-                                 </td>
+                                 </td> -->
                               </tr>
                            <?php
                               $no++;
                            }
                            ?>
+
                         </tbody>
                      </table>
                   </div>
@@ -83,10 +87,9 @@ $today = date('Y-m-d');
             </div>
          </div>
       </div>
-   </div>
+</div>
 </div>
 
-<!-- Script untuk mengatur judul halaman -->
 <script>
    document.title = "Relabel";
 </script>
