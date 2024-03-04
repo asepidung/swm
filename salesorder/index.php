@@ -8,7 +8,13 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
-$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
+$queryMaxDate = "SELECT MAX(deliverydate) AS max_date FROM salesorder";
+$resultMaxDate = mysqli_query($conn, $queryMaxDate);
+$rowMaxDate = mysqli_fetch_assoc($resultMaxDate);
+$maxDate = $rowMaxDate['max_date'];
+
+// Tentukan $akhir sebagai tanggal maksimum dari kolom deliverydate
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -60,7 +66,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
                            FROM salesorder 
                            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
-                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir'
+                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
                            ORDER BY idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];

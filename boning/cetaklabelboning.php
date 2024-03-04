@@ -141,11 +141,19 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
          <tr>
             <td height="20" colspan="2">
                <span style="color: #000000; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <strong>KEEP CHILL / FROZEN</strong>
+                  <strong>
+                     <?php
+                     if ($idgrade == 1 or $idgrade == 3) {
+                        echo "KEEP CHILL 0°C";
+                     } else {
+                        echo "KEEP FROZEN -18°C";
+                     }
+                     ?>
+                  </strong>
                </span>
             </td>
             <td style="font-size: 10px; text-align: center; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               ID00310000134840521<br>RPHR 3201170-027
+               ID00110015321510124<br>RPHR 3201170-027
             </td>
          </tr>
          <tr>

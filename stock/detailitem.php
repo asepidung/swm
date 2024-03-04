@@ -108,7 +108,7 @@ $conn->close();
                             }
                             ?>
                           </td>
-                          <?php if ($idusers == 1) { ?>
+                          <?php if ($idusers == 1 or $idusers == 2) { ?>
                             <td>
                               <a href="deletethis.php?id=<?= $row['id']; ?>" class="text-info" onclick="return confirm('Apakah Anda Asep Idung?')">
                                 <i class="far fa-times-circle"></i>

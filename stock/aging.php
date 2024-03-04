@@ -21,7 +21,8 @@ if ($conn->connect_error) {
       <div class="container-fluid">
          <div class="row">
             <div class="col-8 mt-3">
-               <a href="index.php" class="btn btn-primary mb-2">Summary</a>
+               <a href="index.php" class="btn btn-sm btn-primary mb-2">Summary</a>
+               <a href="allitem.php" class="btn btn-sm btn-warning mb-2">All Item</a>
                <div class="card">
                   <div class="card-body">
                      <div class="col">
