@@ -81,7 +81,11 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
-                                       <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $fullname ?>"><?= $tampil['status']; ?></span>
+                                       <a href="editapprovedo.php?iddo=<?= $tampil['iddo'] ?>" onclick="return confirm('Apakah Anda yakin akan melakukan Approve ulang?')">
+                                          <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $fullname ?>">
+                                             <?= $tampil['status']; ?>
+                                          </span>
+                                       </a>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
                                           <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
