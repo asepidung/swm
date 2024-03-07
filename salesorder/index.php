@@ -32,11 +32,13 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
             <div class="col-2">
                <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
             </div>
-            <div class="col-1">
+            <div class="col">
                <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
                </form>
             </div>
-
+            <div class="col-1 float-right">
+               <a href="salesorderdetail.php"><button type="button" class="btn btn-sm btn-outline-success"><i class="fas fa-eye"></i> Detail</button></a>
+            </div>
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
    </div>
@@ -57,19 +59,23 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                               <th>Tgl Kirim</th>
                               <th>PO</th>
                               <th>Progress</th>
+                              <th>Made By</th>
                               <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer
-                           FROM salesorder 
-                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
-                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
-                           ORDER BY idso DESC");
+                           $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer, users.fullname
+                              FROM salesorder 
+                              INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
+                              INNER JOIN users ON salesorder.idusers = users.idusers
+                              WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
+                              ORDER BY salesorder.idso DESC");
+
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
+
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -87,6 +93,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <?php } else { ?>
                                     <td class="text-secondary"><i class="fas fa-clock"></i> Waiting</td>
                                  <?php } ?>
+                                 <td><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php
                                     if ($progress == "Waiting") { ?>

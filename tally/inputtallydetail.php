@@ -7,6 +7,7 @@ require "../konak/conn.php";
 if (isset($_POST['barcode'])) {
    $barcode = $_POST['barcode'];
    $idtally = $_POST['idtally'];
+   $_SESSION['limit'] = $_POST['limit'];
    $idso_query = "SELECT idso FROM tally WHERE idtally = $idtally";
    $idso_result = mysqli_query($conn, $idso_query);
 

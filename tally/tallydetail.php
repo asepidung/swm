@@ -14,6 +14,13 @@ $querytally = "SELECT tally.*, customers.nama_customer
 $resulttally = mysqli_query($conn, $querytally);
 $rowtally = mysqli_fetch_assoc($resulttally);
 $idso = $rowtally['idso'];
+
+// Periksa apakah session 'limit' telah di-set
+$defaultLimit = 14; // Nilai default untuk limit jika session belum di-set
+if (!isset($_SESSION['limit'])) {
+   $_SESSION['limit'] = $defaultLimit;
+}
+$limit = $_SESSION['limit'];
 ?>
 <div class="content-header">
    <div class="container-fluid">
@@ -78,6 +85,9 @@ $idso = $rowtally['idso'];
                                  </a>
                               <?php } ?>
                            </div>
+                           <div class="col-1">
+                              <input type="number" class="form-control" name="limit" value="<?= htmlspecialchars($limit) ?>">
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -135,7 +145,7 @@ $idso = $rowtally['idso'];
                                     ?>
                                     <td><?= $pcs; ?></td>
                                     <?php
-                                    if ($daysDiff >= 14) { ?>
+                                    if ($daysDiff >= $_SESSION['limit']) { ?>
                                        <td>
                                           <a href="editlabel.php?kdbarcode=<?= $barcode ?>&idtally=<?= $idtally ?>" class="text-danger">
                                              <?= $daysDiff . " " . "Hari"; ?>
@@ -178,7 +188,6 @@ $idso = $rowtally['idso'];
                               }
                               ?>
                            </tbody>
-
                         </table>
                      </div>
                   </div>
@@ -194,6 +203,7 @@ $idso = $rowtally['idso'];
                                  <th>Qty</th>
                                  <th>Box</th>
                                  <th>Balance</th>
+                                 <th>Notes</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -203,12 +213,10 @@ $idso = $rowtally['idso'];
 
                               if ($idso_result && $idso_row = mysqli_fetch_assoc($idso_result)) {
                                  $idso = $idso_row['idso'];
-
-                                 $query = "SELECT sodetail.idbarang, barang.nmbarang, sodetail.weight
+                                 $query = "SELECT sodetail.idbarang, barang.nmbarang, sodetail.weight, sodetail.notes
                                  FROM salesorderdetail AS sodetail
                                  INNER JOIN barang ON sodetail.idbarang = barang.idbarang
                                  WHERE sodetail.idso = $idso";
-
                                  $result = mysqli_query($conn, $query);
                                  while ($row = mysqli_fetch_assoc($result)) { ?>
                                     <tr>
@@ -251,6 +259,9 @@ $idso = $rowtally['idso'];
                                           <?php } else { ?>
                                              <?= number_format($sisa, 2); ?>
                                           <?php } ?>
+                                       </td>
+                                       <td>
+                                          <?= $row['notes']; ?>
                                        </td>
                                     </tr>
                               <?php }
