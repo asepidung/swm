@@ -101,7 +101,7 @@ $nmbarang = $row['nmbarang'];
                </span>
             </td>
             <td colspan="2" rowspan="5" align="center" valign="middle">
-               <img src=" ../dist/img/hi2.svg" alt="HALAL" height="100" align="absmiddle">
+               <img src=" ../dist/img/halal.png" alt="HALAL" height="100" align="absmiddle">
             </td>
          </tr>
          <tr>

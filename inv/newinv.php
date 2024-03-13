@@ -27,11 +27,15 @@ $iddo = $rowDo['iddo'];
 $idso = $rowDo['idso'];
 $idgroup = $rowDo['idgroup'];
 // Mengambil data dari tabel doreceiptdetail, grade, dan barang
-$querydoreceiptdetail = "SELECT doreceiptdetail.*, barang.nmbarang, barang.kdbarang
-                  FROM doreceiptdetail
-                  INNER JOIN barang ON doreceiptdetail.idbarang = barang.idbarang
-                  WHERE doreceiptdetail.iddoreceipt = $iddoreceipt";
+$querydoreceiptdetail = "SELECT doreceiptdetail.*, barang.nmbarang, barang.kdbarang, sodetail.price
+                         FROM doreceiptdetail
+                         INNER JOIN barang ON doreceiptdetail.idbarang = barang.idbarang
+                         INNER JOIN salesorderdetail sodetail ON sodetail.idbarang = barang.idbarang
+                         INNER JOIN salesorder so ON sodetail.idso = so.idso
+                         WHERE doreceiptdetail.iddoreceipt = $iddoreceipt
+                         AND so.idso = $idso";
 $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
+
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -151,7 +155,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="price[]" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
+                                          <input type="text" class="form-control text-right" name="price[]" value="<?= $rowdoreceiptdetail['price'] ?>" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
                                        </div>
                                     </div>
                                  </div>
