@@ -231,12 +231,7 @@ include "kebutuhanindex.php";
                         </p>
                      </a>
                      <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                           <a href="stock/" class="nav-link">
-                              <i class="far fa-circle nav-icon"></i>
-                              <p>Stock</p>
-                           </a>
-                        </li>
+
                         <li class="nav-item">
                            <a href="tally/" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
@@ -259,6 +254,18 @@ include "kebutuhanindex.php";
                            <a href="mutasi/" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
                               <p>Mutasi</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="stock/" class="nav-link">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>Stock</p>
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="tofroz/" class="nav-link">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>> 60 Days</p>
                            </a>
                         </li>
                         <li class="nav-item">

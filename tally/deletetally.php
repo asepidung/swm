@@ -29,7 +29,7 @@ if (isset($_GET['id'])) {
       // Masukkan data ke tabel stock
       $query_insert_stock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)";
       $stmt_insert_stock = $conn->prepare($query_insert_stock);
-      $stmt_insert_stock->bind_param("siiidis", $barcode, $idgrade, $idbarang, $weight, $pcs, $pod, $origin);
+      $stmt_insert_stock->bind_param("siidisi", $barcode, $idgrade, $idbarang, $weight, $pcs, $pod, $origin);
       $stmt_insert_stock->execute();
    }
 

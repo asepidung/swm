@@ -54,24 +54,25 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
-                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
+                                 <td class="text-center">
+                                    <a href="printso.php?idso=<?= $tampil['idso']; ?>">
+                                       <?= $tampil['sonumber']; ?>
+                                    </a>
+                                 </td>
                                  <td class="text-center"><?= $tampil['notally']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
-                                    <a href="printso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-info"><i class="fas fa-cart-arrow-down"></i></a>
-                                    <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
-                                       <i class="fas fa-tasks"></i>
-                                    </a>
-                                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Lihat Tally" onclick="window.location.href='lihattally.php?id=<?= $tampil['idtally']; ?>'">
-                                       <i class="fas fa-eye"></i>
-                                    </a>
+                                    <a href="printtally.php?id=<?= $tampil['idtally'] ?>"><button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-print"></i></button></a>
                                     <?php
                                     $query_check_do = "SELECT COUNT(*) as do_count FROM do WHERE idtally = {$tampil['idtally']}";
                                     $result_check_do = mysqli_query($conn, $query_check_do);
                                     $row_check_do = mysqli_fetch_assoc($result_check_do);
                                     $do_count = $row_check_do['do_count'];
                                     if ($do_count > 0) { ?>
+                                       <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
+                                          <i class="fas fa-tasks"></i>
+                                       </a>
                                        <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="DO Sudah Dibuat">
                                           <i class="fas fa-truck"></i>
                                        </a>
@@ -79,6 +80,9 @@ include "../mainsidebar.php";
                                           <i class="fas fa-minus-square"></i>
                                        </a>
                                     <?php } else { ?>
+                                       <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
+                                          <i class="fas fa-tasks"></i>
+                                       </a>
                                        <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat DO" onclick="window.location.href='../do/doissue.php?id=<?= $tampil['idtally'] ?>'">
                                           <i class="fas fa-truck"></i>
                                        </a>
