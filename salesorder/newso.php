@@ -157,6 +157,40 @@ include "../mainsidebar.php";
 <script src="../dist/js/movefocus.js"></script>
 <script src="../dist/js/fill_alamat_note.js"></script>
 <script>
+   $(document).ready(function() {
+      $('#idcustomer').change(function() {
+         var idcustomer = $(this).val();
+         $.ajax({
+            url: 'getPrice.php',
+            type: 'POST',
+            data: {
+               idgroup: idcustomer
+            },
+            success: function(data) {
+               // Mengisi harga barang otomatis
+               $('.price-input').val(data);
+            }
+         });
+      });
+
+      $(document).on('change', 'select[name="idbarang[]"]', function() {
+         var idbarang = $(this).val();
+         var idcustomer = $('#idcustomer').val();
+         $.ajax({
+            url: 'getPrice.php',
+            type: 'POST',
+            data: {
+               idbarang: idbarang,
+               idgroup: idcustomer
+            },
+            success: function(data) {
+               // Mengisi harga barang otomatis
+               $(this).closest('.row').find('.price-input').val(data);
+            }
+         });
+      });
+   });
+
    function addItem() {
       var itemsContainer = document.getElementById('items-container');
       var newItemRow = document.createElement('div');

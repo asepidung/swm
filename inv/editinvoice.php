@@ -19,9 +19,8 @@ $result_invoice = mysqli_query($conn, $query_invoice);
 $row_invoice = mysqli_fetch_assoc($result_invoice);
 
 // Query untuk mengambil data dari tabel invoicedetail berdasarkan idinvoice
-$query_invoicedetail = "SELECT invoicedetail.*, grade.nmgrade, barang.nmbarang
+$query_invoicedetail = "SELECT invoicedetail.*, barang.nmbarang
                         FROM invoicedetail
-                        INNER JOIN grade ON invoicedetail.idgrade = grade.idgrade
                         INNER JOIN barang ON invoicedetail.idbarang = barang.idbarang
                         WHERE invoicedetail.idinvoice = '$idinvoice'";
 $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
@@ -88,11 +87,6 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                      <div class="card-body">
                         <div id="items-container">
                            <div class="row">
-                              <div class="col-1">
-                                 <div class="form-group">
-                                    <label>Code</label>
-                                 </div>
-                              </div>
                               <div class="col">
                                  <div class="form-group">
                                     <label>Products</label>
@@ -126,14 +120,6 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                            </div>
                            <?php while ($row_invoicedetail = mysqli_fetch_assoc($result_invoicedetail)) { ?>
                               <div class="row mt-n2">
-                                 <div class="col-1">
-                                    <div class="form-group">
-                                       <div class="input-group">
-                                          <input type="text" class="form-control text-center" name="nmgrade" id="nmgrade" value="<?= $row_invoicedetail['nmgrade'] ?>" readonly>
-                                          <input type="hidden" class="form-control text-center" name="idgrade[]" id="idgrade" value="<?= $row_invoicedetail['idgrade'] ?>" readonly>
-                                       </div>
-                                    </div>
-                                 </div>
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">

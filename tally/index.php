@@ -35,15 +35,17 @@ include "../mainsidebar.php";
                               <th>SO Number</th>
                               <th>Tally ID</th>
                               <th>PO</th>
+                              <th>Note</th>
                               <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer
+                           $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer, salesorder.note
                            FROM tally 
-                           INNER JOIN customers ON tally.idcustomer = customers.idcustomer 
+                           INNER JOIN customers ON tally.idcustomer = customers.idcustomer
+                           INNER JOIN salesorder ON tally.idso = salesorder.idso
                            ORDER BY idtally DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
@@ -55,6 +57,7 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= $tampil['sonumber']; ?></td>
                                  <td class="text-center"><?= $tampil['notally']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
+                                 <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <a href="printso.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-info"><i class="fas fa-cart-arrow-down"></i></a>
                                     <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
