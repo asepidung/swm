@@ -82,7 +82,7 @@ include "../mainsidebar.php";
                                        <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat DO" onclick="window.location.href='../do/doissue.php?id=<?= $tampil['idtally'] ?>'">
                                           <i class="fas fa-truck"></i>
                                        </a>
-                                       <a href="deletetally.php?id=<?= $tampil['idtally']; ?>&idso=<?= $idso ?>" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus">
+                                       <a href="deletetally.php?id=<?= $tampil['idtally']; ?>&idso=<?= $idso ?>" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="return confirm('Semua barang yang ada di tally akan kembali ke stock, apa anda yakin ?')">
                                           <i class="fas fa-minus-square"></i>
                                        </a>
                                     <?php } ?>
