@@ -104,7 +104,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="../tofroz/" class="nav-link">
+              <a href="../stock/tofroz.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>> 60 Days</p>
               </a>

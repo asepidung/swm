@@ -78,11 +78,12 @@ $limit = $_SESSION['limit'];
                               <?php } elseif ($_GET['stat'] == "unlisted") { ?>
                                  <h3 class="headline text-danger"><i class="fas fa-times-circle"></i> Barang Tidak ada di PO</h3>
                               <?php } elseif ($_GET['stat'] == "unknown") { ?>
-                                 <a href="tallymanual.php?id=<?= $idtally ?>">
+                                 <h3 class="headline text-danger"><i class="fas fa-times-circle"></i> BARANG TIDAK TERDAFTAR, CEK BAHAN REPACK</h3>
+                                 <!-- <a href="tallymanual.php?id=<?= $idtally ?>">
                                     <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
                                        Stock In Manual <i class="fas fa-arrow-circle-right"></i>
                                     </span>
-                                 </a>
+                                 </a> -->
                               <?php } ?>
                            </div>
                            <div class="col-1">
