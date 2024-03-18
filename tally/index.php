@@ -63,7 +63,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['po']; ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
-                                    <a href="printtally.php?id=<?= $tampil['idtally'] ?>"><button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-print"></i></button></a>
+                                    <a href="lihattally.php?id=<?= $tampil['idtally'] ?>"><button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-eye"></i></button></a>
                                     <?php
                                     $query_check_do = "SELECT COUNT(*) as do_count FROM do WHERE idtally = {$tampil['idtally']}";
                                     $result_check_do = mysqli_query($conn, $query_check_do);
