@@ -40,7 +40,6 @@ include "../mainsidebar.php";
                               <th>Bank</th>
                               <th>Group</th>
                               <th>T.O.P</th>
-                              <!-- <th>Sales</th> -->
                               <th>Pajak</th>
                               <th>T.T.F</th>
                               <th>Catatan</th>

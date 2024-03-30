@@ -11,10 +11,10 @@ $nama_customer = $_POST['nama_customer'];
 $alamat = $_POST['alamat'];
 $idsegment = $_POST['idsegment'];
 $top = $_POST['top'];
-$pajak = $_POST['pajak'];
+$pajak = "NO";
 $tukarfaktur = $_POST['tukarfaktur'];
 $telepon = $_POST['telepon'];
-$email = $_POST['email'];
+$email = "-";
 $catatan = $_POST['catatan'];
 $idgroup = $_POST['idgroup'];
 

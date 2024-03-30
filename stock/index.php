@@ -57,17 +57,15 @@ $result = $conn->query($sql);
                            <thead class="text-center">
                               <tr>
                                  <th rowspan="2">Nama Product</th>
-                                 <th colspan="3">G. Jonggol</th>
-                                 <th colspan="3">G. Perum</th>
+                                 <th colspan="2">G. Jonggol</th>
+                                 <th colspan="2">G. Perum</th>
                                  <th rowspan="2">Total</th>
                               </tr>
                               <tr>
                                  <th>CHILL (J)</th>
                                  <th>FROZEN (J)</th>
-                                 <th>GRADE (J)</th>
                                  <th>CHILL (P)</th>
                                  <th>FROZEN (P)</th>
-                                 <th>GRADE (P)</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -84,10 +82,8 @@ $result = $conn->query($sql);
                                     echo "<td class='text-left'><a href='detailitem.php?id={$row['idbarang']}'>{$row['nmbarang']}</a></td>";
                                     echo "<td" . ((float)$row['grade1'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade1'] != 0.00 ? number_format((float)$row['grade1'], 2) : '') . "</td>";
                                     echo "<td" . ((float)$row['grade2'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade2'] != 0.00 ? number_format((float)$row['grade2'], 2) : '') . "</td>";
-                                    echo "<td" . ((float)$row['grade5'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade5'] != 0.00 ? number_format((float)$row['grade5'], 2) : '') . "</td>";
                                     echo "<td" . ((float)$row['grade3'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade3'] != 0.00 ? number_format((float)$row['grade3'], 2) : '') . "</td>";
                                     echo "<td" . ((float)$row['grade4'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade4'] != 0.00 ? number_format((float)$row['grade4'], 2) : '') . "</td>";
-                                    echo "<td" . ((float)$row['grade6'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['grade6'] != 0.00 ? number_format((float)$row['grade6'], 2) : '') . "</td>";
                                     echo "<th" . ((float)$row['total_qty'] < 0 ? ' style="color: red;"' : '') . ">" . ((float)$row['total_qty'] != 0.00 ? number_format((float)$row['total_qty'], 2) : '') . "</th>";
                                     echo "</tr>";
                                  }
@@ -111,13 +107,10 @@ $result = $conn->query($sql);
 
                                  $totalGradeResult = $conn->query($totalGradeSql);
                                  $totalGradeRow = $totalGradeResult->fetch_assoc();
-
                                  echo "<th>" . ((float)$totalGradeRow['total_grade1'] != 0.00 ? number_format((float)$totalGradeRow['total_grade1'], 2) : '') . "</th>";
                                  echo "<th>" . ((float)$totalGradeRow['total_grade2'] != 0.00 ? number_format((float)$totalGradeRow['total_grade2'], 2) : '') . "</th>";
-                                 echo "<th>" . ((float)$totalGradeRow['total_grade5'] != 0.00 ? number_format((float)$totalGradeRow['total_grade5'], 2) : '') . "</th>";
                                  echo "<th>" . ((float)$totalGradeRow['total_grade3'] != 0.00 ? number_format((float)$totalGradeRow['total_grade3'], 2) : '') . "</th>";
                                  echo "<th>" . ((float)$totalGradeRow['total_grade4'] != 0.00 ? number_format((float)$totalGradeRow['total_grade4'], 2) : '') . "</th>";
-                                 echo "<th>" . ((float)$totalGradeRow['total_grade6'] != 0.00 ? number_format((float)$totalGradeRow['total_grade6'], 2) : '') . "</th>";
                                  echo "<th>" . ((float)$totalGradeRow['total_qty'] != 0.00 ? number_format((float)$totalGradeRow['total_qty'], 2) : '') . "</th>";
                                  ?>
                               </tr>

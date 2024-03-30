@@ -28,8 +28,6 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                   <div class="card-header">
                      <h3 class="card-title">Edit Data Customer</h3>
                   </div>
-                  <!-- /.card-header -->
-                  <!-- form start -->
                   <form method="POST" action="updatecustomer.php">
                      <input type="hidden" name="idcustomer" value="<?= $rowCustomer['idcustomer']; ?>">
                      <div class=" card-body">
@@ -107,7 +105,7 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                         </div>
                         <div class="form-group">
                            <label for="email">Email</label>
-                           <input type="email" class="form-control" name="email" id="email" value="<?= $rowCustomer['email']; ?>">
+                           <input type="text" class="form-control" name="email" id="email" value="<?= $rowCustomer['email']; ?>">
                         </div>
                         <div class="form-group">
                            <label for="catatan">Catatan</label>

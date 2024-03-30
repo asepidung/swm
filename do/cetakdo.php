@@ -166,10 +166,7 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="20%">Customer <br><br><br><br><br> ....................................</td>
     </tr>
   </table>
-  <br>
-  <p class="small-text" align="right">
-    Made By <?= $row_do['fullname'] . " " . "at" . " " . date("d/M/y H:m:s", strtotime($row_do['created'])) ?>
-  </p>
+
   <script>
     document.title = "<?php echo $row_do['donumber']; ?>";
     window.addEventListener("load", function() {

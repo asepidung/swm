@@ -24,10 +24,6 @@ include "../mainsidebar.php";
                         <div class="row">
                            <div class="col">
                               <div class="form-group">
-                                 <!-- <label for="nama_customer">Nama Customer <span class="text-danger">*</span></label> -->
-                                 <input type="text" class="form-control" placeholder="Isi Nama Customer" name="nama_customer" id="nama_customer" autofocus required>
-                              </div>
-                              <div class="form-group">
                                  <!-- <label for="groupcs">Group <span class="text-danger">*</span></label> -->
                                  <div class="input-group">
                                     <select class="form-control" name="idgroup" id="idgroup" required>
@@ -49,7 +45,10 @@ include "../mainsidebar.php";
                                  </div>
                               </div>
                               <div class="form-group">
-                                 <!-- <label for="alamat">Alamat<span class="text-danger">*</label> -->
+                                 <!-- <label for="nama_customer">Nama Customer <span class="text-danger">*</span></label> -->
+                                 <input type="text" class="form-control" placeholder="Isi Nama Customer" name="nama_customer" id="nama_customer" autofocus required>
+                              </div>
+                              <div class="form-group">
                                  <input type="text" class="form-control" name="alamat" id="alamat" required placeholder="Isikan Alamat">
                               </div>
                               <div class="form-group">
@@ -73,39 +72,18 @@ include "../mainsidebar.php";
                                     </div>
                                  </div>
                               </div>
-                              <div class="col">
-                                 <div class="row">
-                                    <div class="col">
-                                       <div class="form-group">
-                                          <!-- <label for="top">T.O.P <span class="text-danger">*</label> -->
-                                          <input type="number" class="form-control" name="top" id="top" required placeholder="T.O.P">
-                                       </div>
-                                    </div>
-                                    <div class="col">
-                                       <div class="form-group">
-                                          <!-- <label for="pajak">Customer Dikenakan Pajak <span class="text-danger">*</label> -->
-                                          <select class="form-control" name="pajak" id="pajak" required>
-                                             <option value="NO">NO</option>
-                                             <option value="YES">YES</option>
-                                          </select>
-                                       </div>
-                                    </div>
-                                    <div class="col">
-                                       <div class="form-group">
-                                          <!-- <label for="tukarfaktur">Tukar Faktur <span class="text-danger">*</label> -->
-                                          <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
-                                             <option value="NO">NO</option>
-                                             <option value="YES">YES</option>
-                                          </select>
-                                       </div>
-                                    </div>
-                                 </div>
+                              <div class="form-group">
+                                 <input type="number" class="form-control" name="top" id="top" required placeholder="T.O.P">
+                              </div>
+                              <div class="form-group">
+                                 <select class="form-control" name="tukarfaktur" id="tukarfaktur" required>
+                                    <option value="">--Tukar Faktur--</option>
+                                    <option value="NO">NO</option>
+                                    <option value="YES">YES</option>
+                                 </select>
                               </div>
                               <div class="form-group">
                                  <input type="tel" class="form-control" name="telepon" id="telepon" placeholder="Telepon">
-                              </div>
-                              <div class="form-group">
-                                 <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                               </div>
                               <div class="form-group">
                                  <input type="text" class="form-control" name="catatan" id="catatan" placeholder="Catatan">

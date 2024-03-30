@@ -21,7 +21,7 @@ if (mysqli_num_rows($checkResult) > 0) {
 
    // mengeksekusi query
    if (mysqli_query($conn, $sql)) {
-      echo "<script>alert('Data berhasil disimpan.'); window.location='../customer/customer.php';</script>";
+      echo "<script>alert('Data berhasil disimpan.'); window.location='../customer/newcustomer.php';</script>";
    } else {
       echo "Error: " . $sql . "<br>" . mysqli_error($conn);
    }
