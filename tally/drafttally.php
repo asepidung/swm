@@ -45,7 +45,11 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
-                                 <td class="text-center"><?= $tampil['sonumber']; ?></td>
+                                 <td class="text-center">
+                                    <a href="hideprice.php?idso=<?= $tampil['idso']; ?>">
+                                       <?= $tampil['sonumber']; ?>
+                                    </a>
+                                 </td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center text-primary">
                                     <a href="newtally.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">Buat Tally <i class="fas fa-arrow-circle-right"></i></a>

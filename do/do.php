@@ -8,7 +8,13 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
-$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
+$queryMaxDate = "SELECT MAX(deliverydate) AS max_date FROM do";
+$resultMaxDate = mysqli_query($conn, $queryMaxDate);
+$rowMaxDate = mysqli_fetch_assoc($resultMaxDate);
+$maxDate = $rowMaxDate['max_date'];
+
+// Tentukan $akhir sebagai tanggal maksimum dari kolom deliverydate
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 ?>
 <div class="content-wrapper">
    <div class="content-header">
