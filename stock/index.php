@@ -48,8 +48,10 @@ $result = $conn->query($sql);
                   <div class="dropdown-menu">
                      <a class="dropdown-item" href="aging.php">Stock By Aging</a>
                      <a class="dropdown-item" href="detail.php">Box Detail</a>
+                     <a class="dropdown-item" href="flows.php">Flows Product</a>
                   </div>
                </div>
+
                <div class="card">
                   <div class="card-body">
                      <div class="col">

@@ -157,38 +157,38 @@ include "../mainsidebar.php";
 <script src="../dist/js/movefocus.js"></script>
 <script src="../dist/js/fill_alamat_note.js"></script>
 <script>
-   $(document).ready(function() {
-      $('#idcustomer').change(function() {
-         var idcustomer = $(this).val();
-         $.ajax({
-            url: 'getPrice.php',
-            type: 'POST',
-            data: {
-               idgroup: idcustomer
-            },
-            success: function(data) {
-               // Mengisi harga barang otomatis
-               $('.price-input').val(data);
-            }
-         });
-      });
+   // Function to add digit grouping (thousands separator) to a number
+   function addDigitGrouping(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+   }
 
-      $(document).on('change', 'select[name="idbarang[]"]', function() {
-         var idbarang = $(this).val();
-         var idcustomer = $('#idcustomer').val();
-         $.ajax({
-            url: 'getPrice.php',
-            type: 'POST',
-            data: {
-               idbarang: idbarang,
-               idgroup: idcustomer
-            },
-            success: function(data) {
-               // Mengisi harga barang otomatis
-               $(this).closest('.row').find('.price-input').val(data);
+   // Function to format the Price input
+   function formatPriceInput() {
+      const priceInputs = document.querySelectorAll('input[name="price[]"]');
+
+      priceInputs.forEach(function(input) {
+         input.addEventListener('input', function() {
+            // Remove any existing commas
+            let value = this.value.replace(/,/g, '');
+
+            // Convert the value to a number
+            let number = parseFloat(value);
+
+            // Check if it's a valid number
+            if (!isNaN(number)) {
+               // Add digit grouping to the number
+               this.value = addDigitGrouping(number);
             }
          });
       });
+   }
+
+   // Call the formatPriceInput function when the page loads
+   document.addEventListener('DOMContentLoaded', function() {
+      formatPriceInput();
+
+      // Add event listener for adding item
+      document.querySelector('.btn-add-item').addEventListener('click', addItem);
    });
 
    function addItem() {
