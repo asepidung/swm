@@ -53,45 +53,50 @@ $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
                               // Query data dari tabel boning, repack, gr, returjual, dan grdetail
                               $query = "SELECT tanggal, transaksi, id_transaksi, item, SUM(qty_in) AS qty_in, SUM(qty_out) AS qty_out
                               FROM (
-                                  SELECT tglboning AS tanggal, 'Hasil Boning' AS transaksi, batchboning AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
-                                  FROM boning b
-                                  JOIN labelboning lb ON b.idboning = lb.idboning
-                                  JOIN barang br ON lb.idbarang = br.idbarang
-                                  WHERE tglboning >= '$awal'
-                                  GROUP BY b.idboning, lb.idbarang
-                                  UNION
-                                  SELECT tglrepack AS tanggal, 'Hasil Repack' AS transaksi, norepack AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_out, 0 AS qty_in
-                                  FROM repack r
-                                  JOIN detailhasil dh ON r.idrepack = dh.idrepack
-                                  JOIN barang br ON dh.idbarang = br.idbarang
-                                  WHERE tglrepack >= '$awal'
-                                  GROUP BY r.idrepack, dh.idbarang
-                                  UNION
-                                  SELECT receivedate AS tanggal, 'Goods Receipt' AS transaksi, grnumber AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
-                                  FROM gr g
-                                  JOIN grdetail gd ON g.idgr = gd.idgr
-                                  JOIN barang br ON gd.idbarang = br.idbarang
-                                  WHERE receivedate >= '$awal'
-                                  GROUP BY g.idgr, gd.idbarang
-                                  UNION
-                                  SELECT returdate AS tanggal, 'Retur Penjualan' AS transaksi, returnnumber AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
-                                  FROM returjual r
-                                  JOIN returjualdetail rd ON r.idreturjual = rd.idreturjual
-                                  JOIN barang br ON rd.idbarang = br.idbarang
-                                  WHERE returdate >= '$awal'
-                                  GROUP BY r.idreturjual, rd.idbarang
-                                  UNION
-                                  SELECT tglrepack AS tanggal, 'Bahan Repack' AS transaksi, norepack AS id_transaksi, nmbarang AS item, 0 AS qty_in, SUM(qty) AS qty_out
-                                  FROM repack r
-                                  JOIN detailbahan db ON r.idrepack = db.idrepack
-                                  JOIN barang br ON db.idbarang = br.idbarang
-                                  WHERE tglrepack >= '$awal'
-                                  GROUP BY r.idrepack, db.idbarang
+                                 SELECT tglboning AS tanggal, 'Hasil Boning' AS transaksi, batchboning AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
+                                 FROM boning b
+                                 JOIN labelboning lb ON b.idboning = lb.idboning
+                                 JOIN barang br ON lb.idbarang = br.idbarang
+                                 WHERE tglboning >= '$awal'
+                                 GROUP BY b.idboning, lb.idbarang
+                                 UNION
+                                 SELECT tglrepack AS tanggal, 'Hasil Repack' AS transaksi, norepack AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_out, 0 AS qty_in
+                                 FROM repack r
+                                 JOIN detailhasil dh ON r.idrepack = dh.idrepack
+                                 JOIN barang br ON dh.idbarang = br.idbarang
+                                 WHERE tglrepack >= '$awal'
+                                 GROUP BY r.idrepack, dh.idbarang
+                                 UNION
+                                 SELECT receivedate AS tanggal, 'Goods Receipt' AS transaksi, grnumber AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
+                                 FROM gr g
+                                 JOIN grdetail gd ON g.idgr = gd.idgr
+                                 JOIN barang br ON gd.idbarang = br.idbarang
+                                 WHERE receivedate >= '$awal'
+                                 GROUP BY g.idgr, gd.idbarang
+                                 UNION
+                                 SELECT returdate AS tanggal, 'Retur Penjualan' AS transaksi, returnnumber AS id_transaksi, nmbarang AS item, SUM(qty) AS qty_in, 0 AS qty_out
+                                 FROM returjual r
+                                 JOIN returjualdetail rd ON r.idreturjual = rd.idreturjual
+                                 JOIN barang br ON rd.idbarang = br.idbarang
+                                 WHERE returdate >= '$awal'
+                                 GROUP BY r.idreturjual, rd.idbarang
+                                 UNION
+                                 SELECT tglrepack AS tanggal, 'Bahan Repack' AS transaksi, norepack AS id_transaksi, nmbarang AS item, 0 AS qty_in, SUM(qty) AS qty_out
+                                 FROM repack r
+                                 JOIN detailbahan db ON r.idrepack = db.idrepack
+                                 JOIN barang br ON db.idbarang = br.idbarang
+                                 WHERE tglrepack >= '$awal'
+                                 GROUP BY r.idrepack, db.idbarang
+                                 UNION
+                                 SELECT deliverydate AS tanggal, 'Delivery Order' AS transaksi, donumber AS id_transaksi, nmbarang AS item, 0 AS qty_in, SUM(box) AS qty_out
+                                 FROM do d
+                                 JOIN dodetail dd ON d.iddo = dd.iddo
+                                 JOIN barang br ON dd.idbarang = br.idbarang
+                                 WHERE deliverydate >= '$awal'
+                                 GROUP BY d.iddo, dd.idbarang
                               ) AS combined_data
                               GROUP BY tanggal, transaksi, id_transaksi, item
                               ORDER BY tanggal ASC";
-
-
                               $result = mysqli_query($conn, $query);
 
                               // Mengambil data dari query

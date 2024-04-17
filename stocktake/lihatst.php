@@ -10,7 +10,6 @@ include "../mainsidebar.php";
 $idst = $_GET['id'];
 ?>
 <div class="content-wrapper">
-   <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
@@ -21,65 +20,56 @@ $idst = $_GET['id'];
                         <table id="example1" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
-                                 <th>#</th>
-                                 <th>Product Desc</th>
-                                 <th>J01</th>
-                                 <th>J02</th>
-                                 <th>J03</th>
-                                 <th>P01</th>
-                                 <th>P02</th>
-                                 <th>P03</th>
-                                 <th>UNLISTED</th>
+                                 <th rowspan="2">#</th>
+                                 <th rowspan="2">Product Desc</th>
+                                 <th colspan="2">J01</th>
+                                 <th colspan="2">J02</th>
+                                 <th colspan="2">P01</th>
+                                 <th colspan="2">P02</th>
+                              </tr>
+                              <tr>
+                                 <th>Qty</th>
+                                 <th>Box</th>
+                                 <th>Qty</th>
+                                 <th>Box</th>
+                                 <th>Qty</th>
+                                 <th>Box</th>
+                                 <th>Qty</th>
+                                 <th>Box</th>
                               </tr>
                            </thead>
                            <tbody>
                               <?php
                               $no = 1;
-                              $query_stocktakedetail = "SELECT DISTINCT stocktakedetail.idbarang, barang.nmbarang
-                                 FROM stocktakedetail
-                                 INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
-                                 WHERE idst = '$idst'";
-                              $result_stocktakedetail = mysqli_query($conn, $query_stocktakedetail);
-
-                              while ($row_stocktakedetail = mysqli_fetch_assoc($result_stocktakedetail)) {
-                                 $idbarang = $row_stocktakedetail['idbarang'];
-                              ?>
-                                 <tr class="text-right">
-                                    <td class="text-center"><?= $no; ?></td>
-                                    <td class="text-left"><?= $row_stocktakedetail['nmbarang']; ?></td>
-                                    <?php
-                                    // Inisialisasi array untuk menyimpan total qty berdasarkan kategori
-                                    $categoryQty = array('J01' => 0, 'J02' => 0, 'J03' => 0, 'P01' => 0, 'P02' => 0, 'P03' => 0, 'UNLISTED' => 0);
-
-                                    // Ambil data stocktakedetail untuk setiap idbarang
-                                    $query_per_idbarang = "SELECT stocktakedetail.*, grade.nmgrade
-                                       FROM stocktakedetail
-                                       LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
-                                       WHERE idst = '$idst' AND stocktakedetail.idbarang = '$idbarang'";
-                                    $result_per_idbarang = mysqli_query($conn, $query_per_idbarang);
-
-                                    // Hitung total qty berdasarkan kategori
-                                    while ($row_per_idbarang = mysqli_fetch_assoc($result_per_idbarang)) {
-                                       $category = 'UNLISTED'; // Default category
-                                       if ($row_per_idbarang['nmgrade'] != null) {
-                                          $category = ($row_per_idbarang['nmgrade'] == 'J01') ? 'J01' : $category;
-                                          $category = ($row_per_idbarang['nmgrade'] == 'J02') ? 'J02' : $category;
-                                          $category = ($row_per_idbarang['nmgrade'] == 'J03') ? 'J03' : $category;
-                                          $category = ($row_per_idbarang['nmgrade'] == 'P01') ? 'P01' : $category;
-                                          $category = ($row_per_idbarang['nmgrade'] == 'P02') ? 'P02' : $category;
-                                          $category = ($row_per_idbarang['nmgrade'] == 'P03') ? 'P03' : $category;
-                                       }
-                                       $categoryQty[$category] += $row_per_idbarang['qty'];
-                                    }
-
-                                    // Tampilkan total qty berdasarkan kategori
-                                    foreach (array('J01', 'J02', 'J03', 'P01', 'P02', 'P03', 'UNLISTED') as $category) {
-                                       echo "<td>$categoryQty[$category]</td>";
-                                    }
-                                    ?>
+                              $grades = array(1, 2, 3, 4); // Daftar idgrade yang ingin Anda tampilkan (1 hingga 4)
+                              $ambildata = mysqli_query($conn, "SELECT std.idbarang, SUM(std.qty) AS total_qty, COUNT(std.qty) AS total_box, b.nmbarang
+                              FROM stocktakedetail std
+                              INNER JOIN barang b ON std.idbarang = b.idbarang
+                              WHERE std.idst = $idst 
+                              GROUP BY std.idbarang");
+                              while ($tampil = mysqli_fetch_array($ambildata)) { ?>
+                                 <tr class="text-center">
+                                    <td><?= $no ?></td>
+                                    <td class="text-left"><?= $tampil['nmbarang']; ?></td>
+                                    <?php foreach ($grades as $grade) : ?>
+                                       <?php
+                                       // Query untuk mengambil jumlah qty dan box berdasarkan idgrade tertentu
+                                       $query_grade = mysqli_query($conn, "SELECT SUM(qty) AS total_qty, COUNT(qty) AS total_box
+                                            FROM stocktakedetail
+                                            WHERE idst = $idst AND idgrade = $grade AND idbarang = {$tampil['idbarang']}");
+                                       $data_grade = mysqli_fetch_assoc($query_grade);
+                                       // Memeriksa apakah total_qty tidak memiliki nilai, jika iya, jangan menampilkan apapun
+                                       if ($data_grade['total_qty'] !== null) {
+                                       ?>
+                                          <td class="text-right"><?= number_format($data_grade['total_qty'], 2); ?></td>
+                                          <td><?= $data_grade['total_box']; ?></td>
+                                       <?php } else { ?>
+                                          <td></td>
+                                          <td></td>
+                                       <?php } ?>
+                                    <?php endforeach; ?>
                                  </tr>
-                              <?php
-                                 $no++;
+                              <?php $no++;
                               } ?>
                            </tbody>
                         </table>
