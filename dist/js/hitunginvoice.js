@@ -82,7 +82,7 @@ function calculateAmounts() {
    var balance = totalAmount + taxAmount + charge - downPayment;
 
    // Update the relevant fields with the calculated values
-   document.getElementById('xamount').value = parseFloat(totalAmount.toFixed(2)).toLocaleString(undefined, {
+   document.getElementById('xamount').value = parseFloat(totalAmount.toFixed(2)).toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
    });
@@ -92,7 +92,7 @@ function calculateAmounts() {
 
    // Mengubah format discountrp[]
    for (var i = 0; i < discountrp.length; i++) {
-      discountrp[i].value = parseFloat(discountrp[i].value).toLocaleString(undefined, {
+      discountrp[i].value = parseFloat(discountrp[i].value).toLocaleString('en-US', {
          minimumFractionDigits: 2,
          maximumFractionDigits: 2
       });
@@ -100,7 +100,7 @@ function calculateAmounts() {
 
    // Mengubah format amounts[]
    for (var i = 0; i < amounts.length; i++) {
-      amounts[i].value = parseFloat(amounts[i].value).toLocaleString(undefined, {
+      amounts[i].value = parseFloat(amounts[i].value).toLocaleString('en-US', {
          minimumFractionDigits: 2,
          maximumFractionDigits: 2
       });
@@ -110,13 +110,13 @@ function calculateAmounts() {
    taxElement.value = taxAmount;
 
    // Mengubah format balance
-   balanceElement.value = parseFloat(balance.toFixed(2)).toLocaleString(undefined, {
+   balanceElement.value = parseFloat(balance.toFixed(2)).toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
    });
 
    // Mengubah format xdiscount
-   document.getElementById('xdiscount').value = parseFloat(totalDiscount.toFixed(2)).toLocaleString(undefined, {
+   document.getElementById('xdiscount').value = parseFloat(totalDiscount.toFixed(2)).toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
    });
