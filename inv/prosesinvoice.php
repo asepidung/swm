@@ -2,9 +2,27 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
 require "../konak/conn.php";
 include "invnumber.php";
+
+// Fungsi untuk menormalkan angka
+function normalizeNumber($number)
+{
+   $lastCommaPos = strrpos($number, ',');
+   $lastDotPos = strrpos($number, '.');
+
+   $decimalSeparator = $lastCommaPos > $lastDotPos ? ',' : '.';
+   $thousandSeparator = $lastCommaPos < $lastDotPos ? ',' : '.';
+
+   $number = str_replace($thousandSeparator, '', $number);
+   if ($decimalSeparator != '.') {
+      $number = str_replace($decimalSeparator, '.', $number);
+   }
+
+   return (float) $number;
+}
 if (isset($_POST['submit'])) {
    $iddo = $_POST['iddo'];
    $iddoreceipt = $_POST['iddoreceipt'];
@@ -18,28 +36,13 @@ if (isset($_POST['submit'])) {
    $note = $_POST['note'];
    $pajak = $_POST['pajak'];
 
-   // Fungsi untuk mengubah format angka sesuai dengan pengaturan lokal
-   function formatNumber($number)
-   {
-      // Mengganti titik dengan koma dan sebaliknya, tergantung pengaturan lokal
-      $locale = localeconv();
-      $decimalPoint = $locale['decimal_point'];
-      $thousandsSep = $locale['thousands_sep'];
-      $number = str_replace($thousandsSep, '|', $number);
-      $number = str_replace($decimalPoint, $thousandsSep, $number);
-      $number = str_replace('|', $decimalPoint, $number);
-      return $number;
-   }
-
-   // Format angka sesuai pengaturan lokal
-   $xweight = formatNumber($_POST['xweight']);
-   $xamount = formatNumber($_POST['xamount']);
-   $xdiscount = formatNumber($_POST['xdiscount']);
-   $tax = formatNumber($_POST['tax']);
-   $charge = formatNumber($_POST['charge']);
-   $downpayment = formatNumber($_POST['downpayment']);
-   $balance = formatNumber($_POST['balance']);
-
+   $xweight = normalizeNumber($_POST['xweight']);
+   $xamount = normalizeNumber($_POST['xamount']);
+   $xdiscount = normalizeNumber($_POST['xdiscount']);
+   $tax = normalizeNumber($_POST['tax']);
+   $charge = normalizeNumber($_POST['charge']);
+   $downpayment = normalizeNumber($_POST['downpayment']);
+   $balance = normalizeNumber($_POST['balance']);
    $tukarfaktur = $_POST['tukarfaktur'];
    // hitung duedate
    $invoice_date_obj = new DateTime($invoice_date);
@@ -81,10 +84,10 @@ if (isset($_POST['submit'])) {
    for ($i = 0; $i < count($idbarang); $i++) {
       $idbarang[$i] = $idbarang[$i];
       $weight[$i] = $weight[$i];
-      $price[$i] = formatNumber($price[$i]);
+      $price[$i] = normalizeNumber($price[$i]);
       $discount[$i] = $discount[$i];
-      $discountrp[$i] = formatNumber($discountrp[$i]);
-      $amount[$i] = formatNumber($amount[$i]);
+      $discountrp[$i] = normalizeNumber($discountrp[$i]);
+      $amount[$i] = normalizeNumber($amount[$i]);
 
       $sql = "INSERT INTO invoicedetail (idinvoice, idbarang, weight, price, discount, discountrp, amount) 
               VALUES ('$invoiceID', '{$idbarang[$i]}', '{$weight[$i]}', '{$price[$i]}', '{$discount[$i]}', '{$discountrp[$i]}', '{$amount[$i]}')";
