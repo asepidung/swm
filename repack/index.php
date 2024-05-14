@@ -53,6 +53,7 @@ include "../mainsidebar.php";
                            ORDER BY idrepack DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               include "hitungtotal.php";
+                              $idrepack = $tampil['idrepack'];
                            ?>
                               <tr class="text-center">
                                  <td><?= $no; ?></td>
@@ -69,18 +70,38 @@ include "../mainsidebar.php";
                                  </td>
                                  <td class="text-left"><?= $tampil['note']; ?></td>
                                  <td>
-                                    <a href="detailbahan.php?id=<?= $tampil['idrepack'] ?>&stat=ready" class="btn btn-sm btn-warning">
+                                    <a href="detailbahan.php?id=<?= $idrepack ?>&stat=ready" class="btn btn-sm btn-warning">
                                        <i class="fas fa-box-open"></i>
                                     </a>
-                                    <a href="detailhasil.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-success">
+                                    <a href="detailhasil.php?id=<?= $idrepack ?>" class="btn btn-sm btn-success">
                                        <i class="fas fa-tags"></i>
                                     </a>
-                                    <a href="printrepack.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-primary">
+                                    <a href="printrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-primary">
                                        <i class="fas fa-print"></i>
                                     </a>
-                                    <a href="editrepack.php?id=<?= $tampil['idrepack'] ?>" class="btn btn-sm btn-secondary">
+                                    <a href="editrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-dark">
                                        <i class="fas fa-edit"></i>
                                     </a>
+                                    <?php
+                                    $query = "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack";
+                                    $result_detailbahan = mysqli_query($conn, $query);
+                                    $row_detailbahan = mysqli_fetch_assoc($result_detailbahan);
+
+                                    $query = "SELECT COUNT(*) AS total FROM detailhasil WHERE idrepack = $idrepack";
+                                    $result_detailhasil = mysqli_query($conn, $query);
+                                    $row_detailhasil = mysqli_fetch_assoc($result_detailhasil);
+
+                                    // Jika kedua tabel tidak memiliki data yang sesuai
+                                    if ($row_detailbahan['total'] == 0 && $row_detailhasil['total'] == 0) {
+                                       echo '<a href="deleterepack.php?id=' . $idrepack . '" class="btn btn-sm btn-danger">
+              <i class="fas fa-trash"></i>
+          </a>';
+                                    } else { // Jika salah satu atau kedua tabel memiliki data yang sesuai
+                                       echo '<a href="#" class="btn btn-sm btn-secondary">
+              <i class="fas fa-trash"></i>
+          </a>';
+                                    }
+                                    ?>
                                  </td>
                               </tr>
                            <?php $no++;

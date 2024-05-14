@@ -69,7 +69,6 @@ if (isset($_POST['submit'])) {
    // Insert data into the 'piutang' table
    $sql2 = "INSERT INTO piutang (idgroup, idinvoice, idcustomer, balance, duedate, progress) 
            VALUES ('$idgroup', '$invoiceID', '$idcustomer', '$balance', '$duedate', '$status')";
-   // Execute the SQL query
    mysqli_query($conn, $sql2);
 
 

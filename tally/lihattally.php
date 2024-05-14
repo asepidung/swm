@@ -114,6 +114,9 @@ require "hitungantally.php";
             <a href="index.php" class="btn bg-gradient-warning btn-block">Kembali</a>
          </div>
          <div class="col-1">
+            <a href="seedetail.php?id=<?= $idtally ?>" class="btn bg-gradient-success btn-block">Detail</a>
+         </div>
+         <div class="col-1">
             <a href="printtally.php?id=<?= $idtally ?>" class="btn btn-secondary btn-block">Print</a>
          </div>
       </div>

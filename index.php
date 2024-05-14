@@ -294,7 +294,7 @@ include "kebutuhanindex.php";
                         <li class="nav-item">
                            <a href="do/dodetail.php" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>D0 Detail</p>
+                              <p>DO Detail</p>
                            </a>
                         </li>
                         <li class="nav-item">
