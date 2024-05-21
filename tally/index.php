@@ -3,6 +3,7 @@ session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
+
 require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
@@ -21,6 +22,12 @@ include "../mainsidebar.php";
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
+         <?php
+         // Cek apakah ada parameter error di URL dan tampilkan pesan jika ada
+         if (isset($_GET['error'])) {
+            echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($_GET['error']) . '</div>';
+         }
+         ?>
          <div class="row">
             <div class="col-12">
                <div class="card">
@@ -52,16 +59,16 @@ include "../mainsidebar.php";
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td><?= $tampil['nama_customer']; ?></td>
+                                 <td><?= htmlspecialchars($tampil['nama_customer']); ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td class="text-center">
                                     <a href="printso.php?idso=<?= $tampil['idso']; ?>">
-                                       <?= $tampil['sonumber']; ?>
+                                       <?= htmlspecialchars($tampil['sonumber']); ?>
                                     </a>
                                  </td>
-                                 <td class="text-center"><?= $tampil['notally']; ?></td>
-                                 <td><?= $tampil['po']; ?></td>
-                                 <td><?= $tampil['note']; ?></td>
+                                 <td class="text-center"><?= htmlspecialchars($tampil['notally']); ?></td>
+                                 <td><?= htmlspecialchars($tampil['po']); ?></td>
+                                 <td><?= htmlspecialchars($tampil['note']); ?></td>
                                  <td class="text-center">
                                     <a href="lihattally.php?id=<?= $tampil['idtally'] ?>"><button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-eye"></i></button></a>
                                     <?php

@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $_SESSION['exp'] = $exp;
 
    if (strpos($qtyPcsInput, "/") !== false) {
-      list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
+      list($qty, $pcs) = explode("/", $qtyPcsInput);
    } else {
       $qty = $qtyPcsInput;
    }
@@ -100,7 +100,9 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <strong><i><?= $pcs; ?></i></strong>
+               <?php if ($pcs > 0) { ?>
+                  <strong><i><?= $pcs . "-Pcs"; ?></i></strong>
+               <?php } ?>
             </td>
          </tr>
          <tr>

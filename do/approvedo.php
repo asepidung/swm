@@ -34,7 +34,6 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
          <div class="row">
             <div class="col mt-3">
                <form method="POST" action="prosesapprovedo.php">
-                  <input type="hidden" name="iddo" value="<?= $iddo ?>">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
@@ -152,7 +151,9 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                            <?php } ?>
                         </div>
                         <div class="row">
-                           <div class="col-3"></div>
+                           <div class="col-3">
+                              <a class="btn btn-block btn-danger" href="tolakan.php?id=<?= $row['idso'] ?>&iddo=<?= $row['iddo'] ?>">Rejections</a>
+                           </div>
                            <div class="col-1">
                               <input type="text" name="xbox" id="xbox" class="form-control text-center" readonly>
                            </div>
