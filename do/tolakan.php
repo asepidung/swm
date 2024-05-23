@@ -55,6 +55,7 @@ if ($resulttally) {
          <div class="col">
             <form id="returnForm" method="POST" action="pengembalianproduct.php">
                <input type="hidden" name="iddo" value="<?= htmlspecialchars($iddo); ?>">
+               <input type="hidden" name="idso" value="<?= htmlspecialchars($idso); ?>">
                <div class="row">
                   <div class="col-8">
                      <div class="card">
@@ -153,6 +154,8 @@ if ($resulttally) {
                   </div>
                </div>
                <div class="col">
+                  <a href="approvedo.php?iddo=<?= $iddo ?>" class="btn btn-warning">Cancel</a>
+
                   <button type="submit" class="btn btn-primary">Proses Pengembalian <i class="fas fa-arrow-circle-right"></i></button>
                </div>
             </form>

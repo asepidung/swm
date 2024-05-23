@@ -17,7 +17,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$id = $_GET['id'];
+$iditem = $_GET['id'];
 $idusers = $_SESSION['idusers'];
 
 // Fetch data from the stock table
@@ -25,7 +25,7 @@ $sql = "SELECT s.*, b.nmbarang, g.nmgrade
         FROM stock s
         JOIN barang b ON s.idbarang = b.idbarang
         JOIN grade g ON s.idgrade = g.idgrade
-        WHERE s.idbarang = $id
+        WHERE s.idbarang = $iditem
         ORDER BY s.pod";
 
 $result = $conn->query($sql);
@@ -110,7 +110,7 @@ $conn->close();
                           </td>
                           <?php if ($idusers == 1 or $idusers == 2) { ?>
                             <td>
-                              <a href="deletethis.php?id=<?= $row['id']; ?>" class="text-info" onclick="return confirm('Apakah Anda Asep Idung?')">
+                              <a href="deletethis.php?id=<?= $row['id']; ?>&iditem=<?= $iditem; ?>" class="text-info" onclick="return confirm('Apakah Anda Asep Idung?')">
                                 <i class="far fa-times-circle"></i>
                               </a>
                             </td>

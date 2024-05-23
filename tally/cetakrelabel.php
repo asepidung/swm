@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </span>
             </td>
             <td colspan="2" rowspan="5" align="center" valign="middle">
-               <img src=" ../dist/img/hi2.svg" alt="HALAL" height="100" align="absmiddle">
+               <img src=" ../dist/img/halal.png" alt="HALAL" height="100" align="absmiddle">
             </td>
          </tr>
          <tr>
@@ -102,7 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <strong><i><?= $pcs; ?></i></strong>
+               <?php if ($pcs > 0) { ?>
+                  <strong><i><?= $pcs . "-Pcs"; ?></i></strong>
+               <?php } ?>
             </td>
          </tr>
          <tr>
@@ -143,11 +145,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          <tr>
             <td height="20" colspan="2">
                <span style="color: #000000; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <strong>KEEP CHILL / FROZEN</strong>
+                  <strong>
+                     <?php
+                     if ($idgrade == 1 or $idgrade == 3) {
+                        echo "KEEP CHILL 0°C";
+                     } else {
+                        echo "KEEP FROZEN -18°C";
+                     }
+                     ?>
+                  </strong>
                </span>
             </td>
             <td style="font-size: 10px; text-align: center; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               NO. 01011263450821<br>NKV CS-3201170-027
+               ID00110015321510124<br>RPHR 3201170-027
             </td>
          </tr>
          <tr>

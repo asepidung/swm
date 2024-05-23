@@ -34,6 +34,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
          <div class="row">
             <div class="col mt-3">
                <form method="POST" action="prosesapprovedo.php">
+                  <input type="hidden" name="iddo" value="<?= $iddo ?>">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
