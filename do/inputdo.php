@@ -28,6 +28,13 @@ if (isset($_POST['submit'])) {
    if ($stmt_do->execute()) {
       // Eksekusi berhasil
       $last_id = $stmt_do->insert_id;
+
+      // Update tabel tally kolom stat menjadi 'DO'
+      $query_update_tally = "UPDATE tally SET stat = 'DO' WHERE idtally = ?";
+      $stmt_update_tally = $conn->prepare($query_update_tally);
+      $stmt_update_tally->bind_param("i", $idtally);
+      $stmt_update_tally->execute();
+      $stmt_update_tally->close();
    } else {
       // Eksekusi gagal, tampilkan pesan kesalahan
       echo "Error: " . $stmt_do->error;

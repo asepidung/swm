@@ -153,6 +153,7 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                         </div>
                         <div class="row">
                            <div class="col-3">
+                              <!-- <a class="btn btn-block btn-danger" href="#">Rejections</a> -->
                               <a class="btn btn-block btn-danger" href="tolakan.php?id=<?= $row['idso'] ?>&iddo=<?= $row['iddo'] ?>">Rejections</a>
                            </div>
                            <div class="col-1">

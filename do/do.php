@@ -32,7 +32,8 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                </form>
             </div>
             <div class="col-2">
-               <a href="../tally/" class="btn btn-sm btn-outline-success float-right"><i class="fas fa-eye"></i> List Taly</a>
+               <!-- <a href="../tally/" class="btn btn-sm btn-outline-success float-right"><i class="fas fa-eye"></i> List Taly</a> -->
+               <a href="draftdo.php" class="btn btn-block btn-sm btn-primary">Draft</a>
             </div>
          </div>
       </div>

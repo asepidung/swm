@@ -479,6 +479,7 @@ CREATE TABLE tally (
   deliverydate DATE,
   idcustomer INT,
   po VARCHAR (30),
+  stat VARCHAR (10),
   creatime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (idso) REFERENCES salesorder (idso),
   FOREIGN KEY (idcustomer) REFERENCES customers (idcustomer)
