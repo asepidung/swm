@@ -75,18 +75,27 @@ $sonumber = $row['sonumber'];
                                  </div>
                               </div>
                            </div>
-                           <div class=" col-2">
+                           <div class=" col-3">
                               <div class="form-group">
-                                 <input type="text" class="form-control" name="driver" id="driver">
+                                 <input type="text" class="form-control" name="driver" id="driver" placeholder="Driver">
                               </div>
                            </div>
-                           <div class="col-2">
+                           <div class="col-4">
                               <div class="form-group">
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="plat" id="plat" placeholder="Police Number">
                                  </div>
                               </div>
                            </div>
+                           <div class="col-3">
+                              <div class="form-group">
+                                 <div class="input-group">
+                                    <input type="text" class="form-control" name="sealnumb" id="sealnumb" value="<?= $row['sealnumb']; ?>">
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
                            <div class="col">
                               <div class="form-group">
                                  <div class="input-group">

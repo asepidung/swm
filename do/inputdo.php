@@ -19,12 +19,13 @@ if (isset($_POST['submit'])) {
    $status = "Unapproved";
    $note = $_POST['note'];
    $idso = $_POST['idso'];
+   $sealnumb = $_POST['sealnumb'];
    $idtally = $_POST['idtally'];
    $idusers = $_SESSION['idusers'];
 
-   $query_do = "INSERT INTO do (donumber, idso, idtally, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+   $query_do = "INSERT INTO do (donumber, idso, idtally, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers, sealnumb) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);
-   $stmt_do->bind_param("siisissssidsi", $donumber, $idso, $idtally, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers);
+   $stmt_do->bind_param("siisissssidsis", $donumber, $idso, $idtally, $deliverydate, $idcustomer, $po, $driver, $plat, $note, $xbox, $xweight, $status, $idusers, $sealnumb);
    if ($stmt_do->execute()) {
       // Eksekusi berhasil
       $last_id = $stmt_do->insert_id;

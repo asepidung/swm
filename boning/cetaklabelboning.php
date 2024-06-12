@@ -107,7 +107,7 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
          </tr>
          <tr>
             <td height="20" style="font-style: normal; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'Cube roll') !== false || strpos($nmbarang, 'Operib') !== false)) { ?><strong><i>Tenderstreach</i></strong>
+               <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'CUBEROLL') !== false || strpos($nmbarang, 'OPERIB') !== false)) { ?><strong><i>Tenderstreach</i></strong>
                <?php } else { ?>
                   &nbsp;
                <?php } ?>

@@ -58,6 +58,11 @@ $row = mysqli_fetch_assoc($result);
                <td>:</td>
                <th><?= $row['plat']; ?></th>
             </tr>
+            <tr>
+               <td>Seal Number</td>
+               <td>:</td>
+               <th><?= $row['sealnumb']; ?></th>
+            </tr>
          </table>
       </div>
       <!-- <div class="col"></div> -->

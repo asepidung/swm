@@ -104,10 +104,10 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td></td>
       <td></td>
     </tr>
-    <tr height="30px">
-      <td width="12%"></td>
-      <td width="2%"></td>
-      <td width="30%"></td>
+    <tr>
+      <td width="12%">Seal Number</td>
+      <td width="2%" align="right">:</td>
+      <td width="30%"> <?= $row_do['sealnumb']; ?></td>
       <td width="12%"></td>
       <td width="2%"></td>
     </tr>
