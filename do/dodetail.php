@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit;
 }
 require "../konak/conn.php";
 include "../header.php";
@@ -39,15 +40,30 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                   <!-- /.card-header -->
                   <div class="card-body">
                      <?php
+                     // Query yang diupdate
                      $query = "SELECT i.iddo, c.nama_customer, i.deliverydate, i.donumber, i.po,
-                     b.nmbarang, id.weight, id.notes
-                     FROM do i
-                     INNER JOIN customers c ON i.idcustomer = c.idcustomer
-                     LEFT JOIN dodetail id ON i.iddo = id.iddo
-                     LEFT JOIN barang b ON id.idbarang = b.idbarang
-                     WHERE i.deliverydate BETWEEN '$awal' AND '$akhir'
-                     ORDER BY i.iddo DESC";  // Urutkan berdasarkan iddo
-                     $result = $conn->query($query);
+                          b.nmbarang, id.weight AS do_weight, id.notes,
+                          s.sonumber,
+                          (
+                              SELECT weight
+                              FROM salesorderdetail sod
+                              WHERE sod.idbarang = id.idbarang AND sod.idso = s.idso
+                              LIMIT 1
+                          ) AS so_weight
+                  FROM do i
+                  INNER JOIN customers c ON i.idcustomer = c.idcustomer
+                  LEFT JOIN dodetail id ON i.iddo = id.iddo
+                  LEFT JOIN barang b ON id.idbarang = b.idbarang
+                  LEFT JOIN salesorder s ON i.idso = s.idso
+                  WHERE i.deliverydate BETWEEN ? AND ?
+                  ORDER BY i.iddo DESC";
+                     $stmt = $conn->prepare($query);
+                     if ($stmt === false) {
+                        die('Prepare error: ' . htmlspecialchars($conn->error));
+                     }
+                     $stmt->bind_param("ss", $awal, $akhir);
+                     $stmt->execute();
+                     $result = $stmt->get_result();
                      ?>
                      <!-- Bagian HTML -->
                      <table id="example1" class="table table-bordered table-striped table-sm">
@@ -55,11 +71,13 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                            <tr>
                               <th>#</th>
                               <th>Customer</th>
-                              <th>Tgl do</th>
+                              <th>No SO</th>
+                              <th>Tgl Kirim</th>
                               <th>No DO</th>
                               <th>PO</th>
                               <th>Barang</th>
-                              <th>Weight</th>
+                              <th>SO</th>
+                              <th>Qty</th>
                               <th>Notes</th>
                            </tr>
                         </thead>
@@ -69,24 +87,25 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                            while ($row = $result->fetch_assoc()) { ?>
                               <tr class="text-right">
                                  <td class="text-center"> <?= $row_number; ?> </td>
-                                 <td class="text-left"> <?= $row["nama_customer"]; ?> </td>
-                                 <td class="text-center"> <?= $row["deliverydate"]; ?> </td>
-                                 <td class="text-center"> <?= $row["donumber"]; ?> </td>
-                                 <td class="text-left"> <?= $row["po"]; ?> </td>
-                                 <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
-                                 <td> <?= number_format($row["weight"], 2); ?> </td>
-                                 <td class="text-left"> <?= $row["notes"]; ?> </td>
+                                 <td class="text-left"> <?= htmlspecialchars($row["nama_customer"]); ?> </td>
+                                 <td class="text-center"><?= htmlspecialchars($row["sonumber"]); ?></td>
+                                 <td class="text-center"> <?= htmlspecialchars(date('d-M-Y', strtotime($row["deliverydate"]))); ?> </td>
+                                 <td class="text-center"> <?= htmlspecialchars($row["donumber"]); ?> </td>
+                                 <td class="text-left"> <?= htmlspecialchars($row["po"]); ?> </td>
+                                 <td class="text-left"> <?= htmlspecialchars($row["nmbarang"]); ?> </td>
+                                 <td class="text-right"> <?= number_format($row["so_weight"], 2); ?> </td>
+                                 <td> <?= number_format($row["do_weight"], 2); ?> </td>
+                                 <td class="text-left"> <?= htmlspecialchars($row["notes"]); ?> </td>
                               </tr>
                            <?php $row_number++;
                            }
                            ?>
                         </tbody>
                      </table>
-
                   </div>
                   <!-- /.card-body -->
                </div>
-               <!-- /.card -->
+
             </div>
             <!-- /.col -->
          </div>
@@ -104,4 +123,5 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 </script>
 <?php
 // require "../footnote.php";
-include "../footer.php" ?>
+include "../footer.php";
+?>

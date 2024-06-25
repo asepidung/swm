@@ -138,7 +138,6 @@ $sonumber = $row['sonumber'];
                            WHERE idtally = '$idtally'
                            GROUP BY tallydetail.idbarang, barang.nmbarang";
                            $result_tallydetail = mysqli_query($conn, $query_tallydetail);
-
                            while ($row_tallydetail = mysqli_fetch_assoc($result_tallydetail)) {
                               if ($row_tallydetail['total_weight'] > 0) {
                            ?>
