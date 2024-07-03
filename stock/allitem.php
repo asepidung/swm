@@ -36,6 +36,7 @@ $result = $conn->query($sql);
                            <thead class="text-center">
                               <tr>
                                  <th>#</th>
+                                 <th>Barcode</th>
                                  <th>Item</th>
                                  <th>Grade</th>
                                  <th>Qty</th>
@@ -57,6 +58,7 @@ $result = $conn->query($sql);
                               ?>
                                     <tr>
                                        <td class="text-center"><?= $no; ?></td>
+                                       <td class="text-center"><?= $row['kdbarcode']; ?></td>
                                        <td><?= $row['nmbarang']; ?></td>
                                        <td class="text-center"><?= $row['nmgrade']; ?></td>
                                        <td class="text-right"><?= $row['qty']; ?></td>

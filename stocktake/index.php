@@ -62,6 +62,12 @@ include "../mainsidebar.php";
                                     <a href="#" class="btn btn-sm btn-primary" onclick="confirmStockIn(<?= $tampil['idst']; ?>)">
                                        <i class="fas fa-upload"></i>
                                     </a>
+                                    <a href="editst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-warning">
+                                       <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="deletest.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
+                                       <i class="fas fa-trash"></i>
+                                    </a>
                                  </td>
                               </tr>
                            <?php $no++;

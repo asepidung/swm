@@ -2,16 +2,19 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit;
 }
 require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+
 $iddo = isset($_GET['iddo']) ? intval($_GET['iddo']) : 0;
 if ($iddo <= 0) {
    die("ID DO tidak valid.");
 }
-$querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.idsegment, salesorder.sonumber
+
+$querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.idsegment, salesorder.sonumber, do.idtally
             FROM do
             INNER JOIN customers ON do.idcustomer = customers.idcustomer
             INNER JOIN salesorder ON do.idso = salesorder.idso
@@ -19,13 +22,18 @@ $querydo = "SELECT do.*, customers.nama_customer, customers.catatan, segment.ids
             WHERE do.iddo = $iddo";
 $resultdo = mysqli_query($conn, $querydo);
 $row = mysqli_fetch_assoc($resultdo);
+if (!$row) {
+   die("Data tidak ditemukan.");
+}
 $sonumber = $row['sonumber'];
+$idtally = $row['idtally'];
 
-$querydodetail = "SELECT dodetail.*, barang.nmbarang, barang.kdbarang
-                  FROM dodetail
-                  INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-                  WHERE dodetail.iddo = $iddo";
-$resultdodetail = mysqli_query($conn, $querydodetail);
+$query_tallydetail = "SELECT tallydetail.idbarang, barang.nmbarang, SUM(tallydetail.weight) as total_weight, COUNT(tallydetail.weight) as total_box
+                      FROM tallydetail
+                      INNER JOIN barang ON tallydetail.idbarang = barang.idbarang
+                      WHERE idtally = '$idtally'
+                      GROUP BY tallydetail.idbarang, barang.nmbarang";
+$result_tallydetail = mysqli_query($conn, $query_tallydetail);
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -51,7 +59,6 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  <label>Customer </label>
                                  <div class="input-group">
                                     <input type="hidden" name="idcustomer" value="<?= $row['idcustomer'] ?>">
-                                    <!-- <input type="hidden" name="alamat" value="<?= $row['alamat1'] ?>"> -->
                                     <input type="text" class="form-control" value="<?= $row['nama_customer'] ?>" readonly>
                                  </div>
                               </div>
@@ -117,34 +124,34 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                                  </div>
                               </div>
                            </div>
-                           <?php while ($rowdodetail = mysqli_fetch_assoc($resultdodetail)) { ?>
+                           <?php while ($row_tallydetail = mysqli_fetch_assoc($result_tallydetail)) { ?>
                               <div class="row mt-n2">
                                  <div class="col-3">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="hidden" name="idbarang[]" value="<?= $rowdodetail['idbarang'] ?>">
-                                          <input type="text" class="form-control" value="<?= $rowdodetail['nmbarang'] ?>" readonly>
+                                          <input type="hidden" name="idbarang[]" value="<?= $row_tallydetail['idbarang'] ?>">
+                                          <input type="text" class="form-control" value="<?= $row_tallydetail['nmbarang'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col-1">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" name="box[]" class="form-control text-center" value="<?= $rowdodetail['box'] ?>" required>
+                                          <input type="text" name="box[]" class="form-control text-center" value="<?= $row_tallydetail['total_box'] ?>" required>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" name="weight[]" class="form-control text-right" value="<?= $rowdodetail['weight'] ?>" required>
+                                          <input type="text" name="weight[]" class="form-control text-right" value="<?= $row_tallydetail['total_weight'] ?>" required>
                                        </div>
                                     </div>
                                  </div>
                                  <div class="col">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" name="notes[]" class="form-control" placeholder="<?= $rowdodetail['notes'] ?>">
+                                          <input type="text" name="notes[]" class="form-control" placeholder="Notes">
                                        </div>
                                     </div>
                                  </div>
@@ -153,7 +160,6 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                         </div>
                         <div class="row">
                            <div class="col-3">
-                              <!-- <a class="btn btn-block btn-danger" href="#">Rejections</a> -->
                               <a class="btn btn-block btn-danger" href="tolakan.php?id=<?= $row['idso'] ?>&iddo=<?= $row['iddo'] ?>">Rejections</a>
                            </div>
                            <div class="col-1">
@@ -173,16 +179,10 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
                   </div>
                </form>
             </div>
-            <!-- /.card -->
          </div>
-         <!-- /.col -->
       </div>
-      <!-- /.row -->
-      <!-- /.container-fluid -->
    </section>
-   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 
 <script>
    function calculateTotal() {
@@ -200,15 +200,12 @@ $resultdodetail = mysqli_query($conn, $querydodetail);
 
       document.getElementById("xbox").value = totalBox;
       document.getElementById("xweight").value = totalWeight.toFixed(2);
-      // Aktifkan tombol Submit setelah mengklik Calculate
       document.getElementById("submit-btn").disabled = false;
    }
 
-   // Attach click event to the Calculate button
    const calculateBtn = document.getElementById("calculate-btn");
    calculateBtn.addEventListener("click", calculateTotal);
 </script>
 <?php
-// require "../footnotes.php";
 include "../footer.php";
 ?>

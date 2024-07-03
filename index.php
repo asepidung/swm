@@ -36,6 +36,16 @@ include "kebutuhanindex.php";
    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
    <!-- summernote -->
    <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+   <style>
+      body {
+         font-size: 13px;
+         /* Sesuaikan dengan ukuran font yang diinginkan */
+      }
+
+      .fas {
+         font-size: 0.85em;
+      }
+   </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

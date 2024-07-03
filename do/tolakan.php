@@ -155,7 +155,6 @@ if ($resulttally) {
                </div>
                <div class="col">
                   <a href="approvedo.php?iddo=<?= $iddo ?>" class="btn btn-warning">Cancel</a>
-
                   <button type="submit" class="btn btn-primary">Proses Pengembalian <i class="fas fa-arrow-circle-right"></i></button>
                </div>
             </form>
