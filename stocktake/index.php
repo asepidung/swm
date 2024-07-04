@@ -48,27 +48,34 @@ include "../mainsidebar.php";
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['tglst'])) ?></td>
                                  <td class="text-center"><?= $tampil['nost'] ?></td>
                                  <td class="text-left"><?= $tampil['note'] ?></td>
-
                                  <td class="text-center">
-                                    <a href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready" class="btn btn-sm btn-warning">
-                                       <i class="fas fa-barcode"></i>
-                                    </a>
-                                    <a href="lihatst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-success">
-                                       <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="printst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-secondary">
-                                       <i class="fas fa-print"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-primary" onclick="confirmStockIn(<?= $tampil['idst']; ?>)">
-                                       <i class="fas fa-upload"></i>
-                                    </a>
-                                    <a href="editst.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-warning">
-                                       <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="deletest.php?id=<?= $tampil['idst']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
-                                       <i class="fas fa-trash"></i>
-                                    </a>
+                                    <div class="btn-group">
+                                       <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          Pilih Proses
+                                       </button>
+                                       <div class="dropdown-menu">
+                                          <a class="dropdown-item" href="starttaking.php?id=<?= $tampil['idst']; ?>&stat=ready">
+                                             <i class="fas fa-barcode"></i> Start Taking
+                                          </a>
+                                          <a class="dropdown-item" href="lihatst.php?id=<?= $tampil['idst']; ?>">
+                                             <i class="fas fa-eye"></i> View
+                                          </a>
+                                          <a class="dropdown-item" href="printst.php?id=<?= $tampil['idst']; ?>">
+                                             <i class="fas fa-print"></i> Print
+                                          </a>
+                                          <a class="dropdown-item" href="#" onclick="confirmStockIn(<?= $tampil['idst']; ?>)">
+                                             <i class="fas fa-upload"></i> Confirm Stock In
+                                          </a>
+                                          <a class="dropdown-item" href="editst.php?id=<?= $tampil['idst']; ?>">
+                                             <i class="fas fa-edit"></i> Edit
+                                          </a>
+                                          <a class="dropdown-item" href="deletest.php?id=<?= $tampil['idst']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
+                                             <i class="fas fa-trash"></i> Delete
+                                          </a>
+                                       </div>
+                                    </div>
                                  </td>
+
                               </tr>
                            <?php $no++;
                            } ?>

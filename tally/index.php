@@ -92,7 +92,7 @@ include "../mainsidebar.php";
                                              <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
                                                 <i class="fas fa-tasks"></i>
                                              </a>
-                                             <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve" onclick="window.location.href='approvetally.php?id=<?= $tampil['idtally'] ?>'">
+                                             <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve" href="approvetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>">
                                                 <i class="far fa-calendar-check"></i>
                                              </a>
                                              <a href="deletetally.php?id=<?= $tampil['idtally']; ?>&idso=<?= $idso ?>" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="return confirm('Semua barang yang ada di tally akan kembali ke stock, apa anda yakin ?')">
@@ -107,7 +107,7 @@ include "../mainsidebar.php";
                                              <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
                                                 <i class="fas fa-tasks"></i>
                                              </a>
-                                             <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Unapprove" onclick="window.location.href='unapprovetally.php?id=<?= $tampil['idtally'] ?>'">
+                                             <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Unapprove" href="unapprovetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>'">
                                                 <i class="fas fa-calendar-times"></i>
                                              </a>
                                              <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approved">

@@ -9,6 +9,7 @@ require "../konak/conn.php";
 
 if (isset($_GET['id'])) {
    $idtally = intval($_GET['id']);
+   $idso = intval($_GET['idso']);
 
    // Jika form sudah disubmit, lanjutkan eksekusi PHP
    if (isset($_POST['submit'])) {
@@ -24,9 +25,22 @@ if (isset($_GET['id'])) {
       $stmt->bind_param("ssi", $status, $sealnumb, $idtally);
 
       if ($stmt->execute()) {
-         // Redirect ke halaman index.php setelah update berhasil
-         header("location: index.php");
-         exit();
+         // Prepare statement untuk update tabel salesorder
+         $stmt_so = $conn->prepare("UPDATE salesorder SET progress = 'DRAFT' WHERE idso = ?");
+         if (!$stmt_so) {
+            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+         }
+
+         $stmt_so->bind_param("i", $idso);
+
+         if ($stmt_so->execute()) {
+            // Redirect ke halaman index.php setelah update berhasil
+            header("location: index.php");
+            exit();
+         } else {
+            echo "Error: " . $stmt_so->error;
+            exit();
+         }
       } else {
          echo "Error: " . $stmt->error;
          exit();

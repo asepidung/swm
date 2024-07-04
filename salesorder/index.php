@@ -67,11 +67,11 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer, users.fullname
-                              FROM salesorder 
-                              INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
-                              INNER JOIN users ON salesorder.idusers = users.idusers
-                              WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
-                              ORDER BY salesorder.idso DESC");
+            FROM salesorder 
+            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
+            INNER JOIN users ON salesorder.idusers = users.idusers
+            WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
+            ORDER BY salesorder.idso DESC");
 
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
@@ -89,7 +89,9 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <?php } elseif ($progress == "On Process") { ?>
                                     <td class="text-info"><i class="fas fa-spinner fa-pulse"></i> On Process</td>
                                  <?php } elseif ($progress == "On Delivery") { ?>
-                                    <td style="color: #92079c;"></i><i class="fas fa-truck"></i> On Delivery</td>
+                                    <td style="color: #92079c;"><i class="fas fa-truck"></i> On Delivery</td>
+                                 <?php } elseif ($progress == "DRAFT") { ?>
+                                    <td class="text-secondary"><i class="fas fa-pencil-alt"></i> Draft</td>
                                  <?php } else { ?>
                                     <td class="text-secondary"><i class="fas fa-clock"></i> Waiting</td>
                                  <?php } ?>
@@ -142,6 +144,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                            } ?>
                         </tbody>
                      </table>
+
                   </div>
                   <!-- /.card-body -->
                </div>
