@@ -1,0 +1,63 @@
+<?php
+session_start();
+if (!isset($_SESSION['login'])) {
+   header("location: ../verifications/login.php");
+}
+require "../konak/conn.php";
+include "../header.php";
+include "../navbar.php";
+include "../mainsidebar.php";
+?>
+<div class="content-wrapper">
+   <section class="content">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-6">
+               <div class="card mt-3">
+                  <div class="card-body">
+                     <table class="table table-bordered table-striped table-sm">
+                        <thead class="text-center">
+                           <tr class="text-center">
+                              <th style="width: 16px;">#</th>
+                              <th>Userid</th>
+                              <th>Nama Lengkap</th>
+                              <th>Status</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <?php
+                           $no = 1;
+                           $ambildata = mysqli_query($conn, "SELECT * FROM users");
+                           while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $status = $tampil['status']; ?>
+                              <tr>
+                                 <td class="text-center"><?= $no; ?></td>
+                                 <td><?= $tampil['userid']; ?></td>
+                                 <td><?= $tampil['fullname']; ?></td>
+                                 <td class="text-center">
+                                    <?php
+                                    if ($status == "AKTIF") { ?>
+                                       <a href="nonaktifkan.php?id=<?= $tampil['idusers'] ?>"><?= $status; ?></a>
+                                    <?php } else { ?>
+                                       <a href="aktifkan.php?id=<?= $tampil['idusers'] ?>" class="text-danger"><?= $status; ?></a>
+                                    <?php } ?>
+                                 </td>
+                              </tr>
+                           <?php $no++;
+                           } ?>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+</div>
+
+<script>
+   document.title = "Data User";
+</script>
+<?php
+include "../footer.php";
+?>
