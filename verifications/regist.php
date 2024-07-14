@@ -35,8 +35,7 @@ require "../konak/conn.php";
 
       <div class="card">
          <div class="card-body register-card-body">
-            <p class="login-box-msg">Regist New User/Employee</p>
-
+            <p class="login-box-msg">Regist New User</p>
             <form action="newuser.php" method="post">
                <div class="input-group mb-3">
                   <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Nama Lengkap" required>
@@ -68,6 +67,41 @@ require "../konak/conn.php";
                      <div class="input-group-text">
                         <span class="fas fa-lock"></span>
                      </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label>Pilih Menu yang Bisa Diakses:</label><br>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="produksi" value="produksi">
+                     <label class="custom-control-label" for="produksi">Produksi</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="warehouse" value="warehouse">
+                     <label class="custom-control-label" for="warehouse">Warehouse</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="distributions" value="distributions">
+                     <label class="custom-control-label" for="distributions">Distributions</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="purchase_module" value="purchase_module">
+                     <label class="custom-control-label" for="purchase_module">Purchase Module</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="sales" value="sales">
+                     <label class="custom-control-label" for="sales">Sales</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="finance" value="finance">
+                     <label class="custom-control-label" for="finance">Finance</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="data_report" value="data_report">
+                     <label class="custom-control-label" for="data_report">Data Report</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="master_data" value="master_data">
+                     <label class="custom-control-label" for="master_data">Master Data</label>
                   </div>
                </div>
                <div class="row">
@@ -105,5 +139,6 @@ require "../konak/conn.php";
    <!-- AdminLTE App -->
    <script src="../dist/js/adminlte.min.js"></script>
 </body>
+
 
 </html>

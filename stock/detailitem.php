@@ -56,7 +56,7 @@ $conn->close();
                       <th>P.O.D</th>
                       <th>Umur</th>
                       <th>ORIGIN</th>
-                      <?php if ($idusers == 1) { ?>
+                      <?php if ($idusers == 1 or $idusers == 2) { ?>
                         <th>
                           Hapus
                         </th>

@@ -32,12 +32,14 @@ include "../mainsidebar.php";
                               $status = $tampil['status']; ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td><?= $tampil['userid']; ?></td>
+                                 <td>
+                                    <a href="edituser.php?id=<?= $tampil['idusers'] ?>"><?= $tampil['userid']; ?></a>
+                                 </td>
                                  <td><?= $tampil['fullname']; ?></td>
                                  <td class="text-center">
                                     <?php
                                     if ($status == "AKTIF") { ?>
-                                       <a href="nonaktifkan.php?id=<?= $tampil['idusers'] ?>"><?= $status; ?></a>
+                                       <a href="nonaktifkan.php?id=<?= $tampil['idusers'] ?>" class="text-success"><?= $status; ?></a>
                                     <?php } else { ?>
                                        <a href="aktifkan.php?id=<?= $tampil['idusers'] ?>" class="text-danger"><?= $status; ?></a>
                                     <?php } ?>

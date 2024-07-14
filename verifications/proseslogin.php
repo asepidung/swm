@@ -11,6 +11,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
    if (mysqli_num_rows($result) == 1) {
       $row = mysqli_fetch_assoc($result);
+
+      // Memeriksa status akun
+      $status = $row['status'];
+
+      if ($status == 'INAKTIF') {
+         // Jika status INAKTIF, tampilkan pesan dan hentikan proses login
+         echo "<script>alert('Akun Anda dinonaktifkan. Silahkan hubungi administrator.'); window.location='login.php';</script>";
+         exit();
+      }
+
+      // Lanjutkan dengan memeriksa kecocokan password
       $hashedPassword = $row['passuser'];
       $idusers = $row['idusers']; // Ambil idusers dari database
 
