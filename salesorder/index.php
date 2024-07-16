@@ -21,27 +21,32 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
    <!-- /.content-header -->
    <div class="content-header">
       <div class="container-fluid">
-         <div class="row">
-            <div class="col-1">
-               <a href="newso.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+         <div class="row mb-2">
+            <div class="col-12 col-md-2 mb-2">
+               <a href="newso.php">
+                  <button type="button" class="btn btn-sm btn-outline-primary btn-block"><i class="fas fa-plus"></i> Baru</button>
+               </a>
             </div>
-            <div class="col-2">
+            <div class="col-12 col-md-4 mb-2">
                <form method="GET" action="">
-                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
-            </div>
-            <div class="col-2">
-               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
-            </div>
-            <div class="col">
-               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+                  <div class="input-group">
+                     <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+                     <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+                  </div>
                </form>
             </div>
-            <div class="col-1 float-right">
-               <a href="salesorderdetail.php"><button type="button" class="btn btn-sm btn-outline-success"><i class="fas fa-eye"></i> Detail</button></a>
+            <div class="col-12 col-md-2 mb-2">
+               <button type="submit" class="btn btn-sm btn-primary btn-block" name="search"><i class="fas fa-search"></i></button>
             </div>
-         </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+            <div class="col-12 col-md-2 mb-2">
+               <a href="salesorderdetail.php">
+                  <button type="button" class="btn btn-sm btn-outline-success btn-block"><i class="fas fa-eye"></i> Detail</button>
+               </a>
+            </div>
+         </div>
+      </div>
    </div>
+
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">

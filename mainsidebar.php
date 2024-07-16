@@ -327,12 +327,14 @@ $role = mysqli_fetch_assoc($result);
                   <p>Segment</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="../user/user.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Users</p>
-                </a>
-              </li>
+              <?php if ($idusers == 1) { ?>
+                <li class="nav-item">
+                  <a href="../user/user.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Users</p>
+                  </a>
+                </li>
+              <?php } ?>
             </ul>
           </li>
         <?php endif; ?>
