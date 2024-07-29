@@ -50,6 +50,7 @@ $conn->close();
                       <th>#</th>
                       <th>Barcode</th>
                       <th>Item Desc</th>
+                      <th>Temp</th>
                       <th>Grade</th>
                       <th>Qty</th>
                       <th>Pcs</th>
@@ -82,7 +83,15 @@ $conn->close();
                           <td><?= $no; ?></td>
                           <td><?= $row['kdbarcode']; ?></td>
                           <td class="text-left"><?= $row['nmbarang']; ?></td>
-                          <td><?= $row['nmgrade']; ?></td>
+                          <td>
+                            <?php if ($row['nmgrade'] == "J01") {
+                              echo "CHILL";
+                            } else {
+                              echo "FROZEN";
+                            } ?>
+                          </td>
+                          <td class="text-center"><?= $row['nmgrade']; ?>
+                          </td>
                           <td class="text-right"><?= $row['qty']; ?></td>
                           <td><?= $row['pcs']; ?></td>
                           <td><?= date("d-M-y", strtotime($row['pod'])); ?></td>

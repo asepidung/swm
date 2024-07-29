@@ -7,6 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $queryMaxDate = "SELECT MAX(deliverydate) AS max_date FROM salesorder";
 $resultMaxDate = mysqli_query($conn, $queryMaxDate);
@@ -17,8 +18,6 @@ $maxDate = $rowMaxDate['max_date'];
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 ?>
 <div class="content-wrapper">
-   <!-- Content Header (Page header) -->
-   <!-- /.content-header -->
    <div class="content-header">
       <div class="container-fluid">
          <div class="row mb-2">
@@ -27,16 +26,16 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                   <button type="button" class="btn btn-sm btn-outline-primary btn-block"><i class="fas fa-plus"></i> Baru</button>
                </a>
             </div>
-            <div class="col-12 col-md-4 mb-2">
+            <div class="col-12 col-md-6 mb-2">
                <form method="GET" action="">
                   <div class="input-group">
                      <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
                      <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+                     <div class="input-group-append">
+                        <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+                     </div>
                   </div>
                </form>
-            </div>
-            <div class="col-12 col-md-2 mb-2">
-               <button type="submit" class="btn btn-sm btn-primary btn-block" name="search"><i class="fas fa-search"></i></button>
             </div>
             <div class="col-12 col-md-2 mb-2">
                <a href="salesorderdetail.php">
@@ -46,14 +45,11 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
          </div>
       </div>
    </div>
-
-   <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
             <div class="col-12">
                <div class="card">
-                  <!-- /.card-header -->
                   <div class="card-body">
                      <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
@@ -72,15 +68,13 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer, users.fullname
-            FROM salesorder 
-            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
-            INNER JOIN users ON salesorder.idusers = users.idusers
-            WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
-            ORDER BY salesorder.idso DESC");
-
+                           FROM salesorder 
+                           INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
+                           INNER JOIN users ON salesorder.idusers = users.idusers
+                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
+                           ORDER BY salesorder.idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
-
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -149,26 +143,20 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                            } ?>
                         </tbody>
                      </table>
-
                   </div>
-                  <!-- /.card-body -->
                </div>
-               <!-- /.card -->
             </div>
-            <!-- /.col -->
          </div>
-         <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
+
    </section>
-   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
+
 
 <script>
    // Mengubah judul halaman web
    document.title = "Sales Order List";
 </script>
 <?php
-// require "../footnote.php";
-include "../footer.php" ?>
+include "../footer.php";
+?>
