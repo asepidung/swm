@@ -14,7 +14,8 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row">
             <div class="col">
-               <a href="newgr.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a>
+               <!-- <a href="newgr.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Baru</button></a> -->
+               <a href="draft.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Draft</button></a>
             </div><!-- /.col -->
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -45,12 +46,14 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier FROM gr
+                           $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier, poproduct.idpoproduct FROM gr
+                           JOIN poproduct ON gr.idpo = poproduct.idpoproduct
                            JOIN supplier ON gr.idsupplier = supplier.idsupplier
                            ORDER BY grnumber DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idgr = $tampil['idgr'];
+                              $idpo = $tampil['idpoproduct'];
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -61,16 +64,16 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="grdetail.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-primary">
+                                    <a href="grdetail.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-primary">
                                        <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-success">
+                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-success">
                                        <i class="far fa-eye"></i>
                                     </a>
-                                    <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-warning">
+                                    <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning">
                                        <i class="far fa-edit"></i>
                                     </a>
-                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>&idpo=<?= $tampil['idpo']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                        <i class="far fa-trash-alt"></i>
                                     </a>
                                  </td>

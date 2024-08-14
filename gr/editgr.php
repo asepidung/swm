@@ -11,23 +11,23 @@ include "../navbar.php";
 include "../mainsidebar.php";
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0; // Mengamankan input id
-$query = "SELECT p.deliveryat, p.nopoproduct, s.nmsupplier, s.idsupplier, p.idpoproduct 
-FROM poproduct p 
-JOIN supplier s ON p.idsupplier = s.idsupplier 
-WHERE p.idpoproduct = $id";
-$result = mysqli_query($conn, $query);
+$query = "SELECT g.receivedate, g.idnumber, g.note, s.nmsupplier, s.idsupplier, p.nopoproduct, p.idpoproduct 
+FROM gr g 
+JOIN supplier s ON g.idsupplier = s.idsupplier 
+JOIN poproduct p ON g.idpo = p.idpoproduct
+WHERE g.idgr = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if (!$result) {
-   die("Query error: " . mysqli_error($conn));
-}
-
-if (mysqli_num_rows($result) == 0) {
+if ($result->num_rows == 0) {
    echo "<div class='alert alert-danger'>Data tidak ditemukan.</div>";
    include "../footer.php";
    exit();
 }
 
-$row = mysqli_fetch_assoc($result);
+$row = $result->fetch_assoc();
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -35,15 +35,16 @@ $row = mysqli_fetch_assoc($result);
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 mt-3">
-               <form method="POST" action="inputgr.php">
+               <form method="POST" action="updategr.php">
                   <div class="card">
                      <div class="card-body">
                         <div class="row">
                            <div class="col-12 col-md-6">
+                              <input type="hidden" name="idgr" value="<?= htmlspecialchars($id) ?>">
                               <div class="form-group">
-                                 <label for="deliveryat">Receiving Date <span class="text-danger">*</span></label>
+                                 <label for="receivedate">Receiving Date <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="deliveryat" id="deliveryat" value="<?= htmlspecialchars($row['deliveryat']) ?>" required>
+                                    <input type="date" class="form-control" name="receivedate" id="receivedate" value="<?= htmlspecialchars($row['receivedate']) ?>" required>
                                  </div>
                               </div>
                            </div>
@@ -52,7 +53,6 @@ $row = mysqli_fetch_assoc($result);
                                  <label for="nmsupplier">Supplier Name <span class="text-danger">*</span></label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" value="<?= htmlspecialchars($row['nmsupplier']) ?>" required readonly>
-                                    <input type="hidden" name="idsupplier" id="idsupplier" value="<?= htmlspecialchars($row['idsupplier']) ?>">
                                  </div>
                               </div>
                            </div>
@@ -62,7 +62,7 @@ $row = mysqli_fetch_assoc($result);
                               <div class="form-group">
                                  <label for="idnumber">Supplier Transaction Number</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="idnumber" id="idnumber" placeholder="Biarkan Kosong Jika Tidak Ada">
+                                    <input type="text" class="form-control" name="idnumber" id="idnumber" value="<?= htmlspecialchars($row['idnumber']) ?>">
                                  </div>
                               </div>
                            </div>
@@ -71,7 +71,6 @@ $row = mysqli_fetch_assoc($result);
                                  <label for="nopoproduct">PO Number</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" value="<?= htmlspecialchars($row['nopoproduct']) ?>" readonly>
-                                    <input type="hidden" name="idpoproduct" id="idpoproduct" value="<?= htmlspecialchars($row['idpoproduct']) ?>">
                                  </div>
                               </div>
                            </div>
@@ -79,8 +78,9 @@ $row = mysqli_fetch_assoc($result);
                         <div class="row">
                            <div class="col-12">
                               <div class="form-group">
+                                 <label for="note">Note</label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Untuk BTB">
+                                    <input type="text" class="form-control" name="note" id="note" value="<?= htmlspecialchars($row['note']) ?>">
                                  </div>
                               </div>
                            </div>
@@ -89,44 +89,9 @@ $row = mysqli_fetch_assoc($result);
                   </div>
                   <div class="card">
                      <div class="card-body">
-                        <table class="table table-striped table-bordered table-sm">
-                           <thead>
-                              <tr>
-                                 <th>#</th>
-                                 <th>Item Descriptions</th>
-                                 <th>Order Quantity</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <?php
-                              $no = 1;
-
-                              // Query untuk mengambil data dari tabel poproductdetail berdasarkan idpoproduct
-                              $query = "SELECT pd.qty, b.nmbarang 
-                              FROM poproductdetail pd 
-                              JOIN barang b ON pd.idbarang = b.idbarang 
-                              WHERE pd.idpoproduct = $id";
-                              $ambildata = mysqli_query($conn, $query);
-
-                              // Mengecek apakah query berhasil dijalankan
-                              if (!$ambildata) {
-                                 die("Query error: " . mysqli_error($conn));
-                              }
-
-                              // Menampilkan data dari query
-                              while ($tampil = mysqli_fetch_assoc($ambildata)) { ?>
-                                 <tr>
-                                    <td class="text-center"><?= $no++; ?></td>
-                                    <td><?= htmlspecialchars($tampil['nmbarang']); ?></td>
-                                    <td class="text-right"><?= number_format($tampil['qty'], 2); ?></td>
-                                 </tr>
-                              <?php } ?>
-                           </tbody>
-                        </table>
-
                         <div class="row mt-2">
                            <div class="col-12">
-                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')">Proses GR</button>
+                              <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')"><i class="fas fa-paper-plane"></i> Update Data</button>
                            </div>
                         </div>
                      </div>
@@ -140,7 +105,7 @@ $row = mysqli_fetch_assoc($result);
 
 <script>
    // Mengubah judul halaman web
-   document.title = "New GR";
+   document.title = "Edit GR";
 </script>
 
 <?php

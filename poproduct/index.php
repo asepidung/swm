@@ -72,20 +72,28 @@ include "../mainsidebar.php";
                               <?php } ?>
                               <td><?= $tampil['note']; ?></td>
                               <td><?= $tampil['stat']; ?></td>
-                              <!-- <td><?= $tampil['fullname']; ?></td> -->
                               <td class="text-center">
-                                 <a href="printpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2">
-                                    <i class="fas fa-print text-primary"></i>
-                                 </a>
-                                 <a href="editpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2">
-                                    <i class="far fa-edit text-success"></i>
-                                 </a>
-                                 <!-- <a href="#" class="mx-auto p-2">
-                                    <i class="far fa-edit text-success"></i>
-                                 </a> -->
-                                 <a href="deletepoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="mx-auto p-2" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                    <i class="far fa-trash-alt text-danger"></i>
-                                 </a>
+                                 <?php if ($tampil['stat'] == 'Waiting') { ?>
+                                    <a href="printpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="btn btn-xs btn-primary">
+                                       <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="editpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="btn btn-xs btn-success">
+                                       <i class="far fa-edit"></i>
+                                    </a>
+                                    <a href="deletepoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                       <i class="far fa-trash-alt"></i>
+                                    </a>
+                                 <?php } else { ?>
+                                    <a href="printpoproduct.php?idpoproduct=<?= $tampil['idpoproduct']; ?>" class="btn btn-xs btn-primary">
+                                       <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-xs btn-secondary">
+                                       <i class="far fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-xs btn-secondary">
+                                       <i class="far fa-trash-alt"></i>
+                                    </a>
+                                 <?php  } ?>
                               </td>
                               </tr>
                            <?php $no++;

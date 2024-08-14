@@ -505,7 +505,7 @@ include "kebutuhanindex.php";
                   <?php endif; ?>
 
                   <li class="nav-item">
-                     <a href="logout.php" class="nav-link">
+                     <a href="verifications/logout.php" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>
                            LOGOUT
@@ -529,7 +529,7 @@ include "kebutuhanindex.php";
                            <p>Klik for Detail</p>
                         </div>
                         <div class="icon">
-                           <i class="ion ion-bag"></i>
+                           <i class="fas fa-cubes"></i>
                         </div>
                         <a href="stock/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
@@ -547,7 +547,7 @@ include "kebutuhanindex.php";
                            <p>Plan Delivery</p>
                         </div>
                         <div class="icon">
-                           <i class="ion ion-bag"></i>
+                           <i class="fas fa-truck"></i>
                         </div>
                         <a href="plandev/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
@@ -559,7 +559,7 @@ include "kebutuhanindex.php";
                            <p>Delivery Today</p>
                         </div>
                         <div class="icon">
-                           <i class="ion ion-stats-bars"></i>
+                           <i class="fas fa-truck-moving"></i>
                         </div>
                         <a href="do/dotoday.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
@@ -567,13 +567,13 @@ include "kebutuhanindex.php";
                   <div class="col-lg col-6">
                      <div class="small-box bg-warning">
                         <div class="inner">
-                           <h3><?= $unapproved; ?></h3>
-                           <p>DO Belum Approve</p>
+                           <h3><?= $kedatangan ?></h3>
+                           <p>Arrival Plans</p>
                         </div>
                         <div class="icon">
-                           <i class="ion ion-person-add"></i>
+                           <i class="fas fa-truck-loading"></i>
                         </div>
-                        <a href="do/unapproved.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="poproduct" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
                   </div>
                </div>

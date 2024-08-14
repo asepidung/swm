@@ -92,9 +92,8 @@ if (isset($_GET['idso'])) {
                         <div class="row">
                            <div class="col">
                               <div class="form-group">
-                                 <Label for="note">Catatan Penyiapan Pengiriman</Label>
                                  <div class="input-group">
-                                    <input type="text" class="form-control" name="note" id="note" placeholder="keterangan" value="<?php echo $data['note']; ?>">
+                                    <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Untuk Penyiapan Pengiriman" value="<?php echo $data['note']; ?>">
                                  </div>
                               </div>
                            </div>
@@ -117,7 +116,7 @@ if (isset($_GET['idso'])) {
                            $result = mysqli_query($conn, $query);
                            while ($row = mysqli_fetch_assoc($result)) {
                            ?>
-                              <div class="row mb-n2">
+                              <div class="row item-row mb-n2">
                                  <div class="col-3">
                                     <div class="form-group">
                                        <!-- <label for="idbarang">Product</label> -->
@@ -201,57 +200,55 @@ if (isset($_GET['idso'])) {
 
       // Baris item baru
       var newItemRow = document.createElement('div');
-      newItemRow.className = 'item-row';
+      newItemRow.className = 'row item-row mt-n2';
 
       // Konten baris item baru
       newItemRow.innerHTML = `
-                            <div class="row mt-n2">
-                              <div class="col-3">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <select class="form-control" name="idbarang[]" id="idbarang" required>
-                                          <option value="">--Pilih--</option>
-                                          <?php
-                                          $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                          $result = mysqli_query($conn, $query);
-                                          while ($row = mysqli_fetch_assoc($result)) {
-                                             $idbarang = $row['idbarang'];
-                                             $nmbarang = $row['nmbarang'];
-                                             echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                                          }
-                                          ?>
-                                       </select>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-2">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-2">
-                                 <div class="form-group">
-                                    <div class "input-group">
-                                       <input type="text" name="price[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-4">
-                                 <div class="form-group">
-                                    <div class="input-group">
-                                       <input type="text" name="notes[]" class="form-control">
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="col-1">
-                                 <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
-                                    <i class="fas fa-minus-circle"></i>
-                                 </button>
-                              </div>
-                           </div>
-`;
+         <div class="col-3">
+            <div class="form-group">
+               <div class="input-group">
+                  <select class="form-control" name="idbarang[]" id="idbarang" required>
+                     <option value="">--Pilih--</option>
+                     <?php
+                     $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                     $result = mysqli_query($conn, $query);
+                     while ($row = mysqli_fetch_assoc($result)) {
+                        $idbarang = $row['idbarang'];
+                        $nmbarang = $row['nmbarang'];
+                        echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                     }
+                     ?>
+                  </select>
+               </div>
+            </div>
+         </div>
+         <div class="col-2">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
+               </div>
+            </div>
+         </div>
+         <div class="col-2">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="price[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'price[]')">
+               </div>
+            </div>
+         </div>
+         <div class="col-4">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="notes[]" class="form-control">
+               </div>
+            </div>
+         </div>
+         <div class="col-1">
+            <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
+               <i class="fas fa-minus-circle"></i>
+            </button>
+         </div>
+      `;
       // Tambahkan baris item baru ke dalam container
       itemsContainer.appendChild(newItemRow);
    }
@@ -260,13 +257,14 @@ if (isset($_GET['idso'])) {
       var itemRow = button.closest('.item-row');
 
       // Hapus baris item
-      itemRow.remove();
+      if (itemRow) {
+         itemRow.remove();
+      }
    }
 
    // Mengubah judul halaman web
    document.title = "Edit Sales Order";
 </script>
-
 <?php
 include "../footer.php";
 ?>
