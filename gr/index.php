@@ -47,7 +47,7 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier, poproduct.idpoproduct FROM gr
-                           JOIN poproduct ON gr.idpo = poproduct.idpoproduct
+                           LEFT JOIN poproduct ON gr.idpo = poproduct.idpoproduct
                            JOIN supplier ON gr.idsupplier = supplier.idsupplier
                            ORDER BY grnumber DESC;
                            ");

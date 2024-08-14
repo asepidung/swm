@@ -32,7 +32,6 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                </form>
             </div>
             <div class="col-2">
-               <!-- <a href="../tally/" class="btn btn-sm btn-outline-success float-right"><i class="fas fa-eye"></i> List Taly</a> -->
                <a href="draftdo.php" class="btn btn-block btn-sm btn-primary">Draft</a>
             </div>
          </div>
@@ -56,16 +55,10 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                               <th>rQty</th>
                               <th>Catatan</th>
                               <th>Status</th>
-                              <th>Made By</th>
+                              <!-- <th>Made By</th> -->
                               <th>Actions</th>
                            </tr>
                         </thead>
-                        <?php
-                        $query_total_weight_keseluruhan = "SELECT SUM(xweight) AS total_weight_keseluruhan FROM do";
-                        $result_total_weight_keseluruhan = mysqli_query($conn, $query_total_weight_keseluruhan);
-                        $row_total_weight_keseluruhan = mysqli_fetch_assoc($result_total_weight_keseluruhan);
-                        $total_weight_keseluruhan = $row_total_weight_keseluruhan['total_weight_keseluruhan'];
-                        ?>
                         <tbody>
                            <?php
                            $no = 1;
@@ -101,51 +94,33 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                        echo $tampil['status'];
                                     } ?>
                                  </td>
-                                 <td class="text-center"><?= $tampil['fullname']; ?></td>
+                                 <!-- <td class="text-center"><?= $tampil['fullname']; ?></td> -->
                                  <td class="text-center">
-                                    <?php if ($tampil['status'] !== "Invoiced") { ?>
-                                       <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-success">
+                                    <div class="btn-group">
+                                       <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-success" title="Lihat">
                                           <i class="fas fa-eye"></i>
                                        </a>
-                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-primary">
+                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary" title="Cetak">
                                           <i class="fas fa-print"></i>
                                        </a>
-                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-warning">
+                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning" title="Edit">
                                           <i class="fas fa-edit"></i>
                                        </a>
-                                       <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-xs btn-danger">
-                                          <i class="fas fa-trash"></i>
-                                       </a>
-                                    <?php } else { ?>
-                                       <div class="row">
-                                          <div class="col">
-                                             <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-success">
-                                                <i class="fas fa-eye"></i>
-                                             </a>
-                                             <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-primary">
-                                                <i class="fas fa-print"></i>
-                                             </a>
-                                             <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-xs btn-warning">
-                                                <i class="fas fa-edit"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-xs btn-secondary">
-                                                <i class="fas fa-trash"></i>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    <?php } ?>
+                                       <?php if ($tampil['status'] !== "Invoiced") { ?>
+                                          <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-sm btn-danger" title="Hapus">
+                                             <i class="fas fa-trash"></i>
+                                          </a>
+                                       <?php } else { ?>
+                                          <button class="btn btn-sm btn-secondary" title="Tidak dapat dihapus" disabled>
+                                             <i class="fas fa-trash"></i>
+                                          </button>
+                                       <?php } ?>
+                                    </div>
                                  </td>
                               </tr>
                            <?php $no++;
                            } ?>
                         </tbody>
-                        <tfoot>
-                           <tr>
-                              <th class="text-right" colspan="5">SUBTOTAL</th>
-                              <th class="text-right"><?= number_format($total_weight_keseluruhan, 2); ?></th>
-                              <th colspan="5"></th>
-                           </tr>
-                        </tfoot>
                      </table>
                   </div>
                </div>

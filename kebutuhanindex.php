@@ -20,7 +20,7 @@ $result2 = mysqli_query($conn, $sql2);
 $row2 = mysqli_fetch_assoc($result2);
 $x = $row2['x'];
 
-$sql3 = "SELECT COUNT(*) AS kedatangan FROM poproduct WHERE deliveryat >= '$today'";
+$sql3 = "SELECT COUNT(*) AS kedatangan FROM poproduct WHERE stat ='Waiting' AND deliveryat >= '$today'";
 $result3 = mysqli_query($conn, $sql3);
 $row3 = mysqli_fetch_assoc($result3);
 $kedatangan = $row3['kedatangan'];
