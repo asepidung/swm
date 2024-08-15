@@ -29,6 +29,12 @@ if (!$result) {
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+   <style>
+      body {
+         font-family: Cambria, sans-serif;
+         font-size: 14px;
+      }
+   </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

@@ -69,6 +69,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                               ORDER BY iddo DESC;
                            ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
+                              $idso = $tampil['idso'];
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -88,8 +89,10 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
-                                          <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
+                                          <span class="text-success" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
                                        </a>
+                                    <?php } elseif ($tampil['status'] == "Rejected") { ?>
+                                       <span class="text-danger"> <?= $tampil['status']; ?></span>
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>
@@ -97,24 +100,27 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <!-- <td class="text-center"><?= $tampil['fullname']; ?></td> -->
                                  <td class="text-center">
                                     <div class="btn-group">
-                                       <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-success" title="Lihat">
-                                          <i class="fas fa-eye"></i>
-                                       </a>
-                                       <a href="cetakdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-primary" title="Cetak">
-                                          <i class="fas fa-print"></i>
-                                       </a>
-                                       <a href="editdo.php?iddo=<?= $tampil['iddo']; ?>" class="btn btn-sm btn-warning" title="Edit">
-                                          <i class="fas fa-edit"></i>
-                                       </a>
-                                       <?php if ($tampil['status'] !== "Invoiced") { ?>
-                                          <a href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" class="btn btn-sm btn-danger" title="Hapus">
-                                             <i class="fas fa-trash"></i>
+                                       <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Actions">
+                                          <i class="fas fa-bars"></i>
+                                       </button>
+                                       <div class="dropdown-menu">
+                                          <a class="dropdown-item" href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>" title="Lihat">
+                                             <i class="fas fa-eye"></i> Lihat
                                           </a>
-                                       <?php } else { ?>
-                                          <button class="btn btn-sm btn-secondary" title="Tidak dapat dihapus" disabled>
-                                             <i class="fas fa-trash"></i>
-                                          </button>
-                                       <?php } ?>
+                                          <?php if ($tampil['status'] !== "Rejected") { ?>
+                                             <a class="dropdown-item" href="editdo.php?iddo=<?= $tampil['iddo']; ?>" title="Edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                             </a>
+                                             <?php if ($tampil['status'] !== "Invoiced") { ?>
+                                                <a class="dropdown-item" href="rejectdo.php?iddo=<?= $tampil['iddo']; ?>&idso=<?= $idso ?>" onclick="return confirm('apakah anda yakin ingin Mereject DO ini?')" title="Reject">
+                                                   <i class="fas fa-eject"></i> Reject
+                                                </a>
+                                                <a class="dropdown-item" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('apakah anda yakin ingin menghapus Surat Jalan ini?')" title="Hapus">
+                                                   <i class="fas fa-trash"></i> Hapus
+                                                </a>
+                                             <?php } ?>
+                                          <?php } ?>
+                                       </div>
                                     </div>
                                  </td>
                               </tr>

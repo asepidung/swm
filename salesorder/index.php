@@ -91,6 +91,8 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                     <td style="color: #92079c;"><i class="fas fa-truck"></i> On Delivery</td>
                                  <?php } elseif ($progress == "DRAFT") { ?>
                                     <td class="text-secondary"><i class="fas fa-pencil-alt"></i> Draft</td>
+                                 <?php } elseif ($progress == "Rejected") { ?>
+                                    <td class="text-danger"><i class="fas fa-eject"></i> Rejected</td>
                                  <?php } else { ?>
                                     <td class="text-secondary"><i class="fas fa-clock"></i> Waiting</td>
                                  <?php } ?>

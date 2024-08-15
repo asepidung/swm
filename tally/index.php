@@ -62,85 +62,93 @@ include "../mainsidebar.php";
 
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
+
                            ?>
-                              <tr>
-                                 <td class="text-center"><?= $no; ?></td>
-                                 <td><?= htmlspecialchars($tampil['nama_customer']); ?></td>
-                                 <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
-                                 <td class="text-center">
-                                    <a href="printso.php?idso=<?= $tampil['idso']; ?>">
-                                       <?= htmlspecialchars($tampil['sonumber']); ?>
-                                    </a>
-                                 </td>
-                                 <td class="text-center"><?= htmlspecialchars($tampil['notally']); ?></td>
-                                 <td><?= htmlspecialchars($tampil['po']); ?></td>
-                                 <td><?= htmlspecialchars($tampil['note']); ?></td>
-                                 <td class="text-center">
-                                    <a href="lihattally.php?id=<?= $tampil['idtally'] ?>"><button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-eye"></i></button></a>
-                                    <?php
-                                    $query_check_stat = "SELECT stat FROM tally WHERE idtally = {$tampil['idtally']}";
-                                    $result_check_stat = mysqli_query($conn, $query_check_stat);
+                              <?php if ($tampil['stat'] == 'Rejected') {
+                                 echo '<tr class="text-danger">';
+                              } else {
+                                 echo '<tr>';
+                              } ?>
+                              <td class="text-center"><?= $no; ?></td>
+                              <td><?= htmlspecialchars($tampil['nama_customer']); ?></td>
+                              <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
+                              <td class="text-center">
+                                 <a href="printso.php?idso=<?= $tampil['idso']; ?>">
+                                    <?= htmlspecialchars($tampil['sonumber']); ?>
+                                 </a>
+                              </td>
+                              <td class="text-center"><?= htmlspecialchars($tampil['notally']); ?></td>
+                              <td><?= htmlspecialchars($tampil['po']); ?></td>
+                              <td><?= htmlspecialchars($tampil['note']); ?></td>
+                              <td class="text-center">
+                                 <a href="lihattally.php?id=<?= $tampil['idtally'] ?>">
+                                    <button type="button" class="btn btn-sm btn-warning"> <i class="fas fa-eye"></i></button>
+                                 </a>
+                                 <?php
+                                 $query_check_stat = "SELECT stat FROM tally WHERE idtally = {$tampil['idtally']}";
+                                 $result_check_stat = mysqli_query($conn, $query_check_stat);
 
-                                    if ($result_check_stat) {
-                                       $row_check_stat = mysqli_fetch_assoc($result_check_stat);
-                                       $stat = $row_check_stat['stat'];
+                                 if ($result_check_stat) {
+                                    $row_check_stat = mysqli_fetch_assoc($result_check_stat);
+                                    $stat = $row_check_stat['stat'];
 
-                                       switch ($stat) {
-                                          case "":
-                                             // Display if stat is empty
-                                    ?>
-                                             <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
-                                                <i class="fas fa-tasks"></i>
-                                             </a>
-                                             <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve" href="approvetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>">
-                                                <i class="far fa-calendar-check"></i>
-                                             </a>
-                                             <a href="deletetally.php?id=<?= $tampil['idtally']; ?>&idso=<?= $idso ?>" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="return confirm('Semua barang yang ada di tally akan kembali ke stock, apa anda yakin ?')">
-                                                <i class="fas fa-minus-square"></i>
-                                             </a>
-                                          <?php
-                                             break;
+                                    switch ($stat) {
+                                       case "":
+                                          // Display if stat is empty
+                                 ?>
+                                          <a class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Mulai Scan" onclick="window.location.href='tallydetail.php?id=<?= $tampil['idtally'] ?>&stat=ready'">
+                                             <i class="fas fa-tasks"></i>
+                                          </a>
+                                          <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve" href="approvetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>">
+                                             <i class="far fa-calendar-check"></i>
+                                          </a>
+                                          <a href="deletetally.php?id=<?= $tampil['idtally']; ?>&idso=<?= $idso ?>" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Hapus" onclick="return confirm('Semua barang yang ada di tally akan kembali ke stock, apa anda yakin ?')">
+                                             <i class="fas fa-minus-square"></i>
+                                          </a>
+                                       <?php
+                                          break;
 
-                                          case "Approved":
-                                             // Display if stat is Approved
-                                          ?>
-                                             <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
-                                                <i class="fas fa-tasks"></i>
-                                             </a>
-                                             <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Unapprove" href="unapprovetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>'">
-                                                <i class="fas fa-calendar-times"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approved">
-                                                <i class="fas fa-minus-square"></i>
-                                             </a>
-                                          <?php
-                                             break;
+                                       case "Approved":
+                                          // Display if stat is Approved
+                                       ?>
+                                          <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
+                                             <i class="fas fa-tasks"></i>
+                                          </a>
+                                          <a class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="bottom" title="Unapprove" href="unapprovetally.php?id=<?= htmlspecialchars($tampil['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>'">
+                                             <i class="fas fa-calendar-times"></i>
+                                          </a>
+                                          <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approved">
+                                             <i class="fas fa-minus-square"></i>
+                                          </a>
+                                       <?php
+                                          break;
 
-                                          case "DO":
-                                             // Display if stat is DO
-                                          ?>
-                                             <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
-                                                <i class="fas fa-tasks"></i>
-                                             </a>
-                                             <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom">
-                                                <i class="fas fa-calendar"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approved">
-                                                <i class="fas fa-minus-square"></i>
-                                             </a>
-                                    <?php
-                                             break;
+                                       case "DO":
+                                       case "Rejected":
+                                          // Display if stat is DO or Rejected
+                                       ?>
+                                          <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Scan Denied">
+                                             <i class="fas fa-tasks"></i>
+                                          </a>
+                                          <a class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="<?= ($stat == 'DO') ? 'DO' : 'Rejected'; ?>">
+                                             <i class="fas fa-calendar"></i>
+                                          </a>
+                                          <a href="#" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="bottom" title="<?= ($stat == 'DO') ? 'DO' : 'Rejected'; ?>">
+                                             <i class="fas fa-minus-square"></i>
+                                          </a>
+                                 <?php
+                                          break;
 
-                                          default:
-                                             echo "Unknown stat value: $stat";
-                                             break;
-                                       }
-                                    } else {
-                                       echo "Error: " . mysqli_error($conn);
+                                       default:
+                                          echo "Unknown stat value: $stat";
+                                          break;
                                     }
-                                    ?>
+                                 } else {
+                                    echo "Error: " . mysqli_error($conn);
+                                 }
+                                 ?>
+                              </td>
 
-                                 </td>
                               </tr>
                            <?php $no++;
                            } ?>

@@ -19,6 +19,17 @@ $row = mysqli_fetch_assoc($result);
    body {
       font-size: 16px;
    }
+
+   @media (max-width: 768px) {
+      body {
+         font-size: 14px;
+      }
+
+      .container {
+         padding-left: 5px;
+         padding-right: 5px;
+      }
+   }
 </style>
 
 <div class="container mt-4">
@@ -31,8 +42,8 @@ $row = mysqli_fetch_assoc($result);
    </div>
    <hr>
    <div class="row mt-2">
-      <div class="col">
-         <table class="table table-responsive table-borderless table-sm">
+      <div class="col-sm-6">
+         <table class="table table-borderless table-sm">
             <tr>
                <td>DO Number</td>
                <td>:</td>
@@ -65,9 +76,8 @@ $row = mysqli_fetch_assoc($result);
             </tr>
          </table>
       </div>
-      <!-- <div class="col"></div> -->
-      <div class="col">
-         <table class="table table-responsive table-borderless table-sm">
+      <div class="col-sm-6">
+         <table class="table table-borderless table-sm">
             <tr>
                <td>Delivery Date</td>
                <td>:</td>
@@ -91,55 +101,57 @@ $row = mysqli_fetch_assoc($result);
          </table>
       </div>
    </div>
-   <table class="table table-sm table-striped table-bordered">
-      <thead class="thead-dark">
-         <tr class="text-center">
-            <th>#</th>
-            <th>Product Desc</th>
-            <th>Box</th>
-            <th>Qty</th>
-            <th>Notes</th>
-         </tr>
-      </thead>
-      <tbody>
-         <?php
-         $no = 1;
-         $total_qty = 0;
-         $total_box = 0;
-         $query_dodetail = "SELECT dodetail.*, barang.nmbarang
-                     FROM dodetail
-                     INNER JOIN barang ON dodetail.idbarang = barang.idbarang
-                     WHERE iddo = '$iddo'";
-         $result_dodetail = mysqli_query($conn, $query_dodetail);
+   <div class="table-responsive">
+      <table class="table table-sm table-striped table-bordered">
+         <thead class="thead-dark">
+            <tr class="text-center">
+               <th>#</th>
+               <th>Product Desc</th>
+               <th>Box</th>
+               <th>Qty</th>
+               <th>Notes</th>
+            </tr>
+         </thead>
+         <tbody>
+            <?php
+            $no = 1;
+            $total_qty = 0;
+            $total_box = 0;
+            $query_dodetail = "SELECT dodetail.*, barang.nmbarang
+                        FROM dodetail
+                        INNER JOIN barang ON dodetail.idbarang = barang.idbarang
+                        WHERE iddo = '$iddo'";
+            $result_dodetail = mysqli_query($conn, $query_dodetail);
 
-         if ($result_dodetail) {
-            while ($row_dodetail = mysqli_fetch_assoc($result_dodetail)) {
-               $total_qty += $row_dodetail['weight'];
-               $total_box += $row_dodetail['box'];
-         ?>
-               <tr>
-                  <td class="text-center"><?= $no; ?></td>
-                  <td><?= $row_dodetail['nmbarang']; ?></td>
-                  <td class="text-center"><?= $row_dodetail['box']; ?></td>
-                  <td class="text-right"><?= number_format($row_dodetail['weight'], 2); ?></td>
-                  <td><?= $row_dodetail['notes']; ?></td>
-               </tr>
-         <?php $no++;
+            if ($result_dodetail) {
+               while ($row_dodetail = mysqli_fetch_assoc($result_dodetail)) {
+                  $total_qty += $row_dodetail['weight'];
+                  $total_box += $row_dodetail['box'];
+            ?>
+                  <tr>
+                     <td class="text-center"><?= $no; ?></td>
+                     <td><?= $row_dodetail['nmbarang']; ?></td>
+                     <td class="text-center"><?= $row_dodetail['box']; ?></td>
+                     <td class="text-right"><?= number_format($row_dodetail['weight'], 2); ?></td>
+                     <td><?= $row_dodetail['notes']; ?></td>
+                  </tr>
+            <?php $no++;
+               }
+            } else {
+               echo "Error in query: " . mysqli_error($conn);
             }
-         } else {
-            echo "Error in query: " . mysqli_error($conn);
-         }
-         ?>
-      </tbody>
-      <tfoot>
-         <tr>
-            <th colspan="2" class="text-right">Weight Total</th>
-            <th class="text-center"><?= $total_box; ?></th>
-            <th class="text-right"><?= number_format($total_qty, 2); ?></th>
-            <th></th>
-         </tr>
-      </tfoot>
-   </table>
+            ?>
+         </tbody>
+         <tfoot>
+            <tr>
+               <th colspan="2" class="text-right">Weight Total</th>
+               <th class="text-center"><?= $total_box; ?></th>
+               <th class="text-right"><?= number_format($total_qty, 2); ?></th>
+               <th></th>
+            </tr>
+         </tfoot>
+      </table>
+   </div>
 
    <p class="mb-n1">
       <?php
@@ -152,18 +164,19 @@ $row = mysqli_fetch_assoc($result);
    <p>
       <i><?= $row['note']; ?></i>
    </p>
-   <div class="row mt-3">
-      <div class="col-2">
+   <div class="row mt-3 justify-content-center">
+      <div class="col-6 col-sm-4 col-md-3 mb-2">
          <a href="javascript:history.back()">
             <button type="button" class="btn btn-block btn-success"><i class="fas fa-undo"></i></button>
          </a>
       </div>
-      <div class="col-2 ml-1">
-         <a href="cetakdo.php?iddo=<?= $row['iddo']; ?>.php">
+      <div class="col-6 col-sm-4 col-md-3">
+         <a href="cetakdo.php?iddo=<?= $row['iddo']; ?>">
             <button type="button" class="btn btn-block btn-warning"><i class="fas fa-print"></i></button>
          </a>
       </div>
    </div>
+
 </div>
 </body>
 <script>
