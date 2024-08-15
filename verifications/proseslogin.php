@@ -33,6 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          $_SESSION['userid'] = $userid;
          $_SESSION['idusers'] = $idusers; // Simpan idusers ke dalam session
          $_SESSION['fullname'] = $row['fullname'];
+
+         // Insert ke tabel logactivity
+         $logSql = "INSERT INTO logactivity (iduser, event) VALUES ('$idusers', 'Login')";
+         mysqli_query($conn, $logSql);
+
          header("Location: ../index.php");
          exit();
       } else {

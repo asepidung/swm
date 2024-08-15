@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
+  exit(); // Pastikan eksekusi berhenti setelah redirect
 }
 require "../konak/conn.php";
 
@@ -11,15 +12,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $tglboning = $_POST['tglboning'];
   $qtysapi = $_POST['qtysapi'];
   $keterangan = $_POST['keterangan'];
-
-  // Lakukan validasi form jika diperlukan
+  $batchboning = $_POST['batchboning'];
+  $idusers = $_SESSION['idusers'];
 
   // Update data boning di database
   $query = "UPDATE boning SET idsupplier = '$idsupplier', tglboning = '$tglboning', qtysapi = $qtysapi, keterangan = '$keterangan' WHERE idboning = '$idboning'";
   $result = mysqli_query($conn, $query);
 
   if ($result) {
-    // Jika data berhasil diupdate, redirect ke halaman lain atau lakukan tindakan lainnya
+    // Jika data berhasil diupdate, catat aktivitas ke logactivity
+    $logSql = "INSERT INTO logactivity (iduser, event, docnumb) VALUES ('$idusers', 'Update Batch Boning', '$batchboning')";
+    mysqli_query($conn, $logSql);
+
+    // Redirect ke halaman lain atau lakukan tindakan lainnya
     header("location: databoning.php");
     exit();
   } else {
