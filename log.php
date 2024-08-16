@@ -433,12 +433,6 @@ include "kebutuhanindex.php";
                                  <p>Detail</p>
                               </a>
                            </li>
-                           <li class="nav-item">
-                              <a href="log.php" class="nav-link">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Log Activity</p>
-                              </a>
-                           </li>
                         </ul>
                      </li>
                   <?php endif; ?>
@@ -527,66 +521,50 @@ include "kebutuhanindex.php";
       <div class="content-wrapper">
          <section class="content">
             <div class="container-fluid">
-               <div class="row mt-3">
-                  <div class="col-lg col-6">
-                     <div class="small-box bg-danger">
-                        <div class="inner">
-                           <h3>Stock</h3>
-                           <p>Klik for Detail</p>
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card mt-3">
+                        <div class="card-body">
+                           <table id="example1" class="table table-bordered table-striped table-sm">
+                              <thead>
+                                 <tr class="text-center">
+                                    <th>#</th>
+                                    <th>Users</th>
+                                    <th>Event</th>
+                                    <th>Document Number</th>
+                                    <th>Timestamp</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <?php
+                                 $no = 1;
+                                 $query = "SELECT l.*, u.fullname 
+                                     FROM logactivity l
+                                     JOIN users u ON l.iduser = u.idusers
+                                     ORDER BY l.waktu DESC";
+                                 $result = mysqli_query($conn, $query);
+
+                                 while ($row = mysqli_fetch_array($result)) {
+                                 ?>
+                                    <tr>
+                                       <td class="text-center"><?= $no; ?></td>
+                                       <td><?= $row['fullname']; ?></td>
+                                       <td><?= $row['event']; ?></td>
+                                       <td><?= $row['docnumb']; ?></td>
+                                       <td class="text-center"><?= date("d-M-y H:i:s", strtotime($row['waktu'])); ?></td>
+                                    </tr>
+                                 <?php
+                                    $no++;
+                                 }
+                                 ?>
+                              </tbody>
+                           </table>
                         </div>
-                        <div class="icon">
-                           <i class="fas fa-cubes"></i>
-                        </div>
-                        <a href="stock/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                     </div>
-                  </div>
-                  <div class="col-lg col-6">
-                     <div class="small-box bg-info">
-                        <div class="inner">
-                           <?php
-                           $query = "SELECT COUNT(*) as jumlah_plandev FROM salesorder WHERE progress = 'On Process' OR progress = 'Waiting'";
-                           $result = mysqli_query($conn, $query);
-                           $row = mysqli_fetch_assoc($result);
-                           $jumlah_plandev = $row['jumlah_plandev'];
-                           ?>
-                           <h3><?= $jumlah_plandev; ?></h3>
-                           <p>Plan Delivery</p>
-                        </div>
-                        <div class="icon">
-                           <i class="fas fa-truck"></i>
-                        </div>
-                        <a href="plandev/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                     </div>
-                  </div>
-                  <div class="col-lg col-6">
-                     <div class="small-box bg-success">
-                        <div class="inner">
-                           <h3><?= $deliverytoday; ?></h3>
-                           <p>Delivery Today</p>
-                        </div>
-                        <div class="icon">
-                           <i class="fas fa-truck-moving"></i>
-                        </div>
-                        <a href="do/dotoday.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                     </div>
-                  </div>
-                  <div class="col-lg col-6">
-                     <div class="small-box bg-warning">
-                        <div class="inner">
-                           <h3><?= $kedatangan ?></h3>
-                           <p>Arrival Plans</p>
-                        </div>
-                        <div class="icon">
-                           <i class="fas fa-truck-loading"></i>
-                        </div>
-                        <a href="poproduct" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
                   </div>
                </div>
-               <?php include "update.php"; ?>
             </div>
          </section>
-         <!-- /.content -->
       </div>
       <!-- Control Sidebar -->
       <aside class="control-sidebar control-sidebar-dark">
