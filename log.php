@@ -433,6 +433,12 @@ include "kebutuhanindex.php";
                                  <p>Detail</p>
                               </a>
                            </li>
+                           <li class="nav-item">
+                              <a href="log.php" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Log Activity</p>
+                              </a>
+                           </li>
                         </ul>
                      </li>
                   <?php endif; ?>

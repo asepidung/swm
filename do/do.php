@@ -89,10 +89,10 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
-                                          <span class="text-success" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
+                                          <span class="text-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve"><?= $tampil['status']; ?></span>
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Rejected") { ?>
-                                       <span class="text-danger"> <?= $tampil['status']; ?></span>
+                                       <span class="text-warning"> <?= $tampil['status']; ?></span>
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>
