@@ -9,6 +9,11 @@ include "../navbar.php";
 include "../mainsidebar.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
+
+$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM do WHERE status = 'Approved'";
+$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
+$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
+$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
@@ -27,7 +32,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                </form>
             </div>
             <div class="col-1">
-               <a href="invdraft.php" class="btn btn-sm btn-outline-primary float right"><i class="fas fa-plus"></i> Draft</button></a>
+               <a href="invdraft.php" class="btn btn-sm btn-outline-primary float right"><span class="badge badge-danger"> <?= $approvedCount; ?></span> Draft</button></a>
             </div>
          </div>
       </div><!-- /.container-fluid -->

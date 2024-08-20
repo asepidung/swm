@@ -15,6 +15,11 @@ $maxDate = $rowMaxDate['max_date'];
 
 // Tentukan $akhir sebagai tanggal maksimum dari kolom deliverydate
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
+
+$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM tally WHERE stat = 'Approved'";
+$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
+$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
+$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 <div class="content-wrapper">
    <div class="content-header">
@@ -32,7 +37,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                </form>
             </div>
             <div class="col-2">
-               <a href="draftdo.php" class="btn btn-block btn-sm btn-primary">Draft</a>
+               <a href="draftdo.php" class="btn btn-block btn-sm btn-outline-primary"><span class="badge badge-danger"><?= $approvedCount ?></span> Draft</a>
             </div>
          </div>
       </div>

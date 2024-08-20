@@ -9,13 +9,18 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+
+$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM salesorder WHERE progress = 'Waiting'";
+$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
+$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
+$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 <div class="content-wrapper">
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
             <div class="col-1">
-               <a href="drafttally.php"><button type="button" class="btn btn-sm btn-outline-primary"><i class="fab fa-firstdraft"></i> Draft</button></a>
+               <a href="drafttally.php"><button type="button" class="btn btn-sm btn-outline-primary"><span class="badge badge-danger"> <?= $approvedCount; ?></span> Draft</button></a>
             </div>
          </div><!-- /.row -->
       </div><!-- /.container-fluid -->
