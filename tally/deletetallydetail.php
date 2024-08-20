@@ -10,6 +10,8 @@ require "../konak/conn.php";
 if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $id = $_GET['id'];
    $iddetail = $_GET['iddetail'];
+   $iduser = $_SESSION['idusers']; // Mengambil iduser dari session
+   $event = "Delete Tally Detail"; // Event logactivity
 
    // Set autocommit ke false untuk memulai transaksi
    $conn->autocommit(false);
@@ -56,6 +58,18 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
 
       $stmtDelete->bind_param('i', $iddetail);
       $stmtDelete->execute();
+
+      // Insert log activity ke tabel logactivity
+      $docnumb = $tallyDetailData['barcode']; // Menggunakan barcode sebagai docnumb
+      $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
+      $stmtLogActivity = $conn->prepare($queryLogActivity);
+
+      if (!$stmtLogActivity) {
+         throw new Exception("Query LogActivity Prepare Error: " . $conn->error);
+      }
+
+      $stmtLogActivity->bind_param('iss', $iduser, $event, $docnumb);
+      $stmtLogActivity->execute();
 
       // Commit transaksi jika semua query berhasil dieksekusi
       $conn->commit();

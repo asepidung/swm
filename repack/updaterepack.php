@@ -10,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $idrepack = $_POST['idrepack'];
    $tglrepack = $_POST['tglrepack'];
    $note = $_POST['note'];
+   $norepack = $_POST['norepack'];
+   $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
 
    // Query untuk mengupdate data repack
    $updateRepackQuery = "UPDATE repack SET tglrepack = '$tglrepack', note = '$note' WHERE idrepack = $idrepack";
@@ -18,7 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $result = mysqli_query($conn, $updateRepackQuery);
 
    if ($result) {
-      // Redirect ke halaman lain jika update berhasil
+      // Jika update berhasil, catat log aktivitas
+      $event = "Update Data Repack";
+      $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES ('$iduser', '$event', '$norepack', NOW())";
+      mysqli_query($conn, $logQuery);
+
+      // Redirect ke halaman lain jika update dan log berhasil
       header("location: index.php");
    } else {
       // Handle kesalahan update

@@ -15,6 +15,16 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $idrepack = $_GET['id'];
+$iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
+
+// Dapatkan nomor repack (norepack) sebelum dihapus untuk log
+$norepackQuery = "SELECT norepack FROM repack WHERE idrepack = ?";
+$stmt = mysqli_prepare($conn, $norepackQuery);
+mysqli_stmt_bind_param($stmt, "i", $idrepack);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $norepack);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 
 // Persiapkan dan jalankan query penghapusan dengan prepared statement
 $stmt = mysqli_prepare($conn, "DELETE FROM repack WHERE idrepack = ?");
@@ -23,6 +33,11 @@ $hapusData = mysqli_stmt_execute($stmt);
 
 // Periksa apakah query eksekusi berhasil atau tidak
 if ($hapusData) {
+   // Catat log aktivitas setelah penghapusan berhasil
+   $event = "Hapus Data Repack";
+   $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES ('$iduser', '$event', '$norepack', NOW())";
+   mysqli_query($conn, $logQuery);
+
    // Redirect ke halaman index setelah penghapusan berhasil
    header("Location: index.php");
 } else {

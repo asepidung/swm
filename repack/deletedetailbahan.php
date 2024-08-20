@@ -2,13 +2,16 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit(); // Keluar setelah redirect
 }
+
 // Koneksi ke database
 require "../konak/conn.php";
 
 if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $id = $_GET['id'];
    $iddetail = $_GET['iddetail'];
+   $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
 
    // Ambil data dari tabel detailbahan berdasarkan iddetailbahan
    $getDataQuery = "SELECT * FROM detailbahan WHERE iddetailbahan = ?";
@@ -25,7 +28,6 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
       $insertStockStmt = $conn->prepare($insertStockQuery);
 
       if ($insertStockStmt) {
-         // Sesuaikan nama kolom 'qty' dengan 'weight' dalam bind_param
          $insertStockStmt->bind_param('siidisi', $detailbahanData['barcode'], $detailbahanData['idgrade'], $detailbahanData['idbarang'], $detailbahanData['qty'], $detailbahanData['pcs'], $detailbahanData['pod'], $detailbahanData['origin']);
          $insertStockStmt->execute();
 
@@ -36,6 +38,13 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
          if ($deleteStmt) {
             $deleteStmt->bind_param('i', $iddetail);
             $deleteStmt->execute();
+
+            // Catat log aktivitas setelah penghapusan berhasil
+            $event = "Hapus Bahan Repack";
+            $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+            $logStmt = $conn->prepare($logQuery);
+            $logStmt->bind_param('iss', $iduser, $event, $detailbahanData['barcode']);
+            $logStmt->execute();
 
             // Redirect ke halaman detailbahan.php dengan status "deleted"
             header("Location: detailbahan.php?id=$id&stat=deleted");

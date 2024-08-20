@@ -14,6 +14,7 @@ if (isset($_POST['submit'])) {
    $po = $_POST['po'];
    $sonumber = $_POST['sonumber'];
    $notally  = $_POST['notally'];
+   $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
 
    // Cek apakah idso sudah ada di tabel tally
    $check_query = "SELECT COUNT(*) as count FROM tally WHERE idso = ?";
@@ -44,10 +45,19 @@ if (isset($_POST['submit'])) {
          // Dapatkan idtally yang baru saja diinput
          $last_id = mysqli_insert_id($conn);
 
+         // Update progress di tabel salesorder
          $updateSql = "UPDATE salesorder SET progress = 'On Process' WHERE idso = '$idso'";
          if (mysqli_query($conn, $updateSql)) {
+            // Catat log aktivitas setelah pembuatan data tally berhasil
+            $event = "Buat Data Tally";
+            $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+            $logStmt = $conn->prepare($logQuery);
+            $logStmt->bind_param('iss', $iduser, $event, $notally);
+            $logStmt->execute();
+
             $stmt_tally->close();
             $conn->close();
+
             // Redirect ke halaman tallydetail.php dengan idtally baru
             header("location: tallydetail.php?id=$last_id&stat=ready");
             exit();

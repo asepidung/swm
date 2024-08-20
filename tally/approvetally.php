@@ -10,40 +10,82 @@ require "../konak/conn.php";
 if (isset($_GET['id'])) {
    $idtally = intval($_GET['id']);
    $idso = intval($_GET['idso']);
+   $iduser = $_SESSION['idusers']; // Mengambil iduser dari session
 
    // Jika form sudah disubmit, lanjutkan eksekusi PHP
    if (isset($_POST['submit'])) {
       $sealnumb = !empty($_POST['sealnumb']) ? $_POST['sealnumb'] : NULL;
 
-      // Prepare statement untuk update tabel tally
-      $stmt = $conn->prepare("UPDATE tally SET stat = ?, sealnumb = ? WHERE idtally = ?");
-      if (!$stmt) {
-         die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-      }
+      // Mulai transaksi
+      $conn->autocommit(false);
 
-      $status = "Approved";
-      $stmt->bind_param("ssi", $status, $sealnumb, $idtally);
+      try {
+         // Prepare statement untuk update tabel tally
+         $stmt = $conn->prepare("UPDATE tally SET stat = ?, sealnumb = ? WHERE idtally = ?");
+         if (!$stmt) {
+            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+         }
 
-      if ($stmt->execute()) {
+         $status = "Approved";
+         $stmt->bind_param("ssi", $status, $sealnumb, $idtally);
+
+         if (!$stmt->execute()) {
+            throw new Exception("Execute failed: " . $stmt->error);
+         }
+
+         // Dapatkan nomor tally (notally)
+         $queryNotally = "SELECT notally FROM tally WHERE idtally = ?";
+         $stmtNotally = $conn->prepare($queryNotally);
+         if (!$stmtNotally) {
+            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+         }
+
+         $stmtNotally->bind_param("i", $idtally);
+         $stmtNotally->execute();
+         $resultNotally = $stmtNotally->get_result();
+         $rowNotally = $resultNotally->fetch_assoc();
+         $notally = $rowNotally['notally'];
+
          // Prepare statement untuk update tabel salesorder
          $stmt_so = $conn->prepare("UPDATE salesorder SET progress = 'DRAFT' WHERE idso = ?");
          if (!$stmt_so) {
-            die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
          }
 
          $stmt_so->bind_param("i", $idso);
 
-         if ($stmt_so->execute()) {
-            // Redirect ke halaman index.php setelah update berhasil
-            header("location: index.php");
-            exit();
-         } else {
-            echo "Error: " . $stmt_so->error;
-            exit();
+         if (!$stmt_so->execute()) {
+            throw new Exception("Execute failed: " . $stmt_so->error);
          }
-      } else {
-         echo "Error: " . $stmt->error;
+
+         // Insert log activity ke tabel logactivity
+         $event = "Approved Tally";
+         $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
+         $stmtLogActivity = $conn->prepare($queryLogActivity);
+         if (!$stmtLogActivity) {
+            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+         }
+
+         $stmtLogActivity->bind_param('iss', $iduser, $event, $notally);
+
+         if (!$stmtLogActivity->execute()) {
+            throw new Exception("Execute failed: " . $stmtLogActivity->error);
+         }
+
+         // Commit transaksi jika semua query berhasil dieksekusi
+         $conn->commit();
+
+         // Redirect ke halaman index.php setelah update berhasil
+         header("location: index.php");
          exit();
+      } catch (Exception $e) {
+         // Rollback transaksi jika terjadi kesalahan
+         $conn->rollback();
+         echo "Error: " . $e->getMessage();
+         exit();
+      } finally {
+         // Set autocommit kembali ke true setelah selesai
+         $conn->autocommit(true);
       }
    } else {
       // Tampilkan form input

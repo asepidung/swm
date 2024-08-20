@@ -32,7 +32,7 @@ if (!$result) {
    <style>
       body {
          font-family: Cambria, sans-serif;
-         font-size: 14px;
+         font-size: 18px;
       }
    </style>
 </head>

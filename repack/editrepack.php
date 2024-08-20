@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "norepack.php";
+
 
 $idrepack = $_GET['id'];
 
@@ -38,6 +38,7 @@ if ($resultRepack) {
                               <label for="tglrepack">Tanggal Repack</label>
                               <!-- Isi nilai input dengan data dari tabel repack -->
                               <input type="date" class="form-control" name="tglrepack" value="<?= $repackData['tglrepack']; ?>" required>
+                              <input type="hidden" name="norepack" value="<?= $repackData['norepack']; ?>">
                            </div>
                         </div>
                         <div class="col">

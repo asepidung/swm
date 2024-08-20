@@ -9,32 +9,14 @@ if (isset($_GET['id'])) {
    $idtally = $_GET['id'];
    $idso = $_GET['idso'];
 
-   // Ambil data dari tabel tallydetail
-   $query_select_tallydetail = "SELECT * FROM tallydetail WHERE idtally = ?";
-   $stmt_select_tallydetail = $conn->prepare($query_select_tallydetail);
-   $stmt_select_tallydetail->bind_param("i", $idtally);
-   $stmt_select_tallydetail->execute();
-   $result_tallydetail = $stmt_select_tallydetail->get_result();
-
-   // Loop untuk memasukkan data dari tallydetail ke stock
-   while ($row = $result_tallydetail->fetch_assoc()) {
-      $barcode = $row['barcode'];
-      $idbarang = $row['idbarang'];
-      $idgrade = $row['idgrade'];
-      $weight = $row['weight'];
-      $pcs = $row['pcs'];
-      $pod = $row['pod'];
-      $origin = $row['origin'];
-
-      // Masukkan data ke tabel stock
-      $query_insert_stock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)";
-      $stmt_insert_stock = $conn->prepare($query_insert_stock);
-      $stmt_insert_stock->bind_param("siidisi", $barcode, $idgrade, $idbarang, $weight, $pcs, $pod, $origin);
-      $stmt_insert_stock->execute();
-   }
-
-   // Tutup statement untuk query select tallydetail
-   $stmt_select_tallydetail->close();
+   // Ambil data dari tabel tally
+   $query_select_tally = "SELECT notally FROM tally WHERE idtally = ?";
+   $stmt_select_tally = $conn->prepare($query_select_tally);
+   $stmt_select_tally->bind_param("i", $idtally);
+   $stmt_select_tally->execute();
+   $result_tally = $stmt_select_tally->get_result();
+   $row_tally = $result_tally->fetch_assoc();
+   $notally = $row_tally['notally'];
 
    // Delete data dari tabel tallydetail
    $query_delete_tallydetail = "DELETE FROM tallydetail WHERE idtally = ?";
@@ -56,6 +38,15 @@ if (isset($_GET['id'])) {
    $stmt_update_salesorder->bind_param("i", $idso);
    $stmt_update_salesorder->execute();
    $stmt_update_salesorder->close();
+
+   // Masukkan log ke tabel logactivity
+   $iduser = $_SESSION['idusers'];
+   $event = "Delete Data Tally";
+   $query_insert_log = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, CURRENT_TIMESTAMP())";
+   $stmt_insert_log = $conn->prepare($query_insert_log);
+   $stmt_insert_log->bind_param("iss", $iduser, $event, $notally);
+   $stmt_insert_log->execute();
+   $stmt_insert_log->close();
 }
 
-header("location: index.php?stat=deleted"); // Redirect to the list page
+header("location: index.php?stat=deleted"); // Redirect ke halaman index setelah penghapusan
