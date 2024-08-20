@@ -24,9 +24,18 @@ if (isset($_POST['submit'])) {
    // Dapatkan ID terakhir yang di-generate
    $last_id = mysqli_insert_id($conn);
 
+   // Insert ke tabel logactivity
+   $event = "Buat Mutasi";
+   $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+   $stmt_log = $conn->prepare($logQuery);
+   $stmt_log->bind_param("iss", $iduser, $event, $kodeauto);
+   $stmt_log->execute();
+
    $stmt_st->close();
+   $stmt_log->close();
    $conn->close();
 
    // Redirect ke halaman detailmutasi dengan menggunakan ID terakhir
    header("location: mutasidetail.php?id=$last_id&stat=ready");
+   exit();
 }

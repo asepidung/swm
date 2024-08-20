@@ -15,8 +15,18 @@ if (isset($_GET['id']) && isset($_GET['iddetail'])) {
       $kdbarcode = $rowBarcode['kdbarcode'];
       $hapusDataDetail = mysqli_query($conn, "DELETE FROM returjualdetail WHERE idreturjualdetail = '$iddetail'");
       $hapusDataStock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
+
       if ($hapusDataDetail && $hapusDataStock) {
+         // Insert ke tabel logactivity
+         $idusers = $_SESSION['idusers'];
+         $event = "Delete Detail Retur";
+         $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
+                      VALUES ($idusers, '$event', '$kdbarcode', NOW())";
+         mysqli_query($conn, $logQuery);
+
+         // Redirect ke halaman detail returjual
          header("Location: detailrj.php?idreturjual=$id");
+         exit();
       } else {
          echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='detailrj.php?idreturjual=$id';</script>";
       }

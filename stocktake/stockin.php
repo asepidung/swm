@@ -15,6 +15,22 @@ if (empty($idst)) {
    exit();
 }
 
+// Ambil nomor stock take (nost) dari tabel stocktake
+$query_nost = "SELECT nost FROM stocktake WHERE idst = ?";
+$stmt_nost = $conn->prepare($query_nost);
+$stmt_nost->bind_param("i", $idst);
+$stmt_nost->execute();
+$result_nost = $stmt_nost->get_result();
+
+if ($result_nost->num_rows > 0) {
+   $row_nost = $result_nost->fetch_assoc();
+   $nost = $row_nost['nost'];
+} else {
+   echo "Stock Take tidak ditemukan.";
+   exit();
+}
+$stmt_nost->close();
+
 // Hapus semua data di tabel stock
 $deleteSql = "DELETE FROM stock";
 $deleteStmt = $conn->prepare($deleteSql);
@@ -40,6 +56,16 @@ while ($row = $result->fetch_assoc()) {
 
 $stmt->close();
 $insertStmt->close();
+
+// Insert log activity
+$event = "Stock Take Confirm";
+$iduser = $_SESSION['idusers'];
+$logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+$stmt_log = $conn->prepare($logQuery);
+$stmt_log->bind_param("iss", $iduser, $event, $nost);
+$stmt_log->execute();
+$stmt_log->close();
+
 $conn->close();
 
 header("Location: index.php");

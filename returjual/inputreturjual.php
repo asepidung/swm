@@ -22,9 +22,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       // Jika insert berhasil, ambil idreturjual yang baru saja diinsert
       $idreturjual = mysqli_insert_id($conn);
 
+      // Insert ke tabel logactivity
+      $event = "Buat Retur Jual";
+      $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
+                   VALUES ($idusers, '$event', '$returnnumber', NOW())";
+      mysqli_query($conn, $logQuery);
+
       // Redirect ke halaman detailitem.php dengan membawa idreturjual sebagai parameter query string
       header("location: detailrj.php?idreturjual=$idreturjual");
-      // header("location: index.php");
       exit;
    } else {
       // Jika terjadi kesalahan, tampilkan pesan error
