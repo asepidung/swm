@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "donumber.php";
 
 if (isset($_POST['submit'])) {
-   $donumber =  $kodeauto;
+   $donumber = $kodeauto;
    $deliverydate = $_POST['deliverydate'];
    $idcustomer = $_POST['idcustomer'];
    // $alamat = $_POST['alamat'];
@@ -36,6 +36,14 @@ if (isset($_POST['submit'])) {
       $stmt_update_tally->bind_param("i", $idtally);
       $stmt_update_tally->execute();
       $stmt_update_tally->close();
+
+      // Log activity untuk Buat DO
+      $event = "Buat DO";
+      $query_log = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+      $stmt_log = $conn->prepare($query_log);
+      $stmt_log->bind_param("iss", $idusers, $event, $donumber);
+      $stmt_log->execute();
+      $stmt_log->close();
    } else {
       // Eksekusi gagal, tampilkan pesan kesalahan
       echo "Error: " . $stmt_do->error;

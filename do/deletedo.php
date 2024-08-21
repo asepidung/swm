@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
@@ -12,6 +13,15 @@ $iddo = intval($_GET['iddo']);
 $conn->begin_transaction();
 
 try {
+   // Dapatkan nomor DO (donumber) sebelum dihapus
+   $sqlGetDonumber = "SELECT donumber FROM do WHERE iddo = ?";
+   $stmtGetDonumber = $conn->prepare($sqlGetDonumber);
+   $stmtGetDonumber->bind_param("i", $iddo);
+   $stmtGetDonumber->execute();
+   $stmtGetDonumber->bind_result($donumber);
+   $stmtGetDonumber->fetch();
+   $stmtGetDonumber->close();
+
    // Update kolom stat di tabel tally menjadi 'Approved'
    $sqlUpdateTally = "UPDATE tally 
                        INNER JOIN do ON tally.idtally = do.idtally
@@ -57,6 +67,15 @@ try {
    if (!$stmtDeleteDO->execute()) {
       throw new Exception("Error deleting do: " . $stmtDeleteDO->error);
    }
+
+   // Log activity untuk Hapus DO
+   $idusers = $_SESSION['idusers'];
+   $event = "Hapus DO";
+   $query_log = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+   $stmt_log = $conn->prepare($query_log);
+   $stmt_log->bind_param("iss", $idusers, $event, $donumber);
+   $stmt_log->execute();
+   $stmt_log->close();
 
    // Commit transaksi
    $conn->commit();
