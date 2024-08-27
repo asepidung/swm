@@ -115,7 +115,7 @@ require "hitungantally.php";
          <a href="seedetail.php?id=<?= $idtally ?>" class="btn bg-gradient-success btn-block">Detail</a>
       </div>
       <div class="col-1">
-         <a href="printtally.php?id=<?= $idtally ?>" class="btn btn-secondary btn-block">Print</a>
+         <a href="wot.php?id=<?= $idtally ?>" class="btn btn-secondary btn-block">Print</a>
       </div>
    </div>
 </div>
