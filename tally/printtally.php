@@ -132,10 +132,12 @@ require "hitungantally.php";
          window.print();
       };
 
-      // Close the window after printing (optional)
+      // Redirect to the previous page after printing
       window.onafterprint = function() {
-         window.location.href = 'index.php';
+         window.history.back();
       };
-      document.title = "Taly No : <?= $row_tally['notally']; ?>";
+
+      document.title = "Tally No : <?= $row_tally['notally']; ?>";
    </script>
+
 </body>

@@ -35,11 +35,34 @@ try {
    $stmtSo->execute();
    $stmtSo->close();
 
+   // Mendapatkan donumber dari tabel do berdasarkan $iddo
+   $query_select_donumber = "SELECT donumber FROM do WHERE iddo = ?";
+   $stmt_select_donumber = $conn->prepare($query_select_donumber);
+   $stmt_select_donumber->bind_param("i", $iddo);
+   $stmt_select_donumber->execute();
+   $stmt_select_donumber->bind_result($donumber);
+   $stmt_select_donumber->fetch();
+   $stmt_select_donumber->close();
+
+   // Insert ke tabel logactivity
+   $idusers = $_SESSION['idusers'];
+   $event = "Reject DO";
+   $docnumb = $donumber;
+   $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
+
+   $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
+                        VALUES ('$idusers', '$event', '$docnumb', '$waktu')";
+   $resultLogActivity = mysqli_query($conn, $queryLogActivity);
+
+   if (!$resultLogActivity) {
+      throw new Exception("Error saat memasukkan data log activity: " . mysqli_error($conn));
+   }
+
    // Commit transaksi
    mysqli_commit($conn);
 
    // Redirect ke halaman do.php setelah selesai
-   echo "<script>alert('Data berhasil diupdate menjadi Rejected.'); window.location='do.php';</script>";
+   echo "<script>alert('Data berhasil di  Reject.'); window.location='do.php';</script>";
 } catch (Exception $e) {
    // Rollback transaksi jika terjadi kesalahan
    mysqli_rollback($conn);

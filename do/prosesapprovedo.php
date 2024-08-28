@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    // Insert data ke tabel doreceipt
    $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, idso, donumber, deliverydate, idcustomer, po, note, xbox, xweight, idusers, status)
    VALUES ('$iddo', '$idso', '$donumber', '$deliverydate', '$idcustomer', '$po', '$note', '$xbox', '$xweight', '$idusers', '$status')";
-   echo "Query Insert Doreceipt: " . $queryInsertDoreceipt . "<br>"; // Debugging
    $resultInsertDoreceipt = mysqli_query($conn, $queryInsertDoreceipt);
 
    if ($resultInsertDoreceipt) {
@@ -42,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $queryInsertDoreceiptDetail = "INSERT INTO doreceiptdetail (iddoreceipt, idbarang, box, weight, notes)
                                               VALUES ('$iddoreceipt', '$idbarang[$i]', '$box', '$weight', '$note')";
-            echo "Query Insert DoreceiptDetail: " . $queryInsertDoreceiptDetail . "<br>"; // Debugging
             $resultInsertDoreceiptDetail = mysqli_query($conn, $queryInsertDoreceiptDetail);
             if (!$resultInsertDoreceiptDetail) {
                die("Error saat memasukkan data doreceiptdetail: " . mysqli_error($conn));
@@ -52,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       // Update status pada tabel do menjadi "Approved"
       $queryUpdateDo = "UPDATE do SET status = 'Approved', rweight = '$xweight' WHERE iddo = '$iddo'";
-      echo "Query Update Do: " . $queryUpdateDo . "<br>"; // Debugging
       $resultUpdateDo = mysqli_query($conn, $queryUpdateDo);
 
       if (!$resultUpdateDo) {
@@ -61,11 +58,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       // Update status pada tabel salesorder menjadi "Delivered"
       $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE idso = '$idso'";
-      echo "Query Update SalesOrder: " . $queryUpdateSo . "<br>"; // Debugging
       $resultUpdateSo = mysqli_query($conn, $queryUpdateSo);
 
       if (!$resultUpdateSo) {
          die("Error saat mengupdate progress pada tabel salesorder: " . mysqli_error($conn));
+      }
+
+      // Insert ke tabel logactivity
+      $event = "Approve DO";
+      $docnumb = $donumber;
+      $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
+
+      $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
+                           VALUES ('$idusers', '$event', '$docnumb', '$waktu')";
+      $resultLogActivity = mysqli_query($conn, $queryLogActivity);
+
+      if (!$resultLogActivity) {
+         die("Error saat memasukkan data log activity: " . mysqli_error($conn));
       }
 
       header("Location: do.php"); // Ganti do.php dengan halaman tujuan setelah data berhasil disimpan

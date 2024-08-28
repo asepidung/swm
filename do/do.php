@@ -56,6 +56,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                               <th>Tgl Kirim</th>
                               <th>Customer</th>
                               <th>PO</th>
+                              <th>Tally</th>
                               <th>xQty</th>
                               <th>rQty</th>
                               <th>Catatan</th>
@@ -67,9 +68,10 @@ $approvedCount = $rowApprovedCount['approved_count'];
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname FROM do
+                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname, tally.notally FROM do
                               JOIN customers ON do.idcustomer = customers.idcustomer
                               JOIN users ON do.idusers = users.idusers
+                              LEFT JOIN tally ON do.idtally = tally.idtally
                               WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
                               ORDER BY iddo DESC;
                            ");
@@ -82,6 +84,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
+                                 <td><a href="../tally/printtally.php?id=<?= $tampil['idtally'] ?> "><?= $tampil['notally']; ?></a></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td class="text-right"><?= number_format($tampil['rweight'], 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>

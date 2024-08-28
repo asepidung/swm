@@ -2,7 +2,9 @@
 session_start();
 if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
+  exit(); // Pastikan untuk menghentikan eksekusi setelah redirect
 }
+
 require "../konak/conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,6 +23,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   mysqli_stmt_bind_param($stmt_do, "sssssi", $deliverydate, $po, $driver, $plat, $note, $iddo);
 
   if (mysqli_stmt_execute($stmt_do)) {
+    // Mendapatkan donumber dari tabel do berdasarkan $iddo
+    $query_select_donumber = "SELECT donumber FROM do WHERE iddo = ?";
+    $stmt_select_donumber = $conn->prepare($query_select_donumber);
+    $stmt_select_donumber->bind_param("i", $iddo);
+    $stmt_select_donumber->execute();
+    $stmt_select_donumber->bind_result($donumber);
+    $stmt_select_donumber->fetch();
+    $stmt_select_donumber->close();
+
+    // Insert ke tabel logactivity
+    $idusers = $_SESSION['idusers'];
+    $event = "Edit DO";
+    $docnumb = $donumber;
+    $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
+
+    $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
+                         VALUES ('$idusers', '$event', '$docnumb', '$waktu')";
+    $resultLogActivity = mysqli_query($conn, $queryLogActivity);
+
+    if (!$resultLogActivity) {
+      echo "Terjadi kesalahan saat memasukkan data log activity: " . mysqli_error($conn);
+    }
+
     // Tutup statement
     mysqli_stmt_close($stmt_do);
     mysqli_close($conn);
