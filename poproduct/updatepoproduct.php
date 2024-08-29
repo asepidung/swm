@@ -8,8 +8,9 @@ if (!isset($_SESSION['login'])) {
 
 require "../konak/conn.php";
 
-if (isset($_POST['idpoproduct'], $_POST['tglpoproduct'], $_POST['deliveryat'], $_POST['idsupplier'], $_POST['terms'], $_POST['note'], $_POST['xweight'], $_POST['xamount'], $_POST['idbarang'], $_POST['weight'], $_POST['price'], $_POST['amount'], $_POST['notes'])) {
+if (isset($_POST['idpoproduct'], $_POST['tglpoproduct'], $_POST['deliveryat'], $_POST['nopoproduct'], $_POST['idsupplier'], $_POST['terms'], $_POST['note'], $_POST['xweight'], $_POST['xamount'], $_POST['idbarang'], $_POST['weight'], $_POST['price'], $_POST['amount'], $_POST['notes'])) {
    $idpoproduct = $_POST['idpoproduct'];
+   $nopoproduct = $_POST['nopoproduct'];
    $tglpoproduct = $_POST['tglpoproduct'];
    $deliveryat = $_POST['deliveryat'];
    $idsupplier = $_POST['idsupplier'];
@@ -18,9 +19,8 @@ if (isset($_POST['idpoproduct'], $_POST['tglpoproduct'], $_POST['deliveryat'], $
    $xweight = str_replace(',', '', $_POST['xweight']);
    $xamount = str_replace(',', '', $_POST['xamount']);
 
-
    // Update data di tabel poproduct
-   $update_poproduct_query = "UPDATE poproduct SET tglpoproduct='$tglpoproduct', deliveryat='$deliveryat', idsupplier='$idsupplier', Terms='$terms', note='$note', xweight='$xweight', xamount='$xamount'  WHERE idpoproduct='$idpoproduct'";
+   $update_poproduct_query = "UPDATE poproduct SET tglpoproduct='$tglpoproduct', deliveryat='$deliveryat', idsupplier='$idsupplier', Terms='$terms', note='$note', xweight='$xweight', xamount='$xamount' WHERE idpoproduct='$idpoproduct'";
 
    if (mysqli_query($conn, $update_poproduct_query)) {
       // Hapus data lama di tabel poproductdetail
@@ -47,6 +47,14 @@ if (isset($_POST['idpoproduct'], $_POST['tglpoproduct'], $_POST['deliveryat'], $
 
             mysqli_query($conn, $insert_poproductdetail_query);
          }
+
+         // Insert log activity into logactivity table
+         $idusers = $_SESSION['idusers'];
+         $nopoproduct = $_POST['nopoproduct'];
+         $event = "Update PO Product";
+         $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                      VALUES ('$idusers', '$nopoproduct', '$event', NOW())";
+         mysqli_query($conn, $logQuery);
 
          header("location: index.php");
          exit(); // Pastikan keluar dari skrip setelah mengalihkan

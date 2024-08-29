@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
 require "../konak/conn.php";
 
@@ -50,6 +51,12 @@ if (isset($_POST['submit'])) {
          // Execute the SQL query
          mysqli_query($conn, $sql);
       }
+
+      // Insert log activity into logactivity table
+      $event = "Buat PO Product";
+      $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                   VALUES ('$idusers', '$nopoproduct', '$event', NOW())";
+      mysqli_query($conn, $logQuery);
 
       // Redirect to a success page or perform any other actions
       header("location: index.php");

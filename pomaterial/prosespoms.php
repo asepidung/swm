@@ -2,7 +2,9 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit(); // Pastikan untuk menghentikan eksekusi kode lebih lanjut jika belum login
 }
+
 require "../konak/conn.php";
 require "ponumber.php";
 
@@ -17,16 +19,17 @@ if (isset($_POST['submit'])) {
    $terms = $_POST['terms'];
    $idusers = $_SESSION['idusers'];
    $stat = "Waiting";
-   // Insert data into the 'poproduct' table
+
+   // Insert data into the 'pomaterial' table
    $sql = "INSERT INTO pomaterial (nopomaterial, idsupplier, tglpomaterial, deliveryat, note, idusers, stat, terms) 
          VALUES ('$nopomaterial', '$idsupplier', '$tglpomaterial', '$deliveryat', '$note', '$idusers', '$stat', '$terms')";
 
    // Execute the SQL query
    if (mysqli_query($conn, $sql)) {
-      // Retrieve the last inserted poproduct ID
+      // Retrieve the last inserted pomaterial ID
       $pomaterialID = mysqli_insert_id($conn);
 
-      // Insert data into the 'poproductdetail' table
+      // Insert data into the 'pomaterialdetail' table
       $idrawmate = $_POST['idrawmate'];
       $weight = str_replace(',', '', $_POST['weight']);
       $price = str_replace(',', '', $_POST['price']);
@@ -45,6 +48,12 @@ if (isset($_POST['submit'])) {
          // Execute the SQL query
          mysqli_query($conn, $sql);
       }
+
+      // Insert log activity into logactivity table
+      $event = "Buat PO Material";
+      $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                   VALUES ('$idusers', '$nopomaterial', '$event', NOW())";
+      mysqli_query($conn, $logQuery);
 
       // Redirect to a success page or perform any other actions
       header("location: index.php");

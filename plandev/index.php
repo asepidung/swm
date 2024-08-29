@@ -47,12 +47,14 @@ include "../mainsidebar.php";
                            <?php
                            $total_qty = 0;
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer, salesorder.progress FROM plandev
-                                       JOIN customers ON plandev.idcustomer = customers.idcustomer
-                                       JOIN salesorder ON plandev.idso = salesorder.idso
-                                       WHERE progress = 'Waiting' OR progress = 'On Process'
-                                       ORDER BY plandelivery ASC;
-                           ");
+                           $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer, salesorder.progress 
+                                                            FROM plandev
+                                                            JOIN customers ON plandev.idcustomer = customers.idcustomer
+                                                            JOIN salesorder ON plandev.idso = salesorder.idso
+                                                            WHERE (salesorder.progress = 'Waiting' OR salesorder.progress = 'On Process')
+                                                            AND customers.idgroup != 21
+                                                            ORDER BY plandelivery ASC;
+                          ");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $total_qty += $tampil['weight'];
                            ?>

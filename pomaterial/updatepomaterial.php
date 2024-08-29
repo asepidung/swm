@@ -8,8 +8,9 @@ if (!isset($_SESSION['login'])) {
 
 require "../konak/conn.php";
 
-if (isset($_POST['idpomaterial'], $_POST['tglpomaterial'], $_POST['deliveryat'], $_POST['idsupplier'], $_POST['terms'], $_POST['note'], $_POST['xweight'], $_POST['xamount'], $_POST['idrawmate'], $_POST['weight'], $_POST['price'], $_POST['amount'], $_POST['notes'])) {
+if (isset($_POST['idpomaterial'], $_POST['tglpomaterial'], $_POST['deliveryat'], $_POST['nopomaterial'], $_POST['idsupplier'], $_POST['terms'], $_POST['note'], $_POST['xweight'], $_POST['xamount'], $_POST['idrawmate'], $_POST['weight'], $_POST['price'], $_POST['amount'], $_POST['notes'])) {
    $idpomaterial = $_POST['idpomaterial'];
+   $nopomaterial = $_POST['nopomaterial'];
    $tglpomaterial = $_POST['tglpomaterial'];
    $deliveryat = $_POST['deliveryat'];
    $idsupplier = $_POST['idsupplier'];
@@ -44,6 +45,13 @@ if (isset($_POST['idpomaterial'], $_POST['tglpomaterial'], $_POST['deliveryat'],
 
             mysqli_query($conn, $insert_pomaterialdetail_query);
          }
+
+         // Insert log activity into logactivity table
+         $idusers = $_SESSION['idusers'];
+         $event = "Edit PO Material";
+         $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                      VALUES ('$idusers', '$nopomaterial', '$event', NOW())";
+         mysqli_query($conn, $logQuery);
 
          header("location: index.php");
          exit(); // Pastikan keluar dari skrip setelah mengalihkan

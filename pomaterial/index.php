@@ -101,7 +101,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "po List";
+   document.title = "PO MATERIAL";
 </script>
 <?php
 // require "../footnote.php";

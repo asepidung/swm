@@ -91,6 +91,7 @@ if (isset($_GET['idpoproduct'])) {
                               <div class="form-group">
                                  <label for="terms">Terms</label>
                                  <div class="input-group">
+                                    <input type="hidden" name="nopoproduct" value="<?= $poproduct_data['nopoproduct'] ?>">
                                     <input type="text" class="form-control" value="<?= $poproduct_data['Terms'] ?>" name="terms">
                                     <input type="number" id="customTermInput" name="custom_terms" class="form-control" placeholder="Jumlah Hari" style="display: none;">
                                  </div>

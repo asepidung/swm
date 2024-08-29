@@ -13,6 +13,12 @@ require "../konak/conn.php";
 if (isset($_GET['idpoproduct'])) {
    $idpoproduct = $_GET['idpoproduct'];
 
+   // Ambil nopoproduct sebelum menghapus data
+   $query = "SELECT nopoproduct FROM poproduct WHERE idpoproduct = $idpoproduct";
+   $result = mysqli_query($conn, $query);
+   $row = mysqli_fetch_assoc($result);
+   $nopoproduct = $row['nopoproduct'];
+
    // Hapus data dari tabel poproductdetail
    $deleteDetailQuery = "DELETE FROM poproductdetail WHERE idpoproduct = $idpoproduct";
    mysqli_query($conn, $deleteDetailQuery);
@@ -20,6 +26,13 @@ if (isset($_GET['idpoproduct'])) {
    // Hapus data dari tabel poproduct
    $deleteQuery = "DELETE FROM poproduct WHERE idpoproduct = $idpoproduct";
    mysqli_query($conn, $deleteQuery);
+
+   // Insert log activity into logactivity table
+   $idusers = $_SESSION['idusers'];
+   $event = "Delete PO Product";
+   $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                VALUES ('$idusers', '$nopoproduct', '$event', NOW())";
+   mysqli_query($conn, $logQuery);
 
    // Alihkan ke halaman index.php setelah berhasil menghapus data
    header("location: index.php");
