@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
 require "../konak/conn.php";
 include "sonumber.php";
@@ -50,11 +51,21 @@ if (isset($_POST['submit'])) {
    $stmt_plandev->bind_param("siii", $deliverydate, $idcustomer, $weighttotal, $last_id);
    $stmt_plandev->execute();
 
+   // Insert log activity into logactivity table
+   $event = "Buat Sales Order";
+   $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                VALUES (?, ?, ?, NOW())";
+   $stmt_log = $conn->prepare($logQuery);
+   $stmt_log->bind_param("iss", $idusers, $sonumber, $event);
+   $stmt_log->execute();
+
    // Close prepared statements
    $stmt_plandev->close();
    $stmt_sodetail->close();
    $stmt_so->close();
+   $stmt_log->close();
    $conn->close();
 
    header("location: index.php");
+   exit();
 }

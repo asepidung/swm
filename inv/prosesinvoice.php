@@ -23,6 +23,7 @@ function normalizeNumber($number)
 
    return (float) $number;
 }
+
 if (isset($_POST['submit'])) {
    $iddo = $_POST['iddo'];
    $iddoreceipt = $_POST['iddoreceipt'];
@@ -44,12 +45,12 @@ if (isset($_POST['submit'])) {
    $downpayment = normalizeNumber($_POST['downpayment']);
    $balance = normalizeNumber($_POST['balance']);
    $tukarfaktur = $_POST['tukarfaktur'];
-   // hitung duedate
+
+   // Hitung due date
    $invoice_date_obj = new DateTime($invoice_date);
    $duedate_obj = clone $invoice_date_obj; // Duplikasi objek tanggal invoice_date_obj
    $duedate_obj->modify("+" . $top . " days"); // Tambahkan TOP (jangka waktu pembayaran) ke objek tanggal
    $duedate = $duedate_obj->format('Y-m-d');
-   //  akhir hitung duedate
 
    if ($tukarfaktur == 'YES') {
       $status = 'Belum TF';
@@ -60,7 +61,6 @@ if (isset($_POST['submit'])) {
    // Insert data into the 'invoice' table
    $sql = "INSERT INTO invoice (noinvoice, iddoreceipt, idsegment, top, duedate, invoice_date, status, tgltf, idcustomer, pocustomer, donumber, note, xweight, xamount, xdiscount, tax, charge, downpayment, balance) 
            VALUES ('$noinvoice', '$iddoreceipt', '$idsegment', '$top', '$duedate', '$invoice_date', '$status', NULL, '$idcustomer', '$pocustomer', '$donumber', '$note', '$xweight', '$xamount', '$xdiscount', '$tax', '$charge', '$downpayment', '$balance')";
-   // Execute the SQL query
    mysqli_query($conn, $sql);
 
    // Retrieve the last inserted invoice ID
@@ -70,7 +70,6 @@ if (isset($_POST['submit'])) {
    $sql2 = "INSERT INTO piutang (idgroup, idinvoice, idcustomer, balance, duedate, progress) 
            VALUES ('$idgroup', '$invoiceID', '$idcustomer', '$balance', '$duedate', '$status')";
    mysqli_query($conn, $sql2);
-
 
    // Insert data into the 'invoicedetail' table
    $idbarang = $_POST['idbarang'];
@@ -104,6 +103,16 @@ if (isset($_POST['submit'])) {
 
    $updateSql = "UPDATE do SET status = 'Invoiced' WHERE iddo = '$iddo'";
    mysqli_query($conn, $updateSql);
+
+   // Insert log activity into logactivity table
+   $idusers = $_SESSION['idusers'];
+   $event = "Buat Invoice";
+   $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                VALUES (?, ?, ?, NOW())";
+   $stmt_log = $conn->prepare($logQuery);
+   $stmt_log->bind_param("iss", $idusers, $noinvoice, $event);
+   $stmt_log->execute();
+   $stmt_log->close();
 
    // Redirect to a success page or perform any other actions
    header("location: invoice.php");

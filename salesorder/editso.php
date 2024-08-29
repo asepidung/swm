@@ -72,6 +72,7 @@ if (isset($_GET['idso'])) {
                                  <label for="po">Cust PO</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="po" id="po" value="<?php echo $data['po']; ?>">
+                                    <input type="hidden" name="sonumber" id="sonumber" value="<?php echo $data['sonumber']; ?>">
                                  </div>
                               </div>
                            </div>

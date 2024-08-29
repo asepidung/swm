@@ -2,11 +2,13 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
 require "../konak/conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $idso = $_POST["idso"];
+   $sonumber = $_POST["sonumber"]; // Pastikan sonumber juga dikirim dari form
    $idcustomer = $_POST["idcustomer"];
    $deliverydate = $_POST["deliverydate"];
    $po = $_POST["po"];
@@ -16,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $weight = $_POST["weight"];
    $price = $_POST["price"];
    $notes = $_POST["notes"];
+   $idusers = $_SESSION['idusers'];
 
    // Lakukan validasi data sesuai kebutuhan Anda di sini
 
@@ -35,8 +38,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
 
       // Update data plandev
-      $updatePlandevQuery = "UPDATE plandev SET idcustomer = $idcustomer, plandelivery = '$deliverydate', weight = $weighttotal  WHERE idso = $idso";
+      $updatePlandevQuery = "UPDATE plandev SET idcustomer = $idcustomer, plandelivery = '$deliverydate', weight = $weighttotal WHERE idso = $idso";
       mysqli_query($conn, $updatePlandevQuery);
+
+      // Insert log activity into logactivity table
+      $event = "Edit Sales Order";
+      $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                   VALUES (?, ?, ?, NOW())";
+      $stmt_log = $conn->prepare($logQuery);
+      $stmt_log->bind_param("iss", $idusers, $sonumber, $event);
+      $stmt_log->execute();
+      $stmt_log->close();
 
       echo "Data Sales Order berhasil diperbarui, dan data PlanDev juga diperbarui.";
    } else {
@@ -45,3 +57,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 header("location: index.php");
+exit();

@@ -68,6 +68,8 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                                  <label for="donumber">DO Number</label>
                                  <div class="input-group">
                                     <input type="text" class="form-control" name="donumber" id="donumber" value="<?= $row_invoice['donumber'] ?>" readonly>
+                                    <input type="hidden" name="noinvoice" value="<?= $row_invoice['noinvoice'] ?>">
+
                                  </div>
                               </div>
                            </div>

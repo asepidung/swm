@@ -16,6 +16,15 @@ if ($idinvoice <= 0) {
    die("ID Invoice tidak valid.");
 }
 
+// Ambil nomor invoice sebelum dihapus untuk keperluan log activity
+$sqlGetInvoiceNumber = "SELECT noinvoice FROM invoice WHERE idinvoice = ?";
+$stmtGetInvoiceNumber = $conn->prepare($sqlGetInvoiceNumber);
+$stmtGetInvoiceNumber->bind_param("i", $idinvoice);
+$stmtGetInvoiceNumber->execute();
+$stmtGetInvoiceNumber->bind_result($noinvoice);
+$stmtGetInvoiceNumber->fetch();
+$stmtGetInvoiceNumber->close();
+
 // Jangan lupa untuk menutup koneksi database setelah selesai menggunakannya
 
 // Hapus data dari tabel invoicedetail berdasarkan idinvoice
@@ -48,6 +57,16 @@ if ($stmtDeleteDetail->execute()) {
             $stmtUpdateDoReceiptStatus->bind_param("i", $iddo);
 
             if ($stmtUpdateDoReceiptStatus->execute()) {
+               // Insert log activity into logactivity table
+               $idusers = $_SESSION['idusers'];
+               $event = "Delete Invoice";
+               $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
+                            VALUES (?, ?, ?, NOW())";
+               $stmt_log = $conn->prepare($logQuery);
+               $stmt_log->bind_param("iss", $idusers, $noinvoice, $event);
+               $stmt_log->execute();
+               $stmt_log->close();
+
                echo "<script>alert('Invoice berhasil di Reject.'); window.location='invoice.php';</script>";
             } else {
                die("Terjadi kesalahan saat mengupdate status doreceipt: " . $stmtUpdateDoReceiptStatus->error);
