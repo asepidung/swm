@@ -46,7 +46,7 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer
                          FROM returjual
-                         JOIN customers ON returjual.idcustomer = customers.idcustomer");
+                         JOIN customers ON returjual.idcustomer = customers.idcustomer ORDER BY returnnumber DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
