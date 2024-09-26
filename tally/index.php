@@ -9,6 +9,14 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$queryMaxDate = "SELECT MAX(deliverydate) AS max_date FROM tally";
+$resultMaxDate = mysqli_query($conn, $queryMaxDate);
+$rowMaxDate = mysqli_fetch_assoc($resultMaxDate);
+$maxDate = $rowMaxDate['max_date'];
+
+// Tentukan $akhir sebagai tanggal maksimum dari kolom deliverydate
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 
 $queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM salesorder WHERE progress = 'Waiting'";
 $resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
@@ -19,6 +27,17 @@ $approvedCount = $rowApprovedCount['approved_count'];
    <div class="content-header">
       <div class="container-fluid">
          <div class="row mb-2">
+            <div class="col-12 col-md-6 mb-2">
+               <form method="GET" action="">
+                  <div class="input-group">
+                     <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+                     <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+                     <div class="input-group-append">
+                        <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+                     </div>
+                  </div>
+               </form>
+            </div>
             <div class="col-12 col-md-1 mb-2">
                <a href="drafttally.php">
                   <button type="button" class="btn btn-sm btn-outline-primary btn-block">
@@ -61,6 +80,8 @@ $approvedCount = $rowApprovedCount['approved_count'];
                            FROM tally 
                            INNER JOIN customers ON tally.idcustomer = customers.idcustomer
                            INNER JOIN salesorder ON tally.idso = salesorder.idso
+                           WHERE (tally.deliverydate BETWEEN '$awal' AND '$akhir')
+                           OR (tally.stat NOT IN ('DO', 'Rejected'))
                            ORDER BY idtally DESC");
 
                            if (!$ambildata) {
