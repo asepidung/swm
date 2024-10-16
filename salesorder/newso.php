@@ -28,7 +28,6 @@ include "../mainsidebar.php";
                                        <?php
                                        $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
                                        $result = mysqli_query($conn, $query);
-                                       // Generate options based on the retrieved data
                                        while ($row = mysqli_fetch_assoc($result)) {
                                           $idcustomer = $row['idcustomer'];
                                           $idgroup = $row['idgroup'];
@@ -109,7 +108,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="weight">Weight</label>
                                     <div class="input-group">
-                                       <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
+                                       <input type="text" name="weight[]" class="form-control text-right" value="0" required>
                                     </div>
                                  </div>
                               </div>
@@ -117,7 +116,7 @@ include "../mainsidebar.php";
                                  <div class="form-group">
                                     <label for="price">Price</label>
                                     <div class="input-group">
-                                       <input type="text" name="price[]" class="form-control text-right price-input">
+                                       <input type="text" name="price[]" class="form-control text-right" value="0">
                                     </div>
                                  </div>
                               </div>
@@ -154,6 +153,7 @@ include "../mainsidebar.php";
       </div>
    </section>
 </div>
+
 <script src="../dist/js/movefocus.js"></script>
 <script src="../dist/js/fill_alamat_note.js"></script>
 <script>
@@ -162,130 +162,118 @@ include "../mainsidebar.php";
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
    }
 
-   // Function to format the Price input
-   function formatPriceInput() {
-      const priceInputs = document.querySelectorAll('input[name="price[]"]');
-
-      priceInputs.forEach(function(input) {
-         input.addEventListener('input', function() {
-            // Remove any existing commas
-            let value = this.value.replace(/,/g, '');
-
-            // Convert the value to a number
-            let number = parseFloat(value);
-
-            // Check if it's a valid number
-            if (!isNaN(number)) {
-               // Add digit grouping to the number
-               this.value = addDigitGrouping(number);
-            }
-         });
+   // Function to handle input focus for weight and price fields (removes '0' when focused)
+   function handleInputFocus(input) {
+      input.addEventListener('focus', function() {
+         if (this.value === '0') {
+            this.value = ''; // Remove '0' when the input is focused
+         }
       });
    }
 
-   // Call the formatPriceInput function when the page loads
-   document.addEventListener('DOMContentLoaded', function() {
-      formatPriceInput();
+   // Function to format the Price input and add digit grouping
+   function formatPriceInput(input) {
+      input.addEventListener('input', function() {
+         // Remove any existing commas
+         let value = this.value.replace(/,/g, '');
 
-      // Add event listener for adding item
-      document.querySelector('.btn-add-item').addEventListener('click', addItem);
-   });
+         // Convert the value to a number
+         let number = parseFloat(value);
 
+         // Check if it's a valid number
+         if (!isNaN(number)) {
+            // Add digit grouping to the number
+            this.value = addDigitGrouping(number);
+         }
+      });
+   }
+
+   // Function to add event listeners to weight and price fields
+   function addInputListeners(input) {
+      handleInputFocus(input);
+      formatPriceInput(input); // Only for price input to apply digit grouping
+   }
+
+   // Function to add a new item row
    function addItem() {
       var itemsContainer = document.getElementById('items-container');
       var newItemRow = document.createElement('div');
-      newItemRow.className = 'item-row';
+      newItemRow.className = 'row mt-n2 item-row';
 
       newItemRow.innerHTML = `
-         <div class="row mt-n2">
-            <div class="col-3">
-               <div class="form-group">
-                  <div class="input-group">
-                     <select class="form-control" name="idbarang[]" required>
-                        <option value="">--Pilih--</option>
-                        <?php
-                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                        $result = mysqli_query($conn, $query);
-                        while ($row = mysqli_fetch_assoc($result)) {
-                           $idbarang = $row['idbarang'];
-                           $nmbarang = $row['nmbarang'];
-                           echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                        }
-                        ?>
-                     </select>
-                  </div>
+         <div class="col-3">
+            <div class="form-group">
+               <div class="input-group">
+                  <select class="form-control" name="idbarang[]" required>
+                     <option value="">--Pilih--</option>
+                     <?php
+                     $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                     $result = mysqli_query($conn, $query);
+                     while ($row = mysqli_fetch_assoc($result)) {
+                        $idbarang = $row['idbarang'];
+                        $nmbarang = $row['nmbarang'];
+                        echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
+                     }
+                     ?>
+                  </select>
                </div>
             </div>
-            <div class="col-2">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="weight[]" class="form-control text-right" required onkeydown="moveFocusToNextInput(event, this, 'weight[]')">
-                  </div>
+         </div>
+         <div class="col-2">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="weight[]" class="form-control text-right" value="0" required>
                </div>
             </div>
-            <div class="col-2">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="price[]" class="form-control text-right price-input">
-                  </div>
+         </div>
+         <div class="col-2">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="price[]" class="form-control text-right" value="0" required>
                </div>
             </div>
-            <div class="col-4">
-               <div class="form-group">
-                  <div class="input-group">
-                     <input type="text" name="notes[]" class="form-control">
-                  </div>
+         </div>
+         <div class="col-4">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="text" name="notes[]" class="form-control">
                </div>
             </div>
-            <div class="col">
-               <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
-                  <i class="fas fa-minus-circle"></i>
-               </button>
-            </div>
+         </div>
+         <div class="col-1">
+            <button type="button" class="btn btn-link text-danger" onclick="removeItem(this)"><i class="fas fa-minus-circle"></i></button>
          </div>
       `;
 
+      // Append new row to the items container
       itemsContainer.appendChild(newItemRow);
 
-      // Call the formatPriceInput function for the new Price input
-      formatPriceInput();
+      // Apply listeners to the new weight and price inputs
+      const newWeightInput = newItemRow.querySelector('input[name="weight[]"]');
+      const newPriceInput = newItemRow.querySelector('input[name="price[]"]');
+
+      handleInputFocus(newWeightInput); // Only remove '0' on focus for weight
+      addInputListeners(newPriceInput); // For price: remove '0' and apply digit grouping
    }
 
+   // Function to remove an item row
    function removeItem(button) {
       var itemRow = button.closest('.item-row');
       itemRow.remove();
    }
 
-   // Function to add digit grouping (thousands separator) to a number
-   function addDigitGrouping(number) {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   }
-
-   // Function to format the Price input
-   function formatPriceInput() {
+   // Initial call to apply event listeners to existing weight and price inputs on page load
+   document.addEventListener('DOMContentLoaded', function() {
+      const weightInputs = document.querySelectorAll('input[name="weight[]"]');
       const priceInputs = document.querySelectorAll('input[name="price[]"]');
 
-      priceInputs.forEach(function(input) {
-         input.addEventListener('input', function() {
-            // Remove any existing commas
-            let value = this.value.replace(/,/g, '');
-
-            // Convert the value to a number
-            let number = parseFloat(value);
-
-            // Check if it's a valid number
-            if (!isNaN(number)) {
-               // Add digit grouping to the number
-               this.value = addDigitGrouping(number);
-            }
-         });
-      });
-   }
-
-   // Call the formatPriceInput function when the page loads
-   document.addEventListener('DOMContentLoaded', formatPriceInput);
-   document.title = "Sales Order";
+      weightInputs.forEach(handleInputFocus); // Apply only focus handler to weight inputs
+      priceInputs.forEach(addInputListeners); // Apply both focus handler and digit grouping to price inputs
+   });
 </script>
-<?php
-include "../footer.php";
-?>
+
+
+
+
+
+<?php include "../footer.php"; ?>
