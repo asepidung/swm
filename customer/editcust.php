@@ -22,7 +22,7 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
       <div class="container-fluid">
          <div class="row">
             <!-- left column -->
-            <div class="col">
+            <div class="col-lg-8 mx-auto">
                <!-- general form elements -->
                <div class="card card-dark mt-3">
                   <div class="card-header">
@@ -83,14 +83,14 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                            <label for="top">T.O.P</label>
                            <input type="number" class="form-control" name="top" id="top" value="<?= $rowCustomer['top']; ?>">
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                            <label for="pajak">Customer Dikenakan Pajak</label>
                            <select class="form-control" name="pajak" id="pajak">
                               <option>--Pilih Satu--</option>
                               <option value="YES" <?= ($rowCustomer['pajak'] == 'YES') ? 'selected' : ''; ?>>YES</option>
                               <option value="NO" <?= ($rowCustomer['pajak'] == 'NO') ? 'selected' : ''; ?>>NO</option>
                            </select>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                            <label for="tukarfaktur">Tukar Faktur</label>
                            <select class="form-control" name="tukarfaktur" id="tukarfaktur">
@@ -99,23 +99,75 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
                               <option value="NO" <?= ($rowCustomer['tukarfaktur'] == 'NO') ? 'selected' : ''; ?>>NO</option>
                            </select>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                            <label for="telepon">Telepon</label>
                            <input type="tel" class="form-control" name="telepon" id="telepon" value="<?= $rowCustomer['telepon']; ?>">
                         </div>
                         <div class="form-group">
                            <label for="email">Email</label>
                            <input type="text" class="form-control" name="email" id="email" value="<?= $rowCustomer['email']; ?>">
-                        </div>
+                        </div> -->
                         <div class="form-group">
                            <label for="catatan">Catatan</label>
                            <textarea name="catatan" id="catatan" rows="2" class="form-control"><?= $rowCustomer['catatan']; ?></textarea>
                         </div>
-                        <div class="form-group mr-3 text-right">
-                           <button type="submit" class="btn bg-gradient-primary">Update</button>
+
+                        <!-- Dokumen yang Diperlukan -->
+                        <div class="form-group">
+                           <label>Dokumen yang Diperlukan Saat Pengiriman</label>
+                           <div class="row">
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="invoice" id="invoice" <?= ($rowCustomer['invoice'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="invoice">Invoice</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="NKV" id="nkv" <?= ($rowCustomer['nkv'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="nkv">NKV</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="Halal" id="halal" <?= ($rowCustomer['halal'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="halal">Sertifikat Halal</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="SV" id="sv" <?= ($rowCustomer['sv'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="sv">SV</label>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="Joss" id="joss" <?= ($rowCustomer['joss'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="joss">JOSS</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="PHD" id="phd" <?= ($rowCustomer['phd'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="phd">PHD</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dokumen[]" value="Uji Lab" id="ujilab" <?= ($rowCustomer['ujilab'] == 1) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="ujilab">Uji Lab</label>
+                                 </div>
+                              </div>
+                              <div class="col">
+                              </div>
+                           </div>
+                           <div class="form-group text-right">
+                              <button type="submit" class="btn bg-gradient-primary">Update</button>
+                           </div>
                         </div>
-                     </div>
-                     <!-- /.card-body -->
+                        <!-- /.card-body -->
                   </form>
                </div>
                <!-- /.card -->
@@ -123,8 +175,7 @@ $rowCustomer = mysqli_fetch_assoc($resultCustomer);
          </div>
       </div>
    </section>
-</div><!-- /.container-fluid -->
-<!-- /.content -->
+   <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
-<?php include "../footer.php" ?>
+
+<?php include '../footer.php'; ?>

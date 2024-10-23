@@ -41,6 +41,12 @@ $role = mysqli_fetch_assoc($result);
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="../carcase/datacarcase.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Carcase</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="../boning/databoning.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Boning</p>

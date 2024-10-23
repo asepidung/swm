@@ -80,7 +80,9 @@ $approvedCount = $rowApprovedCount['approved_count'];
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
-                                 <td class="text-center"><?= $tampil['donumber']; ?></td>
+                                 <td class="text-center">
+                                    <a href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>"><?= $tampil['donumber']; ?></a>
+                                 </td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['po']; ?></td>

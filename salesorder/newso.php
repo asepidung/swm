@@ -23,7 +23,7 @@ include "../mainsidebar.php";
                               <div class="form-group">
                                  <label for="idcustomer">Customer <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <select class="form-control" name="idcustomer" id="idcustomer" required>
+                                    <select class="form-control" name="idcustomer" id="idcustomer" required autofocus>
                                        <option value="">Pilih Customer</option>
                                        <?php
                                        $query = "SELECT * FROM customers ORDER BY nama_customer ASC";
@@ -46,7 +46,7 @@ include "../mainsidebar.php";
                               <div class="form-group">
                                  <label for="deliverydate">Tgl Kirim <span class="text-danger">*</span></label>
                                  <div class="input-group">
-                                    <input type="date" class="form-control" name="deliverydate" id="deliverydate" required autofocus>
+                                    <input type="date" class="form-control" name="deliverydate" id="deliverydate" required>
                                  </div>
                               </div>
                            </div>
@@ -271,9 +271,4 @@ include "../mainsidebar.php";
       priceInputs.forEach(addInputListeners); // Apply both focus handler and digit grouping to price inputs
    });
 </script>
-
-
-
-
-
 <?php include "../footer.php"; ?>
