@@ -7,12 +7,15 @@ require "../konak/conn.php";
 
 $iddo = $_GET['iddo'];
 // Query untuk mengambil data dari tabel do
-$query = "SELECT do.*, customers.nama_customer, customers.alamat1, users.fullname, salesorder.sonumber
+$query = "SELECT do.*, customers.nama_customer, customers.alamat1, customers.invoice, customers.nkv, 
+          customers.halal, customers.sv, customers.joss, customers.phd, customers.ujilab, 
+          users.fullname, salesorder.sonumber
           FROM do 
           INNER JOIN salesorder ON do.idso = salesorder.idso
           INNER JOIN customers ON do.idcustomer = customers.idcustomer 
           INNER JOIN users ON do.idusers = users.idusers
           WHERE do.iddo = '$iddo'";
+
 $result = mysqli_query($conn, $query);
 $row_do = mysqli_fetch_assoc($result);
 
@@ -33,6 +36,11 @@ $result_detail = mysqli_query($conn, $query_detail);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
+    label {
+      margin-right: 15px;
+      /* Menambahkan jarak antara checkbox */
+    }
+
     .data {
       padding-right: 5px;
       padding-left: 5px;
@@ -166,16 +174,73 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="20%">Customer <br><br><br><br><br> ................................</td>
     </tr>
   </table>
+  <!-- Kolom ceklis -->
+  <br>
+  <table width="70%" border="0" cellpadding="0" class="border-collapse">
+    <tr>
+      <td colspan="7">Cek Kelengkapan :</td>
+    </tr>
+    <tr>
+      <td>
+        <?php if ($row_do['invoice']): ?>
+          <label>
+            <input type="checkbox"> Invoice
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['nkv']): ?>
+          <label>
+            <input type="checkbox"> NKV
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['halal']): ?>
+          <label>
+            <input type="checkbox"> Halal
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['sv']): ?>
+          <label>
+            <input type="checkbox"> SV
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['joss']): ?>
+          <label>
+            <input type="checkbox"> JOSS
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['phd']): ?>
+          <label>
+            <input type="checkbox"> PHD
+          </label>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if ($row_do['ujilab']): ?>
+          <label>
+            <input type="checkbox"> UJILAB
+          </label>
+        <?php endif; ?>
+      </td>
+    </tr>
+  </table>
+
 
   <script>
     document.title = "<?php echo $row_do['donumber']; ?>";
     window.addEventListener("load", function() {
       window.print();
-
-      // Redirect ke halaman do.php setelah 3 detik
       setTimeout(function() {
         window.location.href = "do.php";
-      }, 3000); // Ubah angka ini sesuai dengan durasi yang diinginkan (dalam milidetik)
+      }, 2000);
     });
   </script>
 </body>

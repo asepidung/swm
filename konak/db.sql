@@ -1897,3 +1897,24 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE TABLE carcase (
+  idcarcase INT AUTO_INCREMENT PRIMARY KEY,
+  killdate DATE,
+  head VARCHAR(2),
+  idsupplier INT,
+  breed VARCHAR(10),
+  note varchar (100),
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
+);
+
+CREATE TABLE carcasedetail (
+  iddetail INT AUTO_INCREMENT PRIMARY KEY,
+  idcarcase INT,
+  eartag VARCHAR (5),
+  carcase1 DECIMAL (5,2),
+  carcase2 DECIMAL (5,2),
+  hides DECIMAL (5,2),
+  tail DECIMAL (5,2),
+  FOREIGN KEY (idcarcase) REFERENCES carcase (idcarcase)
+);

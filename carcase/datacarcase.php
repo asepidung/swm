@@ -14,7 +14,7 @@ include "../mainsidebar.php";
       <div class="container-fluid">
          <div class="row mb-2">
             <div class="col-12 col-md-2 mb-2">
-               <a href="newso.php">
+               <a href="newkill.php">
                   <button type="button" class="btn btn-sm btn-outline-primary btn-block"><i class="fas fa-plus"></i> Baru</button>
                </a>
             </div>
@@ -43,16 +43,22 @@ include "../mainsidebar.php";
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
-                              <th>Killing Number</th>
                               <th>Killing Date</th>
                               <th>Supplier</th>
-                              <th>Head</th>
+                              <th>Head &Sigma;</th>
+                              <th>Breed</th>
+                              <th>Carcase &Sigma;</th>
+                              <th>Hides &Sigma;</th>
+                              <th>Tails &Sigma;</th>
                               <th>Carcase %</th>
                               <th>Action</th>
                            </tr>
                         </thead>
                         <tbody>
                            <tr>
+                              <td></td>
+                              <td></td>
+                              <td></td>
                               <td></td>
                               <td></td>
                               <td></td>
@@ -75,7 +81,7 @@ include "../mainsidebar.php";
 
 <script>
    // Mengubah judul halaman web
-   document.title = "Sales Order List";
+   document.title = "Data Killing";
 </script>
 <?php
 include "../footer.php";
