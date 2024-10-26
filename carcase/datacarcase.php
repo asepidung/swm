@@ -18,18 +18,6 @@ include "../mainsidebar.php";
                   <button type="button" class="btn btn-sm btn-outline-primary btn-block"><i class="fas fa-plus"></i> Baru</button>
                </a>
             </div>
-            <div class="col-12 col-md-6 mb-2">
-               <form method="GET" action="">
-                  <div class="input-group">
-                     <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
-                     <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
-                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
-                     </div>
-                  </div>
-               </form>
-            </div>
-
          </div>
       </div>
    </div>
@@ -39,15 +27,32 @@ include "../mainsidebar.php";
             <div class="col-12">
                <div class="card">
                   <div class="card-body">
+                     <?php
+                     // Query untuk mengambil data carcase
+                     $query = "SELECT carcase.idcarcase, carcase.killdate, carcase.breed, supplier.nmsupplier,
+                     (SELECT SUM(cd.berat) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_berat,
+                     (SELECT COUNT(cd.eartag) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_eartag,
+                     (SELECT SUM(cd.carcase1) + SUM(cd.carcase2) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_carcase,
+                     (SELECT SUM(cd.carcase1) + SUM(cd.carcase2) + SUM(cd.tail) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_carcase_tail,
+                     (SELECT SUM(cd.hides) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_hides,
+                     (SELECT SUM(cd.tail) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_tails
+                     FROM carcase 
+                     JOIN supplier ON carcase.idsupplier = supplier.idsupplier 
+                     ORDER BY carcase.killdate DESC";
+                     $result = mysqli_query($conn, $query);
+                     ?>
+
                      <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
                               <th>Killing Date</th>
                               <th>Supplier</th>
+                              <th>Berat &Sigma;</th>
                               <th>Head &Sigma;</th>
                               <th>Breed</th>
                               <th>Carcase &Sigma;</th>
+                              <th>Offal</th>
                               <th>Hides &Sigma;</th>
                               <th>Tails &Sigma;</th>
                               <th>Carcase %</th>
@@ -55,20 +60,40 @@ include "../mainsidebar.php";
                            </tr>
                         </thead>
                         <tbody>
-                           <tr>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                           </tr>
+                           <?php
+                           if (mysqli_num_rows($result) > 0) {
+                              $no = 1;
+                              while ($row = mysqli_fetch_assoc($result)) {
+                                 // Menghitung persentase carcase
+                                 $carcase_percentage = 0;
+                                 if ($row['total_berat'] > 0) {
+                                    $carcase_percentage = (($row['total_carcase']) / ($row['total_berat'])) * 100; // Total carcase = total_carcase1 + total_carcase2
+                                 }
+
+                                 echo "<tr>";
+                                 echo "<td class='text-center'>" . $no++ . "</td>";
+                                 echo "<td class='text-center'>" . htmlspecialchars(date('d-M-Y', strtotime($row['killdate']))) . "</td>";
+                                 echo "<td class='text-left'>" . htmlspecialchars($row['nmsupplier']) . "</td>";
+                                 echo "<td class='text-center'>" . htmlspecialchars(number_format($row['total_berat'], 2)) . "</td>";
+                                 echo "<td class='text-center'>" . htmlspecialchars($row['total_eartag']) . "</td>";
+                                 echo "<td class='text-center'>" . htmlspecialchars($row['breed']) . "</td>";
+                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_carcase'], 2)) . "</td>";
+                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_carcase_tail'], 2)) . "</td>";
+                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_hides'], 2)) . "</td>";
+                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_tails'], 2)) . "</td>";
+                                 echo "<td class='text-right'>" . number_format($carcase_percentage, 2) . "%</td>";
+                                 echo "<td class='text-center'>
+                        <a href='carcasedetail.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>Detail</a>
+                      </td>";
+                                 echo "</tr>";
+                              }
+                           } else {
+                              echo "<tr><td colspan='12' class='text-center'>Tidak ada data ditemukan</td></tr>";
+                           }
+                           ?>
                         </tbody>
                      </table>
+
                   </div>
                </div>
             </div>

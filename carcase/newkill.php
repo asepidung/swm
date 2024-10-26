@@ -24,7 +24,7 @@ $supplierResult = mysqli_query($conn, $supplierQuery);
                      <h3 class="card-title">Input Data Karkas</h3>
                   </div>
                   <div class="card-body">
-                     <form id="carcaseForm">
+                     <form id="carcaseForm" action="prosescarcase.php" method="post">
                         <div class="form-group">
                            <label for="killdate">Tanggal Penyembelihan:</label>
                            <input type="date" class="form-control" id="killdate" name="killdate" value="<?php echo date('Y-m-d'); ?>" required>

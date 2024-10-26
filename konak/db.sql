@@ -1901,7 +1901,6 @@ COMMIT;
 CREATE TABLE carcase (
   idcarcase INT AUTO_INCREMENT PRIMARY KEY,
   killdate DATE,
-  head VARCHAR(2),
   idsupplier INT,
   breed VARCHAR(10),
   note varchar (100),
@@ -1911,6 +1910,7 @@ CREATE TABLE carcase (
 CREATE TABLE carcasedetail (
   iddetail INT AUTO_INCREMENT PRIMARY KEY,
   idcarcase INT,
+  berat DECIMAL (6,2),
   eartag VARCHAR (5),
   carcase1 DECIMAL (5,2),
   carcase2 DECIMAL (5,2),
