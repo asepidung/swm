@@ -177,9 +177,9 @@ $result_detail = mysqli_query($conn, $query_detail);
   <!-- Kolom ceklis -->
   <br>
   <table width="70%" border="0" cellpadding="0" class="border-collapse">
-    <tr>
+    <!-- <tr>
       <td colspan="7">Cek Kelengkapan :</td>
-    </tr>
+    </tr> -->
     <tr>
       <td>
         <?php if ($row_do['invoice']): ?>

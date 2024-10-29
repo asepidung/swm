@@ -6,6 +6,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require "../konak/conn.php";
+include "notally.php";
 
 if (isset($_POST['submit'])) {
    $idso = $_POST['idso'];
@@ -13,7 +14,7 @@ if (isset($_POST['submit'])) {
    $idcustomer = $_POST['idcustomer'];
    $po = $_POST['po'];
    $sonumber = $_POST['sonumber'];
-   $notally  = $_POST['notally'];
+   $notally  = $kodeauto;
    $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
 
    // Cek apakah idso sudah ada di tabel tally

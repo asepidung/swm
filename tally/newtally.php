@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "notally.php";
+
 
 $idso = $_GET['idso'];
 
@@ -48,12 +48,12 @@ $sonumber = $rowso['sonumber'];
                               <input type="text" class="form-control" name="po" id="po" value="<?= $rowso['po'] ?>" readonly>
                            </div>
                         </div>
-                        <div class="col">
+                        <!-- <div class="col">
                            <div class="form-group">
                               <label for="notally">Taly Number</label>
                               <input type="text" class="form-control" name="notally" id="notally" value="<?= $kodeauto ?>" readonly>
                            </div>
-                        </div>
+                        </div> -->
                         <div class="col">
                            <div class="form-group">
                               <label for="sonumber">SO Number</label>

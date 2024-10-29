@@ -27,7 +27,7 @@ $limit = $_SESSION['limit'];
       <div class="row">
          <div class="col">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Back To List</button></a>
-
+            <a href="approvetally.php?id=<?= htmlspecialchars($rowtally['idtally']) ?>&idso=<?= htmlspecialchars($idso) ?>"><button type="button" class="btn btn-outline-success"><i class="fas fa-check-circle"></i> Approve</button></a>
             <span class="text-info float-right">
                <?php if ($rowtally['nama_customer'] == "ASEP OFFAL") { ?>
                   <a href="istimewa.php?idso=<?= $idso ?>&idtally=<?= $idtally ?>">
