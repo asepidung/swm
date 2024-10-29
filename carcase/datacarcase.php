@@ -83,7 +83,7 @@ include "../mainsidebar.php";
                                  echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_tails'], 2)) . "</td>";
                                  echo "<td class='text-right'>" . number_format($carcase_percentage, 2) . "%</td>";
                                  echo "<td class='text-center'>
-                        <a href='carcasedetail.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>Detail</a>
+                        <a href='editcarcase.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>Update</a>
                       </td>";
                                  echo "</tr>";
                               }
