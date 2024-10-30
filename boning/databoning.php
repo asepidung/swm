@@ -46,16 +46,6 @@ include "../mainsidebar.php";
                 </thead>
                 <tbody>
                   <?php
-                  $query_total_sapi = "SELECT SUM(qtysapi) AS total_sapi FROM boning";
-                  $result_total_sapi = mysqli_query($conn, $query_total_sapi);
-                  $row_total_sapi = mysqli_fetch_assoc($result_total_sapi);
-                  $total_sapi = $row_total_sapi['total_sapi'];
-
-                  $query_total_berat_keseluruhan = "SELECT SUM(qty) AS total_berat_keseluruhan FROM labelboning";
-                  $result_total_berat_keseluruhan = mysqli_query($conn, $query_total_berat_keseluruhan);
-                  $row_total_berat_keseluruhan = mysqli_fetch_assoc($result_total_berat_keseluruhan);
-                  $total_berat_keseluruhan = $row_total_berat_keseluruhan['total_berat_keseluruhan'];
-
                   $no = 1;
                   $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier ORDER BY b.batchboning DESC");
                   while ($tampil = mysqli_fetch_array($ambildata)) {
@@ -101,12 +91,7 @@ include "../mainsidebar.php";
                   }
                   ?>
                 </tbody>
-                <tfoot>
-                  <th colspan="4"></th>
-                  <th class="text-center"><?= number_format($total_sapi); ?> </td>
-                  <th class="text-right"><?= number_format($total_berat_keseluruhan, 2); ?></td>
-                  <th colspan="3"></th>
-                </tfoot>
+
               </table>
             </div>
             <!-- /.card-body -->

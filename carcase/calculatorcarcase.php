@@ -9,5 +9,5 @@ $query = "SELECT carcase.idcarcase, carcase.killdate, carcase.breed, supplier.nm
                      (SELECT SUM(cd.tail) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_tails
                      FROM carcase 
                      JOIN supplier ON carcase.idsupplier = supplier.idsupplier 
-                     ORDER BY carcase.killdate DESC";
+                     ORDER BY carcase.idcarcase DESC";
 $result = mysqli_query($conn, $query);

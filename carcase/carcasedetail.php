@@ -45,21 +45,20 @@ $stmt->close();
                         <!-- Hidden field untuk idcarcase -->
                         <input type="hidden" name="idcarcase" value="<?= htmlspecialchars($idcarcase); ?>">
 
-                        <!-- Field untuk berat -->
-                        <div class="form-group">
-                           <input type="text" class="form-control" id="berat" name="berat" placeholder="Berat" autofocus>
-                        </div>
-
                         <!-- Field untuk eartag -->
                         <div class="form-group">
-                           <input type="text" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag">
+                           <input type="number" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
+                        </div>
+                        <!-- Field untuk berat -->
+                        <div class="form-group">
+                           <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat">
                         </div>
                         <div class="form-group">
-                           <input type="text" class="form-control" id="carcase1" name="carcase1" required placeholder="Carcase A">
+                           <input type="number" step="0.01" class="form-control" id="carcase1" name="carcase1" required placeholder="Carcase A">
                         </div>
 
                         <div class="form-group">
-                           <input type="text" class="form-control" id="carcase2" name="carcase2" required placeholder="Carcase B">
+                           <input type="number" step="0.01" class="form-control" id="carcase2" name="carcase2" required placeholder="Carcase B">
                         </div>
 
                         <!-- Modal untuk Peringatan -->
@@ -85,12 +84,12 @@ $stmt->close();
 
                         <!-- Field untuk hides -->
                         <div class="form-group">
-                           <input type="text" class="form-control" id="hides" name="hides" required placeholder="Hides">
+                           <input type="number" step="0.01" class="form-control" id="hides" name="hides" required placeholder="Hides">
                         </div>
 
                         <!-- Field untuk tail -->
                         <div class="form-group">
-                           <input type="text" class="form-control" id="tail" name="tail" placeholder="Tails">
+                           <input type="number" step="0.01" class="form-control" id="tail" name="tail" placeholder="Tails">
                         </div>
 
                         <!-- Tombol Simpan dan Next -->

@@ -68,13 +68,12 @@ include "kebutuhanindex.php";
                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
          </ul>
-         <!-- Right navbar links -->
          <ul class="navbar-nav ml-auto">
             <!-- Navbar Search -->
-            <li class="nav-item">
-               <!-- <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+            <!-- <li class="nav-item">
+               <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                   <i class="fas fa-search"></i>
-               </a> -->
+               </a>
                <div class="navbar-search-block">
                   <form class="form-inline">
                      <div class="input-group input-group-sm">
@@ -90,16 +89,15 @@ include "kebutuhanindex.php";
                      </div>
                   </form>
                </div>
-            </li>
+            </li> -->
             <!-- Messages Dropdown Menu -->
-            <li class="nav-item dropdown">
-               <!-- <a class="nav-link" data-toggle="dropdown" href="#">
+            <!-- <li class="nav-item dropdown">
+               <a class="nav-link" data-toggle="dropdown" href="#">
                   <i class="far fa-comments"></i>
                   <span class="badge badge-danger navbar-badge">2</span>
-               </a> -->
+               </a>
                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                   <a href="#" class="dropdown-item">
-                     <!-- Message Start -->
                      <div class="media">
                         <img src="dist/img/ipin.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                         <div class="media-body">
@@ -111,11 +109,9 @@ include "kebutuhanindex.php";
                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
                         </div>
                      </div>
-                     <!-- Message End -->
                   </a>
                   <div class="dropdown-divider"></div>
                   <a href="#" class="dropdown-item">
-                     <!-- Message Start -->
                      <div class="media">
                         <img src="dist/img/ble.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                         <div class="media-body">
@@ -127,18 +123,17 @@ include "kebutuhanindex.php";
                            <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
                         </div>
                      </div>
-                     <!-- Message End -->
                   </a>
                   <div class="dropdown-divider"></div>
                   <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                </div>
-            </li>
+            </li> -->
             <!-- Notifications Dropdown Menu -->
-            <li class="nav-item dropdown">
-               <!-- <a class="nav-link" data-toggle="dropdown" href="#">
+            <!-- <li class="nav-item dropdown">
+               <a class="nav-link" data-toggle="dropdown" href="#">
                   <i class="far fa-bell"></i>
                   <span class="badge badge-warning navbar-badge">15</span>
-               </a> -->
+               </a>
                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                   <span class="dropdown-item dropdown-header">15 Notifications</span>
                   <div class="dropdown-divider"></div>
@@ -159,7 +154,7 @@ include "kebutuhanindex.php";
                   <div class="dropdown-divider"></div>
                   <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                </div>
-            </li>
+            </li> -->
             <li class="nav-item">
                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                   <i class="fas fa-expand-arrows-alt"></i>

@@ -30,8 +30,7 @@ include "../mainsidebar.php";
                      <?php
                      include "calculatorcarcase.php";
                      ?>
-
-                     <table id="example1" class="table table-bordered table-striped table-sm">
+                     <table id="example1" class="table table-bordered table-striped table-sm text-right">
                         <thead class="text-center">
                            <tr>
                               <th>#</th>
@@ -57,31 +56,40 @@ include "../mainsidebar.php";
                                  $carcase_percentage = 0;
                                  if ($row['total_berat'] > 0) {
                                     $carcase_percentage = (($row['total_carcase']) / ($row['total_berat'])) * 100; // Total carcase = total_carcase1 + total_carcase2
-                                 }
-
-                                 echo "<tr>";
-                                 echo "<td class='text-center'>" . $no++ . "</td>";
-                                 echo "<td class='text-center'>" . htmlspecialchars(date('d-M-Y', strtotime($row['killdate']))) . "</td>";
-                                 echo "<td class='text-left'>" . htmlspecialchars($row['nmsupplier']) . "</td>";
-                                 echo "<td class='text-center'>" . htmlspecialchars(number_format($row['total_berat'], 2)) . "</td>";
-                                 echo "<td class='text-center'>" . htmlspecialchars($row['total_eartag']) . "</td>";
-                                 echo "<td class='text-center'>" . htmlspecialchars($row['breed']) . "</td>";
-                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_carcase'], 2)) . "</td>";
-                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_carcase_tail'], 2)) . "</td>";
-                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_hides'], 2)) . "</td>";
-                                 echo "<td class='text-right'>" . htmlspecialchars(number_format($row['total_tails'], 2)) . "</td>";
-                                 echo "<td class='text-right'>" . number_format($carcase_percentage, 2) . "%</td>";
-                                 echo "<td class='text-center'>
-                        <a href='editcarcase.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>Update</a>
-                        <a href='lihatcarcase.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>lihat</a>
-                      </td>";
-                                 echo "</tr>";
-                              }
+                                 } ?>
+                                 <tr>
+                                    <td class="text-center"><?= $no++ ?></td>
+                                    <td class="text-center"><?= htmlspecialchars(date('d-M-Y', strtotime($row['killdate'])))  ?></td>
+                                    <td class="text-left"><?= htmlspecialchars($row['nmsupplier']) ?></td>
+                                    <td><?= htmlspecialchars(number_format($row['total_berat'], 2)) ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($row['total_eartag']) ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($row['breed']) ?></td>
+                                    <td><?= htmlspecialchars(number_format($row['total_carcase'], 2)) ?></td>
+                                    <td><?= htmlspecialchars(number_format($row['total_carcase_tail'], 2)) ?></td>
+                                    <td><?= htmlspecialchars(number_format($row['total_hides'], 2)) ?></td>
+                                    <td><?= htmlspecialchars(number_format($row['total_tails'], 2)) ?></td>
+                                    <td><?= number_format($carcase_percentage, 2) ?></td>
+                                    <td class="text-center">
+                                       <a href="lihatcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-info btn-sm" title="Lihat"><i class="fas fa-eye"></i></a>
+                                       <a href="editcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-paper-plane"></i></a>
+                                       <a href='deletecarcase.php?idcarcase="<?= $row['idcarcase'] ?>
+                                          onclick=' return confirmDelete()
+                                          class='btn btn-danger btn-sm' title="Hapus"><i class="fas fa-minus-square"></i></a>
+                                    </td>";
+                                 </tr>
+                           <?php }
                            } else {
                               echo "<tr><td colspan='12' class='text-center'>Tidak ada data ditemukan</td></tr>";
                            }
                            ?>
                         </tbody>
+
+                        <script>
+                           function confirmDelete() {
+                              return confirm("Apakah Anda yakin ingin menghapus data ini?");
+                           }
+                        </script>
+
                      </table>
 
                   </div>
@@ -92,8 +100,6 @@ include "../mainsidebar.php";
 
    </section>
 </div>
-
-
 <script>
    // Mengubah judul halaman web
    document.title = "Data Killing";
