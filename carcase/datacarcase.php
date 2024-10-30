@@ -28,18 +28,7 @@ include "../mainsidebar.php";
                <div class="card">
                   <div class="card-body">
                      <?php
-                     // Query untuk mengambil data carcase
-                     $query = "SELECT carcase.idcarcase, carcase.killdate, carcase.breed, supplier.nmsupplier,
-                     (SELECT SUM(cd.berat) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_berat,
-                     (SELECT COUNT(cd.eartag) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_eartag,
-                     (SELECT SUM(cd.carcase1) + SUM(cd.carcase2) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_carcase,
-                     (SELECT SUM(cd.carcase1) + SUM(cd.carcase2) + SUM(cd.tail) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_carcase_tail,
-                     (SELECT SUM(cd.hides) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_hides,
-                     (SELECT SUM(cd.tail) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_tails
-                     FROM carcase 
-                     JOIN supplier ON carcase.idsupplier = supplier.idsupplier 
-                     ORDER BY carcase.killdate DESC";
-                     $result = mysqli_query($conn, $query);
+                     include "calculatorcarcase.php";
                      ?>
 
                      <table id="example1" class="table table-bordered table-striped table-sm">
@@ -84,6 +73,7 @@ include "../mainsidebar.php";
                                  echo "<td class='text-right'>" . number_format($carcase_percentage, 2) . "%</td>";
                                  echo "<td class='text-center'>
                         <a href='editcarcase.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>Update</a>
+                        <a href='lihatcarcase.php?idcarcase=" . $row['idcarcase'] . "' class='btn btn-info btn-sm'>lihat</a>
                       </td>";
                                  echo "</tr>";
                               }
