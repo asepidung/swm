@@ -84,8 +84,8 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                  <th>Eartag</th>
                                  <th>Carcase 1</th>
                                  <th>Carcase 2</th>
-                                 <!-- <th>Hides</th>
-                                 <th>Tails</th> -->
+                                 <th>Hides</th>
+                                 <th>Tails</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -95,23 +95,22 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                  while ($row_carcasedetail = mysqli_fetch_assoc($result_carcasedetail)) {
                                     echo "<tr>";
                                     echo "<td class='text-center'>" . $no++ . "</td>";
-                                    // Menambahkan input hidden untuk iddetail
-                                    // echo "<input type='hidden' name='iddetail[]' value='" . htmlspecialchars($row_carcasedetail['iddetail']) . "'>";
+                                    echo "<input type='hidden' name='iddetail[]' value='" . htmlspecialchars($row_carcasedetail['iddetail']) . "'>";
                                     echo "<td><input type='number' class='form-control text-right' name='berat[]' value='" . htmlspecialchars($row_carcasedetail['berat']) . "' required></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='eartag[]' value='" . htmlspecialchars($row_carcasedetail['eartag']) . "' required></td>";
                                     echo "<td><input type='text' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($row_carcasedetail['carcase1']) . "' required></td>";
                                     echo "<td><input type='text' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($row_carcasedetail['carcase2']) . "' required></td>";
+                                    echo "<td><input type='text' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($row_carcasedetail['hides']) . "' required></td>";
+                                    echo "<td><input type='text' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($row_carcasedetail['tail']) . "' required></td>";
                                     echo "</tr>";
-                                    echo "<input type='hidden' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($row_carcasedetail['hides']) . "' required>";
-                                    echo "<input type='hidden' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($row_carcasedetail['tail']) . "' required>";;
                                  }
                               } else {
                                  echo "<tr><td colspan='7' class='text-center'>Tidak ada data detail ditemukan</td></tr>";
                               }
                               ?>
                            </tbody>
-
                         </table>
+
 
                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                      </form>

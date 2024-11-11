@@ -228,6 +228,12 @@ while ($row = mysqli_fetch_assoc($result)) {
   </div>
   <script>
     document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
+    document.getElementById("submitButton").onclick = function() {
+      this.disabled = true;
+      setTimeout(() => {
+        this.disabled = false;
+      }, 1000);
+    };
     document.addEventListener('DOMContentLoaded', function() {
       // Menggunakan event listener untuk menangkap event keydown pada elemen dengan id "idbarang"
       document.getElementById('idbarang').addEventListener('keydown', function(e) {

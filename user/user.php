@@ -49,6 +49,7 @@ include "../mainsidebar.php";
                            } ?>
                         </tbody>
                      </table>
+                     <a href="../verifications/regist.php" class="btn btn-sm btn-primary">Baru</a>
                   </div>
                </div>
             </div>
