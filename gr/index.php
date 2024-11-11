@@ -64,16 +64,19 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="grdetail.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-primary">
+                                    <a href="grscan.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning" title="Scan">
                                        <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-success">
+                                    <a href="grdetail.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-primary" title="Label">
+                                       <i class="fas fa-tag"></i>
+                                    </a>
+                                    <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-success" title="Print">
                                        <i class="far fa-eye"></i>
                                     </a>
-                                    <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning">
+                                    <!-- <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning" title="Edit">
                                        <i class="far fa-edit"></i>
-                                    </a>
-                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>&idpo=<?= $tampil['idpo']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                    </a> -->
+                                    <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>&idpo=<?= $tampil['idpo']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
                                        <i class="far fa-trash-alt"></i>
                                     </a>
                                  </td>

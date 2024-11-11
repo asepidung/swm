@@ -165,7 +165,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               <td><?= $pcs; ?></td>
                               <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
                               <td>
-                                 <a href="deletegrdetail.php?idgrdetail=<?= $tampil['idgrdetail']; ?>&idgr=<?= $idgr; ?>" class="text-danger" onclick="return confirm('Yakin?')">
+                                 <a href="deletegrdetail.php?idgr=<?= $idgr; ?>&idgrdetail=<?= $tampil['idgrdetail']; ?>&from=grdetail" class="text-info" onclick="return confirm('Yakin Lu?')">
                                     <i class="far fa-times-circle"></i>
                                  </a>
                               </td>
