@@ -42,12 +42,20 @@ $stmt->close();
                   <div class="card-body">
                      <form id="carcaseDetailForm" action="prosescarcasedetail.php" method="POST">
                         <input type="hidden" name="idcarcase" value="<?= htmlspecialchars($idcarcase); ?>">
-
                         <div class="form-group">
-                           <input type="number" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
+                           <select class="form-control" id="breed" name="breed" required>
+                              <option value="">Pilih Ras</option>
+                              <option value="STEER">STEER</option>
+                              <option value="HEIFER">HEIFER</option>
+                              <option value="COW">COW</option>
+                              <option value="LIMOUSIN">LIMOUSIN</option>
+                           </select>
                         </div>
                         <div class="form-group">
                            <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat">
+                        </div>
+                        <div class="form-group">
+                           <input type="number" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
                         </div>
                         <div class="form-group">
                            <input type="number" step="0.01" class="form-control" id="carcase1" name="carcase1" required placeholder="Carcase A">

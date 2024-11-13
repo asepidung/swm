@@ -8,20 +8,19 @@ require "../konak/conn.php";
 // Mendapatkan data dari form
 $killdate = $_POST['killdate'];
 $idsupplier = $_POST['idsupplier'];
-$breed = $_POST['breed'];
 $note = $_POST['note'];
 
 // Mengecek apakah semua field wajib diisi
-if (empty($killdate) || empty($idsupplier) || empty($breed)) {
+if (empty($killdate) || empty($idsupplier)) {
    echo "<script>alert('Mohon lengkapi semua field yang wajib diisi.'); window.history.back();</script>";
    exit;
 }
 
 // Menyimpan data ke tabel carcase
-$query = "INSERT INTO carcase (killdate, idsupplier, breed, note) VALUES (?, ?, ?, ?)";
+$query = "INSERT INTO carcase (killdate, idsupplier, note) VALUES ( ?, ?, ?)";
 $stmt = $conn->prepare($query);
 
-$stmt->bind_param("siss", $killdate, $idsupplier, $breed, $note);
+$stmt->bind_param("sis", $killdate, $idsupplier, $note);
 
 if ($stmt->execute()) {
    // Mendapatkan idcarcase terakhir yang diinputkan

@@ -42,18 +42,6 @@ $supplierResult = mysqli_query($conn, $supplierQuery);
                               ?>
                            </select>
                         </div>
-
-                        <div class="form-group">
-                           <label for="breed">Breed:</label>
-                           <select class="form-control" id="breed" name="breed" required>
-                              <option value="">Pilih Ras</option>
-                              <option value="STEER">STEER</option>
-                              <option value="HEIFER">HEIFER</option>
-                              <option value="COW">COW</option>
-                              <option value="LIMOUSIN">LIMOUSIN</option>
-                           </select>
-                        </div>
-
                         <div class="form-group">
                            <label for="note">Catatan:</label>
                            <textarea class="form-control" id="note" name="note" maxlength="100"></textarea>

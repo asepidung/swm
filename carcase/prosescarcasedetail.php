@@ -8,6 +8,7 @@ require "../konak/conn.php";
 // Mendapatkan data dari form
 $idcarcase = $_POST['idcarcase'];
 $berat = $_POST['berat'];
+$breed = $_POST['breed'];
 $eartag = $_POST['eartag'];
 $carcase1 = $_POST['carcase1'];
 $carcase2 = $_POST['carcase2'];
@@ -15,9 +16,9 @@ $hides = $_POST['hides'] ?? 0;
 $tail = $_POST['tail'] ?? 0;
 
 // Menyiapkan query untuk menyimpan data ke tabel carcasedetail
-$query = "INSERT INTO carcasedetail (idcarcase, berat, eartag, carcase1, carcase2, hides, tail) VALUES (?, ?, ?, ?, ?, ?, ?)";
+$query = "INSERT INTO carcasedetail (idcarcase, berat, eartag, carcase1, carcase2, hides, tail, breed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("idsdddd", $idcarcase, $berat, $eartag, $carcase1, $carcase2, $hides, $tail);
+$stmt->bind_param("idsdddds", $idcarcase, $berat, $eartag, $carcase1, $carcase2, $hides, $tail, $breed);
 
 if ($stmt->execute()) {
    // Dapatkan iddetail terakhir yang dimasukkan
