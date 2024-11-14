@@ -1,6 +1,6 @@
 <?php
 // Query untuk mengambil data carcase
-$query = "SELECT carcase.idcarcase, carcase.killdate, carcase.breed, supplier.nmsupplier,
+$query = "SELECT carcase.idcarcase, carcase.killdate, supplier.nmsupplier,
                      (SELECT SUM(cd.berat) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_berat,
                      (SELECT COUNT(cd.eartag) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_eartag,
                      (SELECT SUM(cd.carcase1) + SUM(cd.carcase2) FROM carcasedetail cd WHERE cd.idcarcase = carcase.idcarcase) AS total_carcase,

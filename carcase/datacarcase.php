@@ -38,7 +38,6 @@ include "../mainsidebar.php";
                               <th>Supplier</th>
                               <th>Berat &Sigma;</th>
                               <th>Head &Sigma;</th>
-                              <th>Breed</th>
                               <th>Carcase &Sigma;</th>
                               <th>Offal</th>
                               <th>Hides &Sigma;</th>
@@ -63,7 +62,6 @@ include "../mainsidebar.php";
                                     <td class="text-left"><?= htmlspecialchars($row['nmsupplier']) ?></td>
                                     <td><?= htmlspecialchars(number_format($row['total_berat'], 2)) ?></td>
                                     <td class="text-center"><?= htmlspecialchars($row['total_eartag']) ?></td>
-                                    <td class="text-center"><?= htmlspecialchars($row['breed']) ?></td>
                                     <td><?= htmlspecialchars(number_format($row['total_carcase'], 2)) ?></td>
                                     <td><?= htmlspecialchars(number_format($row['total_carcase_tail'], 2)) ?></td>
                                     <td><?= htmlspecialchars(number_format($row['total_hides'], 2)) ?></td>

@@ -21,22 +21,12 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("idsdddds", $idcarcase, $berat, $eartag, $carcase1, $carcase2, $hides, $tail, $breed);
 
 if ($stmt->execute()) {
-   // Dapatkan iddetail terakhir yang dimasukkan
-   $last_iddetail = $stmt->insert_id;
-   $_SESSION['last_iddetail'] = $last_iddetail;
-
-   // Redirect berdasarkan tombol yang ditekan
-   if (isset($_POST['next'])) {
-      header("location: carcasedetail.php?idcarcase=$idcarcase");
-   } else {
-      // Hapus session last_iddetail jika tombol 'save' yang ditekan
-      unset($_SESSION['last_iddetail']);
-      header("location: datacarcase.php");
-   }
-   exit;
+   // Dapatkan id detail carcase yang baru
+   $_SESSION['last_iddetail'] = $stmt->insert_id;
+   $_SESSION['breed'] = $breed; // Simpan breed ke session
+   header("Location: carcasedetail.php?idcarcase=$idcarcase");
+   exit();
 } else {
    echo "Error: " . $stmt->error;
 }
-
 $stmt->close();
-$conn->close();

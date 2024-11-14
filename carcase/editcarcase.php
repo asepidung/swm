@@ -12,7 +12,7 @@ include "../mainsidebar.php";
 $idcarcase = isset($_GET['idcarcase']) ? (int)$_GET['idcarcase'] : 0;
 
 // Query untuk mengambil data carcase dan detailnya
-$query_carcase = "SELECT carcase.idcarcase, carcase.killdate, carcase.breed, carcase.idsupplier, supplier.nmsupplier 
+$query_carcase = "SELECT carcase.idcarcase, carcase.killdate, carcase.idsupplier, supplier.nmsupplier 
                   FROM carcase 
                   JOIN supplier ON carcase.idsupplier = supplier.idsupplier 
                   WHERE carcase.idcarcase = $idcarcase";
@@ -64,19 +64,7 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                               <?php } ?>
                            </select>
                         </div>
-                        <div class="form-group">
-                           <label>Breed:</label>
-                           <select class="form-control" name="breed">
-                              <?php foreach ($breeds as $breed) { ?>
-                                 <option value="<?php echo $breed; ?>"
-                                    <?php if ($breed == $row_carcase['breed']) echo 'selected'; ?>>
-                                    <?php echo htmlspecialchars($breed); ?>
-                                 </option>
-                              <?php } ?>
-                           </select>
-                        </div>
-
-                        <table class="table table-bordered table-striped table-sm">
+                        <table class="table table-borderless table-sm">
                            <thead class="text-center">
                               <tr>
                                  <th>#</th>
@@ -86,6 +74,7 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                  <th>Carcase 2</th>
                                  <th>Hides</th>
                                  <th>Tails</th>
+                                 <th>Breed</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -93,26 +82,32 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                               if (mysqli_num_rows($result_carcasedetail) > 0) {
                                  $no = 1;
                                  while ($row_carcasedetail = mysqli_fetch_assoc($result_carcasedetail)) {
+                                    // Cek apakah nilai 0 atau 0.00, jika iya kosongkan
+                                    $berat = ($row_carcasedetail['berat'] == 0) ? '' : $row_carcasedetail['berat'];
+                                    $carcase1 = ($row_carcasedetail['carcase1'] == 0) ? '' : $row_carcasedetail['carcase1'];
+                                    $carcase2 = ($row_carcasedetail['carcase2'] == 0) ? '' : $row_carcasedetail['carcase2'];
+                                    $hides = ($row_carcasedetail['hides'] == 0) ? '' : $row_carcasedetail['hides'];
+                                    $tail = ($row_carcasedetail['tail'] == 0) ? '' : $row_carcasedetail['tail'];
+
                                     echo "<tr>";
                                     echo "<td class='text-center'>" . $no++ . "</td>";
                                     echo "<input type='hidden' name='iddetail[]' value='" . htmlspecialchars($row_carcasedetail['iddetail']) . "'>";
-                                    echo "<td><input type='number' class='form-control text-right' name='berat[]' value='" . htmlspecialchars($row_carcasedetail['berat']) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='berat[]' value='" . htmlspecialchars($berat) . "' required></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='eartag[]' value='" . htmlspecialchars($row_carcasedetail['eartag']) . "' required></td>";
-                                    echo "<td><input type='text' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($row_carcasedetail['carcase1']) . "' required></td>";
-                                    echo "<td><input type='text' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($row_carcasedetail['carcase2']) . "' required></td>";
-                                    echo "<td><input type='text' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($row_carcasedetail['hides']) . "' required></td>";
-                                    echo "<td><input type='text' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($row_carcasedetail['tail']) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($carcase1) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($carcase2) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($hides) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "' required></td>";
+                                    echo "<td><input type='text' class='form-control text-center' name='breed[]' value='" . htmlspecialchars($row_carcasedetail['breed']) . "' required></td>";
                                     echo "</tr>";
                                  }
                               } else {
-                                 echo "<tr><td colspan='7' class='text-center'>Tidak ada data detail ditemukan</td></tr>";
+                                 echo "<tr><td colspan='8' class='text-center'>Tidak ada data detail ditemukan</td></tr>";
                               }
                               ?>
                            </tbody>
                         </table>
-
-
-                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Simpan Perubahan</button>
                      </form>
                   </div>
                </div>
@@ -121,6 +116,30 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
       </div>
    </section>
 </div>
+
+<script>
+   // Logika untuk memindahkan fokus ke kolom bawah dengan Tab dan ke tombol Simpan dengan Enter
+   document.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('keydown', function(e) {
+         if (e.key === 'Enter') {
+            e.preventDefault(); // Cegah aksi default Enter
+            document.getElementById('submitBtn').focus(); // Pindah ke tombol Simpan
+         } else if (e.key === 'Tab') {
+            e.preventDefault(); // Cegah aksi default Tab
+            let colIndex = Array.from(input.parentElement.parentElement.children).indexOf(input.parentElement);
+            let nextRow = input.parentElement.parentElement.nextElementSibling;
+
+            // Cek apakah ada baris berikutnya
+            if (nextRow) {
+               let nextInput = nextRow.children[colIndex].querySelector('input');
+               if (nextInput) {
+                  nextInput.focus();
+               }
+            }
+         }
+      });
+   });
+</script>
 
 <script>
    // Mengubah judul halaman web

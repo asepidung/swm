@@ -21,7 +21,9 @@ $stmt->bind_param("dsddddd", $berat, $eartag, $carcase1, $carcase2, $hides, $tai
 
 // Mengecek apakah query berhasil
 if ($stmt->execute()) {
-   header("location: carcasedetail.php?idcarcase=" . htmlspecialchars($data['idcarcase']));
+   // Redirect ke halaman carcasedetail.php dengan idcarcase yang sesuai
+   $idcarcase = $_POST['idcarcase'];  // Ambil idcarcase dari form
+   header("location: carcasedetail.php?idcarcase=$idcarcase");
    exit;
 } else {
    echo "Error: " . $stmt->error;

@@ -25,18 +25,18 @@ try {
    mysqli_stmt_close($stmt);
 
    // Update data carcase
-   $updateQuery = "UPDATE carcase SET killdate = ?, idsupplier = ?, breed = ? WHERE idcarcase = ?";
+   $updateQuery = "UPDATE carcase SET killdate = ?, idsupplier = ? WHERE idcarcase = ?";
    $stmt = mysqli_prepare($conn, $updateQuery);
-   mysqli_stmt_bind_param($stmt, "sisi", $killdate, $idsupplier, $breed, $idcarcase);
+   mysqli_stmt_bind_param($stmt, "sii", $killdate, $idsupplier, $idcarcase);
    mysqli_stmt_execute($stmt);
    mysqli_stmt_close($stmt);
 
    // Insert data carcasedetail baru
-   $insertDetailQuery = "INSERT INTO carcasedetail (idcarcase, berat, eartag, carcase1, carcase2, hides, tail) VALUES (?, ?, ?, ?, ?, ?, ?)";
+   $insertDetailQuery = "INSERT INTO carcasedetail (idcarcase, berat, eartag, carcase1, carcase2, hides, tail, breed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
    $stmt = mysqli_prepare($conn, $insertDetailQuery);
 
    for ($i = 0; $i < count($berat); $i++) {
-      mysqli_stmt_bind_param($stmt, "idddddd", $idcarcase, $berat[$i], $eartag[$i], $carcase1[$i], $carcase2[$i], $hides[$i], $tail[$i]);
+      mysqli_stmt_bind_param($stmt, "idddddds", $idcarcase, $berat[$i], $eartag[$i], $carcase1[$i], $carcase2[$i], $hides[$i], $tail[$i], $breed[$i]);
       mysqli_stmt_execute($stmt);
    }
    mysqli_stmt_close($stmt);

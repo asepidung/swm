@@ -1902,7 +1902,6 @@ CREATE TABLE carcase (
   idcarcase INT AUTO_INCREMENT PRIMARY KEY,
   killdate DATE,
   idsupplier INT,
-  breed VARCHAR(10),
   note varchar (100),
   FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
 );
@@ -1910,6 +1909,7 @@ CREATE TABLE carcase (
 CREATE TABLE carcasedetail (
   iddetail INT AUTO_INCREMENT PRIMARY KEY,
   idcarcase INT,
+  breed VARCHAR(15),
   berat DECIMAL (6,2),
   eartag VARCHAR (5),
   carcase1 DECIMAL (5,2),

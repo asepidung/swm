@@ -16,7 +16,7 @@ if (!$idcarcase || !is_numeric($idcarcase)) {
 }
 
 // Query untuk mendapatkan data carcase dan supplier
-$query = "SELECT carcase.*, supplier.nmsupplier, carcase.killdate, carcase.breed, carcase.note
+$query = "SELECT carcase.*, supplier.nmsupplier, carcase.killdate, carcase.note
           FROM carcase
           INNER JOIN supplier ON carcase.idsupplier = supplier.idsupplier
           WHERE carcase.idcarcase = ?";
@@ -135,11 +135,6 @@ $karkasPercentage = ($totalBerat > 0) ? (($totalCarcase1 + $totalCarcase2) / $to
                   <td>:</td>
                   <th><?= $headCount . " " . "Ekor"; ?></th>
                </tr>
-               <tr>
-                  <td>Breed</td>
-                  <td>:</td>
-                  <th><?= htmlspecialchars($row['breed']); ?></th>
-               </tr>
             </table>
          </div>
          <div class="col">
@@ -166,6 +161,7 @@ $karkasPercentage = ($totalBerat > 0) ? (($totalCarcase1 + $totalCarcase2) / $to
          <thead class="thead-dark">
             <tr class="text-center">
                <th>#</th>
+               <th>Breed</th>
                <th>Eartag</th>
                <th>Bobot</th>
                <th>Karkas A</th>
@@ -181,26 +177,28 @@ $karkasPercentage = ($totalBerat > 0) ? (($totalCarcase1 + $totalCarcase2) / $to
             while ($detailRow = $detailsResult->fetch_assoc()) {
                echo "<tr>";
                echo "<td class='text-center'>" . $count++ . "</td>";
+               echo "<td class='text-center'>" . htmlspecialchars($detailRow['breed']) . "</td>";
                echo "<td class='text-center'>" . htmlspecialchars($detailRow['eartag']) . "</td>";
-               echo "<td>" . htmlspecialchars($detailRow['berat']) . "</td>";
-               echo "<td>" . htmlspecialchars($detailRow['carcase1']) . "</td>";
-               echo "<td>" . htmlspecialchars($detailRow['carcase2']) . "</td>";
-               echo "<td>" . htmlspecialchars($detailRow['hides']) . "</td>";
-               echo "<td>" . htmlspecialchars($detailRow['tail']) . "</td>";
+               echo "<td>" . ($detailRow['berat'] != 0 ? number_format($detailRow['berat'], 2) : "") . "</td>"; // Tidak tampilkan 0 atau 0.00
+               echo "<td>" . ($detailRow['carcase1'] != 0 ? number_format($detailRow['carcase1'], 2) : "") . "</td>"; // Tidak tampilkan 0 atau 0.00
+               echo "<td>" . ($detailRow['carcase2'] != 0 ? number_format($detailRow['carcase2'], 2) : "") . "</td>"; // Tidak tampilkan 0 atau 0.00
+               echo "<td>" . ($detailRow['hides'] != 0 ? number_format($detailRow['hides'], 2) : "") . "</td>"; // Tidak tampilkan 0 atau 0.00
+               echo "<td>" . ($detailRow['tail'] != 0 ? number_format($detailRow['tail'], 2) : "") . "</td>"; // Tidak tampilkan 0 atau 0.00
                echo "</tr>";
             }
             ?>
          </tbody>
          <tfoot>
             <tr>
-               <th colspan="2">Jumlah</th>
-               <th><?= number_format($totalBerat, 2); ?></th>
-               <th colspan="2"><?= number_format($totalCarcase1 + $totalCarcase2, 2); ?></th>
-               <th><?= number_format($totalHides, 2); ?></th>
-               <th><?= number_format($totalTails, 2); ?></th>
+               <th colspan="3">Jumlah</th>
+               <th><?= $totalBerat != 0 ? number_format($totalBerat, 2) : ""; ?></th> <!-- Tidak tampilkan 0 atau 0.00 -->
+               <th colspan="2"><?= ($totalCarcase1 + $totalCarcase2) != 0 ? number_format($totalCarcase1 + $totalCarcase2, 2) : ""; ?></th> <!-- Tidak tampilkan 0 atau 0.00 -->
+               <th><?= $totalHides != 0 ? number_format($totalHides, 2) : ""; ?></th> <!-- Tidak tampilkan 0 atau 0.00 -->
+               <th><?= $totalTails != 0 ? number_format($totalTails, 2) : ""; ?></th> <!-- Tidak tampilkan 0 atau 0.00 -->
             </tr>
          </tfoot>
       </table>
+
       <div class="text-right mt-3">
          <a href="javascript:history.back()" class="btn btn-secondary">Kembali</a>
          <a href="editcarcase.php?idcarcase=<?= $idcarcase ?>" class="btn btn-primary">Edit</a>
@@ -212,6 +210,6 @@ $karkasPercentage = ($totalBerat > 0) ? (($totalCarcase1 + $totalCarcase2) / $to
 
 </html>
 <script>
-   document.title = "Data Karkas";
+   document.title = "Data Karkas <?= htmlspecialchars(date("d-M-Y", strtotime($row['killdate']))); ?>";
 </script>
 <?php include "../footer.php"; ?>

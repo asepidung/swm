@@ -15,6 +15,11 @@ if (!$idcarcase) {
    exit;
 }
 
+// Menyimpan pilihan breed ke session
+if (isset($_POST['breed'])) {
+   $_SESSION['breed'] = $_POST['breed'];
+}
+
 // Menghitung jumlah detail carcase untuk mendapatkan nomor urut berikutnya
 $query = "SELECT COUNT(*) AS total FROM carcasedetail WHERE idcarcase = ?";
 $stmt = $conn->prepare($query);
@@ -42,15 +47,17 @@ $stmt->close();
                   <div class="card-body">
                      <form id="carcaseDetailForm" action="prosescarcasedetail.php" method="POST">
                         <input type="hidden" name="idcarcase" value="<?= htmlspecialchars($idcarcase); ?>">
+
                         <div class="form-group">
                            <select class="form-control" id="breed" name="breed" required>
                               <option value="">Pilih Ras</option>
-                              <option value="STEER">STEER</option>
-                              <option value="HEIFER">HEIFER</option>
-                              <option value="COW">COW</option>
-                              <option value="LIMOUSIN">LIMOUSIN</option>
+                              <option value="STEER" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'STEER' ? 'selected' : '' ?>>STEER</option>
+                              <option value="HEIFER" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'HEIFER' ? 'selected' : '' ?>>HEIFER</option>
+                              <option value="COW" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'COW' ? 'selected' : '' ?>>COW</option>
+                              <option value="LIMOUSIN" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'LIMOUSIN' ? 'selected' : '' ?>>LIMOUSIN</option>
                            </select>
                         </div>
+
                         <div class="form-group">
                            <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat">
                         </div>
@@ -74,7 +81,7 @@ $stmt->close();
                            <?php if (isset($_SESSION['last_iddetail'])): ?>
                               <a href="editcarcasedetail.php?iddetail=<?= $_SESSION['last_iddetail'] ?>" class="btn btn-secondary"><i class="fas fa-step-backward"></i> Prev</a>
                            <?php endif; ?>
-                           <button type="submit" name="simpan" class="btn btn-success"><i class="fas fa-save"></i> Simpan</button>
+                           <button type="submit" name="simpan" class="btn btn-success" id="btnSimpan"><i class="fas fa-save"></i> Simpan</button>
                            <button type="submit" name="next" class="btn btn-primary"><i class="fas fa-step-forward"></i> Next</button>
                         </div>
                      </form>
@@ -87,7 +94,26 @@ $stmt->close();
 </div>
 
 <script>
-   document.title = "Input Detail Carcase";
+   // Fokus pada input berikutnya ketika menggunakan tab
+   document.querySelectorAll("input, select").forEach((elem) => {
+      elem.addEventListener("keydown", function(event) {
+         if (event.key === "Enter") {
+            const formElements = Array.from(document.querySelectorAll("input, select"));
+            const index = formElements.indexOf(event.target);
+            if (index !== -1 && index < formElements.length - 1) {
+               formElements[index + 1].focus();
+               event.preventDefault(); // Mencegah form submit saat tekan Enter
+            }
+         }
+      });
+   });
+
+   // Konfirmasi hanya pada tombol "Simpan"
+   document.getElementById("btnSimpan").addEventListener("click", function(event) {
+      if (!confirm("Pastikan Semua data yang kamu isi sudah benar")) {
+         event.preventDefault(); // Mencegah form disubmit jika user tidak setuju
+      }
+   });
 </script>
 
 <?php include "../footer.php"; ?>
