@@ -43,6 +43,7 @@ include "../mainsidebar.php";
                               <th>Hides &Sigma;</th>
                               <th>Tails &Sigma;</th>
                               <th>Carcase %</th>
+                              <th>User</th>
                               <th>Action</th>
                            </tr>
                         </thead>
@@ -67,6 +68,7 @@ include "../mainsidebar.php";
                                     <td><?= htmlspecialchars(number_format($row['total_hides'], 2)) ?></td>
                                     <td><?= htmlspecialchars(number_format($row['total_tails'], 2)) ?></td>
                                     <td><?= number_format($carcase_percentage, 2) ?></td>
+                                    <td class="text-left"><?= htmlspecialchars($row['fullname']) ?></td>
                                     <td class="text-center">
                                        <a href="lihatcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-info btn-sm" title="Lihat"><i class="fas fa-eye"></i></a>
                                        <a href="editcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-paper-plane"></i></a>

@@ -9,6 +9,7 @@ require "../konak/conn.php";
 $killdate = $_POST['killdate'];
 $idsupplier = $_POST['idsupplier'];
 $note = $_POST['note'];
+$idusers = $_SESSION['idusers']; // Mengambil idusers dari session
 
 // Mengecek apakah semua field wajib diisi
 if (empty($killdate) || empty($idsupplier)) {
@@ -16,23 +17,18 @@ if (empty($killdate) || empty($idsupplier)) {
    exit;
 }
 
-// Menyimpan data ke tabel carcase
-$query = "INSERT INTO carcase (killdate, idsupplier, note) VALUES ( ?, ?, ?)";
+// Menyimpan data ke tabel carcase dengan idusers
+$query = "INSERT INTO carcase (killdate, idsupplier, note, idusers) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
-
-$stmt->bind_param("sis", $killdate, $idsupplier, $note);
+$stmt->bind_param("sisi", $killdate, $idsupplier, $note, $idusers);
 
 if ($stmt->execute()) {
-   // Mendapatkan idcarcase terakhir yang diinputkan
    $idcarcase = $stmt->insert_id;
-
-   // Redirect ke halaman carcasedetail.php dengan parameter idcarcase
    header("Location: carcasedetail.php?idcarcase=" . $idcarcase);
    exit;
 } else {
    echo "Error: " . $stmt->error;
 }
 
-// Menutup statement dan koneksi
 $stmt->close();
 $conn->close();
