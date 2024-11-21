@@ -78,11 +78,21 @@ if ($resultKunci) {
                   <!-- Dropdown Barang -->
                   <div class="form-group">
                     <div class="input-group">
-                      <select class="form-control" name="idbarang" id="idbarang" required>
-                        <option value="" selected>--Pilih Item--</option>
-                        <?php while ($row = mysqli_fetch_assoc($resultBarang)) : ?>
-                          <option value="<?= $row['idbarang']; ?>"><?= $row['nmbarang']; ?></option>
-                        <?php endwhile; ?>
+                      <select class="form-control" name="idbarang" id="idbarang" required autofocus>
+                        <?php
+                        if (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] != '') {
+                          $selectedIdbarang = $_SESSION['idbarang'];
+                          echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
+                        } else {
+                          echo '<option value="" selected>--Pilih Item--</option>';
+                        }
+                        while ($row = mysqli_fetch_assoc($resultBarang)) {
+                          $idbarang = $row['idbarang'];
+                          $nmbarang = $row['nmbarang'];
+                          $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
+                          echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                        }
+                        ?>
                       </select>
                       <div class="input-group-append">
                         <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
@@ -94,10 +104,20 @@ if ($resultKunci) {
                   <div class="form-group">
                     <div class="input-group">
                       <select class="form-control" name="idgrade" id="idgrade" required>
-                        <option value="" selected>--Pilih Grade--</option>
-                        <?php while ($row = mysqli_fetch_assoc($resultGrade)) : ?>
-                          <option value="<?= $row['idgrade']; ?>"><?= $row['nmgrade']; ?></option>
-                        <?php endwhile; ?>
+                        <?php
+                        if (isset($_SESSION['idgrade']) && $_SESSION['idgrade'] != '') {
+                          $selectedIdgrade = $_SESSION['idgrade'];
+                          echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                        } else {
+                          echo '<option value="" selected>--Pilih Grade--</option>';
+                        }
+                        while ($row = mysqli_fetch_assoc($resultGrade)) {
+                          $idgrade = $row['idgrade'];
+                          $nmgrade = $row['nmgrade'];
+                          $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                          echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                        }
+                        ?>
                       </select>
                     </div>
                   </div>
@@ -105,6 +125,11 @@ if ($resultKunci) {
                   <!-- Packed Date -->
                   <div class="form-group">
                     <div class="input-group">
+                      <?php
+                      if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
+                        $_SESSION['packdate'] = date('Y-m-d');
+                      }
+                      ?>
                       <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                     </div>
                   </div>
@@ -136,7 +161,7 @@ if ($resultKunci) {
                     </div>
                     <div class="col">
                       <div class="form-group">
-                        <a href="detailpcs.php?id=id" class="btn btn-warning btn-block">PcsLabel</a>
+                        <a href="detailpcs.php?id=id" class="btn btn-warning btn-block disabled" aria-disabled="true">LabelPcs</a>
                       </div>
                     </div>
                   </div>
@@ -144,6 +169,7 @@ if ($resultKunci) {
                   <!-- Submit Button -->
                   <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
                 </form>
+
               </div>
             </div>
           </div>
@@ -165,7 +191,7 @@ if ($resultKunci) {
                     <th>Pcs</th>
                     <th>Author</th>
                     <th>Create</th>
-                    <th>Hapus</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,9 +227,11 @@ if ($resultKunci) {
                         <?php elseif ($existsDetailBahan) : ?>
                           <i class="fas fa-box-open text-success"></i>
                         <?php else : ?>
-                          <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger" onclick="return confirm('Yakin ingin menghapus?')">
-                            <i class="far fa-times-circle"></i>
-                          </a>
+                          <?php if ($is_locked == 0): ?>
+                            <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
+                              <i class="fas fa-pencil-alt"></i>
+                            </a>
+                          <?php endif; ?>
                         <?php endif; ?>
                       </td>
                     </tr>
@@ -218,6 +246,18 @@ if ($resultKunci) {
   </div>
   <script>
     document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
+    document.addEventListener('DOMContentLoaded', function() {
+      // Menggunakan event listener untuk menangkap event keydown pada elemen dengan id "idbarang"
+      document.getElementById('idbarang').addEventListener('keydown', function(e) {
+        // Jika tombol yang ditekan adalah "Tab" (kode 9)
+        if (e.keyCode === 9) {
+          // Pindahkan fokus ke elemen dengan id "qty"
+          document.getElementById('qty').focus();
+          // Mencegah perpindahan fokus bawaan yang dihasilkan oleh tombol "Tab"
+          e.preventDefault();
+        }
+      });
+    });
   </script>
 </div>
 <?php
