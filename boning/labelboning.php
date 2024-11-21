@@ -125,7 +125,7 @@ if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
                   </div>
                   <div class="col">
                     <div class="form-group">
-                      <input type="number" class="form-control" name="count" id="count" value="1" readonly>
+                      <a href="detailpcs.php?id=id" class="btn btn-warning btn-block">PcsLabel</a>
                     </div>
                   </div>
                 </div>
