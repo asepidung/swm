@@ -3,6 +3,8 @@ session_start();
 if (!isset($_SESSION['login'])) {
   header("location: ../verifications/login.php");
 }
+$idusers = $_SESSION['idusers'] ?? 0;
+
 require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
@@ -71,6 +73,21 @@ include "../mainsidebar.php";
                       <td class="text-left"><?= $tampil['keterangan']; ?></td>
                       </button>
                       <td>
+                        <?php
+                        if (isset($idusers) && ($idusers == 1 || $idusers == 9)) {
+                          $is_locked = $tampil['kunci']; // Ambil status kunci dari tabel boning
+                        ?>
+                          <a class="btn btn-sm <?= $is_locked == 1 ? 'btn-danger' : 'btn-secondary'; ?>"
+                            data-toggle="tooltip"
+                            data-placement="bottom"
+                            title="<?= $is_locked == 1 ? 'Unlock' : 'Lock'; ?>"
+                            href="javascript:void(0);"
+                            onclick="confirmLock(<?= $tampil['idboning']; ?>, <?= $is_locked == 1 ? 0 : 1; ?>)">
+                            <i class="fas <?= $is_locked == 1 ? 'fa-lock' : 'fa-lock-open'; ?>"></i>
+                          </a>
+                        <?php
+                        }
+                        ?>
                         <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="bottom" title="Buat Label" onclick="window.location.href='labelboning.php?id=<?php echo $tampil['idboning']; ?>'">
                           <i class="fas fa-barcode"></i>
                         </a>
@@ -109,6 +126,13 @@ include "../mainsidebar.php";
   <!-- /.content-wrapper -->
 
   <script>
+    function confirmLock(idboning, kunci) {
+      // Menampilkan dialog konfirmasi
+      if (confirm('Apakah kamu yakin ingin ' + (kunci === 1 ? 'mengunci' : 'membuka kunci') + ' batch boning ini?')) {
+        // Redirect ke file PHP yang menangani pembaruan database
+        window.location.href = 'togglekunci.php?idboning=' + idboning + '&kunci=' + kunci;
+      }
+    }
     // Mengubah judul halaman web
     document.title = "Data Boning";
   </script>

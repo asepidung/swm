@@ -76,7 +76,6 @@ $stmt->close();
                            <button type="submit" name="update" class="btn btn-success">Update</button>
                         </div>
                      </form>
-
                   </div>
                </div>
             </div>

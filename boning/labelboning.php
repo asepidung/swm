@@ -43,6 +43,16 @@ if (!$resultGrade) {
 if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
   $_SESSION['packdate'] = date('Y-m-d');
 }
+$queryKunci = "SELECT kunci FROM boning WHERE idboning = $idboning";
+$resultKunci = mysqli_query($conn, $queryKunci);
+
+if ($resultKunci) {
+  $rowKunci = mysqli_fetch_assoc($resultKunci);
+  $is_locked = $rowKunci['kunci']; // Status kunci (1 = terkunci, 0 = tidak terkunci)
+} else {
+  die("Error pada query kunci: " . mysqli_error($conn));
+}
+
 ?>
 <div class="content-wrapper">
   <!-- Content Header -->
@@ -59,86 +69,89 @@ if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
   <div class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-4">
-          <!-- Form Card -->
-          <div class="card">
-            <div class="card-body">
-              <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
-                <!-- Dropdown Barang -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <select class="form-control" name="idbarang" id="idbarang" required>
-                      <option value="" selected>--Pilih Item--</option>
-                      <?php while ($row = mysqli_fetch_assoc($resultBarang)) : ?>
-                        <option value="<?= $row['idbarang']; ?>"><?= $row['nmbarang']; ?></option>
-                      <?php endwhile; ?>
-                    </select>
-                    <div class="input-group-append">
-                      <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+        <?php if ($is_locked == 0): ?>
+          <div class="col-lg-4">
+            <!-- Form Card -->
+            <div class="card">
+              <div class="card-body">
+                <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
+                  <!-- Dropdown Barang -->
+                  <div class="form-group">
+                    <div class="input-group">
+                      <select class="form-control" name="idbarang" id="idbarang" required>
+                        <option value="" selected>--Pilih Item--</option>
+                        <?php while ($row = mysqli_fetch_assoc($resultBarang)) : ?>
+                          <option value="<?= $row['idbarang']; ?>"><?= $row['nmbarang']; ?></option>
+                        <?php endwhile; ?>
+                      </select>
+                      <div class="input-group-append">
+                        <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Dropdown Grade -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <select class="form-control" name="idgrade" id="idgrade" required>
-                      <option value="" selected>--Pilih Grade--</option>
-                      <?php while ($row = mysqli_fetch_assoc($resultGrade)) : ?>
-                        <option value="<?= $row['idgrade']; ?>"><?= $row['nmgrade']; ?></option>
-                      <?php endwhile; ?>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Packed Date -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
-                  </div>
-                </div>
-
-                <!-- Expired Date -->
-                <div class="form-group">
-                  <div class="input-group">
-                    <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
-                  </div>
-                </div>
-
-                <!-- Tenderstreach -->
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?= isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
-                  <label class="form-check-label">Aktifkan Tenderstreatch</label>
-                </div>
-
-                <!-- Hidden Inputs -->
-                <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
-                <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
-                <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
-
-                <!-- Qty Input -->
-                <div class="row">
-                  <div class="col-8">
-                    <div class="form-group">
-                      <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
+                  <!-- Dropdown Grade -->
+                  <div class="form-group">
+                    <div class="input-group">
+                      <select class="form-control" name="idgrade" id="idgrade" required>
+                        <option value="" selected>--Pilih Grade--</option>
+                        <?php while ($row = mysqli_fetch_assoc($resultGrade)) : ?>
+                          <option value="<?= $row['idgrade']; ?>"><?= $row['nmgrade']; ?></option>
+                        <?php endwhile; ?>
+                      </select>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="form-group">
-                      <a href="detailpcs.php?id=id" class="btn btn-warning btn-block">PcsLabel</a>
+
+                  <!-- Packed Date -->
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
                     </div>
                   </div>
-                </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
-              </form>
+                  <!-- Expired Date -->
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
+                    </div>
+                  </div>
+
+                  <!-- Tenderstreach -->
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?= isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
+                    <label class="form-check-label">Aktifkan Tenderstreatch</label>
+                  </div>
+
+                  <!-- Hidden Inputs -->
+                  <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
+                  <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
+                  <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
+
+                  <!-- Qty Input -->
+                  <div class="row">
+                    <div class="col-8">
+                      <div class="form-group">
+                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group">
+                        <a href="detailpcs.php?id=id" class="btn btn-warning btn-block">PcsLabel</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
+        <?php endif; ?>
+
 
         <!-- Table Section -->
-        <div class="col-lg-8">
+        <div class="col-lg">
           <div class="card">
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped table-sm">
@@ -159,12 +172,12 @@ if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
                   <?php
                   $no = 1;
                   $queryData = "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade 
-                                                  FROM labelboning l
-                                                  JOIN barang b ON l.idbarang = b.idbarang 
-                                                  JOIN boning bo ON l.idboning = bo.idboning
-                                                  JOIN grade g ON l.idgrade = g.idgrade
-                                                  JOIN users u ON l.iduser = u.idusers
-                                                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC";
+                  FROM labelboning l
+                  JOIN barang b ON l.idbarang = b.idbarang 
+                  JOIN boning bo ON l.idboning = bo.idboning
+                  JOIN grade g ON l.idgrade = g.idgrade
+                  JOIN users u ON l.iduser = u.idusers
+                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC";
                   $resultData = mysqli_query($conn, $queryData);
 
                   while ($tampil = mysqli_fetch_assoc($resultData)) :

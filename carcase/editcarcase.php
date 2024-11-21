@@ -92,12 +92,12 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                     echo "<tr>";
                                     echo "<td class='text-center'>" . $no++ . "</td>";
                                     echo "<input type='hidden' name='iddetail[]' value='" . htmlspecialchars($row_carcasedetail['iddetail']) . "'>";
-                                    echo "<td><input type='number' class='form-control text-right' name='berat[]' value='" . htmlspecialchars($berat) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='berat[]' value='" . htmlspecialchars($berat) . "' step='0.01' required></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='eartag[]' value='" . htmlspecialchars($row_carcasedetail['eartag']) . "' required></td>";
-                                    echo "<td><input type='number' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($carcase1) . "' required></td>";
-                                    echo "<td><input type='number' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($carcase2) . "' required></td>";
-                                    echo "<td><input type='number' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($hides) . "' required></td>";
-                                    echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "'></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($carcase1) . "' step='0.01' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($carcase2) . "' step='0.01' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($hides) . "' step='0.01' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "' step='0.01'></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='breed[]' value='" . htmlspecialchars($row_carcasedetail['breed']) . "' required></td>";
                                     echo "</tr>";
                                  }
