@@ -97,7 +97,7 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                     echo "<td><input type='number' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($carcase1) . "' required></td>";
                                     echo "<td><input type='number' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($carcase2) . "' required></td>";
                                     echo "<td><input type='number' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($hides) . "' required></td>";
-                                    echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "' required></td>";
+                                    echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "'></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='breed[]' value='" . htmlspecialchars($row_carcasedetail['breed']) . "' required></td>";
                                     echo "</tr>";
                                  }

@@ -27,28 +27,68 @@
 <!-- Page specific script -->
 <script>
    $(function() {
-      //Initialize Select2 Elements
-      $('.select2').select2()
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-         theme: 'bootstrap4'
-      })
-      $("#example1").DataTable({
-         "responsive": true,
-         "lengthChange": false,
-         "autoWidth": false,
-         "buttons": ["copy", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-         "paging": true,
-         "lengthChange": false,
-         "searching": false,
-         "ordering": true,
-         "info": true,
-         "autoWidth": true,
-         "responsive": true,
+      // Initialize Select2 Elements
+      $('.select2').select2({
+         theme: 'bootstrap4' // Konsisten menggunakan tema bootstrap4
       });
+
+      // Initialize DataTables for #example1
+      if ($('#example1').length) {
+         $("#example1").DataTable({
+            responsive: true,
+            lengthChange: false,
+            autoWidth: false,
+            buttons: ["copy", "excel", "pdf", "print", "colvis"]
+         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }
+
+      // Initialize DataTables for #example2
+      if ($('#example2').length) {
+         $('#example2').DataTable({
+            paging: true,
+            lengthChange: false,
+            searching: false,
+            ordering: true,
+            info: true,
+            autoWidth: true,
+            responsive: true,
+         });
+      }
+
+      // Initialize Date Range Picker
+      if ($('.daterangepicker').length) {
+         $('.daterangepicker').daterangepicker();
+      }
+
+      // Initialize Input Mask
+      if ($('[data-mask]').length) {
+         $('[data-mask]').inputmask();
+      }
+
+      // Initialize Color Picker
+      if ($('.colorpicker').length) {
+         $('.colorpicker').colorpicker();
+      }
+
+      // Initialize Tempus Dominus for Date Time Picker
+      if ($('.datetimepicker').length) {
+         $('.datetimepicker').datetimepicker({
+            format: 'L'
+         });
+      }
+
+      // Initialize BS Stepper
+      if (document.querySelector('.bs-stepper')) {
+         window.stepper = new Stepper(document.querySelector('.bs-stepper'));
+      }
+
+      // Initialize DropzoneJS
+      if (Dropzone) {
+         Dropzone.autoDiscover = false;
+      }
    });
+</script>
+
 </script>
 </body>
 

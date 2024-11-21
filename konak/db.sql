@@ -1918,3 +1918,10 @@ CREATE TABLE carcasedetail (
   tail DECIMAL (5,2),
   FOREIGN KEY (idcarcase) REFERENCES carcase (idcarcase)
 );
+
+CREATE TABLE detailpcs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  iddetail INT,
+  berat DECIMAL (6,2),
+  FOREIGN KEY (id) REFERENCES carcasedetail (iddetail)
+);
