@@ -151,13 +151,14 @@ $result_invoicedetail = mysqli_query($conn, $query_invoicedetail);
                                        </div>
                                     </div>
                                  </div>
-                                 <div class=" col-2">
+                                 <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
-                                          <input type="text" class="form-control text-right" name="discountrp[]" value="0" readonly>
+                                          <input type="text" class="form-control text-right" name="discountrp[]" value="<?= $row_invoicedetail['discountrp'] ?>" readonly>
                                        </div>
                                     </div>
                                  </div>
+
                                  <div class="col-2">
                                     <div class="form-group">
                                        <div class="input-group">
