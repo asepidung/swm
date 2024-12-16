@@ -28,9 +28,11 @@
 <script>
    $(function() {
       // Initialize Select2 Elements
-      $('.select2').select2({
-         theme: 'bootstrap4' // Konsisten menggunakan tema bootstrap4
-      });
+      if ($('.select2').length) {
+         $('.select2').select2({
+            theme: 'bootstrap4' // Menggunakan tema bootstrap4
+         });
+      }
 
       // Initialize DataTables for #example1
       if ($('#example1').length) {
@@ -87,8 +89,6 @@
          Dropzone.autoDiscover = false;
       }
    });
-</script>
-
 </script>
 </body>
 

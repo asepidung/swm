@@ -1921,7 +1921,7 @@ CREATE TABLE carcasedetail (
 
 CREATE TABLE detailpcs (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  iddetail INT,
+  idlabelboning INT,
   berat DECIMAL (6,2),
-  FOREIGN KEY (id) REFERENCES carcasedetail (iddetail)
+  FOREIGN KEY (idlabelboning) REFERENCES labelboning (idlabelboning)
 );

@@ -174,64 +174,64 @@ $result_detail = mysqli_query($conn, $query_detail);
       <td width="20%">Customer <br><br><br><br><br> ................................</td>
     </tr>
   </table>
-  <!-- Kolom ceklis -->
-  <br>
-  <table width="70%" border="0" cellpadding="0" class="border-collapse">
-    <!-- <tr>
-      <td colspan="7">Cek Kelengkapan :</td>
-    </tr> -->
-    <tr>
-      <td>
-        <?php if ($row_do['invoice']): ?>
-          <label>
-            <input type="checkbox"> Invoice
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['nkv']): ?>
-          <label>
-            <input type="checkbox"> NKV
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['halal']): ?>
-          <label>
-            <input type="checkbox"> Halal
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['sv']): ?>
-          <label>
-            <input type="checkbox"> SV
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['joss']): ?>
-          <label>
-            <input type="checkbox"> JOSS
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['phd']): ?>
-          <label>
-            <input type="checkbox"> PHD
-          </label>
-        <?php endif; ?>
-      </td>
-      <td>
-        <?php if ($row_do['ujilab']): ?>
-          <label>
-            <input type="checkbox"> UJILAB
-          </label>
-        <?php endif; ?>
-      </td>
-    </tr>
-  </table>
+  <?php if ($row_do['invoice'] || $row_do['nkv'] || $row_do['halal'] || $row_do['sv'] || $row_do['joss'] || $row_do['phd'] || $row_do['ujilab']): ?>
+    <!-- Kolom ceklis -->
+    <br>
+    <table width="70%" border="0" cellpadding="0" class="border-collapse">
+      <tr>
+        <td>
+          <?php if ($row_do['invoice']): ?>
+            <label>
+              <input type="checkbox"> Invoice
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['nkv']): ?>
+            <label>
+              <input type="checkbox"> NKV
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['halal']): ?>
+            <label>
+              <input type="checkbox"> Halal
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['sv']): ?>
+            <label>
+              <input type="checkbox"> SV
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['joss']): ?>
+            <label>
+              <input type="checkbox"> JOSS
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['phd']): ?>
+            <label>
+              <input type="checkbox"> PHD
+            </label>
+          <?php endif; ?>
+        </td>
+        <td>
+          <?php if ($row_do['ujilab']): ?>
+            <label>
+              <input type="checkbox"> UJILAB
+            </label>
+          <?php endif; ?>
+        </td>
+      </tr>
+    </table>
+  <?php endif; ?>
+
 
 
   <script>

@@ -46,14 +46,16 @@ include "../mainsidebar.php";
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier, poproduct.idpoproduct FROM gr
-                           LEFT JOIN poproduct ON gr.idpo = poproduct.idpoproduct
-                           JOIN supplier ON gr.idsupplier = supplier.idsupplier
-                           ORDER BY grnumber DESC;
-                           ");
+                           $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier, poproduct.idpoproduct, users.fullname 
+                                        FROM gr
+                                        LEFT JOIN poproduct ON gr.idpo = poproduct.idpoproduct
+                                        JOIN supplier ON gr.idsupplier = supplier.idsupplier
+                                        LEFT JOIN users ON gr.iduser = users.idusers
+                                        ORDER BY grnumber DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idgr = $tampil['idgr'];
                               $idpo = $tampil['idpoproduct'];
+                              $fullname = $tampil['fullname']; // Fetch fullname from users table
                            ?>
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
@@ -62,7 +64,7 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['nmsupplier']; ?></td>
                                  <td><?= $tampil['idnumber']; ?></td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center"><?= $fullname ?></td>
+                                 <td class="text-center"><?= $fullname; ?></td> <!-- Display fullname here -->
                                  <td class="text-center">
                                     <a href="grscan.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning" title="Scan">
                                        <i class="fas fa-barcode"></i>
@@ -73,9 +75,6 @@ include "../mainsidebar.php";
                                     <a href="printgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-success" title="Print">
                                        <i class="far fa-eye"></i>
                                     </a>
-                                    <!-- <a href="editgr.php?idgr=<?= $tampil['idgr']; ?>" class="btn btn-xs btn-warning" title="Edit">
-                                       <i class="far fa-edit"></i>
-                                    </a> -->
                                     <a href="deletegr.php?idgr=<?= $tampil['idgr']; ?>&idpo=<?= $tampil['idpo']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
                                        <i class="far fa-trash-alt"></i>
                                     </a>
@@ -85,6 +84,7 @@ include "../mainsidebar.php";
                            } ?>
                         </tbody>
                      </table>
+
                   </div>
                   <!-- /.card-body -->
                </div>
