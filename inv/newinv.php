@@ -27,13 +27,14 @@ $iddo = $rowDo['iddo'];
 $idso = $rowDo['idso'];
 $idgroup = $rowDo['idgroup'];
 // Mengambil data dari tabel doreceiptdetail, grade, dan barang
-$querydoreceiptdetail = "SELECT doreceiptdetail.*, barang.nmbarang, barang.kdbarang, sodetail.price
+$querydoreceiptdetail = "SELECT doreceiptdetail.*, barang.nmbarang, barang.kdbarang, sodetail.price, sodetail.discount
                          FROM doreceiptdetail
                          INNER JOIN barang ON doreceiptdetail.idbarang = barang.idbarang
                          INNER JOIN salesorderdetail sodetail ON sodetail.idbarang = barang.idbarang
                          INNER JOIN salesorder so ON sodetail.idso = so.idso
                          WHERE doreceiptdetail.iddoreceipt = $iddoreceipt
                          AND so.idso = $idso";
+
 $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
 
 ?>
@@ -163,13 +164,19 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                     <div class="form-group">
                                        <div class="input-group">
                                           <?php
-                                          // Menentukan nilai discount berdasarkan nama_customer
+                                          // Menentukan nilai discount berdasarkan nama_customer dan nilai yang ada pada salesorderdetail
                                           $discountValue = 0;
+
+                                          // Cek apakah nama customer mengandung 'DCA' atau 'DCB'
                                           if (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false) {
-                                             $discountValue = 2;
+                                             $discountValue = 2; // Diskon 2% untuk DCA atau DCB
+                                          } else {
+                                             // Jika bukan DCA atau DCB, ambil diskon dari hasil query join salesorderdetail
+                                             $discountValue = $rowdoreceiptdetail['discount']; // Nilai diskon dari salesorderdetail
                                           }
                                           ?>
-                                          <input type="text" class="form-control text-right" name="discount[]" value="<?= $discountValue ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
+                                          <input type="text" class="form-control text-center" name="discount[]" value="<?= $discountValue ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
+
                                        </div>
                                     </div>
                                  </div>
