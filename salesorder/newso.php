@@ -120,7 +120,15 @@ include "../mainsidebar.php";
                                     </div>
                                  </div>
                               </div>
-                              <div class="col-4">
+                              <div class="col-2">
+                                 <div class="form-group">
+                                    <label for="discount">Disc</label>
+                                    <div class="input-group">
+                                       <input type="number" name="discount[]" class="form-control text-right" value="0">
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-2">
                                  <div class="form-group">
                                     <label for="notes">Notes</label>
                                     <div class="input-group">
@@ -233,7 +241,14 @@ include "../mainsidebar.php";
                </div>
             </div>
          </div>
-         <div class="col-4">
+         <div class="col-2">
+            <div class="form-group">
+               <div class="input-group">
+                  <input type="number" name="discount[]" class="form-control text-right" value="0" required>
+               </div>
+            </div>
+         </div>
+         <div class="col-2">
             <div class="form-group">
                <div class="input-group">
                   <input type="text" name="notes[]" class="form-control">

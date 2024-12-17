@@ -61,6 +61,7 @@ $row = mysqli_fetch_assoc($result);
                   <th>Product Desc</th>
                   <th>PO Qty</th>
                   <th>Price</th>
+                  <th>Discount</th>
                   <th>Notes</th>
                </tr>
             </thead>
@@ -78,6 +79,7 @@ $row = mysqli_fetch_assoc($result);
                      <td><?= $row_salesorderdetail['nmbarang']; ?></td>
                      <td class="text-right"><?= number_format($row_salesorderdetail['weight'], 2); ?></td>
                      <td class="text-right"><?= number_format($row_salesorderdetail['price']); ?></td>
+                     <td class="text-center"><?= $row_salesorderdetail['discount']; ?> %</td>
                      <td><?= $row_salesorderdetail['notes']; ?></td>
                   </tr>
                <?php $no++;
@@ -87,7 +89,7 @@ $row = mysqli_fetch_assoc($result);
                <tr>
                   <th colspan="2" class="text-right">Weight Total</th>
                   <th class="text-right"><?= number_format($totalPO, 2); ?></th>
-                  <th colspan="2"></th>
+                  <th colspan="3"></th>
                </tr>
             </tfoot>
          </table>

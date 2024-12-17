@@ -28,6 +28,7 @@ if (isset($_POST['submit'])) {
    // Retrieve data from the form
    $idbarang = $_POST['idbarang'];
    $weight = $_POST['weight'];
+   $discount = $_POST['discount'];
    $notes = $_POST['notes'];
 
    // Remove commas from the 'price' array
@@ -38,11 +39,11 @@ if (isset($_POST['submit'])) {
 
    // Insert data into 'salesorderdetail' table
    $weighttotal = 0;
-   $query_sodetail = "INSERT INTO salesorderdetail (idso, idbarang, weight, price, notes) VALUES (?,?,?,?,?)";
+   $query_sodetail = "INSERT INTO salesorderdetail (idso, idbarang, weight, price, discount, notes) VALUES (?,?,?,?,?,?)";
    $stmt_sodetail = $conn->prepare($query_sodetail);
 
    for ($i = 0; $i < count($idbarang); $i++) {
-      $stmt_sodetail->bind_param("iiiis", $last_id, $idbarang[$i], $weight[$i], $price[$i], $notes[$i]);
+      $stmt_sodetail->bind_param("iiiiis", $last_id, $idbarang[$i], $weight[$i], $price[$i], $discount[$i], $notes[$i]);
       $stmt_sodetail->execute();
       $weighttotal += $weight[$i];
    }
