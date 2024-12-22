@@ -316,6 +316,24 @@ include "kebutuhanindex.php";
                      </li>
                   <?php endif; ?>
 
+                  <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-hand-holding-usd"></i>
+              <p>
+                REQUISITIONS
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="requisition/" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>Requisition</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
                   <?php if ($role['purchase_module'] == 1) : ?>
                      <li class="nav-item">
                         <a href="#" class="nav-link">
