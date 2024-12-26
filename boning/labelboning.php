@@ -228,8 +228,11 @@ if ($resultKunci) {
                           <i class="fas fa-box-open text-success"></i>
                         <?php else : ?>
                           <?php if ($is_locked == 0): ?>
-                            <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
+                            <!-- <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
                               <i class="fas fa-pencil-alt"></i>
+                            </a> -->
+                           <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger">
+                              <i class="fas fa-minus-square"></i>
                             </a>
                           <?php endif; ?>
                         <?php endif; ?>

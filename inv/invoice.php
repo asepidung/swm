@@ -76,7 +76,12 @@ $approvedCount = $rowApprovedCount['approved_count'];
                               $status = $tampil['status'];
                               $tgltf = $tampil['tgltf'];
                               $top = $tampil['top'];
-                              $tgltf_timestamp = strtotime($tgltf);
+                              if (!empty($tgltf)) {
+                                 $tgltf_timestamp = strtotime($tgltf);
+                             } else {
+                                 $tgltf_timestamp = null; // atau nilai default lainnya
+                             }
+                             
                               $duedate_timestamp = strtotime("+$top day", $tgltf_timestamp);
                               $duedate = date('d-M-y', $duedate_timestamp);
                               $iddo = $tampil['iddo'];

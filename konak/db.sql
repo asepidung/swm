@@ -1925,3 +1925,25 @@ CREATE TABLE detailpcs (
   berat DECIMAL (6,2),
   FOREIGN KEY (idlabelboning) REFERENCES labelboning (idlabelboning)
 );
+
+CREATE TABLE request (
+  idrequest INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  norequest VARCHAR(10) NOT NULL,
+  duedate DATE NOT NULL,
+  iduser INT NOT NULL,
+  note VARCHAR (255),
+  stat VARCHAR (10),
+  creatime timestamp NOT NULL DEFAULT current_timestamp()
+  FOREIGN KEY (iduser) REFERENCES users (idusers)
+);
+
+CREATE TABLE requestdetail (
+  iddetail INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  idrequest INT NOT NULL,
+  idrawmate INT NOT NULL,
+  qty INT NOT NULL,
+  price INT NOT NULL,
+  notes VARCHAR(100),
+  FOREIGN key (idrequest) REFERENCES request (idrequest),
+  FOREIGN key (idrawmate) REFERENCES rawmate (idrawmate)
+);
