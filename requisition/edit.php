@@ -83,8 +83,11 @@ mysqli_stmt_close($stmt_details);
                                     </div>
                                     <div class="col-12 col-sm-4">
                                         <div class="form-group">
-                                            <label for="other">If Vendor Other</label>
-                                            <input type="text" id="other" name="other" class="form-control" value="<?= htmlspecialchars($request['other'] ?? '') ?>">
+                                            <label for="tax">Tax 12%</label>
+                                            <select class="form-control" name="tax" id="tax" required>
+                                                <option value="Yes" <?= $request['taxrp'] > 0 ? 'selected' : '' ?>>Yes</option>
+                                                <option value="No" <?= $request['taxrp'] == 0 ? 'selected' : '' ?>>No</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -120,19 +123,19 @@ mysqli_stmt_close($stmt_details);
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-6 col-md-1 mb-2">
+                                            <div class="col-6 col-md-1">
                                                 <input type="text" name="weight[]" class="form-control text-right" placeholder="Qty" value="<?= htmlspecialchars($detail['qty']) ?>" required>
                                             </div>
-                                            <div class="col-6 col-md-2 mb-2">
+                                            <div class="col-6 col-md-2">
                                                 <input type="text" name="price[]" class="form-control text-right" placeholder="Price" value="<?= htmlspecialchars($detail['price']) ?>" required>
                                             </div>
-                                            <div class="col-6 col-md-2 mb-2">
+                                            <div class="col-6 col-md-2">
                                                 <input type="text" name="amount[]" class="form-control text-right" placeholder="Amount" readonly>
                                             </div>
-                                            <div class="col-6 col-md-3 mb-2">
+                                            <div class="col-6 col-md-3">
                                                 <input type="text" name="notes[]" class="form-control" placeholder="Note" value="<?= htmlspecialchars($detail['notes']) ?>">
                                             </div>
-                                            <div class="col mb-2">
+                                            <div class="col">
                                                 <button type="button" class="btn btn-link text-danger btn-remove-item" onclick="removeItem(this)">
                                                     <i class="fas fa-minus-circle"></i>
                                                 </button>
@@ -151,9 +154,12 @@ mysqli_stmt_close($stmt_details);
                                         <input type="text" name="xweight" id="xweight" class="form-control text-right" readonly placeholder="Total Qty">
                                     </div>
                                     <div class="col-6 col-md-2">
-                                        <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly placeholder="Total Amount">
+                                        <input type="text" name="taxrp" id="taxrp" class="form-control text-right" readonly placeholder="Tax Amount">
                                     </div>
-                                    <div class="col-6 col-md mt-2">
+                                    <div class="col-6 col-md-2">
+                                        <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly placeholder="Grand Total">
+                                    </div>
+                                    <div class="col-6 col-md">
                                         <button type="submit" class="btn btn-primary btn-block" name="update">
                                             Update
                                         </button>
@@ -168,8 +174,43 @@ mysqli_stmt_close($stmt_details);
     </section>
 </div>
 
-<script src="../dist/js/calculatepo.js"></script>
 <script>
+    function calculateTotals() {
+        const weightInputs = document.querySelectorAll('[name="weight[]"]');
+        const priceInputs = document.querySelectorAll('[name="price[]"]');
+        const amountInputs = document.querySelectorAll('[name="amount[]"]');
+        const xweight = document.getElementById('xweight');
+        const taxrp = document.getElementById('taxrp');
+        const xamount = document.getElementById('xamount');
+        const taxSelect = document.getElementById('tax');
+
+        let totalWeight = 0;
+        let totalAmount = 0;
+
+        // Hitung Total Weight dan Amount
+        weightInputs.forEach((weightInput, index) => {
+            const weight = parseFloat(weightInput.value.replace(/,/g, '')) || 0;
+            const price = parseFloat(priceInputs[index].value.replace(/,/g, '')) || 0;
+            const amount = weight * price;
+            amountInputs[index].value = amount.toFixed(2);
+
+            totalWeight += weight;
+            totalAmount += amount;
+        });
+
+        // Hitung Pajak
+        const taxRate = taxSelect.value === 'Yes' ? 0.12 : 0;
+        const taxValue = totalAmount * taxRate;
+
+        // Total Amount dengan Pajak
+        const finalAmount = totalAmount + taxValue;
+
+        // Tampilkan Total
+        xweight.value = totalWeight.toFixed(2);
+        taxrp.value = taxValue.toFixed(2);
+        xamount.value = finalAmount.toFixed(2);
+    }
+
     function addItem() {
         const itemsContainer = document.getElementById('items-container');
         const newRow = document.createElement('div');
@@ -210,9 +251,16 @@ mysqli_stmt_close($stmt_details);
 
     function removeItem(button) {
         button.closest('.item-row').remove();
+        calculateTotals();
     }
 
-    document.title = "Edit Request";
+    document.getElementById('tax').addEventListener('change', calculateTotals);
+
+    document.querySelectorAll('[name="weight[]"], [name="price[]"]').forEach(input => {
+        input.addEventListener('input', calculateTotals);
+    });
+
+    calculateTotals();
 </script>
 
 <?php include "../footer.php"; ?>

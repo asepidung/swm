@@ -316,24 +316,80 @@ include "kebutuhanindex.php";
                      </li>
                   <?php endif; ?>
 
-                  <li class="nav-item">
-<a href="#" class="nav-link">
-<i class="nav-icon fas fa-hand-holding-usd"></i>
-<p>
-REQUISITIONS
-<i class="right fas fa-angle-left"></i>
-</p>
-</a>
-<ul class="nav nav-treeview">
-<li class="nav-item">
-<a href="requisition/" class="nav-link">
-<i class="far fa-dot-circle nav-icon"></i>
-<p>Requisition</p>
-</a>
-</li>
-</ul>
-</li>
+                  <?php
+// Query untuk menghitung requisitions berdasarkan status yang belum dihapus
+$query = "SELECT stat, COUNT(*) AS total 
+          FROM request 
+          WHERE is_deleted IS NULL 
+          AND stat IN ('Waiting', 'Approved', 'Process') 
+          GROUP BY stat";
+$result = mysqli_query($conn, $query);
 
+// Inisialisasi jumlah untuk setiap status
+$statusCounts = [
+    'All' => 0,
+    'Waiting' => 0,
+    'Approved' => 0,
+    'Process' => 0,
+];
+
+// Hitung total untuk semua status
+$statusCounts['All'] = array_sum(array_column(mysqli_fetch_all($result, MYSQLI_ASSOC), 'total'));
+
+// Isi jumlah berdasarkan hasil query
+if ($result) {
+    mysqli_data_seek($result, 0); // Kembali ke awal hasil query
+    while ($row = mysqli_fetch_assoc($result)) {
+        $statusCounts[$row['stat']] = $row['total'];
+    }
+}
+?>
+
+<li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-hand-holding-usd"></i>
+        <p>
+            REQUISITIONS
+            <i class="right fas fa-angle-left"></i>
+            <span class="badge badge-info right"><?= $statusCounts['All']; ?></span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="requisition/" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>All Request</p>
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="requisition/waiting.php" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>Waiting</p>
+                <span class="badge badge-info right"><?= $statusCounts['Waiting']; ?></span>
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="requisition/approved.php" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>Approved</p>
+                <span class="badge badge-success right"><?= $statusCounts['Approved']; ?></span>
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="requisition/process.php" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>Process</p>
+                <span class="badge badge-warning right"><?= $statusCounts['Process']; ?></span>
+            </a>
+        </li>
+    </ul>
+</li>
                   <?php if ($role['purchase_module'] == 1) : ?>
                      <li class="nav-item">
                         <a href="#" class="nav-link">

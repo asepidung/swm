@@ -6,7 +6,24 @@ if (!isset($_SESSION['login'])) {
 }
 
 require "../konak/conn.php";
-require "requestnumber.php"; 
+require "requestnumber.php";
+
+// Fungsi untuk membersihkan format angka
+function normalizeNumber($number)
+{
+    $lastCommaPos = strrpos($number, ',');
+    $lastDotPos = strrpos($number, '.');
+
+    $decimalSeparator = $lastCommaPos > $lastDotPos ? ',' : '.';
+    $thousandSeparator = $lastCommaPos < $lastDotPos ? ',' : '.';
+
+    $number = str_replace($thousandSeparator, '', $number);
+    if ($decimalSeparator != '.') {
+        $number = str_replace($decimalSeparator, '.', $number);
+    }
+
+    return (float) $number;
+}
 
 $iduser = $_SESSION['idusers'] ?? null;
 if (!$iduser) {
@@ -17,6 +34,7 @@ if (!$iduser) {
 $duedate = mysqli_real_escape_string($conn, $_POST['duedate'] ?? null);
 $idsupplier = mysqli_real_escape_string($conn, $_POST['idsupplier'] ?? null);
 $note = mysqli_real_escape_string($conn, $_POST['note'] ?? null);
+$taxrp = normalizeNumber($_POST['taxrp'] ?? 0); // Normalize taxrp
 $idrawmate = $_POST['idrawmate'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $price = $_POST['price'] ?? [];
@@ -27,15 +45,20 @@ if (empty($duedate) || empty($idsupplier) || count($idrawmate) === 0) {
     die("Error: Missing required fields.");
 }
 
+// Calculate xamount
+$xamount = $taxrp + array_sum(array_map(function($weight, $price) {
+    return normalizeNumber($weight) * normalizeNumber($price);
+}, $weight, $price));
+
 $stat = 'Waiting';
 
 mysqli_begin_transaction($conn);
 
 try {
     // Insert data into the request table
-    $query_request = "INSERT INTO request (norequest, duedate, iduser, idsupplier, note, stat) VALUES (?, ?, ?, ?, ?, ?)";
+    $query_request = "INSERT INTO request (norequest, duedate, iduser, idsupplier, note, stat, taxrp, xamount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt, "sssiss", $norequest, $duedate, $iduser, $idsupplier, $note, $stat);
+    mysqli_stmt_bind_param($stmt, "sssissdd", $norequest, $duedate, $iduser, $idsupplier, $note, $stat, $taxrp, $xamount);
     if (!mysqli_stmt_execute($stmt)) {
         throw new Exception("Error inserting into request table: " . mysqli_stmt_error($stmt));
     }
@@ -47,9 +70,9 @@ try {
     $stmt_detail = mysqli_prepare($conn, $query_requestdetail);
 
     foreach ($idrawmate as $i => $rawmate) {
-        $qty = $weight[$i] ?? 0;
-        $product_price = $price[$i] ?? 0;
-        $product_note = $notes[$i] ?? '';
+        $qty = normalizeNumber($weight[$i] ?? 0); // Normalize weight
+        $product_price = normalizeNumber($price[$i] ?? 0); // Normalize price
+        $product_note = mysqli_real_escape_string($conn, $notes[$i] ?? '');
 
         mysqli_stmt_bind_param($stmt_detail, "iiids", $idrequest, $rawmate, $qty, $product_price, $product_note);
         if (!mysqli_stmt_execute($stmt_detail)) {

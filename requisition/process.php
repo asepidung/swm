@@ -29,7 +29,7 @@ include "../mainsidebar.php";
                         $sql = "SELECT r.*, u.fullname
                         FROM request r
                         INNER JOIN users u ON r.iduser = u.idusers
-                        WHERE r.is_deleted IS NULL
+                        WHERE r.is_deleted IS NULL AND stat = 'Process'
                         ORDER BY r.idrequest DESC";
                 $result = $conn->query($sql);
                 

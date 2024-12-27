@@ -1933,6 +1933,7 @@ CREATE TABLE request (
   iduser INT NOT NULL,
   note VARCHAR (255),
   stat VARCHAR (10),
+  is_deleted TIMESTAMP,
   creatime timestamp NOT NULL DEFAULT current_timestamp()
   FOREIGN KEY (iduser) REFERENCES users (idusers)
 );

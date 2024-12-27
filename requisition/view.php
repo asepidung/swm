@@ -83,23 +83,14 @@ mysqli_stmt_close($stmt_details);
         </p>
     </div>
     <hr>
+    <div class="col text-right"><h5><strong><?= htmlspecialchars($request['norequest']) ?></strong></h5></div>
     <div class="row mt-2">
         <div class="col-sm-6">
             <table class="table table-borderless table-sm">
                 <tr>
-                    <td>Request Number</td>
+                    <td>Request Date</td>
                     <td>:</td>
-                    <th><?= htmlspecialchars($request['norequest']) ?></th>
-                </tr>
-                <tr>
-                    <td>Due Date</td>
-                    <td>:</td>
-                    <th><?= date('d-M-Y', strtotime($request['duedate'])) ?></th>
-                </tr>
-                <tr>
-                    <td>Supplier</td>
-                    <td>:</td>
-                    <th><?= htmlspecialchars($request['nmsupplier'] ?? 'N/A') ?></th>
+                    <th><?= date('d-M-Y', strtotime($request['creatime'])) ?></th>
                 </tr>
                 <tr>
                     <td>Requested By</td>
@@ -110,6 +101,20 @@ mysqli_stmt_close($stmt_details);
                     <td>Note</td>
                     <td>:</td>
                     <th><?= htmlspecialchars($request['note'] ?? 'N/A') ?></th>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <table class="table table-borderless table-sm">
+                <tr>
+                    <td>Due Date</td>
+                    <td>:</td>
+                    <th><?= date('d-M-Y', strtotime($request['duedate'])) ?></th>
+                </tr>
+                <tr>
+                    <td>Supplier</td>
+                    <td>:</td>
+                    <th><?= htmlspecialchars($request['nmsupplier'] ?? 'N/A') ?></th>
                 </tr>
                 <tr>
                     <td>Status</td>
@@ -150,13 +155,31 @@ mysqli_stmt_close($stmt_details);
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
+                <?php if ($request['taxrp'] > 0): ?>
+                    <tr>
+                        <th colspan="4" class="text-right">Total</th>
+                        <th class="text-right"><?= number_format($request['xamount'], 2) ?></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th colspan="4" class="text-right">Tax 12%</th>
+                        <th class="text-right"><?= number_format($request['taxrp'], 2) ?></th>
+                        <th></th>
+                    </tr>
+                <?php endif; ?>
                 <tr>
                     <th colspan="4" class="text-right">Grand Total</th>
-                    <th class="text-right"><?= number_format($grand_total, 2) ?></th>
+                    <th class="text-right"><?= number_format($grand_total + $request['taxrp'], 2) ?></th>
                     <th></th>
                 </tr>
             </tfoot>
+
+
         </table>
+    </div>
+    <div class="col">Note  :</div>
+    <div class="col-md-6">
+        <?= htmlspecialchars($request['note'] ?? 'N/A') ?>
     </div>
 
     <div class="row mt-3 justify-content-center no-print">

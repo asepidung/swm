@@ -7,12 +7,31 @@ if (!isset($_SESSION['login'])) {
 
 require "../konak/conn.php";
 
+// Fungsi untuk membersihkan format angka
+function normalizeNumber($number)
+{
+    $lastCommaPos = strrpos($number, ',');
+    $lastDotPos = strrpos($number, '.');
+
+    $decimalSeparator = $lastCommaPos > $lastDotPos ? ',' : '.';
+    $thousandSeparator = $lastCommaPos < $lastDotPos ? ',' : '.';
+
+    $number = str_replace($thousandSeparator, '', $number);
+    if ($decimalSeparator != '.') {
+        $number = str_replace($decimalSeparator, '.', $number);
+    }
+
+    return (float) $number;
+}
+
 // Ambil data dari form
 $idrequest = $_POST['idrequest'] ?? null;
 $duedate = $_POST['duedate'] ?? null;
 $idsupplier = $_POST['idsupplier'] ?? null;
 $other = $_POST['other'] ?? null;
 $note = $_POST['note'] ?? null;
+$taxrp = normalizeNumber($_POST['taxrp'] ?? 0);
+$xamount = normalizeNumber($_POST['xamount'] ?? 0);
 
 // Ambil data detail
 $idrawmate = $_POST['idrawmate'] ?? [];
@@ -30,9 +49,9 @@ mysqli_begin_transaction($conn);
 
 try {
     // Update data di tabel `request`
-    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, other = ?, note = ? WHERE idrequest = ?";
+    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, other = ?, note = ?, taxrp = ?, xamount = ? WHERE idrequest = ?";
     $stmt_request = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt_request, "sissi", $duedate, $idsupplier, $other, $note, $idrequest);
+    mysqli_stmt_bind_param($stmt_request, "sissdsi", $duedate, $idsupplier, $other, $note, $taxrp, $xamount, $idrequest);
 
     if (!mysqli_stmt_execute($stmt_request)) {
         throw new Exception("Error updating request table: " . mysqli_stmt_error($stmt_request));
@@ -52,8 +71,8 @@ try {
     $stmt_insert_details = mysqli_prepare($conn, $query_insert_details);
 
     foreach ($idrawmate as $i => $rawmate) {
-        $qty = $weight[$i] ?? 0;
-        $product_price = $price[$i] ?? 0;
+        $qty = normalizeNumber($weight[$i] ?? 0); // Normalisasi qty
+        $product_price = normalizeNumber($price[$i] ?? 0); // Normalisasi price
         $product_note = $notes[$i] ?? '';
 
         mysqli_stmt_bind_param($stmt_insert_details, "iiids", $idrequest, $rawmate, $qty, $product_price, $product_note);

@@ -29,7 +29,7 @@ include "../mainsidebar.php";
                         $sql = "SELECT r.*, u.fullname
                         FROM request r
                         INNER JOIN users u ON r.iduser = u.idusers
-                        WHERE r.is_deleted IS NULL
+                        WHERE r.is_deleted IS NULL AND stat = 'Approved'
                         ORDER BY r.idrequest DESC";
                 $result = $conn->query($sql);
                 
@@ -63,15 +63,20 @@ include "../mainsidebar.php";
                                        <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
                                        <td class="text-left"><?= $row['note'] ?></td>
                                        <td>
-                                          <?= $row['stat'] ?></td>
-                                       </td>
+                                       <?php if ($idusers == 13): ?>
+                                          <a href="apptopro.php?id=<?= $row['idrequest']; ?>" class="btn btn-sm btn-primary">
+                                                <?= htmlspecialchars($row['stat']); ?>
+                                          </a>
+                                       <?php else: ?>
+                                          <?= htmlspecialchars($row['stat']); ?>
+                                       <?php endif; ?>
+                                    </td>
                                        <td>
                                           <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
                                           <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                           <a href="delete.php?id=<?= $row['idrequest'] ?>" class="btn btn-danger btn-sm" title="Delete" 
                                              onclick="return confirm('Are you sure you want to delete this item?');"><i class="fas fa-trash-alt"></i>
                                           </a>
-
                                        </td>
                                     </tr>
                            <?php

@@ -29,7 +29,7 @@ include "../mainsidebar.php";
                         $sql = "SELECT r.*, u.fullname
                         FROM request r
                         INNER JOIN users u ON r.iduser = u.idusers
-                        WHERE r.is_deleted IS NULL
+                        WHERE r.is_deleted IS NULL AND stat = 'Waiting'
                         ORDER BY r.idrequest DESC";
                 $result = $conn->query($sql);
                 
@@ -63,8 +63,14 @@ include "../mainsidebar.php";
                                        <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
                                        <td class="text-left"><?= $row['note'] ?></td>
                                        <td>
-                                          <?= $row['stat'] ?></td>
-                                       </td>
+                                       <?php if ($idusers == 15): ?>
+                                          <a href="wtoap.php?id=<?= $row['idrequest']; ?>" class="btn btn-sm btn-primary">
+                                                Approved
+                                          </a>
+                                       <?php else: ?>
+                                          <?= htmlspecialchars($row['stat']); ?>
+                                       <?php endif; ?>
+                                    </td>
                                        <td>
                                           <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
                                           <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
