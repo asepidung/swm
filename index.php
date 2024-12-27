@@ -316,7 +316,7 @@ include "kebutuhanindex.php";
                      </li>
                   <?php endif; ?>
 
-                  <?php
+       <?php        
 // Query untuk menghitung requisitions berdasarkan status yang belum dihapus
 $query = "SELECT stat, COUNT(*) AS total 
           FROM request 
@@ -346,22 +346,30 @@ if ($result) {
 ?>
 
 <li class="nav-item">
-    <a href="#" class="nav-link">
-        <i class="nav-icon fas fa-hand-holding-usd"></i>
-        <p>
-            REQUISITIONS
-            <i class="right fas fa-angle-left"></i>
-            <span class="badge badge-info right"><?= $statusCounts['All']; ?></span>
-        </p>
-    </a>
+<a href="#" class="nav-link">
+    <i class="nav-icon fas fa-hand-holding-usd"></i>
+    <p>
+        REQUISITIONS
+        <i class="right fas fa-angle-left"></i>
+        <?php if ($_SESSION['idusers'] == 15): ?>
+            <span class="badge badge-info right"><?= $statusCounts['Waiting']; ?></span>
+        <?php elseif ($_SESSION['idusers'] == 13): ?>
+            <span class="badge badge-success right"><?= $statusCounts['Approved']; ?></span>
+        <?php endif; ?>
+    </p>
+</a>
+
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a href="requisition/" class="nav-link">
                 <i class="far fa-dot-circle nav-icon"></i>
-                <p>All Request</p>
+                <p>All Request
+                <span class="badge badge-danger right"><?= $statusCounts['All']; ?></span>
+                </p>
             </a>
         </li>
     </ul>
+    <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a href="requisition/waiting.php" class="nav-link">
@@ -371,6 +379,8 @@ if ($result) {
             </a>
         </li>
     </ul>
+<?php endif; ?>
+<?php if ($_SESSION['idusers'] == 13 || $_SESSION['idusers'] == 1): ?>
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a href="requisition/approved.php" class="nav-link">
@@ -380,6 +390,7 @@ if ($result) {
             </a>
         </li>
     </ul>
+  <?php endif; ?>
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a href="requisition/process.php" class="nav-link">
@@ -390,6 +401,7 @@ if ($result) {
         </li>
     </ul>
 </li>
+
                   <?php if ($role['purchase_module'] == 1) : ?>
                      <li class="nav-item">
                         <a href="#" class="nav-link">

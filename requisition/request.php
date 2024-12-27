@@ -298,6 +298,8 @@ include "../mainsidebar.php";
       button.closest('.row').remove();
       calculateTotals();
    }
+
+   document.title = "New Request";
 </script>
 
 

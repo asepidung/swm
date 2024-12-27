@@ -1928,14 +1928,18 @@ CREATE TABLE detailpcs (
 
 CREATE TABLE request (
   idrequest INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  norequest VARCHAR(10) NOT NULL,
+  norequest VARCHAR(15) NOT NULL,
   duedate DATE NOT NULL,
   iduser INT NOT NULL,
+  idsupplier INT,
   note VARCHAR (255),
   stat VARCHAR (10),
   is_deleted TIMESTAMP,
-  creatime timestamp NOT NULL DEFAULT current_timestamp()
-  FOREIGN KEY (iduser) REFERENCES users (idusers)
+  xamount DECIMAL(15,2),
+  taxrp DECIMAL(15,2),
+  creatime timestamp NOT NULL DEFAULT current_timestamp(),
+  FOREIGN KEY (iduser) REFERENCES users (idusers),
+  FOREIGN KEY (idsupplier) REFERENCES supplier (idsupplier)
 );
 
 CREATE TABLE requestdetail (
