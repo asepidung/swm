@@ -74,78 +74,77 @@ if ($resultKunci) {
             <!-- Form Card -->
             <div class="card">
               <div class="card-body">
-                <form method="POST" action="cetaklabelboning.php" onsubmit="submitForm(event)">
+                <form method="POST" action="insert_labelboning.php" onsubmit="submitForm(event)">
                   <!-- Dropdown Barang -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <select class="form-control" name="idbarang" id="idbarang" required autofocus>
-                        <?php
-                        if (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] != '') {
-                          $selectedIdbarang = $_SESSION['idbarang'];
-                          echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
-                        } else {
-                          echo '<option value="" selected>--Pilih Item--</option>';
-                        }
-                        while ($row = mysqli_fetch_assoc($resultBarang)) {
-                          $idbarang = $row['idbarang'];
-                          $nmbarang = $row['nmbarang'];
-                          $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
-                          echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
-                        }
-                        ?>
-                      </select>
-                      <div class="input-group-append">
-                        <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                      <div class="input-group">
+                          <select class="form-control" name="idbarang" id="idbarang" required autofocus>
+                              <?php
+                              $selectedIdbarang = $_SESSION['idbarang'] ?? ''; // Default dari session
+                              if ($selectedIdbarang) {
+                                  echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
+                              } else {
+                                  echo '<option value="" selected>--Pilih Item--</option>';
+                              }
+                              while ($row = mysqli_fetch_assoc($resultBarang)) {
+                                  $idbarang = $row['idbarang'];
+                                  $nmbarang = $row['nmbarang'];
+                                  $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
+                                  echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                              }
+                              ?>
+                          </select>
+                          <div class="input-group-append">
+                              <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                          </div>
                       </div>
-                    </div>
                   </div>
 
                   <!-- Dropdown Grade -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <select class="form-control" name="idgrade" id="idgrade" required>
-                        <?php
-                        if (isset($_SESSION['idgrade']) && $_SESSION['idgrade'] != '') {
-                          $selectedIdgrade = $_SESSION['idgrade'];
-                          echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
-                        } else {
-                          echo '<option value="" selected>--Pilih Grade--</option>';
-                        }
-                        while ($row = mysqli_fetch_assoc($resultGrade)) {
-                          $idgrade = $row['idgrade'];
-                          $nmgrade = $row['nmgrade'];
-                          $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
-                          echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
-                        }
-                        ?>
-                      </select>
-                    </div>
+                      <div class="input-group">
+                          <select class="form-control" name="idgrade" id="idgrade" required>
+                              <?php
+                              $selectedIdgrade = $_SESSION['idgrade'] ?? ''; // Default dari session
+                              if ($selectedIdgrade) {
+                                  echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                              } else {
+                                  echo '<option value="" selected>--Pilih Grade--</option>';
+                              }
+                              while ($row = mysqli_fetch_assoc($resultGrade)) {
+                                  $idgrade = $row['idgrade'];
+                                  $nmgrade = $row['nmgrade'];
+                                  $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                                  echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                              }
+                              ?>
+                          </select>
+                      </div>
                   </div>
 
                   <!-- Packed Date -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <?php
-                      if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
-                        $_SESSION['packdate'] = date('Y-m-d');
-                      }
-                      ?>
-                      <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
-                    </div>
+                      <div class="input-group">
+                          <?php
+                          $packdate = $_SESSION['packdate'] ?? date('Y-m-d'); // Default: hari ini
+                          ?>
+                          <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $packdate; ?>">
+                      </div>
                   </div>
 
                   <!-- Expired Date -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
-                    </div>
+                      <div class="input-group">
+                          <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
+                      </div>
                   </div>
 
+
                   <!-- Tenderstreach -->
-                  <div class="form-check">
+                  <!-- <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?= isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
                     <label class="form-check-label">Aktifkan Tenderstreatch</label>
-                  </div>
+                  </div> -->
 
                   <!-- Hidden Inputs -->
                   <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
@@ -231,9 +230,12 @@ if ($resultKunci) {
                             <!-- <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
                               <i class="fas fa-pencil-alt"></i>
                             </a> -->
-                           <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" class="text-danger">
+                            <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" 
+                              class="text-danger" 
+                              onclick="return confirm('Apakah anda yakin ingin menghapus label ini?');">
                               <i class="fas fa-minus-square"></i>
                             </a>
+
                           <?php endif; ?>
                         <?php endif; ?>
                       </td>

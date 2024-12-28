@@ -1,54 +1,42 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
+    header("location: ../verifications/login.php");
+    exit;
 }
 require "../konak/conn.php";
-require "seriallabelboning.php";
 require "../dist/vendor/autoload.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-   $idusers = $_SESSION['idusers'];
-   // Query untuk mendapatkan nama barang
-   $idbarang = $_POST['idbarang'];
-   $idgrade = $_POST['idgrade'];
-   $query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
-   $result = mysqli_query($conn, $query);
-   $row = mysqli_fetch_assoc($result);
-   $nmbarang = $row['nmbarang'];
-   $packdate = $_POST['packdate'];
-   $exp = $_POST['exp'];
-   $idboning = $_POST['idboning'];
-   $idboningWithPrefix = $_POST['idboningWithPrefix'];
-   $kdbarcode = "1" . $idboningWithPrefix . $kodeauto;
-   $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
-
-   // Memeriksa dan memecah nilai qty dan pcs
-   $qty = null;
-   $pcs = null;
-   $qtyPcsInput = $_POST['qty'];
-   $_SESSION['idbarang'] = $_POST['idbarang'];
-   $_SESSION['idgrade'] = $_POST['idgrade'];
-   $_SESSION['packdate'] = $packdate;
-   $_SESSION['tenderstreach'] = $tenderstreachActive;
-   $_SESSION['exp'] = $exp;
-
-   if (strpos($qtyPcsInput, "/") !== false) {
-      list($qty, $pcs) = explode("/", $qtyPcsInput);
-   } else {
-      $qty = $qtyPcsInput;
-   }
-
-   // Memformat qty menjadi 2 digit desimal di belakang koma
-   $qty = number_format($qty, 2, '.', '');
+// Validasi dan sanitasi input
+if (!isset($_GET['idlabelboning']) || empty($_GET['idlabelboning'])) {
+    die('Error: idlabelboning is missing or invalid.');
 }
-$query = mysqli_query($conn, "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade)
-VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')");
+$idlabelboning = intval($_GET['idlabelboning']);
+$idboning = intval($_GET['idboning']);
 
-$stockin = mysqli_query($conn, "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
-VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
+// Ambil data label dan barang berdasarkan idlabelboning
+$query = "SELECT lb.*, b.nmbarang 
+          FROM labelboning lb 
+          JOIN barang b ON lb.idbarang = b.idbarang 
+          WHERE lb.idlabelboning = $idlabelboning";
+$result = mysqli_query($conn, $query);
+$data = mysqli_fetch_assoc($result);
+
+// Pastikan data ditemukan
+if (!$data) {
+    header("Location: labelboning.php?id=$idboning");
+    exit;
+}
+
+// Variabel untuk digunakan di halaman cetak
+$nmbarang = $data['nmbarang'];
+$qty = $data['qty'];
+$pcs = $data['pcs'];
+$packdate = $data['packdate'];
+$exp = $data['exp'];
+$idgrade = $data['idgrade'];
+$kdbarcode = $data['kdbarcode'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -107,10 +95,10 @@ VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)");
          </tr>
          <tr>
             <td height="20" style="font-style: normal; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'CUBEROLL') !== false || strpos($nmbarang, 'OPERIB') !== false)) { ?><strong><i>Tenderstreach</i></strong>
+               <!-- <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'CUBEROLL') !== false || strpos($nmbarang, 'OPERIB') !== false)) { ?><strong><i>Tenderstreach</i></strong>
                <?php } else { ?>
                   &nbsp;
-               <?php } ?>
+               <?php } ?> -->
             </td>
          </tr>
          <tr>

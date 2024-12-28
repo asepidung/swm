@@ -98,9 +98,17 @@ include "../mainsidebar.php";
                         <a class="btn btn-info btn-sm" href="editdataboning.php?idboning=<?= $tampil['idboning'] ?>">
                           <i class="fas fa-pencil-alt"></i>
                         </a>
-                        <a class="btn btn-danger btn-sm" href="deletedataboning.php?idboning=<?= $tampil['idboning'] ?>" onclick="return confirm('Apakah kamu yakin ingin menghapus data boning ini?')">
+                        <?php
+                        // Periksa nilai kunci
+                        $isLocked = $tampil['kunci'] == 1; // Asumsikan $tampil['kunci'] berisi nilai kunci
+                        ?>
+
+                        <a class="btn btn-danger btn-sm <?= $isLocked ? 'disabled' : ''; ?>" 
+                          href="<?= !$isLocked ? "deletedataboning.php?idboning={$tampil['idboning']}" : '#'; ?>" 
+                          <?= $isLocked ? 'aria-disabled="true" tabindex="-1"' : 'onclick="return confirm(\'Apakah kamu yakin ingin menghapus data boning ini?\')"'; ?>>
                           <i class="fas fa-minus-circle"></i>
                         </a>
+
                       </td>
                     </tr>
                   <?php
