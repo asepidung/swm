@@ -223,17 +223,19 @@ $limit = $_SESSION['limit'];
                                        <td class="ml-1"> <?= $row['nmbarang'] ?></td>
                                        <td class="text-center"><?= number_format($row['weight'], 2) ?></td>
                                        <td class="text-right">
-                                          <?php
-                                          $totalWeightQuery = "SELECT SUM(weight) AS total_weight
-                                          FROM tallydetail
-                                          WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
-                                          $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
-                                          if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
-                                             echo number_format($totalWeightRow['total_weight'], 2);
-                                          } else {
-                                             echo "0"; // Jika tidak ada data, tampilkan 0
-                                          }
-                                          ?>
+                                       <?php
+                                       $totalWeightQuery = "SELECT SUM(weight) AS total_weight
+                                       FROM tallydetail
+                                       WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
+                                       $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
+                                       if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
+                                          // Menggunakan null coalescing operator untuk memastikan nilai default jika null
+                                          $totalWeight = $totalWeightRow['total_weight'] ?? 0; // default ke 0 jika null
+                                          echo number_format($totalWeight, 2); // Format dengan dua desimal
+                                       } else {
+                                          echo "0"; // Jika tidak ada data, tampilkan 0
+                                       }
+                                       ?>
                                        </td>
                                        <td class="text-center">
                                           <?php

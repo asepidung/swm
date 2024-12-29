@@ -22,9 +22,6 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $idboning = intval($_GET['id']);
 $idusers = $_SESSION['idusers'] ?? 0;
 
-// Tambahkan prefix ke ID boning
-$idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
-
 // Query daftar barang
 $queryBarang = "SELECT * FROM barang ORDER BY nmbarang ASC";
 $resultBarang = mysqli_query($conn, $queryBarang);
@@ -43,8 +40,20 @@ if (!$resultGrade) {
 if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
   $_SESSION['packdate'] = date('Y-m-d');
 }
+
+$querybatch = "SELECT batchboning FROM boning WHERE idboning = $idboning";
+$resultbatch = mysqli_query($conn, $querybatch);
+if ($resultbatch) {
+  $rowbatch = mysqli_fetch_assoc($resultbatch);
+  $is_batch = $rowbatch['batchboning']; // Status kunci (1 = terkunci, 0 = tidak terkunci)
+} else {
+  die("Error pada query batch: " . mysqli_error($conn));
+}
+
+
 $queryKunci = "SELECT kunci FROM boning WHERE idboning = $idboning";
 $resultKunci = mysqli_query($conn, $queryKunci);
+
 
 if ($resultKunci) {
   $rowKunci = mysqli_fetch_assoc($resultKunci);
@@ -148,7 +157,6 @@ if ($resultKunci) {
 
                   <!-- Hidden Inputs -->
                   <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
-                  <input type="hidden" name="idboningWithPrefix" id="idboningWithPrefix" value="<?= $idboningWithPrefix; ?>">
                   <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
 
                   <!-- Qty Input -->
@@ -194,23 +202,25 @@ if ($resultKunci) {
                   </tr>
                 </thead>
                 <tbody>
-                  <?php
+                <?php
                   $no = 1;
                   $queryData = "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade 
-                  FROM labelboning l
-                  JOIN barang b ON l.idbarang = b.idbarang 
-                  JOIN boning bo ON l.idboning = bo.idboning
-                  JOIN grade g ON l.idgrade = g.idgrade
-                  JOIN users u ON l.iduser = u.idusers
-                  WHERE l.idboning = $idboning ORDER BY l.idlabelboning DESC";
+                                FROM labelboning l
+                                JOIN barang b ON l.idbarang = b.idbarang 
+                                JOIN boning bo ON l.idboning = bo.idboning
+                                JOIN grade g ON l.idgrade = g.idgrade
+                                JOIN users u ON l.iduser = u.idusers
+                                WHERE l.idboning = $idboning AND l.is_deleted = 0  -- Menambahkan kondisi untuk hanya menampilkan data yang belum dihapus
+                                ORDER BY l.idlabelboning DESC";
                   $resultData = mysqli_query($conn, $queryData);
 
                   while ($tampil = mysqli_fetch_assoc($resultData)) :
-                    $fullname = $tampil['fullname'];
-                    $kdbarcode = $tampil['kdbarcode'];
-                    $existsTally = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'"))['total'] > 0;
-                    $existsDetailBahan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'"))['total'] > 0;
+                      $fullname = $tampil['fullname'];
+                      $kdbarcode = $tampil['kdbarcode'];
+                      $existsTally = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'"))['total'] > 0;
+                      $existsDetailBahan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'"))['total'] > 0;
                   ?>
+
                     <tr class="text-center">
                       <td><?= $no++; ?></td>
                       <td><?= $tampil['kdbarcode']; ?></td>
@@ -250,7 +260,7 @@ if ($resultKunci) {
     </div>
   </div>
   <script>
-    document.title = "Boning <?= "BN" . $idboningWithPrefix ?>";
+    document.title = "Boning <?= $is_batch ?>";
     document.addEventListener('DOMContentLoaded', function() {
       // Menggunakan event listener untuk menangkap event keydown pada elemen dengan id "idbarang"
       document.getElementById('idbarang').addEventListener('keydown', function(e) {

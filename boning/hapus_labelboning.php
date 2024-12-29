@@ -13,15 +13,17 @@ if (isset($_GET['id']) && isset($_GET['idboning'])) {
    $idboning = $_GET['idboning'];
    $kdbarcode = $_GET['kdbarcode'];
 
-   // Lakukan penghapusan data dari tabel labelboning
-   $hapusdata = mysqli_query($conn, "DELETE FROM labelboning WHERE idlabelboning = '$idlabelboning'");
+   // Lakukan soft delete data di tabel labelboning dengan mengupdate status is_deleted menjadi 1
+   $updateLabelBoning = mysqli_query($conn, "UPDATE labelboning SET is_deleted = 1 WHERE idlabelboning = '$idlabelboning'");
+
+   // Lakukan hard delete data di tabel stock berdasarkan kdbarcode
    $hapusstock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
 
    // Periksa apakah penghapusan data berhasil dilakukan
-   if ($hapusstock) {
+   if ($hapusstock && $updateLabelBoning) {
       // Catat aktivitas ke logactivity setelah data berhasil dihapus
       $idusers = $_SESSION['idusers'];
-      $logSql = "INSERT INTO logactivity (iduser, event, docnumb) VALUES ('$idusers', 'Hapus Label Boning', '$kdbarcode')";
+      $logSql = "INSERT INTO logactivity (iduser, event, docnumb) VALUES ('$idusers', 'Soft Hapus Label Boning', '$kdbarcode')";
       mysqli_query($conn, $logSql);
 
       // Jika berhasil, arahkan kembali ke halaman sebelumnya dengan pesan sukses dan idboning yang dilewatkan sebagai parameter query string
@@ -36,3 +38,4 @@ if (isset($_GET['id']) && isset($_GET['idboning'])) {
    header("Location: labelboning.php?id=$idboning");
    exit;
 }
+?>

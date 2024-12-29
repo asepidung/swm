@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $packdate = $_POST['packdate'];
     $exp = $_POST['exp'];
     $idboning = $_POST['idboning'];
-    $idboningWithPrefix = $_POST['idboningWithPrefix'];
+    // $idboningWithPrefix = $_POST['idboningWithPrefix'];
     $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
     $qtyPcsInput = $_POST['qty'];
 
@@ -27,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $qty = $qtyPcsInput;
     }
     $qty = number_format($qty, 2, '.', '');
-    $kdbarcode = "1" . $idboningWithPrefix . $kodeauto;
+    $kdbarcode = "1" . $idboning . $kodeauto;
 
     // Simpan data ke tabel labelboning
     $queryInsertLabel = "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade)
-                         VALUES ('$idboningWithPrefix', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')";
+                         VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')";
     mysqli_query($conn, $queryInsertLabel);
 
     // Ambil idlabelboning yang baru saja di-insert
