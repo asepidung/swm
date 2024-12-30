@@ -19,17 +19,13 @@ if (isset($_GET['idpoproduct'])) {
    $row = mysqli_fetch_assoc($result);
    $nopoproduct = $row['nopoproduct'];
 
-   // Hapus data dari tabel poproductdetail
-   $deleteDetailQuery = "DELETE FROM poproductdetail WHERE idpoproduct = $idpoproduct";
-   mysqli_query($conn, $deleteDetailQuery);
-
-   // Hapus data dari tabel poproduct
-   $deleteQuery = "DELETE FROM poproduct WHERE idpoproduct = $idpoproduct";
-   mysqli_query($conn, $deleteQuery);
+   // Soft delete data dari tabel poproduct (set is_deleted = 1)
+   $softDeleteQuery = "UPDATE poproduct SET is_deleted = 1 WHERE idpoproduct = $idpoproduct";
+   mysqli_query($conn, $softDeleteQuery);
 
    // Insert log activity into logactivity table
    $idusers = $_SESSION['idusers'];
-   $event = "Delete PO Product";
+   $event = "Soft Delete PO Product";
    $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
                 VALUES ('$idusers', '$nopoproduct', '$event', NOW())";
    mysqli_query($conn, $logQuery);

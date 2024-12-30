@@ -52,6 +52,7 @@ include "../mainsidebar.php";
                            FROM poproduct p
                            JOIN users u ON p.idusers = u.idusers
                            LEFT JOIN supplier s ON p.idsupplier = s.idsupplier
+                           WHERE p.is_deleted = 0
                            ORDER BY p.idpoproduct DESC;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $xweight = $tampil['xweight'];

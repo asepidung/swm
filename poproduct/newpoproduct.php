@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "ponumber.php";
 ?>
 
 <div class="content-wrapper">

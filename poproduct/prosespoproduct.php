@@ -5,11 +5,12 @@ if (!isset($_SESSION['login'])) {
    exit();
 }
 require "../konak/conn.php";
+include "ponumber.php";
 
 // Check if the form is submitted
 if (isset($_POST['submit'])) {
    // Retrieve data from the form and sanitize inputs
-   $nopoproduct = $_POST['nopoproduct'];
+   // $nopoproduct = $_POST['nopoproduct'];
    $tglpoproduct = $_POST['tglpoproduct'];
    $deliveryat = $_POST['deliveryat'];
    $idsupplier = $_POST['idsupplier'];
@@ -25,7 +26,7 @@ if (isset($_POST['submit'])) {
    }
    // Insert data into the 'poproduct' table
    $sql = "INSERT INTO poproduct (nopoproduct, idsupplier, tglpoproduct, deliveryat, note, idusers, stat, xweight, xamount, terms) 
-         VALUES ('$nopoproduct', '$idsupplier', '$tglpoproduct', '$deliveryat', '$note', '$idusers', '$stat', '$xweight', '$xamount', '$terms')";
+         VALUES ('$kodeauto', '$idsupplier', '$tglpoproduct', '$deliveryat', '$note', '$idusers', '$stat', '$xweight', '$xamount', '$terms')";
 
    // Execute the SQL query
    if (mysqli_query($conn, $sql)) {
