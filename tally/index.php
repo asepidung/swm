@@ -75,27 +75,29 @@ $approvedCount = $rowApprovedCount['approved_count'];
                         </thead>
                         <tbody>
                            <?php
-                           $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer, salesorder.note
-                           FROM tally 
-                           INNER JOIN customers ON tally.idcustomer = customers.idcustomer
-                           INNER JOIN salesorder ON tally.idso = salesorder.idso
-                           WHERE (tally.deliverydate BETWEEN '$awal' AND '$akhir')
-                           OR (tally.stat NOT IN ('DO', 'Rejected'))
-                           ORDER BY idtally DESC");
-
-                           if (!$ambildata) {
+                          $no = 1;
+                          $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer, salesorder.note
+                                                     FROM tally 
+                                                     INNER JOIN customers ON tally.idcustomer = customers.idcustomer
+                                                     INNER JOIN salesorder ON tally.idso = salesorder.idso
+                                                     WHERE ((tally.deliverydate BETWEEN '$awal' AND '$akhir')
+                                                     OR (tally.stat NOT IN ('DO', 'Rejected')))
+                                                     AND tally.is_deleted = 0
+                                                     ORDER BY idtally DESC");
+                          
+                          if (!$ambildata) {
                               die("Query error: " . mysqli_error($conn));
-                           }
-
-                           while ($tampil = mysqli_fetch_array($ambildata)) {
+                          }
+                          
+                          while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
-
+                          
                               if ($tampil['stat'] == 'Rejected') {
-                                 echo '<tr class="text-danger">';
+                                  echo '<tr class="text-danger">';
                               } else {
-                                 echo '<tr>';
+                                  echo '<tr>';
                               }
+                          
                            ?>
                               <td class="text-center"><?= $no; ?></td>
                               <td><?= htmlspecialchars($tampil['nama_customer']); ?></td>

@@ -300,7 +300,7 @@ $limit = $_SESSION['limit'];
                               <tr class="text-right">
                                  <th>Total</th>
                                  <th class="text-center"><?= number_format($totalPO); ?></th>
-                                 <th><?= number_format($totalQty, 2); ?></th>
+                                 <th><?= number_format($totalQty ?? 0, 2); ?></th>
                                  <th class="text-center"><?= number_format($totalBox); ?></th>
                                  <th><?= number_format($totalBalance, 2); ?></th>
                               </tr>
