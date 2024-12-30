@@ -45,22 +45,24 @@ include "../mainsidebar.php";
                            </tr>
                         </thead>
                         <tbody>
-                           <?php
+                        <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT repack.*, users.fullname
                            FROM repack 
                            INNER JOIN users ON repack.idusers = users.idusers 
+                           WHERE repack.is_deleted = 0 
                            ORDER BY idrepack DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               include "hitungtotal.php";
                               $idrepack = $tampil['idrepack'];
                            ?>
+
                               <tr class="text-center">
                                  <td><?= $no; ?></td>
                                  <td><?= $tampil['norepack']; ?></td>
                                  <td><?= date("d-M-y", strtotime($tampil['tglrepack'])); ?></td>
-                                 <td class="text-right"><?= number_format($rowTotalBahan['total_bahan'], 2); ?></td>
-                                 <td class="text-right"><?= number_format($rowTotalHasil['total_hasil'], 2); ?></td>
+                                 <td class="text-right"><?= number_format($rowTotalBahan['total_bahan'] ?? 0, 2); ?></td>
+                                 <td class="text-right"><?= number_format($rowTotalHasil['total_hasil'] ?? 0, 2);  ?></td>
                                  <td class="text-right">
                                     <?php if ($lost < 0) { ?>
                                        <span class="text-danger"><?= number_format($lost, 2); ?></span>
@@ -93,13 +95,16 @@ include "../mainsidebar.php";
 
                                     // Jika kedua tabel tidak memiliki data yang sesuai
                                     if ($row_detailbahan['total'] == 0 && $row_detailhasil['total'] == 0) {
-                                       echo '<a href="deleterepack.php?id=' . $idrepack . '" class="btn btn-sm btn-danger">
-              <i class="fas fa-trash"></i>
-          </a>';
-                                    } else { // Jika salah satu atau kedua tabel memiliki data yang sesuai
-                                       echo '<a href="#" class="btn btn-sm btn-secondary">
-              <i class="fas fa-trash"></i>
-          </a>';
+                                       echo '<a href="deleterepack.php?id=' . $idrepack . '" 
+                                                class="btn btn-sm btn-danger" 
+                                                onclick="return confirm(\'Apakah kamu yakin ingin menghapus repack ini?\')">
+                                                <i class="fas fa-trash"></i>
+                                             </a>';
+
+                                          } else { // Jika salah satu atau kedua tabel memiliki data yang sesuai
+                                             echo '<a href="#" class="btn btn-sm btn-secondary">
+                                          <i class="fas fa-trash"></i>
+                                       </a>';
                                     }
                                     ?>
                                  </td>

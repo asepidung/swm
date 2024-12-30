@@ -6,8 +6,9 @@ if (!isset($_SESSION['login'])) {
 
 if (isset($_POST['submit'])) {
    require "../konak/conn.php";
+   include "norepack.php";
 
-   $norepack = $_POST['norepack'];
+   // $norepack = $_POST['norepack'];
    $tglrepack = $_POST['tglrepack'];
    $note = $_POST['note'];
    $idusers = $_SESSION['idusers']; // Mendapatkan ID pengguna yang sesuai.

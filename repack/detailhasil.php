@@ -153,7 +153,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                               FROM detailhasil
                               INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
                               INNER JOIN grade ON detailhasil.idgrade = grade.idgrade
-                              WHERE idrepack = $idrepack ORDER BY iddetailhasil DESC");
+                              WHERE idrepack = $idrepack AND detailhasil.is_deleted = 0
+                              ORDER BY iddetailhasil DESC");
                         while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                            <tr class="text-center">
                               <td><?= $no; ?></td>
@@ -245,7 +246,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <tr class="text-right">
                            <th>TOTAL</th>
                            <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
-                           <th><?= number_format($rowhasil['hasilqty'], 2); ?></th>
+                           <th><?= isset($rowhasil['hasilqty']) ? number_format($rowhasil['hasilqty'], 2) : '0.00'; ?></th>
                         </tr>
                      </tfoot>
                   </table>
@@ -260,11 +261,13 @@ while ($row = mysqli_fetch_assoc($result)) {
                      </thead>
                      <tbody>
                         <?php
-                        $query = "SELECT detailhasil.idbarang, barang.nmbarang, SUM(detailhasil.qty) AS total_qty, COUNT(detailhasil.qty) AS count_qty
-                              FROM detailhasil
-                              INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
-                              WHERE detailhasil.idrepack = $idrepack
-                              GROUP BY detailhasil.idbarang, barang.nmbarang";
+                        $query = "SELECT detailhasil.idbarang, barang.nmbarang, 
+                                 SUM(detailhasil.qty) AS total_qty, 
+                                 COUNT(detailhasil.qty) AS count_qty
+                                 FROM detailhasil
+                                 INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
+                                 WHERE detailhasil.idrepack = $idrepack AND detailhasil.is_deleted = 0
+                                 GROUP BY detailhasil.idbarang, barang.nmbarang";
                         $result = mysqli_query($conn, $query);
                         while ($row = mysqli_fetch_assoc($result)) { ?>
                            <tr>
@@ -278,18 +281,19 @@ while ($row = mysqli_fetch_assoc($result)) {
                      <tfoot>
                         <?php
                         $queryhasil = "SELECT SUM(detailhasil.qty) AS hasilqty, COUNT(detailhasil.qty) AS hasilbox
-                              FROM detailhasil
-                              WHERE detailhasil.idrepack = $idrepack";
+                                       FROM detailhasil
+                                       WHERE detailhasil.idrepack = $idrepack AND detailhasil.is_deleted = 0";
                         $resulthasil = mysqli_query($conn, $queryhasil);
                         $rowhasil = mysqli_fetch_assoc($resulthasil);
                         ?>
                         <tr class="text-right">
                            <th>TOTAL</th>
                            <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
-                           <th><?= number_format($rowhasil['hasilqty'], 2); ?></th>
+                           <th><?= isset($rowhasil['hasilqty']) ? number_format($rowhasil['hasilqty'], 2) : '0.00'; ?></th>
                         </tr>
                      </tfoot>
                   </table>
+
                </div>
             </div>
          </div>

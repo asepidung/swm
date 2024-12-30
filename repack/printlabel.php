@@ -1,64 +1,89 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
+    header("location: ../verifications/login.php");
+    exit();
 }
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 require "seriallabelrepack.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-   // Query untuk mendapatkan nama barang
-   $idbarang = $_POST['idbarang'];
-   $note  = $_POST['note'];
-   $origin = $_POST['origin'];
-   $idrepack = $_POST['idrepack'];
-   $idgrade = $_POST['idgrade'];
-   $packdate = $_POST['packdate'];
-   $exp = null;
-   $barcode = $origin . $kodeauto;
-   $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
-   $pembulatan = isset($_POST['pembulatan']) ? true : false;
-   $qty = null;
-   $pcs = null;
-   $qtyPcsInput = $_POST['qty'];
-   $_SESSION['idbarang'] = $_POST['idbarang'];
-   $_SESSION['idgrade'] = $_POST['idgrade'];
-   $_SESSION['packdate'] = $packdate;
-   $_SESSION['origin'] = $_POST['origin'];
-   $_SESSION['tenderstreach'] = $tenderstreachActive;
-   $_SESSION['pembulatan'] = $pembulatan;
-   $_SESSION['exp'] = $exp;
+    // Validasi dan sanitasi input
+    $idbarang = mysqli_real_escape_string($conn, $_POST['idbarang']);
+    $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
+    $origin = mysqli_real_escape_string($conn, $_POST['origin']);
+    $idrepack = mysqli_real_escape_string($conn, $_POST['idrepack']);
+    $idgrade = mysqli_real_escape_string($conn, $_POST['idgrade']);
+    $packdate = mysqli_real_escape_string($conn, $_POST['packdate']);
+    $exp = null; // Tetap null sesuai kebutuhan
 
-   if (strpos($qtyPcsInput, "/") !== false) {
-      list($qty, $pcs) = explode("/", $qtyPcsInput . "-Pcs");
-   } else {
-      $qty = $qtyPcsInput;
-   }
+    $barcode = $origin . $idrepack . $kodeauto;
+    $tenderstreachActive = isset($_POST['tenderstreach']);
+    $pembulatan = isset($_POST['pembulatan']);
+    $qty = null;
+    $pcs = null;
 
-   // Memformat qty menjadi 2 digit desimal di belakang koma
-   $qty = number_format($qty, 2, '.', '');
+    $qtyPcsInput = $_POST['qty'];
 
-   // Query insert untuk tabel detailhasil
-   $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp, note)
-            VALUES ('$idrepack', '$barcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate', '$exp', '$note')";
+    // Simpan data untuk referensi session
+    $_SESSION['idbarang'] = $idbarang;
+    $_SESSION['idgrade'] = $idgrade;
+    $_SESSION['packdate'] = $packdate;
+    $_SESSION['origin'] = $origin;
+    $_SESSION['tenderstreach'] = $tenderstreachActive;
+    $_SESSION['pembulatan'] = $pembulatan;
+    $_SESSION['exp'] = $exp;
 
-   // Query insert untuk tabel stock
-   $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
-                      VALUES ('$barcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '$origin')"; // Sesuaikan 'origin' sesuai kebutuhan
+    // Mengolah input qty dan pcs
+    if (strpos($qtyPcsInput, "/") !== false) {
+        list($qty, $pcs) = explode("/", $qtyPcsInput);
+    } else {
+        $qty = $qtyPcsInput;
+    }
 
-   // Eksekusi query
-   if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {
-      echo "Error: " . mysqli_error($conn);
-   }
+    // Format qty menjadi 2 desimal jika valid
+    $qty = is_numeric($qty) ? number_format($qty, 2, '.', '') : null;
+    $pcs = is_numeric($pcs) ? $pcs : null;
+
+    if ($qty === null || $qty <= 0) {
+        die("Invalid quantity.");
+    }
+
+    // Query insert untuk tabel detailhasil
+    $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, exp, note)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmtDetailhasil = mysqli_prepare($conn, $queryDetailhasil);
+    mysqli_stmt_bind_param($stmtDetailhasil, "isiiissss", $idrepack, $barcode, $idbarang, $idgrade, $qty, $pcs, $packdate, $exp, $note);
+
+    // Query insert untuk tabel stock
+    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
+                   VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmtStock = mysqli_prepare($conn, $queryStock);
+    mysqli_stmt_bind_param($stmtStock, "siidsss", $barcode, $idgrade, $idbarang, $qty, $pcs, $packdate, $origin);
+
+    // Eksekusi query
+    if (mysqli_stmt_execute($stmtDetailhasil) && mysqli_stmt_execute($stmtStock)) {
+        // Berhasil menyimpan data
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+
+    // Tutup statement
+    mysqli_stmt_close($stmtDetailhasil);
+    mysqli_stmt_close($stmtStock);
 }
 
-$query = "SELECT nmbarang FROM barang WHERE idbarang = $idbarang";
-$result = mysqli_query($conn, $query);
-$row = mysqli_fetch_assoc($result);
-$nmbarang = $row['nmbarang'];
-
+// Query untuk mendapatkan nama barang
+$query = "SELECT nmbarang FROM barang WHERE idbarang = ?";
+$stmtBarang = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmtBarang, "i", $idbarang);
+mysqli_stmt_execute($stmtBarang);
+mysqli_stmt_bind_result($stmtBarang, $nmbarang);
+mysqli_stmt_fetch($stmtBarang);
+mysqli_stmt_close($stmtBarang);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

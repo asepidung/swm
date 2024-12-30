@@ -7,7 +7,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "norepack.php";
+// include "norepack.php";
 ?>
 <div class="content-wrapper">
    <section class="content">
@@ -17,12 +17,12 @@ include "norepack.php";
                <form method="POST" action="prosesrepack.php">
                   <div class="card">
                      <div class="card-body">
-                        <div class="col">
+                        <!-- <div class="col">
                            <div class="form-group">
                               <label for="norepack">NO Repack</label>
                               <input type="text" class="form-control" name="norepack" id="norepack" value="<?= $norepack ?>" readonly>
                            </div>
-                        </div>
+                        </div> -->
                         <div class="col">
                            <div class="form-group">
                               <label for="tglrepack">Tanggal Repack</label>
