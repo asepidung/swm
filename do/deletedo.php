@@ -52,25 +52,17 @@ try {
       throw new Exception("Error deleting doreceipt: " . $stmtDeleteDoreceipt->error);
    }
 
-   // Menghapus data dari tabel dodetail
-   $sqlDeleteDodetail = "DELETE FROM dodetail WHERE iddo = ?";
-   $stmtDeleteDodetail = $conn->prepare($sqlDeleteDodetail);
-   $stmtDeleteDodetail->bind_param("i", $iddo);
-   if (!$stmtDeleteDodetail->execute()) {
-      throw new Exception("Error deleting dodetail: " . $stmtDeleteDodetail->error);
-   }
-
-   // Menghapus data dari tabel do
-   $sqlDeleteDO = "DELETE FROM do WHERE iddo = ?";
-   $stmtDeleteDO = $conn->prepare($sqlDeleteDO);
-   $stmtDeleteDO->bind_param("i", $iddo);
-   if (!$stmtDeleteDO->execute()) {
-      throw new Exception("Error deleting do: " . $stmtDeleteDO->error);
+   // Soft delete data dari tabel do
+   $sqlSoftDeleteDO = "UPDATE do SET is_deleted = 1 WHERE iddo = ?";
+   $stmtSoftDeleteDO = $conn->prepare($sqlSoftDeleteDO);
+   $stmtSoftDeleteDO->bind_param("i", $iddo);
+   if (!$stmtSoftDeleteDO->execute()) {
+      throw new Exception("Error soft deleting do: " . $stmtSoftDeleteDO->error);
    }
 
    // Log activity untuk Hapus DO
    $idusers = $_SESSION['idusers'];
-   $event = "Hapus DO";
+   $event = "Delete DO";
    $query_log = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
    $stmt_log = $conn->prepare($query_log);
    $stmt_log->bind_param("iss", $idusers, $event, $donumber);
@@ -90,6 +82,5 @@ try {
 $stmtUpdateTally->close();
 $stmtDeleteDoreceiptdetail->close();
 $stmtDeleteDoreceipt->close();
-$stmtDeleteDodetail->close();
-$stmtDeleteDO->close();
+$stmtSoftDeleteDO->close();
 $conn->close();

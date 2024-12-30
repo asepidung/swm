@@ -10,7 +10,6 @@ if (isset($_POST['submit'])) {
    $donumber = $kodeauto;
    $deliverydate = $_POST['deliverydate'];
    $idcustomer = $_POST['idcustomer'];
-   // $alamat = $_POST['alamat'];
    $po = $_POST['po'];
    $driver = $_POST['driver'];
    $plat = $_POST['plat'];
@@ -22,6 +21,21 @@ if (isset($_POST['submit'])) {
    $sealnumb = $_POST['sealnumb'];
    $idtally = $_POST['idtally'];
    $idusers = $_SESSION['idusers'];
+
+   // Cek apakah idtally atau idso sudah ada di tabel DO dengan is_deleted = 0
+   $query_check = "SELECT COUNT(*) as count FROM do WHERE (idtally = ? OR idso = ?) AND is_deleted = 0";
+   $stmt_check = $conn->prepare($query_check);
+   $stmt_check->bind_param("ii", $idtally, $idso);
+   $stmt_check->execute();
+   $result_check = $stmt_check->get_result();
+   $row_check = $result_check->fetch_assoc();
+   $stmt_check->close();
+
+   if ($row_check['count'] > 0) {
+      // Jika sudah ada, hentikan proses
+      echo "<script>alert('DO Sudah dibuat.'); window.location='do.php';</script>";
+      exit();
+   }
 
    $query_do = "INSERT INTO do (donumber, idso, idtally, deliverydate, idcustomer, po, driver, plat, note, xbox, xweight, status, idusers, sealnumb) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
    $stmt_do = $conn->prepare($query_do);

@@ -69,12 +69,11 @@ $approvedCount = $rowApprovedCount['approved_count'];
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname, tally.notally FROM do
-                              JOIN customers ON do.idcustomer = customers.idcustomer
-                              JOIN users ON do.idusers = users.idusers
-                              LEFT JOIN tally ON do.idtally = tally.idtally
-                              WHERE do.deliverydate BETWEEN '$awal' AND '$akhir'
-                              ORDER BY iddo DESC;
-                           ");
+                           JOIN customers ON do.idcustomer = customers.idcustomer
+                           JOIN users ON do.idusers = users.idusers
+                           LEFT JOIN tally ON do.idtally = tally.idtally
+                           WHERE do.deliverydate BETWEEN '$awal' AND '$akhir' AND do.is_deleted = 0
+                           ORDER BY iddo DESC;");                    
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
                            ?>
@@ -88,7 +87,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                  <td><?= $tampil['po']; ?></td>
                                  <td><a href="../tally/printtally.php?id=<?= $tampil['idtally'] ?> "><?= $tampil['notally']; ?></a></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
-                                 <td class="text-right"><?= number_format($tampil['rweight'], 2); ?></td>
+                                 <td class="text-right"><?= number_format($tampil['rweight'] ?? 0, 2); ?></td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
