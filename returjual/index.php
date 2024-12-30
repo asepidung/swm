@@ -45,8 +45,9 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT returjual.*, customers.nama_customer
-                         FROM returjual
-                         JOIN customers ON returjual.idcustomer = customers.idcustomer ORDER BY returnnumber DESC");
+                                 FROM returjual
+                                 JOIN customers ON returjual.idcustomer = customers.idcustomer
+                                 WHERE returjual.is_deleted = 0 ORDER BY returnnumber DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr>
@@ -57,17 +58,12 @@ include "../mainsidebar.php";
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center"><?= $fullname ?></td>
                                  <td class="text-center">
-                                    <a href="detailrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-secondary">
+                                    <a href="detailrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-warning">
                                        <i class="fas fa-barcode"></i>
                                     </a>
-                                    <a href="lihatrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-primary">
-                                       <i class="far fa-eye"></i>
-                                    </a>
-                                    <a href="printrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-success">
-                                       <i class="fas fa-print"></i></a>
-                                    <a href="editrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-warning">
-                                       <i class="fas fa-pencil-alt"></i></a>
-                                    <a href="editrj.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
+                                    <a href="lihatreturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-success" >
+                                       <i class="fas fa-eye"></i></a>
+                                    <a href="deletereturjual.php?idreturjual=<?= $tampil['idreturjual']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus data ini?')">
                                        <i class="fas fa-minus-circle"></i></a>
                                  </td>
                               </tr>

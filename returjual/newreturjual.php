@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-include "returnnumber.php";
 ?>
 <div class="content-wrapper">
    <!-- Main content -->
@@ -18,16 +17,6 @@ include "returnnumber.php";
                <form method="POST" action="inputreturjual.php">
                   <div class="card">
                      <div class="card-body">
-                        <div class="row">
-                           <div class="col">
-                              <div class="form-group">
-                                 <label for="returnnumber">Return Number <span class="text-danger">*</span></label>
-                                 <div class="input-group">
-                                    <input type="text" class="form-control" value="<?= $returnnumber ?>" name="returnnumber" id="returnnumber" readonly>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
                         <div class="row">
                            <div class="col">
                               <div class="form-group">

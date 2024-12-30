@@ -8,21 +8,30 @@ require "../konak/conn.php";
 if (isset($_GET['id']) && isset($_GET['iddetail'])) {
    $id = $_GET['id'];
    $iddetail = $_GET['iddetail'];
-   $getBarcodeQuery = "SELECT kdbarcode FROM returjualdetail WHERE idreturjualdetail = '$iddetail'";
-   $getBarcodeResult = mysqli_query($conn, $getBarcodeQuery);
+   $getBarcodeQuery = "SELECT kdbarcode FROM returjualdetail WHERE idreturjualdetail = ?";
+   $stmtGetBarcode = $conn->prepare($getBarcodeQuery);
+   $stmtGetBarcode->bind_param("i", $iddetail);
+   $stmtGetBarcode->execute();
+   $resultBarcode = $stmtGetBarcode->get_result();
 
-   if ($getBarcodeResult && $rowBarcode = mysqli_fetch_assoc($getBarcodeResult)) {
+   if ($resultBarcode && $rowBarcode = $resultBarcode->fetch_assoc()) {
       $kdbarcode = $rowBarcode['kdbarcode'];
-      $hapusDataDetail = mysqli_query($conn, "DELETE FROM returjualdetail WHERE idreturjualdetail = '$iddetail'");
-      $hapusDataStock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
 
-      if ($hapusDataDetail && $hapusDataStock) {
+      // Soft delete data dari tabel returjualdetail (set is_deleted = 1)
+      $softDeleteDetailQuery = "UPDATE returjualdetail SET is_deleted = 1 WHERE idreturjualdetail = ?";
+      $stmtSoftDeleteDetail = $conn->prepare($softDeleteDetailQuery);
+      $stmtSoftDeleteDetail->bind_param("i", $iddetail);
+      $successSoftDelete = $stmtSoftDeleteDetail->execute();
+
+      if ($successSoftDelete) {
          // Insert ke tabel logactivity
          $idusers = $_SESSION['idusers'];
-         $event = "Delete Detail Retur";
+         $event = "Soft Delete Detail Retur";
          $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
-                      VALUES ($idusers, '$event', '$kdbarcode', NOW())";
-         mysqli_query($conn, $logQuery);
+                      VALUES (?, ?, ?, NOW())";
+         $stmtLogActivity = $conn->prepare($logQuery);
+         $stmtLogActivity->bind_param("iss", $idusers, $event, $kdbarcode);
+         $stmtLogActivity->execute();
 
          // Redirect ke halaman detail returjual
          header("Location: detailrj.php?idreturjual=$id");

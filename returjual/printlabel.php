@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    // Query untuk mendapatkan nama barang
    $idbarang = $_POST['idbarang'];
    $idreturjual = $_POST['idreturjual'];
+   $kdbarcode = 6 . $idreturjual . $kodeauto;
    $idgrade = $_POST['idgrade'];
    $packdate = $_POST['packdate'];
    $exp = $_POST['exp'];
@@ -37,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    // Query insert untuk tabel detailhasil
    $queryDetailhasil = "INSERT INTO returjualdetail (idreturjual, kdbarcode, idbarang, idgrade, qty, pcs, pod)
-            VALUES ('$idreturjual', '$kodeauto', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate')";
+            VALUES ('$idreturjual', '$kdbarcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$packdate')";
 
    // Query insert untuk tabel stock
    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
-                      VALUES ('$kodeauto', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
+                      VALUES ('$kdbarcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$packdate', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
 
    // Eksekusi query
    if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {
