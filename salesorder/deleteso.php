@@ -25,23 +25,16 @@ if (isset($_GET['idso'])) {
    $stmt_delete_plandev->execute();
    $stmt_delete_plandev->close();
 
-   // Hapus data dari tabel salesorderdetail
-   $query_delete_salesorderdetail = "DELETE FROM salesorderdetail WHERE idso = ?";
-   $stmt_delete_salesorderdetail = $conn->prepare($query_delete_salesorderdetail);
-   $stmt_delete_salesorderdetail->bind_param("i", $idsalesorder);
-   $stmt_delete_salesorderdetail->execute();
-   $stmt_delete_salesorderdetail->close();
-
-   // Hapus data dari tabel salesorder
-   $query_delete_salesorder = "DELETE FROM salesorder WHERE idso = ?";
-   $stmt_delete_salesorder = $conn->prepare($query_delete_salesorder);
-   $stmt_delete_salesorder->bind_param("i", $idsalesorder);
-   $stmt_delete_salesorder->execute();
-   $stmt_delete_salesorder->close();
+   // Soft delete data dari tabel salesorder (set is_deleted = 1)
+   $query_soft_delete_salesorder = "UPDATE salesorder SET is_deleted = 1 WHERE idso = ?";
+   $stmt_soft_delete_salesorder = $conn->prepare($query_soft_delete_salesorder);
+   $stmt_soft_delete_salesorder->bind_param("i", $idsalesorder);
+   $stmt_soft_delete_salesorder->execute();
+   $stmt_soft_delete_salesorder->close();
 
    // Insert log activity into logactivity table
    $idusers = $_SESSION['idusers'];
-   $event = "Hapus Sales Order";
+   $event = "Delete Sales Order";
    $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
                 VALUES (?, ?, ?, NOW())";
    $stmt_log = $conn->prepare($logQuery);

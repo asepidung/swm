@@ -71,7 +71,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                            FROM salesorder 
                            INNER JOIN customers ON salesorder.idcustomer = customers.idcustomer
                            INNER JOIN users ON salesorder.idusers = users.idusers
-                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' 
+                           WHERE salesorder.deliverydate BETWEEN '$awal' AND '$akhir' AND salesorder.is_deleted = 0
                            ORDER BY salesorder.idso DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $progress = $tampil['progress'];
