@@ -61,7 +61,6 @@ $limit = $_SESSION['limit'];
                                  <th>Pcs</th>
                                  <th>POD</th>
                                  <th>Origin</th>
-                                 <th>Hapus</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -125,11 +124,6 @@ $limit = $_SESSION['limit'];
                                           echo "Unindentified";
                                        }
                                        ?>
-                                    </td>
-                                    <td class="text-center">
-                                       <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-info" onclick="return confirm('Yakin Lu?')">
-                                          <i class="far fa-times-circle"></i>
-                                       </a>
                                     </td>
                                  </tr>
                               <?php
