@@ -252,6 +252,7 @@ CREATE TABLE `gr` (
   `idnumber` varchar(30) DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
   `iduser` int(11) DEFAULT NULL,
+  'is_deleted' TINYINT(1) NOT NULL DEFAULT 0,
   `creatime` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

@@ -14,17 +14,23 @@ if (isset($_GET['idgr']) && isset($_GET['idgrdetail'])) {
    $from = $_GET['from'] ?? 'grdetail';  // Set default ke 'grdetail' jika 'from' tidak diset
 
    // Ambil kdbarcode dari tabel grdetail
-   $getBarcodeQuery = "SELECT kdbarcode FROM grdetail WHERE idgrdetail = '$idgrdetail'";
-   $getBarcodeResult = mysqli_query($conn, $getBarcodeQuery);
+   $getBarcodeQuery = "SELECT kdbarcode FROM grdetail WHERE idgrdetail = ?";
+   $stmtGetBarcode = $conn->prepare($getBarcodeQuery);
+   $stmtGetBarcode->bind_param("i", $idgrdetail);
+   $stmtGetBarcode->execute();
+   $resultBarcode = $stmtGetBarcode->get_result();
 
-   if ($getBarcodeResult && $rowBarcode = mysqli_fetch_assoc($getBarcodeResult)) {
+   if ($resultBarcode && $rowBarcode = $resultBarcode->fetch_assoc()) {
       $kdbarcode = $rowBarcode['kdbarcode'];
 
-      // Hapus data dari tabel grdetail
-      $hapusDataDetail = mysqli_query($conn, "DELETE FROM grdetail WHERE idgrdetail = '$idgrdetail'");
+      // Soft delete data dari tabel grdetail (set is_deleted = 1)
+      $softDeleteDetailQuery = "UPDATE grdetail SET is_deleted = 1 WHERE idgrdetail = ?";
+      $stmtSoftDeleteDetail = $conn->prepare($softDeleteDetailQuery);
+      $stmtSoftDeleteDetail->bind_param("i", $idgrdetail);
+      $successSoftDelete = $stmtSoftDeleteDetail->execute();
 
-      if ($hapusDataDetail) {
-         // Hapus data dari tabel stock jika penghapusan di grdetail berhasil
+      if ($successSoftDelete) {
+         // Hapus data dari tabel stock jika soft delete di grdetail berhasil
          $hapusDataStock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
 
          if ($hapusDataStock) {

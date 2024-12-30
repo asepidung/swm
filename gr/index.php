@@ -47,11 +47,12 @@ include "../mainsidebar.php";
                            <?php
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT gr.*, supplier.nmsupplier, poproduct.idpoproduct, users.fullname 
-                                        FROM gr
-                                        LEFT JOIN poproduct ON gr.idpo = poproduct.idpoproduct
-                                        JOIN supplier ON gr.idsupplier = supplier.idsupplier
-                                        LEFT JOIN users ON gr.iduser = users.idusers
-                                        ORDER BY grnumber DESC");
+                           FROM gr
+                           LEFT JOIN poproduct ON gr.idpo = poproduct.idpoproduct
+                           JOIN supplier ON gr.idsupplier = supplier.idsupplier
+                           LEFT JOIN users ON gr.iduser = users.idusers
+                           WHERE gr.is_deleted = 0
+                           ORDER BY idgr DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idgr = $tampil['idgr'];
                               $idpo = $tampil['idpoproduct'];

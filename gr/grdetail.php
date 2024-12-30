@@ -142,12 +142,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                      </thead>
                      <tbody>
                         <?php
-                        $no = 1;
-                        $ambildata = mysqli_query($conn, "SELECT grdetail.*, barang.nmbarang, grade.nmgrade
-                              FROM grdetail
-                              INNER JOIN barang ON grdetail.idbarang = barang.idbarang
-                              INNER JOIN grade ON grdetail.idgrade = grade.idgrade
-                              WHERE idgr = $idgr ORDER BY idgrdetail DESC");
+                       $no = 1;
+                       $ambildata = mysqli_query($conn, "SELECT grdetail.*, barang.nmbarang, grade.nmgrade
+                             FROM grdetail
+                             INNER JOIN barang ON grdetail.idbarang = barang.idbarang
+                             INNER JOIN grade ON grdetail.idgrade = grade.idgrade
+                             WHERE idgr = $idgr AND grdetail.is_deleted = 0 ORDER BY idgrdetail DESC");                       
                         while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                            <tr class="text-center">
                               <td><?= $no; ?></td>

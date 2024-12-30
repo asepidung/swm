@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $qty = null;
    $pcs = null;
    $qtyPcsInput = $_POST['qty'];
+   $kdbarcode = 2 . $idgr . $kodeauto;
    $_SESSION['idbarang'] = $_POST['idbarang'];
    $_SESSION['idgrade'] = $_POST['idgrade'];
    $_SESSION['packdate'] = $pod;
@@ -37,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
    // Query insert untuk tabel detailhasil
    $queryDetailhasil = "INSERT INTO grdetail (idgr, kdbarcode, idbarang, idgrade, qty, pcs, pod)
-            VALUES ('$idgr', '$kodeauto', '$idbarang', '$idgrade', '$qty', '$pcs', '$pod')";
+            VALUES ('$idgr', '$kdbarcode', '$idbarang', '$idgrade', '$qty', '$pcs', '$pod')";
 
    // Query insert untuk tabel stock
    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) 
-                      VALUES ('$kodeauto', '$idgrade', '$idbarang', '$qty', '$pcs', '$pod', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
+                      VALUES ('$kdbarcode', '$idgrade', '$idbarang', '$qty', '$pcs', '$pod', '2')"; // Sesuaikan 'origin' sesuai kebutuhan
 
    // Eksekusi query
    if (!mysqli_query($conn, $queryDetailhasil) || !mysqli_query($conn, $queryStock)) {
