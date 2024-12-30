@@ -19,17 +19,13 @@ if (isset($_GET['idpomaterial'])) {
    $row = mysqli_fetch_assoc($result);
    $nopomaterial = $row['nopomaterial'];
 
-   // Hapus data dari tabel pomaterialdetail
-   $deleteDetailQuery = "DELETE FROM pomaterialdetail WHERE idpomaterial = $idpomaterial";
-   mysqli_query($conn, $deleteDetailQuery);
-
-   // Hapus data dari tabel pomaterial
-   $deleteQuery = "DELETE FROM pomaterial WHERE idpomaterial = $idpomaterial";
-   mysqli_query($conn, $deleteQuery);
+   // Soft delete data dari tabel pomaterial (set is_deleted = 1)
+   $softDeleteQuery = "UPDATE pomaterial SET is_deleted = 1 WHERE idpomaterial = $idpomaterial";
+   mysqli_query($conn, $softDeleteQuery);
 
    // Insert log activity into logactivity table
    $idusers = $_SESSION['idusers'];
-   $event = "Delete PO Material";
+   $event = "Soft Delete PO Material";
    $logQuery = "INSERT INTO logactivity (iduser, docnumb, event, waktu) 
                 VALUES ('$idusers', '$nopomaterial', '$event', NOW())";
    mysqli_query($conn, $logQuery);

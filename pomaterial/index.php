@@ -50,6 +50,7 @@ include "../mainsidebar.php";
                            FROM pomaterial p
                            JOIN users u ON p.idusers = u.idusers
                            LEFT JOIN supplier s ON p.idsupplier = s.idsupplier
+                           WHERE p.is_deleted = 0
                            ORDER BY p.idpomaterial DESC;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $Terms = $tampil['Terms'];
