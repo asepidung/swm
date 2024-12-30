@@ -46,7 +46,8 @@ include "../mainsidebar.php";
                            $ambildata = mysqli_query($conn, "SELECT mutasi.*, users.fullname
                                   FROM mutasi
                                   INNER JOIN users ON mutasi.idusers = users.idusers
-                                  ORDER BY mutasi.nomutasi DESC");
+                                  WHERE mutasi.is_deleted = 0
+                                  ORDER BY mutasi.idmutasi DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                            ?>
                               <tr class="text-right">
@@ -66,6 +67,9 @@ include "../mainsidebar.php";
                                     </a>
                                     <a href="printmutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-xs btn-secondary">
                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    <a href="deletemutasi.php?id=<?= $tampil['idmutasi']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('Apakah kamu yakin akan menghapus data ini?');">
+                                       <i class="fas fa-trash"></i>
                                     </a>
                                  </td>
                               </tr>
