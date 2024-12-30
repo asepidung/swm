@@ -69,7 +69,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                            FROM invoice 
                            INNER JOIN customers ON invoice.idcustomer = customers.idcustomer 
                            LEFT JOIN do ON invoice.donumber = do.donumber
-                           WHERE invoice.invoice_date BETWEEN '$awal' AND '$akhir'
+                           WHERE invoice.invoice_date BETWEEN '$awal' AND '$akhir' AND invoice.is_deleted = 0
                            ORDER BY idinvoice DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $tukarfaktur = $tampil['tukarfaktur'];
