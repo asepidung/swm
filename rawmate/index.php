@@ -34,13 +34,16 @@ include "../mainsidebar.php";
                                  <th>#</th>
                                  <th>Kode</th>
                                  <th>Nama Material</th>
+                                 <th>Kategory</th>
                                  <th>Actions</th>
                               </tr>
                            </thead>
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT * FROM rawmate");
+                              $ambildata = mysqli_query($conn, "SELECT rawmate.*, rawcategory.nmcategory FROM rawmate 
+                                                               LEFT JOIN rawcategory ON rawmate.idrawcategory = rawcategory.idrawcategory 
+                                                               ORDER BY nmrawmate");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $idrawmate = $tampil['idrawmate'];
                               ?>
@@ -48,6 +51,7 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdrawmate']; ?></td>
                                     <td class="text-left"><?= $tampil['nmrawmate']; ?></td>
+                                    <td class="text-left"><?= $tampil['nmcategory']; ?></td>
                                     <td class="text-center">
                                        <a href="editrawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
                                        <a href="deleterawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus rawmate ini?')"><i class="fas fa-minus-square"></i></a>
@@ -56,6 +60,7 @@ include "../mainsidebar.php";
                               <?php $no++;
                               } ?>
                            </tbody>
+
                         </table>
                      </div>
                   </div>

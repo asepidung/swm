@@ -21,7 +21,7 @@ $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 $query = "SELECT l.idlabelboning, b.nmbarang, l.qty, l.pcs
           FROM labelboning l
           INNER JOIN barang b ON l.idbarang = b.idbarang
-          WHERE l.idboning = $idboning";
+          WHERE l.idboning = $idboning AND l.is_deleted = 0";
 
 $result = mysqli_query($conn, $query);
 if (!$result) {

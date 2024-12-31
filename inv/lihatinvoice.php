@@ -71,12 +71,10 @@ $accnumber = $row_invoice['accnumber'];
          cursor: pointer;
       }
 
-      /* Hover effect */
       .floatingButton:hover {
          background-color: #e69537;
       }
 
-      /* Media query untuk tampilan cetak */
       @media print {
          .floatingButton {
             display: none;
@@ -87,40 +85,33 @@ $accnumber = $row_invoice['accnumber'];
          font-size: 14px;
          font-weight: bold;
          margin-top: -2px;
-         /* Atur nilai negatif sesuai kebutuhan Anda */
          margin-bottom: -5px;
-         /* Atur nilai negatif sesuai kebutuhan Anda */
       }
 
       .tableContainer {
          padding: 20 0 0 0;
       }
 
-      /* Styling for table with border-collapse */
       .tablecollapse {
          border-collapse: collapse;
          width: 100%;
       }
 
-      /* Styling for table headers (th) */
       .thcollapse {
          border: 1px solid black;
          padding: 4px;
       }
 
-      /* Styling for data cells (td) with border */
       .tdcollapse {
          border: 1px solid black;
          padding: 4px;
       }
 
-      /* Styling for data cells (td) without border */
       .noborder {
          border: none;
          padding: 4px;
       }
 
-      /* Styling for h1 and h2 elements */
       .h1tea {
          margin: 5px 0 10px 0;
       }
@@ -295,6 +286,11 @@ $accnumber = $row_invoice['accnumber'];
          <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
       </tr>
    </table>
+  
+   <div class="floatingButtonContainer">
+      <button class="floatingButton" onclick="window.history.back();">Kembali</button>
+      <button class="floatingButton" onclick="window.print();">Print</button>
+   </div>
 
 </body>
 

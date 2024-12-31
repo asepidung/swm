@@ -34,6 +34,26 @@ include "../mainsidebar.php";
                            <label for="nmrawmate">Nama Material <span class="text-danger">*</span></label>
                            <input type="text" class="form-control" autofocus name="nmrawmate" id="nmrawmate" placeholder="Gunakan Huruf BESAR !!!" required>
                         </div>
+                        <div class="form-group">
+                           <label for="category">Category <span class="text-danger">*</span></label>
+                           <div class="input-group">
+                              <select name="idrawcategory" id="category" class="form-control" required>
+                                 <option value="">-- Select Category --</option>
+                                 <?php
+                                 $query = "SELECT idrawcategory, nmcategory FROM rawcategory";
+                                 $result = mysqli_query($conn, $query);
+
+                                 // Looping untuk menampilkan data ke dalam option
+                                 while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='" . $row['idrawcategory'] . "'>" . htmlspecialchars($row['nmcategory']) . "</option>";
+                                 }
+                                 ?>
+                              </select>
+                              <div class="input-group-append">
+                                 <a href="../rawcategory/newrawcategory.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
+                              </div>
+                           </div>
+                        </div>
                      </div>
                      <div class="form-group mr-3 text-right">
                         <button type="submit" class="btn bg-gradient-primary">Submit</button>

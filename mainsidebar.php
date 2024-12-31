@@ -400,6 +400,12 @@ if ($result) {
                       <p>NoN Product</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="../rawcategory/" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Raw Category</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <li class="nav-item">

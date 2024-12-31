@@ -37,18 +37,41 @@ $row = mysqli_fetch_assoc($result);
               <div class=" card-body">
                 <div class="form-group">
                   <label for="kdrawmate">Kode</label>
-                  <input type="hidden" name="idrawmate" value="<?= $idrawmate ?>" ?>
+                  <input type="hidden" name="idrawmate" value="<?= $idrawmate ?>">
                   <input type="text" class="form-control" name="kdrawmate" id="kdrawmate" value="<?= $row['kdrawmate']; ?>" readonly>
                 </div>
                 <div class="form-group">
                   <label for="nmrawmate">Nama Product <span class="text-danger">*</span></label>
                   <input type="text" class="form-control" name="nmrawmate" id="nmrawmate" value="<?= $row['nmrawmate']; ?>">
                 </div>
+                <div class="form-group">
+                <label for="category">Category <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <select name="idrawcategory" id="category" class="form-control" required>
+                      <option value="">-- Select Category --</option>
+                      <?php
+                      $query = "SELECT idrawcategory, nmcategory FROM rawcategory";
+                      $result = mysqli_query($conn, $query);
+
+                      // Looping untuk menampilkan data ke dalam option
+                      while ($category = mysqli_fetch_assoc($result)) {
+                          $selected = ($category['idrawcategory'] == $row['idrawcategory']) ? 'selected' : '';
+                          echo "<option value='" . $category['idrawcategory'] . "' $selected>" . htmlspecialchars($category['nmcategory']) . "</option>";
+                      }
+                      ?>
+                    </select>
+                    <div class="input-group-append">
+                      <a href="addrawcategory.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
+                    </div>
+                </div>
+              </div>
+
               </div>
               <div class="form-group mr-3 text-right">
                 <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-level-up-alt"></i> Update</button>
               </div>
             </form>
+
           </div>
           <!-- /.card -->
         </div>
@@ -57,7 +80,9 @@ $row = mysqli_fetch_assoc($result);
   </section>
 </div><!-- /.container-fluid -->
 <!-- /.content-wrapper -->
-
+<script>
+   document.title = "EDIT RAW MATERIAL";
+</script>
 <?php
 include "../footer.php";
 include "../footnote.php";

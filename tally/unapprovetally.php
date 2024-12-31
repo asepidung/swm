@@ -11,23 +11,23 @@ if (isset($_GET['id']) && isset($_GET['idso'])) {
    $idtally = intval($_GET['id']);
    $idso = intval($_GET['idso']);
 
-   // Cek apakah idtally sudah ada di tabel do
-   $stmt_check_do = $conn->prepare("SELECT COUNT(*) FROM do WHERE idtally = ?");
-   if (!$stmt_check_do) {
+   // Cek apakah stat di tabel tally adalah 'DO'
+   $stmt_check_stat = $conn->prepare("SELECT stat FROM tally WHERE idtally = ?");
+   if (!$stmt_check_stat) {
       die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
    }
-   $stmt_check_do->bind_param("i", $idtally);
-   $stmt_check_do->execute();
-   $stmt_check_do->bind_result($do_count);
-   $stmt_check_do->fetch();
-   $stmt_check_do->close();
+   $stmt_check_stat->bind_param("i", $idtally);
+   $stmt_check_stat->execute();
+   $stmt_check_stat->bind_result($stat);
+   $stmt_check_stat->fetch();
+   $stmt_check_stat->close();
 
-   if ($do_count > 0) {
-      // Jika idtally ditemukan di tabel do, berikan peringatan dan hentikan proses
-      echo "<script>alert('DO Sudah Terbit Silahkan Hapus Do Terlebih Dahulu Sebelum Melakukan Perubahan'); window.location.href = 'index.php';</script>";
+   if ($stat === 'DO') {
+      // Jika stat adalah 'DO', gagalkan proses dan arahkan ke index.php
+      echo "<script>alert('DO Sudah Dibuat'); window.location.href = 'index.php';</script>";
       exit();
    } else {
-      // Lanjutkan proses Unapprove jika idtally belum ada di tabel do
+      // Lanjutkan proses Unapprove jika stat bukan 'DO'
       // Prepare statement untuk update tabel tally
       $stmt = $conn->prepare("UPDATE tally SET stat = ? WHERE idtally = ?");
       if (!$stmt) {

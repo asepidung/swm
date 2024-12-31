@@ -173,8 +173,6 @@ mysqli_stmt_close($stmt_details);
                     <th></th>
                 </tr>
             </tfoot>
-
-
         </table>
     </div>
     <div class="col">Note  :</div>
