@@ -10,7 +10,7 @@ include "../mainsidebar.php";
 ?>
 
 <div class="content-wrapper">
-   <div class="content-header">
+   <!-- <div class="content-header">
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 col-sm-2">
@@ -18,7 +18,7 @@ include "../mainsidebar.php";
             </div>
          </div>
       </div>
-   </div>
+   </div> -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">

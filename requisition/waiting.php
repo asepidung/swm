@@ -10,7 +10,7 @@ include "../mainsidebar.php";
 ?>
 
 <div class="content-wrapper">
-   <div class="content-header">
+   <!-- <div class="content-header">
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 col-sm-2">
@@ -18,7 +18,7 @@ include "../mainsidebar.php";
             </div>
          </div>
       </div>
-   </div>
+   </div> -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
@@ -63,7 +63,7 @@ include "../mainsidebar.php";
                                        <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
                                        <td class="text-left"><?= $row['note'] ?></td>
                                        <td>
-                                       <?php if ($idusers == 15): ?>
+                                       <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
                                           <a href="wtoap.php?id=<?= $row['idrequest']; ?>" class="btn btn-sm btn-primary">
                                                 Approved
                                           </a>

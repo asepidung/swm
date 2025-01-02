@@ -64,11 +64,12 @@ include "../mainsidebar.php";
 
                            <div class="col-12 col-sm-3">
                               <div class="form-group">
-                                 <label for="tax">Tax 12%</label>
+                                 <label for="tax">Tax</label>
                                  <div class="input-group">
                                     <select class="form-control" name="tax" id="tax" required>
-                                       <option value="Yes">Yes</option>
                                        <option value="No" selected>No</option>
+                                       <option value="11">11%</option>
+                                       <option value="12">12%</option>
                                     </select>
                                  </div>
                               </div>
@@ -224,10 +225,19 @@ include "../mainsidebar.php";
          totalAmount += amount;
       });
 
-      const taxRate = taxSelect.value === 'Yes' ? 0.12 : 0;
+      // Menentukan tarif pajak berdasarkan pilihan
+      let taxRate = 0;
+      if (taxSelect.value === '11') {
+         taxRate = 0.11;
+      } else if (taxSelect.value === '12') {
+         taxRate = 0.12;
+      }
+
+      // Perhitungan pajak
       const taxValue = totalAmount * taxRate;
       const finalAmount = totalAmount + taxValue;
 
+      // Update nilai-nilai yang ditampilkan di form
       xweight.value = formatNumber(totalWeight);
       taxrp.value = formatNumber(taxValue);
       xamount.value = formatNumber(finalAmount);
@@ -301,6 +311,7 @@ include "../mainsidebar.php";
 
    document.title = "New Request";
 </script>
+
 
 
 <?php include "../footer.php"; ?>

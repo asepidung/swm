@@ -139,10 +139,8 @@ mysqli_stmt_close($stmt_details);
             <tbody>
                 <?php
                 $no = 1;
-                $grand_total = 0;
                 foreach ($request_details as $detail):
                     $total = $detail['qty'] * $detail['price'];
-                    $grand_total += $total;
                 ?>
                     <tr>
                         <td class="text-center"><?= $no++; ?></td>
@@ -162,14 +160,14 @@ mysqli_stmt_close($stmt_details);
                         <th></th>
                     </tr>
                     <tr>
-                        <th colspan="4" class="text-right">Tax 12%</th>
+                        <th colspan="4" class="text-right">Tax</th>
                         <th class="text-right"><?= number_format($request['taxrp'], 2) ?></th>
                         <th></th>
                     </tr>
                 <?php endif; ?>
                 <tr>
                     <th colspan="4" class="text-right">Grand Total</th>
-                    <th class="text-right"><?= number_format($grand_total + $request['taxrp'], 2) ?></th>
+                    <th class="text-right"><?= number_format($request['xamount'] + $request['taxrp'], 2) ?></th>
                     <th></th>
                 </tr>
             </tfoot>

@@ -361,14 +361,13 @@ if ($result) {
 
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="requisition/" class="nav-link">
+            <a href="requisition/request.php" class="nav-link">
                 <i class="far fa-dot-circle nav-icon"></i>
-                <p>All Request
-                <span class="badge badge-danger right"><?= $statusCounts['All']; ?></span>
-                </p>
+                <p>New Request</p>
             </a>
         </li>
     </ul>
+
     <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
     <ul class="nav nav-treeview">
         <li class="nav-item">
@@ -400,6 +399,18 @@ if ($result) {
             </a>
         </li>
     </ul>
+    <?php if ($_SESSION['idusers'] != 15 && $_SESSION['idusers'] != 13): ?>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="requisition/" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>All Request
+                <span class="badge badge-danger right"><?= $statusCounts['All']; ?></span>
+                </p>
+            </a>
+        </li>
+    </ul>
+    <?php endif; ?>
 </li>
 
                   <?php if ($role['purchase_module'] == 1) : ?>

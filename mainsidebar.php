@@ -158,58 +158,56 @@ $role = mysqli_fetch_assoc($result);
         <?php endif; ?>
         <?php
 
-// Query untuk menghitung requisitions berdasarkan status yang belum dihapus
-$query = "SELECT stat, COUNT(*) AS total 
-          FROM request 
-          WHERE is_deleted IS NULL 
-          AND stat IN ('Waiting', 'Approved', 'Process') 
-          GROUP BY stat";
-$result = mysqli_query($conn, $query);
+        // Query untuk menghitung requisitions berdasarkan status yang belum dihapus
+        $query = "SELECT stat, COUNT(*) AS total 
+                  FROM request 
+                  WHERE is_deleted IS NULL 
+                  AND stat IN ('Waiting', 'Approved', 'Process') 
+                  GROUP BY stat";
+        $result = mysqli_query($conn, $query);
 
-// Inisialisasi jumlah untuk setiap status
-$statusCounts = [
-    'All' => 0,
-    'Waiting' => 0,
-    'Approved' => 0,
-    'Process' => 0,
-];
+        // Inisialisasi jumlah untuk setiap status
+        $statusCounts = [
+            'All' => 0,
+            'Waiting' => 0,
+            'Approved' => 0,
+            'Process' => 0,
+        ];
 
-// Hitung total untuk semua status
-$statusCounts['All'] = array_sum(array_column(mysqli_fetch_all($result, MYSQLI_ASSOC), 'total'));
+        // Hitung total untuk semua status
+        $statusCounts['All'] = array_sum(array_column(mysqli_fetch_all($result, MYSQLI_ASSOC), 'total'));
 
-// Isi jumlah berdasarkan hasil query
-if ($result) {
-    mysqli_data_seek($result, 0); // Kembali ke awal hasil query
-    while ($row = mysqli_fetch_assoc($result)) {
-        $statusCounts[$row['stat']] = $row['total'];
-    }
-}
-?>
+        // Isi jumlah berdasarkan hasil query
+        if ($result) {
+            mysqli_data_seek($result, 0); // Kembali ke awal hasil query
+            while ($row = mysqli_fetch_assoc($result)) {
+                $statusCounts[$row['stat']] = $row['total'];
+            }
+        }
+        ?>
 
 <li class="nav-item">
-<a href="#" class="nav-link">
-    <i class="nav-icon fas fa-hand-holding-usd"></i>
-    <p>
-        REQUISITIONS
-        <i class="right fas fa-angle-left"></i>
-        <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
-            <span class="badge badge-info right"><?= $statusCounts['Waiting']; ?></span>
-        <?php elseif ($_SESSION['idusers'] == 13 || $_SESSION['idusers'] == 1): ?>
-            <span class="badge badge-success right"><?= $statusCounts['Approved']; ?></span>
-        <?php endif; ?>
-    </p>
-</a>
-
+    <a href="#" class="nav-link">
+      <i class="nav-icon fas fa-hand-holding-usd"></i>
+      <p>
+          REQUISITIONS
+          <i class="right fas fa-angle-left"></i>
+          <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
+              <span class="badge badge-info right"><?= $statusCounts['Waiting']; ?></span>
+          <?php elseif ($_SESSION['idusers'] == 13 || $_SESSION['idusers'] == 1): ?>
+              <span class="badge badge-success right"><?= $statusCounts['Approved']; ?></span>
+          <?php endif; ?>
+      </p>
+    </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="../requisition/" class="nav-link">
+            <a href="../requisition/request.php" class="nav-link">
                 <i class="far fa-dot-circle nav-icon"></i>
-                <p>All Request
-                <span class="badge badge-danger right"><?= $statusCounts['All']; ?></span>
-                </p>
+                <p>New Request</p>
             </a>
         </li>
     </ul>
+   
     <?php if ($_SESSION['idusers'] == 15 || $_SESSION['idusers'] == 1): ?>
     <ul class="nav nav-treeview">
         <li class="nav-item">
@@ -241,6 +239,18 @@ if ($result) {
             </a>
         </li>
     </ul>
+    <?php if ($_SESSION['idusers'] != 15 && $_SESSION['idusers'] != 13): ?>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="../requisition/" class="nav-link">
+                <i class="far fa-dot-circle nav-icon"></i>
+                <p>All Request
+                <span class="badge badge-danger right"><?= $statusCounts['All']; ?></span>
+                </p>
+            </a>
+        </li>
+    </ul>
+  <?php endif; ?>
 </li>
 
         <?php if ($role['purchase_module'] == 1) : ?>
