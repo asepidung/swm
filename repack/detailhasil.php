@@ -161,7 +161,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               <td><?= $tampil['kdbarcode']; ?></td>
                               <td class="text-left"><?= $tampil['nmbarang']; ?></td>
                               <td><?= $tampil['nmgrade']; ?></td>
-                              <td><?= $tampil['qty']; ?></td>
+                              <td class="text-right"><?= number_format($tampil['qty'], 2); ?></td>
                               <?php
                               if ($tampil['pcs'] < 1) {
                                  $pcs = "";

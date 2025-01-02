@@ -35,7 +35,7 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT salesorder.*, customers.nama_customer FROM salesorder
                            JOIN customers ON salesorder.idcustomer = customers.idcustomer
-                           WHERE progress = 'Waiting'
+                           WHERE progress = 'Waiting' AND is_deleted = 0
                            ORDER BY salesorder.deliverydate ASC");
 
                            while ($tampil = mysqli_fetch_array($ambildata)) {
