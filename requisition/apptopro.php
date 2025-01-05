@@ -15,7 +15,7 @@ if (!$idrequest) {
 }
 
 // Update kolom stat menjadi 'Process'
-$query = "UPDATE request SET stat = 'Process' WHERE idrequest = ?";
+$query = "UPDATE request SET stat = 'Ordering' WHERE idrequest = ?";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $idrequest);
 
@@ -26,4 +26,3 @@ if (mysqli_stmt_execute($stmt)) {
 } else {
     die("Error updating request: " . mysqli_stmt_error($stmt));
 }
-?>

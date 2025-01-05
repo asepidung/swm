@@ -24,10 +24,8 @@ try {
 
     // Output nomor permintaan
     echo $norequest;
-
 } catch (Exception $e) {
     // Rollback transaksi jika terjadi kesalahan
     mysqli_rollback($conn);
     echo "Error: " . $e->getMessage();
 }
-?>

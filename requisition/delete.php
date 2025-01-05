@@ -35,7 +35,6 @@ try {
     // Redirect ke index.php
     header("Location: index.php");
     exit;
-
 } catch (Exception $e) {
     // Rollback transaksi jika terjadi kesalahan
     mysqli_rollback($conn);

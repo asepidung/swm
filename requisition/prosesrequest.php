@@ -46,7 +46,7 @@ if (empty($duedate) || empty($idsupplier) || count($idrawmate) === 0) {
 }
 
 // Calculate xamount
-$xamount = $taxrp + array_sum(array_map(function($weight, $price) {
+$xamount = $taxrp + array_sum(array_map(function ($weight, $price) {
     return normalizeNumber($weight) * normalizeNumber($price);
 }, $weight, $price));
 
@@ -89,11 +89,9 @@ try {
     // Redirect to index.php on success
     header("Location: index.php");
     exit;
-
 } catch (Exception $e) {
     mysqli_rollback($conn);
     mysqli_close($conn);
     header("Location: error.php?msg=" . urlencode($e->getMessage()));
     exit;
 }
-?>

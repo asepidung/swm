@@ -83,7 +83,9 @@ mysqli_stmt_close($stmt_details);
         </p>
     </div>
     <hr>
-    <div class="col text-right"><h5><strong><?= htmlspecialchars($request['norequest']) ?></strong></h5></div>
+    <div class="col text-right">
+        <h5><strong><?= htmlspecialchars($request['norequest']) ?></strong></h5>
+    </div>
     <div class="row mt-2">
         <div class="col-sm-6">
             <table class="table table-borderless table-sm">
@@ -173,7 +175,7 @@ mysqli_stmt_close($stmt_details);
             </tfoot>
         </table>
     </div>
-    <div class="col">Note  :</div>
+    <div class="col">Note :</div>
     <div class="col-md-6">
         <?= htmlspecialchars($request['note'] ?? 'N/A') ?>
     </div>

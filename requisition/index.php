@@ -26,13 +26,12 @@ include "../mainsidebar.php";
                <div class="card">
                   <div class="card-body">
                      <?php
-                        $sql = "SELECT r.*, u.fullname
+                     $sql = "SELECT r.*, u.fullname
                         FROM request r
                         INNER JOIN users u ON r.iduser = u.idusers
                         WHERE r.is_deleted IS NULL
                         ORDER BY r.idrequest DESC";
-                $result = $conn->query($sql);
-                
+                     $result = $conn->query($sql);
                      ?>
 
                      <table id="example1" class="table table-bordered table-striped table-sm">
@@ -51,34 +50,58 @@ include "../mainsidebar.php";
                         <tbody class="text-center">
                            <?php
                            if ($result->num_rows > 0) {
-                               // Output data untuk setiap baris
-                               $i = 1; // untuk nomor urut
-                               while ($row = $result->fetch_assoc()) {
+                              // Output data untuk setiap baris
+                              $i = 1; // untuk nomor urut
+                              while ($row = $result->fetch_assoc()) {
                            ?>
-                                    <tr>
-                                       <td><?= $i ?></td>
-                                       <td><?= date("D, d-M-y", strtotime($row['creatime'])) ?></td>
-                                       <td><?= $row['norequest'] ?></td>
-                                       <td><?= $row['fullname'] ?></td>
-                                       <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
-                                       <td class="text-left"><?= $row['note'] ?></td>
-                                       <td>
-                                          <?= $row['stat'] ?></td>
-                                       </td>
-                                       <td>
-                                          <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
-                                          <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
-                                          <a href="delete.php?id=<?= $row['idrequest'] ?>" class="btn btn-danger btn-sm" title="Delete" 
-                                             onclick="return confirm('Are you sure you want to delete this item?');"><i class="fas fa-trash-alt"></i>
+                                 <tr>
+                                    <td><?= $i ?></td>
+                                    <td><?= date("D, d-M-y", strtotime($row['creatime'])) ?></td>
+                                    <td><?= $row['norequest'] ?></td>
+                                    <td><?= $row['fullname'] ?></td>
+                                    <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
+                                    <td class="text-left"><?= $row['note'] ?></td>
+                                    <td>
+                                       <?php
+                                       if ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 15) {
+                                          // Tampilkan tombol Approved jika stat adalah Waiting dan user login adalah 15
+                                          echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
+                                                   Approved
+                                                </a>';
+                                       } elseif ($row['stat'] === 'Approved' && $_SESSION['idusers'] == 13) {
+                                          // Tampilkan tombol dengan teks stat jika stat adalah Approved dan user login adalah 13
+                                          echo '<a href="apptopro.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
+                                             Procces
+                                             </a>';
+                                       } else {
+                                          // Jika tidak memenuhi kondisi di atas, tampilkan stat biasa
+                                          echo htmlspecialchars($row['stat']);
+                                       }
+                                       ?>
+                                    </td>
+                                    <td>
+                                       <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
+                                       <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                                       <?php
+                                       if ($row['stat'] === 'Waiting') { ?>
+                                          <a href="delete.php?id=<?= htmlspecialchars($row['idrequest']) ?>"
+                                             class="btn btn-danger btn-sm"
+                                             title="Delete"
+                                             onclick="return confirm('Are you sure you want to delete this item?');">
+                                             <i class="fas fa-trash-alt"></i>
                                           </a>
-
-                                       </td>
-                                    </tr>
+                                       <?php } else { ?>
+                                          <a href="#" class="btn btn-danger btn-sm disabled" title="Cannot delete">
+                                             <i class="fas fa-trash-alt"></i>
+                                          </a>
+                                       <?php } ?>
+                                    </td>
+                                 </tr>
                            <?php
-                                   $i++;
-                               }
+                                 $i++;
+                              }
                            } else {
-                               echo "<tr><td colspan='8' class='text-center'>No data available</td></tr>";
+                              echo "<tr><td colspan='8' class='text-center'>No data available</td></tr>";
                            }
                            ?>
                         </tbody>

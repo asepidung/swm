@@ -170,7 +170,7 @@ include "../mainsidebar.php";
                            </div> -->
 
                            <div class="col-6 col-md-3">
-                              <button type="submit" class="btn btn-primary btn-block" name="submit" 
+                              <button type="submit" class="btn btn-primary btn-block" name="submit"
                                  onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')" id="submit-btn">
                                  Submit
                               </button>
@@ -187,7 +187,10 @@ include "../mainsidebar.php";
 <script>
    // Format angka dengan digit grouping
    function formatNumber(num) {
-      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return num.toLocaleString('en-US', {
+         minimumFractionDigits: 2,
+         maximumFractionDigits: 2
+      });
    }
 
    // Hapus format digit grouping untuk perhitungan
@@ -244,7 +247,7 @@ include "../mainsidebar.php";
    }
 
    // Format input saat mengetik dan perbarui total
-   document.addEventListener('input', function (e) {
+   document.addEventListener('input', function(e) {
       if (e.target.name === 'weight[]' || e.target.name === 'price[]') {
          formatInput(e.target);
          calculateTotals();

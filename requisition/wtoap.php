@@ -26,4 +26,3 @@ if (mysqli_stmt_execute($stmt)) {
 } else {
     die("Error updating request: " . mysqli_stmt_error($stmt));
 }
-?>

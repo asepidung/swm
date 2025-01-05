@@ -54,7 +54,7 @@ mysqli_stmt_close($stmt_details);
                 <div class="col mt-3">
                     <form method="POST" action="update.php">
                         <input type="hidden" name="idrequest" value="<?= htmlspecialchars($idrequest) ?>">
-                        
+
                         <!-- Form utama -->
                         <div class="card">
                             <div class="card-body">
@@ -143,7 +143,7 @@ mysqli_stmt_close($stmt_details);
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                                
+
                                 <div class="row align-items-center mt-3">
                                     <div class="col-12 col-md-2">
                                         <button type="button" class="btn btn-link text-success" onclick="addItem()">
