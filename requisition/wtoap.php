@@ -15,7 +15,7 @@ if (!$idrequest) {
 }
 
 // Update kolom stat menjadi 'Approved'
-$query = "UPDATE request SET stat = 'Approved' WHERE idrequest = ?";
+$query = "UPDATE request SET stat = 'Ordering' WHERE idrequest = ?";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $idrequest);
 

@@ -10,28 +10,20 @@ require "../konak/conn.php";
 // Fungsi untuk membersihkan format angka
 function normalizeNumber($number)
 {
-    $lastCommaPos = strrpos($number, ',');
-    $lastDotPos = strrpos($number, '.');
-
-    $decimalSeparator = $lastCommaPos > $lastDotPos ? ',' : '.';
-    $thousandSeparator = $lastCommaPos < $lastDotPos ? ',' : '.';
-
-    $number = str_replace($thousandSeparator, '', $number);
-    if ($decimalSeparator != '.') {
-        $number = str_replace($decimalSeparator, '.', $number);
-    }
-
-    return (float) $number;
+    return (float) str_replace(['.', ','], '', $number);
 }
 
 // Ambil data dari form
 $idrequest = $_POST['idrequest'] ?? null;
 $duedate = $_POST['duedate'] ?? null;
 $idsupplier = $_POST['idsupplier'] ?? null;
-$other = $_POST['other'] ?? null;
 $note = $_POST['note'] ?? null;
-$taxrp = normalizeNumber($_POST['taxrp'] ?? 0);
-$xamount = normalizeNumber($_POST['xamount'] ?? 0);
+
+// Validasi dan ambil nilai tax
+$tax = $_POST['tax'] ?? 'No';
+if (!in_array($tax, ['No', '11', '12'])) {
+    die("Error: Invalid tax value.");
+}
 
 // Ambil data detail
 $idrawmate = $_POST['idrawmate'] ?? [];
@@ -39,19 +31,44 @@ $weight = $_POST['weight'] ?? [];
 $price = $_POST['price'] ?? [];
 $notes = $_POST['notes'] ?? [];
 
-// Validasi data
+// Hitung total harga barang sebelum pajak
+$totalAmount = array_sum(array_map(function ($weight, $price) {
+    return normalizeNumber($weight) * normalizeNumber($price);
+}, $weight, $price));
+
+// Hitung pajak jika tax bukan "No"
+if ($tax !== 'No') {
+    $taxPercentage = (float) $tax; // Konversi tax menjadi angka
+    $taxrp = $totalAmount * ($taxPercentage / 100); // Pajak dihitung dari total harga barang
+} else {
+    $taxrp = 0; // Jika tidak ada pajak
+}
+
+// Hitung total amount termasuk pajak
+$xamount = $totalAmount + $taxrp;
+
+// Validasi data wajib
 if (!$idrequest || !$duedate || !$idsupplier) {
     die("Error: Missing required fields.");
 }
+
+// Debug perhitungan
+// var_dump([
+//     'Total Amount' => $totalAmount,
+//     'Tax Percentage' => $taxPercentage ?? 0,
+//     'Tax Amount (taxrp)' => $taxrp,
+//     'Grand Total (xamount)' => $xamount,
+// ]);
+// exit;
 
 // Mulai transaksi
 mysqli_begin_transaction($conn);
 
 try {
     // Update data di tabel `request`
-    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, other = ?, note = ?, taxrp = ?, xamount = ? WHERE idrequest = ?";
+    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, note = ?, taxrp = ?, xamount = ?, tax = ? WHERE idrequest = ?";
     $stmt_request = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt_request, "sissdsi", $duedate, $idsupplier, $other, $note, $taxrp, $xamount, $idrequest);
+    mysqli_stmt_bind_param($stmt_request, "sisdssi", $duedate, $idsupplier, $note, $taxrp, $xamount, $tax, $idrequest);
 
     if (!mysqli_stmt_execute($stmt_request)) {
         throw new Exception("Error updating request table: " . mysqli_stmt_error($stmt_request));
@@ -71,25 +88,22 @@ try {
     $stmt_insert_details = mysqli_prepare($conn, $query_insert_details);
 
     foreach ($idrawmate as $i => $rawmate) {
-        $qty = normalizeNumber($weight[$i] ?? 0); // Normalisasi qty
-        $product_price = normalizeNumber($price[$i] ?? 0); // Normalisasi price
+        $qty = normalizeNumber($weight[$i] ?? 0);
+        $product_price = normalizeNumber($price[$i] ?? 0);
         $product_note = $notes[$i] ?? '';
 
         mysqli_stmt_bind_param($stmt_insert_details, "iiids", $idrequest, $rawmate, $qty, $product_price, $product_note);
 
         if (!mysqli_stmt_execute($stmt_insert_details)) {
-            throw new Exception("Error inserting new request details: " . mysqli_stmt_error($stmt_insert_details));
+            throw new Exception("Error inserting into requestdetail table: " . mysqli_stmt_error($stmt_insert_details));
         }
     }
 
-    // Commit transaksi
     mysqli_commit($conn);
 
-    // Redirect ke index.php
     header("Location: index.php");
     exit;
 } catch (Exception $e) {
-    // Rollback transaksi jika terjadi kesalahan
     mysqli_rollback($conn);
     die("Transaction failed: " . $e->getMessage());
 }

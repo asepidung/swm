@@ -63,27 +63,38 @@ include "../mainsidebar.php";
                                     <td class="text-left"><?= $row['note'] ?></td>
                                     <td>
                                        <?php
-                                       if ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 15) {
-                                          // Tampilkan tombol Approved jika stat adalah Waiting dan user login adalah 15
+                                       if ($row['stat'] === 'Request' && $_SESSION['idusers'] == 1) {
+                                          // Jika status adalah 'Request' dan user ID adalah 16, tampilkan tombol Accept
+                                          echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
+                                                   Accept
+                                                </a>';
+                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 16) {
+                                          // Jika status adalah 'Waiting' dan user ID adalah 1, tampilkan tombol Approved
                                           echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                                                    Approved
                                                 </a>';
-                                       } elseif ($row['stat'] === 'Approved' && $_SESSION['idusers'] == 13) {
-                                          // Tampilkan tombol dengan teks stat jika stat adalah Approved dan user login adalah 13
-                                          echo '<a href="apptopro.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
-                                             Procces
-                                             </a>';
+                                       } elseif ($row['stat'] === 'Ordering' && $_SESSION['idusers'] == 1) {
+                                          // Jika status adalah 'Ordering' dan user ID adalah 16, tampilkan tombol Buat PO
+                                          echo '<a href="makepo.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-success">
+                                                   Buat PO
+                                                </a>';
+                                       } elseif ($row['stat'] === 'PO Created') {
+                                          // Jika status adalah 'PO Created', tampilkan tombol Cetak PO
+                                          echo '<a href="lihatpo.php?idrequest=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-secondary">
+                                                   Cetak PO
+                                                </a>';
                                        } else {
-                                          // Jika tidak memenuhi kondisi di atas, tampilkan stat biasa
+                                          // Jika tidak ada kondisi yang cocok, tampilkan status secara langsung
                                           echo htmlspecialchars($row['stat']);
                                        }
                                        ?>
                                     </td>
+
                                     <td>
                                        <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
                                        <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                        <?php
-                                       if ($row['stat'] === 'Waiting') { ?>
+                                       if ($row['stat'] === 'Request') { ?>
                                           <a href="delete.php?id=<?= htmlspecialchars($row['idrequest']) ?>"
                                              class="btn btn-danger btn-sm"
                                              title="Delete"

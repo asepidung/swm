@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
@@ -32,6 +33,7 @@ if (!$iduser) {
 
 // Get data from the form
 $duedate = mysqli_real_escape_string($conn, $_POST['duedate'] ?? null);
+$tax = mysqli_real_escape_string($conn, $_POST['tax'] ?? null);
 $idsupplier = mysqli_real_escape_string($conn, $_POST['idsupplier'] ?? null);
 $note = mysqli_real_escape_string($conn, $_POST['note'] ?? null);
 $taxrp = normalizeNumber($_POST['taxrp'] ?? 0); // Normalize taxrp
@@ -50,15 +52,15 @@ $xamount = $taxrp + array_sum(array_map(function ($weight, $price) {
     return normalizeNumber($weight) * normalizeNumber($price);
 }, $weight, $price));
 
-$stat = 'Waiting';
+$stat = 'Request';
 
 mysqli_begin_transaction($conn);
 
 try {
     // Insert data into the request table
-    $query_request = "INSERT INTO request (norequest, duedate, iduser, idsupplier, note, stat, taxrp, xamount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $query_request = "INSERT INTO request (norequest, duedate, iduser, idsupplier, note, stat, taxrp, xamount, tax) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt, "sssissdd", $norequest, $duedate, $iduser, $idsupplier, $note, $stat, $taxrp, $xamount);
+    mysqli_stmt_bind_param($stmt, "sssissdds", $norequest, $duedate, $iduser, $idsupplier, $note, $stat, $taxrp, $xamount, $tax);
     if (!mysqli_stmt_execute($stmt)) {
         throw new Exception("Error inserting into request table: " . mysqli_stmt_error($stmt));
     }

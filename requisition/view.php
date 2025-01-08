@@ -141,13 +141,15 @@ mysqli_stmt_close($stmt_details);
             <tbody>
                 <?php
                 $no = 1;
+                $total_before_tax = 0;  // Total sebelum pajak
                 foreach ($request_details as $detail):
                     $total = $detail['qty'] * $detail['price'];
+                    $total_before_tax += $total; // Akumulasi total sebelum pajak
                 ?>
                     <tr>
                         <td class="text-center"><?= $no++; ?></td>
                         <td><?= htmlspecialchars($detail['nmrawmate']) ?></td>
-                        <td class="text-center"><?= htmlspecialchars($detail['qty']) ?></td>
+                        <td class="text-right"><?= number_format(htmlspecialchars($detail['qty'])) ?></td>
                         <td class="text-right"><?= number_format($detail['price'], 2) ?></td>
                         <td class="text-right"><?= number_format($total, 2) ?></td>
                         <td><?= htmlspecialchars($detail['notes'] ?? 'N/A') ?></td>
@@ -158,7 +160,7 @@ mysqli_stmt_close($stmt_details);
                 <?php if ($request['taxrp'] > 0): ?>
                     <tr>
                         <th colspan="4" class="text-right">Total</th>
-                        <th class="text-right"><?= number_format($request['xamount'], 2) ?></th>
+                        <th class="text-right"><?= number_format($total_before_tax, 2) ?></th>
                         <th></th>
                     </tr>
                     <tr>
@@ -166,14 +168,22 @@ mysqli_stmt_close($stmt_details);
                         <th class="text-right"><?= number_format($request['taxrp'], 2) ?></th>
                         <th></th>
                     </tr>
+                <?php else: ?>
+                    <tr>
+                        <th colspan="4" class="text-right">Total</th>
+                        <th class="text-right"><?= number_format($total_before_tax, 2) ?></th>
+                        <th></th>
+                    </tr>
                 <?php endif; ?>
+
                 <tr>
                     <th colspan="4" class="text-right">Grand Total</th>
-                    <th class="text-right"><?= number_format($request['xamount'] + $request['taxrp'], 2) ?></th>
+                    <th class="text-right"><?= number_format($total_before_tax + $request['taxrp'], 2) ?></th>
                     <th></th>
                 </tr>
             </tfoot>
         </table>
+
     </div>
     <div class="col">Note :</div>
     <div class="col-md-6">

@@ -11,6 +11,7 @@ $query = "SELECT * FROM role WHERE idusers = $idusers";
 $result = mysqli_query($conn, $query);
 $role = mysqli_fetch_assoc($result);
 include "kebutuhanindex.php";
+include "notifcount.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -241,7 +242,9 @@ include "kebutuhanindex.php";
                            <li class="nav-item">
                               <a href="tally/" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Taly Sheet</p>
+                                 <p>Taly Sheet
+                                    <span class="badge badge-info right"><?= $drafttally ?></span>
+                                 </p>
                               </a>
                            </li>
                            <li class="nav-item">

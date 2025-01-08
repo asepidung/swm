@@ -9,6 +9,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+include "../notifcount.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $queryMaxDate = "SELECT MAX(deliverydate) AS max_date FROM tally";
 $resultMaxDate = mysqli_query($conn, $queryMaxDate);
@@ -18,10 +19,6 @@ $maxDate = $rowMaxDate['max_date'];
 // Tentukan $akhir sebagai tanggal maksimum dari kolom deliverydate
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 
-$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM salesorder WHERE progress = 'Waiting'";
-$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
-$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
-$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 <div class="content-wrapper">
    <div class="content-header">
@@ -41,7 +38,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
             <div class="col-12 col-md-1 mb-2">
                <a href="drafttally.php">
                   <button type="button" class="btn btn-sm btn-outline-primary btn-block">
-                     <span class="badge badge-danger"> <?= $approvedCount; ?></span> Draft
+                     <span class="badge badge-danger"> <?= $drafttally; ?></span> Draft
                   </button>
                </a>
             </div>
@@ -75,8 +72,8 @@ $approvedCount = $rowApprovedCount['approved_count'];
                         </thead>
                         <tbody>
                            <?php
-                          $no = 1;
-                          $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer, salesorder.note
+                           $no = 1;
+                           $ambildata = mysqli_query($conn, "SELECT tally.*, customers.nama_customer, salesorder.note
                                                      FROM tally 
                                                      INNER JOIN customers ON tally.idcustomer = customers.idcustomer
                                                      INNER JOIN salesorder ON tally.idso = salesorder.idso
@@ -84,20 +81,20 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                                      OR (tally.stat NOT IN ('DO', 'Rejected')))
                                                      AND tally.is_deleted = 0
                                                      ORDER BY idtally DESC");
-                          
-                          if (!$ambildata) {
+
+                           if (!$ambildata) {
                               die("Query error: " . mysqli_error($conn));
-                          }
-                          
-                          while ($tampil = mysqli_fetch_array($ambildata)) {
+                           }
+
+                           while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
-                          
+
                               if ($tampil['stat'] == 'Rejected') {
-                                  echo '<tr class="text-danger">';
+                                 echo '<tr class="text-danger">';
                               } else {
-                                  echo '<tr>';
+                                 echo '<tr>';
                               }
-                          
+
                            ?>
                               <td class="text-center"><?= $no; ?></td>
                               <td><?= htmlspecialchars($tampil['nama_customer']); ?></td>
