@@ -63,17 +63,17 @@ include "../mainsidebar.php";
                                     <td class="text-left"><?= $row['note'] ?></td>
                                     <td>
                                        <?php
-                                       if ($row['stat'] === 'Request' && $_SESSION['idusers'] == 1) {
+                                       if ($row['stat'] === 'Request' && $_SESSION['idusers'] == 13) {
                                           // Jika status adalah 'Request' dan user ID adalah 16, tampilkan tombol Accept
                                           echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                                                    Accept
                                                 </a>';
-                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 16) {
+                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 15) {
                                           // Jika status adalah 'Waiting' dan user ID adalah 1, tampilkan tombol Approved
                                           echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                                                    Approved
                                                 </a>';
-                                       } elseif ($row['stat'] === 'Ordering' && $_SESSION['idusers'] == 1) {
+                                       } elseif ($row['stat'] === 'Ordering' && $_SESSION['idusers'] == 13) {
                                           // Jika status adalah 'Ordering' dan user ID adalah 16, tampilkan tombol Buat PO
                                           echo '<a href="makepo.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-success">
                                                    Buat PO
