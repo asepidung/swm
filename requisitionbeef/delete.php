@@ -19,7 +19,7 @@ mysqli_begin_transaction($conn);
 
 try {
     // Update kolom is_deleted dengan timestamp sekarang
-    $query = "UPDATE request SET is_deleted = NOW() WHERE idrequest = ?";
+    $query = "UPDATE requestbeef SET is_deleted = NOW() WHERE idrequest = ?";
 
     // Gunakan prepared statement untuk keamanan
     $stmt = mysqli_prepare($conn, $query);

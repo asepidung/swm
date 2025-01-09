@@ -30,7 +30,7 @@ function angkaToRomawi($angka)
 $romawiMonth = angkaToRomawi($currentMonth);
 
 // Menghitung jumlah data pada tahun berjalan
-$sql = mysqli_query($conn, "SELECT COUNT(*) as total FROM po WHERE YEAR(creatime) = YEAR(CURRENT_DATE)");
+$sql = mysqli_query($conn, "SELECT COUNT(*) as total FROM pobeef WHERE YEAR(creatime) = YEAR(CURRENT_DATE)");
 $data = mysqli_fetch_array($sql);
 
 // Mengambil jumlah data dan menambahkannya dengan 1
@@ -40,7 +40,7 @@ $urut = $data['total'] + 1;
 $ponumber = sprintf("%03s", $urut);
 
 // Membuat kode auto PO
-$kodeauto = "PO-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
+$kodeauto = "POB-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
 
 // Output untuk debugging
 echo $kodeauto;

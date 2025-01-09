@@ -19,63 +19,40 @@ $duedate = $_POST['duedate'] ?? null;
 $idsupplier = $_POST['idsupplier'] ?? null;
 $note = $_POST['note'] ?? null;
 
-// Validasi dan ambil nilai tax
-$tax = $_POST['tax'] ?? 'No';
-if (!in_array($tax, ['No', '11', '12'])) {
-    die("Error: Invalid tax value.");
-}
-
 // Ambil data detail
-$idrawmate = $_POST['idrawmate'] ?? [];
+$idbarang = $_POST['idbarang'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $price = $_POST['price'] ?? [];
 $notes = $_POST['notes'] ?? [];
 
-// Hitung total harga barang sebelum pajak
+// Hitung total harga barang
 $totalAmount = array_sum(array_map(function ($weight, $price) {
     return normalizeNumber($weight) * normalizeNumber($price);
 }, $weight, $price));
 
-// Hitung pajak jika tax bukan "No"
-if ($tax !== 'No') {
-    $taxPercentage = (float) $tax; // Konversi tax menjadi angka
-    $taxrp = $totalAmount * ($taxPercentage / 100); // Pajak dihitung dari total harga barang
-} else {
-    $taxrp = 0; // Jika tidak ada pajak
-}
-
-// Hitung total amount termasuk pajak
-$xamount = $totalAmount + $taxrp;
+// Total amount langsung tanpa pajak
+$xamount = $totalAmount;
 
 // Validasi data wajib
 if (!$idrequest || !$duedate || !$idsupplier) {
     die("Error: Missing required fields.");
 }
 
-// Debug perhitungan
-// var_dump([
-//     'Total Amount' => $totalAmount,
-//     'Tax Percentage' => $taxPercentage ?? 0,
-//     'Tax Amount (taxrp)' => $taxrp,
-//     'Grand Total (xamount)' => $xamount,
-// ]);
-// exit;
-
 // Mulai transaksi
 mysqli_begin_transaction($conn);
 
 try {
     // Update data di tabel `request`
-    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, note = ?, taxrp = ?, xamount = ?, tax = ? WHERE idrequest = ?";
+    $query_request = "UPDATE requestbeef SET duedate = ?, idsupplier = ?, note = ?, xamount = ? WHERE idrequest = ?";
     $stmt_request = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt_request, "sisdssi", $duedate, $idsupplier, $note, $taxrp, $xamount, $tax, $idrequest);
+    mysqli_stmt_bind_param($stmt_request, "sisdi", $duedate, $idsupplier, $note, $xamount, $idrequest);
 
     if (!mysqli_stmt_execute($stmt_request)) {
         throw new Exception("Error updating request table: " . mysqli_stmt_error($stmt_request));
     }
 
     // Hapus detail lama untuk ID request ini
-    $query_delete_details = "DELETE FROM requestdetail WHERE idrequest = ?";
+    $query_delete_details = "DELETE FROM requestbeefdetail WHERE idrequest = ?";
     $stmt_delete_details = mysqli_prepare($conn, $query_delete_details);
     mysqli_stmt_bind_param($stmt_delete_details, "i", $idrequest);
 
@@ -84,15 +61,15 @@ try {
     }
 
     // Masukkan detail baru
-    $query_insert_details = "INSERT INTO requestdetail (idrequest, idrawmate, qty, price, notes) VALUES (?, ?, ?, ?, ?)";
+    $query_insert_details = "INSERT INTO requestbeefdetail (idrequest, idbarang, qty, price, notes) VALUES (?, ?, ?, ?, ?)";
     $stmt_insert_details = mysqli_prepare($conn, $query_insert_details);
 
-    foreach ($idrawmate as $i => $rawmate) {
+    foreach ($idbarang as $i => $barang) {
         $qty = normalizeNumber($weight[$i] ?? 0);
         $product_price = normalizeNumber($price[$i] ?? 0);
         $product_note = $notes[$i] ?? '';
 
-        mysqli_stmt_bind_param($stmt_insert_details, "iiids", $idrequest, $rawmate, $qty, $product_price, $product_note);
+        mysqli_stmt_bind_param($stmt_insert_details, "iiids", $idrequest, $barang, $qty, $product_price, $product_note);
 
         if (!mysqli_stmt_execute($stmt_insert_details)) {
             throw new Exception("Error inserting into requestdetail table: " . mysqli_stmt_error($stmt_insert_details));

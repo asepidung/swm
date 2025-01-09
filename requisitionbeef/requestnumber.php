@@ -9,7 +9,7 @@ mysqli_begin_transaction($conn);
 
 try {
     // Hitung jumlah data untuk tahun berjalan (termasuk data yang dihapus)
-    $sqlCount = mysqli_query($conn, "SELECT COUNT(*) as count FROM request WHERE YEAR(creatime) = $currentYear FOR UPDATE");
+    $sqlCount = mysqli_query($conn, "SELECT COUNT(*) as count FROM requestbeef WHERE YEAR(creatime) = $currentYear FOR UPDATE");
     $dataCount = mysqli_fetch_array($sqlCount);
 
     // Tentukan nomor permintaan berikutnya
@@ -17,7 +17,7 @@ try {
 
     // Format nomor permintaan
     $requestNumber = sprintf("%04s", $nextNumber);
-    $norequest = "REQ-" . substr($currentYear, 2) . "/$requestNumber";
+    $norequest = "RED-" . substr($currentYear, 2) . "/$requestNumber";
 
     // Commit transaksi (selesai menghitung)
     mysqli_commit($conn);

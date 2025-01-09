@@ -80,21 +80,7 @@ mysqli_stmt_close($stmt_details);
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="col-12 col-sm-4">
-                                        <div class="form-group">
-                                            <label for="tax">Tax</label>
-                                            <select class="form-control" name="tax" id="tax" required>
-                                                <option value="No" <?= $request['tax'] == 0 ? 'selected' : '' ?>>No</option>
-                                                <option value="11" <?= $request['tax'] == 11 ? 'selected' : '' ?>>11</option>
-                                                <option value="12" <?= $request['tax'] == 12 ? 'selected' : '' ?>>12</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12">
                                         <div class="form-group">
                                             <label for="note">Note</label>
                                             <input type="text" class="form-control" name="note" id="note" value="<?= htmlspecialchars($request['note']) ?>">
@@ -157,10 +143,6 @@ mysqli_stmt_close($stmt_details);
                                     </div>
 
                                     <div class="col-6 col-md-2 mb-1">
-                                        <input type="text" name="taxrp" id="taxrp" class="form-control text-right" readonly placeholder="Tax Amount">
-                                    </div>
-
-                                    <div class="col-6 col-md-2 mb-1">
                                         <input type="text" name="xamount" id="xamount" class="form-control text-right" readonly placeholder="Grand Total">
                                     </div>
 
@@ -179,7 +161,6 @@ mysqli_stmt_close($stmt_details);
     </section>
 </div>
 <script>
-    // Fungsi untuk memformat angka dengan pemisah ribuan
     function formatNumber(num) {
         return num.toLocaleString('id-ID', {
             minimumFractionDigits: 2,
@@ -187,67 +168,48 @@ mysqli_stmt_close($stmt_details);
         });
     }
 
-    // Fungsi untuk menghitung Total, Tax, dan Grand Total
     function calculateTotals() {
         const weightInputs = document.querySelectorAll('[name="weight[]"]');
         const priceInputs = document.querySelectorAll('[name="price[]"]');
         const amountInputs = document.querySelectorAll('[name="amount[]"]');
         const xweight = document.getElementById('xweight');
-        const taxrp = document.getElementById('taxrp');
         const xamount = document.getElementById('xamount');
-        const taxSelect = document.getElementById('tax');
 
         let totalWeight = 0;
         let totalAmount = 0;
 
-        // Hitung Total Weight dan Amount
         weightInputs.forEach((weightInput, index) => {
-            // Hapus pemisah ribuan sebelum perhitungan
             const weight = parseFloat(weightInput.value.replace(/\./g, '').replace(/,/g, '.')) || 0;
             const price = parseFloat(priceInputs[index].value.replace(/\./g, '').replace(/,/g, '.')) || 0;
             const amount = weight * price;
 
-            // Tampilkan hasil Amount dalam format angka dengan pemisah ribuan
             amountInputs[index].value = formatNumber(amount);
 
             totalWeight += weight;
             totalAmount += amount;
         });
 
-        // Hitung Pajak
-        const taxRate = taxSelect.value === '11' ? 0.11 : taxSelect.value === '12' ? 0.12 : 0;
-        const taxValue = totalAmount * taxRate;
+        const finalAmount = totalAmount;
 
-        // Total Amount dengan Pajak
-        const finalAmount = totalAmount + taxValue;
-
-        // Tampilkan Total dengan format angka
         xweight.value = formatNumber(totalWeight);
-        taxrp.value = formatNumber(taxValue);
         xamount.value = formatNumber(finalAmount);
     }
 
-    // Fungsi untuk memformat input angka dengan pemisah ribuan saat pengguna mengetik
     function formatInputValue(input) {
-        let value = input.value.replace(/\./g, '').replace(/,/g, '.'); // Hapus pemisah ribuan sebelumnya
+        let value = input.value.replace(/\./g, '').replace(/,/g, '.');
         if (value) {
-            value = parseFloat(value).toLocaleString('id-ID'); // Tambahkan pemisah ribuan
-            input.value = value; // Tampilkan nilai yang diformat di input
+            value = parseFloat(value).toLocaleString('id-ID');
+            input.value = value;
         }
     }
 
-    // Event listener untuk memformat input weight dan price saat pengguna mengetik
     document.addEventListener('input', function(e) {
         if (e.target.name === 'weight[]' || e.target.name === 'price[]') {
-            formatInputValue(e.target); // Format input value langsung
-            calculateTotals(); // Hitung total setelah perubahan input
+            formatInputValue(e.target);
+            calculateTotals();
         }
     });
 
-    // Update total saat pajak berubah
-    document.getElementById('tax').addEventListener('change', calculateTotals);
-
-    // Fungsi untuk menambah item
     function addItem() {
         const itemsContainer = document.getElementById('items-container');
         const newItemRow = document.createElement('div');
@@ -298,28 +260,20 @@ mysqli_stmt_close($stmt_details);
         itemsContainer.appendChild(newItemRow);
     }
 
-    // Fungsi untuk menghapus item
     function removeItem(button) {
         button.closest('.row').remove();
         calculateTotals();
     }
 
-    // Format semua input saat halaman dimuat
     document.addEventListener('DOMContentLoaded', function() {
         const weightInputs = document.querySelectorAll('[name="weight[]"]');
         const priceInputs = document.querySelectorAll('[name="price[]"]');
 
-        // Format setiap input weight dan price
         weightInputs.forEach((input) => formatInputValue(input));
         priceInputs.forEach((input) => formatInputValue(input));
 
-        // Hitung total saat halaman pertama kali dimuat
         calculateTotals();
     });
 </script>
-
-
-
-
 
 <?php include "../footer.php"; ?>

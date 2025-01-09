@@ -149,6 +149,29 @@ $totalAfterTax = $totalAmount + $taxAmount;
                     </tr>
                 </tfoot>
             </table>
+            <div class="col">
+                NOTE :
+                <p>
+                    <?= $row_po['note']; ?>
+                </p>
+            </div>
+            <div class="col text-right">
+                PURCHASING
+                <br><br><br><br>
+                AYU SILVY
+            </div>
+            <div class="row mt-3 justify-content-center no-print">
+                <div class="col-6 col-sm-4 col-md-3 mb-2">
+                    <a href="javascript:history.back()">
+                        <button type="button" class="btn btn-block btn-success"><i class="fas fa-undo"></i></button>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3">
+                    <button type="button" class="btn btn-block btn-warning" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

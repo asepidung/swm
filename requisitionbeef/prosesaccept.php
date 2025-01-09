@@ -28,7 +28,7 @@ if (!in_array($tax, ['No', '11', '12'])) {
 }
 
 // Ambil data detail
-$idrawmate = $_POST['idrawmate'] ?? [];
+$idbarang = $_POST['idbarang'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $price = $_POST['price'] ?? [];
 $notes = $_POST['notes'] ?? [];
@@ -61,7 +61,7 @@ try {
     var_dump($duedate, $idsupplier, $note, $top, $taxrp, $xamount, $tax, $stat, $idrequest);
 
     // Update data di tabel `request`
-    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, note = ?, top = ?, taxrp = ?, xamount = ?, tax = ?, stat = ? WHERE idrequest = ?";
+    $query_request = "UPDATE requestbeef SET duedate = ?, idsupplier = ?, note = ?, top = ?, taxrp = ?, xamount = ?, tax = ?, stat = ? WHERE idrequest = ?";
     $stmt_request = mysqli_prepare($conn, $query_request);
     mysqli_stmt_bind_param($stmt_request, "sissdsssi", $duedate, $idsupplier, $note, $top, $taxrp, $xamount, $tax, $stat, $idrequest);
 

@@ -72,15 +72,15 @@ include "../mainsidebar.php";
                               <div class="col-12 col-md-3">
                                  <div class="form-group">
                                     <div class="input-group">
-                                       <select class="form-control" name="idrawmate[]" required>
+                                       <select class="form-control" name="idbarang[]" required>
                                           <option value="">--Product--</option>
                                           <?php
-                                          $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
+                                          $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                                           $result = mysqli_query($conn, $query);
                                           while ($row = mysqli_fetch_assoc($result)) {
-                                             $idrawmate = $row['idrawmate'];
-                                             $nmrawmate = $row['nmrawmate'];
-                                             echo '<option value="' . $idrawmate . '">' . $nmrawmate . '</option>';
+                                             $idbarang = $row['idbarang'];
+                                             $nmbarang = $row['nmbarang'];
+                                             echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
                                           }
                                           ?>
                                        </select>
@@ -216,13 +216,13 @@ include "../mainsidebar.php";
       newItemRow.innerHTML = `
             <div class="col-12 col-md-3">
                 <div class="form-group">
-                    <select class="form-control" name="idrawmate[]" required>
+                    <select class="form-control" name="idbarang[]" required>
                         <option value="">--Product--</option>
                         <?php
-                        $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
+                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                         $result = mysqli_query($conn, $query);
                         while ($row = mysqli_fetch_assoc($result)) {
-                           echo '<option value="' . $row['idrawmate'] . '">' . $row['nmrawmate'] . '</option>';
+                           echo '<option value="' . $row['idbarang'] . '">' . $row['nmbarang'] . '</option>';
                         }
                         ?>
                     </select>

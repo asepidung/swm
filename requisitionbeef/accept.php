@@ -17,7 +17,7 @@ if (!$idrequest) {
 }
 
 // Ambil data request berdasarkan ID
-$query_request = "SELECT * FROM request WHERE idrequest = ?";
+$query_request = "SELECT * FROM requestbeef WHERE idrequest = ?";
 $stmt = mysqli_prepare($conn, $query_request);
 mysqli_stmt_bind_param($stmt, "i", $idrequest);
 mysqli_stmt_execute($stmt);
@@ -30,7 +30,7 @@ if ($result->num_rows === 0) {
 $request = mysqli_fetch_assoc($result);
 
 // Ambil data detail permintaan dari tabel requestdetail
-$query_details = "SELECT * FROM requestdetail WHERE idrequest = ?";
+$query_details = "SELECT * FROM requestbeefdetail WHERE idrequest = ?";
 $stmt_details = mysqli_prepare($conn, $query_details);
 mysqli_stmt_bind_param($stmt_details, "i", $idrequest);
 mysqli_stmt_execute($stmt_details);
@@ -119,14 +119,14 @@ mysqli_stmt_close($stmt_details);
                                         <div class="row item-row">
                                             <div class="col-12 col-md-3">
                                                 <div class="form-group">
-                                                    <select class="form-control" name="idrawmate[]" required>
+                                                    <select class="form-control" name="idbarang[]" required>
                                                         <option value="">--Product--</option>
                                                         <?php
-                                                        $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
+                                                        $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                                                         $result = mysqli_query($conn, $query);
                                                         while ($row = mysqli_fetch_assoc($result)) {
-                                                            $selected = $row['idrawmate'] == $detail['idrawmate'] ? 'selected' : '';
-                                                            echo "<option value=\"{$row['idrawmate']}\" $selected>{$row['nmrawmate']}</option>";
+                                                            $selected = $row['idbarang'] == $detail['idbarang'] ? 'selected' : '';
+                                                            echo "<option value=\"{$row['idbarang']}\" $selected>{$row['nmbarang']}</option>";
                                                         }
                                                         ?>
                                                     </select>
@@ -264,13 +264,13 @@ mysqli_stmt_close($stmt_details);
         newItemRow.innerHTML = ` 
          <div class="col-12 col-md-3">
             <div class="form-group">
-               <select class="form-control" name="idrawmate[]" required>
+               <select class="form-control" name="idbarang[]" required>
                   <option value="">--Product--</option>
                   <?php
-                    $query = "SELECT * FROM rawmate ORDER BY nmrawmate ASC";
+                    $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
                     $result = mysqli_query($conn, $query);
                     while ($row = mysqli_fetch_assoc($result)) {
-                        echo '<option value="' . $row['idrawmate'] . '">' . $row['nmrawmate'] . '</option>';
+                        echo '<option value="' . $row['idbarang'] . '">' . $row['nmbarang'] . '</option>';
                     }
                     ?>
                </select>

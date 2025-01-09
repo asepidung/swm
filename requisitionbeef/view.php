@@ -16,7 +16,7 @@ if (!$idrequest) {
 
 // Ambil data dari tabel `request`
 $query_request = "SELECT r.*, s.nmsupplier, u.fullname
-                  FROM request r
+                  FROM requestbeef r
                   LEFT JOIN supplier s ON r.idsupplier = s.idsupplier
                   LEFT JOIN users u ON r.iduser = u.idusers
                   WHERE r.idrequest = ?";
@@ -32,9 +32,9 @@ if ($result_request->num_rows === 0) {
 $request = mysqli_fetch_assoc($result_request);
 
 // Ambil data detail dari tabel `requestdetail`
-$query_details = "SELECT rd.*, rm.nmrawmate
-                  FROM requestdetail rd
-                  LEFT JOIN rawmate rm ON rd.idrawmate = rm.idrawmate
+$query_details = "SELECT rd.*, rm.nmbarang
+                  FROM requestbeefdetail rd
+                  LEFT JOIN barang rm ON rd.idbarang = rm.idbarang
                   WHERE rd.idrequest = ?";
 $stmt_details = mysqli_prepare($conn, $query_details);
 mysqli_stmt_bind_param($stmt_details, "i", $idrequest);
@@ -148,7 +148,7 @@ mysqli_stmt_close($stmt_details);
                 ?>
                     <tr>
                         <td class="text-center"><?= $no++; ?></td>
-                        <td><?= htmlspecialchars($detail['nmrawmate']) ?></td>
+                        <td><?= htmlspecialchars($detail['nmbarang']) ?></td>
                         <td class="text-right"><?= number_format(htmlspecialchars($detail['qty'])) ?></td>
                         <td class="text-right"><?= number_format($detail['price'], 2) ?></td>
                         <td class="text-right"><?= number_format($total, 2) ?></td>

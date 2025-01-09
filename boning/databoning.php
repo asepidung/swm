@@ -47,13 +47,13 @@ include "../mainsidebar.php";
                   </tr>
                 </thead>
                 <tbody>
-                <?php
-                $no = 1;
-                $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier WHERE b.is_deleted = 0 ORDER BY b.batchboning DESC");
-                while ($tampil = mysqli_fetch_array($ambildata)) {
+                  <?php
+                  $no = 1;
+                  $ambildata = mysqli_query($conn, "SELECT b.*, p.nmsupplier FROM boning b JOIN supplier p ON b.idsupplier = p.idsupplier WHERE b.is_deleted = 0 ORDER BY b.batchboning DESC");
+                  while ($tampil = mysqli_fetch_array($ambildata)) {
 
                     // Menghitung total berat dari labelboning terkait dengan idboning
-                    $query_total_weight = "SELECT SUM(qty) AS total_weight FROM labelboning WHERE idboning = " . $tampil['idboning'];
+                    $query_total_weight = "SELECT SUM(qty) AS total_weight FROM labelboning WHERE idboning = " . $tampil['idboning'] . " AND is_deleted = 0";
                     $result_total_weight = mysqli_query($conn, $query_total_weight);
                     $row_total_weight = mysqli_fetch_assoc($result_total_weight);
                     $total_weight = $row_total_weight['total_weight'];
@@ -61,9 +61,9 @@ include "../mainsidebar.php";
                     // Menghitung rata-rata berat per sapi
                     $avg_weight_per_sapi = 0;
                     if ($tampil['qtysapi'] > 0) {
-                        $avg_weight_per_sapi = $total_weight / $tampil['qtysapi'];
+                      $avg_weight_per_sapi = $total_weight / $tampil['qtysapi'];
                     }
-                ?>
+                  ?>
 
                     <tr class="text-center">
                       <td><?= $no; ?></td>
@@ -105,11 +105,11 @@ include "../mainsidebar.php";
                         // Periksa nilai kunci
                         $isLocked = $tampil['kunci'] == 1; // Asumsikan $tampil['kunci'] berisi nilai kunci
                         ?>
-                      <a class="btn btn-danger btn-sm <?= $isLocked ? 'disabled' : ''; ?>" 
-                        href="<?= !$isLocked ? "#" : ''; ?>" 
-                        <?= $isLocked ? 'aria-disabled="true" tabindex="-1"' : 'onclick="return confirmDelete(event, '.$tampil['idboning'].')"' ; ?>>
+                        <a class="btn btn-danger btn-sm <?= $isLocked ? 'disabled' : ''; ?>"
+                          href="<?= !$isLocked ? "#" : ''; ?>"
+                          <?= $isLocked ? 'aria-disabled="true" tabindex="-1"' : 'onclick="return confirmDelete(event, ' . $tampil['idboning'] . ')"'; ?>>
                           <i class="fas fa-minus-circle"></i>
-                      </a>
+                        </a>
 
                       </td>
                     </tr>
@@ -145,28 +145,28 @@ include "../mainsidebar.php";
     }
     // Mengubah judul halaman web
     document.title = "Data Boning";
-    
-function confirmDelete(event, idboning) {
-    // Konfirmasi pertama
-    var firstConfirm = confirm("Apakah kamu yakin ingin menghapus data boning ini?");
-    
-    if (firstConfirm) {
+
+    function confirmDelete(event, idboning) {
+      // Konfirmasi pertama
+      var firstConfirm = confirm("Apakah kamu yakin ingin menghapus data boning ini?");
+
+      if (firstConfirm) {
         // Konfirmasi kedua
         var secondConfirm = confirm("PERINGATAN !!! Semua data termasuk data stock akan terhapus, Lanjutkan?");
-        
+
         if (secondConfirm) {
-            // Jika kedua konfirmasi dijawab Yes, lanjutkan ke proses penghapusan
-            window.location.href = "deletedataboning.php?idboning=" + idboning;
+          // Jika kedua konfirmasi dijawab Yes, lanjutkan ke proses penghapusan
+          window.location.href = "deletedataboning.php?idboning=" + idboning;
         } else {
-            // Jika konfirmasi kedua ditolak, batalkan tindakan penghapusan
-            event.preventDefault(); // Mencegah link untuk menuju ke halaman penghapusan
+          // Jika konfirmasi kedua ditolak, batalkan tindakan penghapusan
+          event.preventDefault(); // Mencegah link untuk menuju ke halaman penghapusan
         }
-    } else {
+      } else {
         // Jika konfirmasi pertama ditolak, batalkan tindakan penghapusan
         event.preventDefault(); // Mencegah link untuk menuju ke halaman penghapusan
+      }
     }
-}
-</script>
+  </script>
   <?php
   // require "../footnote.php";
   include "../footer.php" ?>

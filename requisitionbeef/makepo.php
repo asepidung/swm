@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
 
     try {
         // Ambil data dari tabel request
-        $sql_request = "SELECT * FROM request WHERE idrequest = ?";
+        $sql_request = "SELECT * FROM requestbeef WHERE idrequest = ?";
         $stmt_request = $conn->prepare($sql_request);
         $stmt_request->bind_param("i", $idrequest);
         $stmt_request->execute();
@@ -37,7 +37,7 @@ if (isset($_GET['id'])) {
 
 
         // Insert ke tabel po
-        $sql_po = "INSERT INTO po (nopo, idrequest, idsupplier, xamount, taxrp, tax, duedate, note, top) 
+        $sql_po = "INSERT INTO pobeef (nopo, idrequest, idsupplier, xamount, taxrp, tax, duedate, note, top) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt_po = $conn->prepare($sql_po);
         $nopo = $kodeauto; // Nomor PO dihasilkan otomatis
@@ -46,36 +46,36 @@ if (isset($_GET['id'])) {
         $note = $request['note'];
         $top = $request['top']; // Ambil nilai TOP dari tabel request
 
-        $stmt_po->bind_param("siiddssss", $nopo, $idrequest, $idsupplier, $xamount, $taxrp, $tax, $duedate, $note, $top);
+        $stmt_po->bind_param("siiddssss", $kodeauto, $idrequest, $idsupplier, $xamount, $taxrp, $tax, $duedate, $note, $top);
         $stmt_po->execute();
 
         // Ambil idpo yang baru dibuat
         $idpo = $conn->insert_id;
 
         // Ambil data dari tabel requestdetail
-        $sql_requestdetail = "SELECT * FROM requestdetail WHERE idrequest = ?";
+        $sql_requestdetail = "SELECT * FROM requestbeefdetail WHERE idrequest = ?";
         $stmt_requestdetail = $conn->prepare($sql_requestdetail);
         $stmt_requestdetail->bind_param("i", $idrequest);
         $stmt_requestdetail->execute();
         $result_requestdetail = $stmt_requestdetail->get_result();
 
         // Insert data ke tabel podetail
-        $sql_podetail = "INSERT INTO podetail (idpo, idrawmate, qty, price, notes) 
+        $sql_podetail = "INSERT INTO pobeefdetail (idpo, idbarang, qty, price, notes) 
                          VALUES (?, ?, ?, ?, ?)";
         $stmt_podetail = $conn->prepare($sql_podetail);
 
         while ($detail = $result_requestdetail->fetch_assoc()) {
-            $idrawmate = $detail['idrawmate'];
+            $idbarang = $detail['idbarang'];
             $qty = $detail['qty'];
             $price = $detail['price'];
             $notes = $detail['notes'];
 
-            $stmt_podetail->bind_param("iiids", $idpo, $idrawmate, $qty, $price, $notes);
+            $stmt_podetail->bind_param("iiids", $idpo, $idbarang, $qty, $price, $notes);
             $stmt_podetail->execute();
         }
 
         // Update status di tabel request
-        $sql_update_request = "UPDATE request SET stat = 'PO Created' WHERE idrequest = ?";
+        $sql_update_request = "UPDATE requestbeef SET stat = 'PO Created' WHERE idrequest = ?";
         $stmt_update_request = $conn->prepare($sql_update_request);
         $stmt_update_request->bind_param("i", $idrequest);
         $stmt_update_request->execute();

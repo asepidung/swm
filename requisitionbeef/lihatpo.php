@@ -9,11 +9,11 @@ require "../inv/terbilang.php";
 // Ambil ID Request dari parameter GET
 $idrequest = $_GET['idrequest'];
 
-// Tampilkan data dari tabel po berdasarkan idrequest
-$query_po = "SELECT po.*, supplier.nmsupplier 
-             FROM po 
-             INNER JOIN supplier ON po.idsupplier = supplier.idsupplier 
-             WHERE po.idrequest = ?";
+// Tampilkan data dari tabel pobeef berdasarkan idrequest
+$query_po = "SELECT pobeef.*, supplier.nmsupplier 
+             FROM pobeef 
+             INNER JOIN supplier ON pobeef.idsupplier = supplier.idsupplier 
+             WHERE pobeef.idrequest = ?";
 $stmt_po = $conn->prepare($query_po);
 $stmt_po->bind_param("i", $idrequest);
 $stmt_po->execute();
@@ -24,11 +24,11 @@ if (!$row_po) {
     die("PO not found for the given Request.");
 }
 
-// Tampilkan data dari tabel podetail berdasarkan idpo
-$query_podetail = "SELECT podetail.*, rawmate.nmrawmate, (podetail.qty * podetail.price) AS subtotal 
-                   FROM podetail 
-                   INNER JOIN rawmate ON podetail.idrawmate = rawmate.idrawmate 
-                   WHERE podetail.idpo = ?";
+// Tampilkan data dari tabel pobeefdetail berdasarkan idpo
+$query_podetail = "SELECT pobeefdetail.*, barang.nmbarang, (pobeefdetail.qty * pobeefdetail.price) AS subtotal 
+                   FROM pobeefdetail 
+                   INNER JOIN barang ON pobeefdetail.idbarang = barang.idbarang 
+                   WHERE pobeefdetail.idpo = ?";
 $stmt_podetail = $conn->prepare($query_podetail);
 $stmt_podetail->bind_param("i", $row_po['idpo']);
 $stmt_podetail->execute();
@@ -37,7 +37,7 @@ $result_podetail = $stmt_podetail->get_result();
 // Hitung Total Amount (Before Tax)
 $totalAmount = 0;
 while ($row_podetail = $result_podetail->fetch_assoc()) {
-    $totalAmount += $row_podetail['subtotal']; // Jumlahkan semua subtotal dari podetail
+    $totalAmount += $row_podetail['subtotal']; // Jumlahkan semua subtotal dari pobeefdetail
 }
 
 // Reset hasil query podetail untuk iterasi ulang di tampilan
@@ -123,7 +123,7 @@ $totalAfterTax = $totalAmount + $taxAmount;
                     ?>
                         <tr class="text-right">
                             <td class="text-center"><?= $no++; ?></td>
-                            <td class="text-left"><?= $row_podetail['nmrawmate']; ?></td>
+                            <td class="text-left"><?= $row_podetail['nmbarang']; ?></td>
                             <td><?= number_format($row_podetail['qty'], 2); ?></td>
                             <td><?= number_format($row_podetail['price'], 2); ?></td>
                             <td><?= number_format($row_podetail['subtotal'], 2); ?></td>
@@ -149,6 +149,29 @@ $totalAfterTax = $totalAmount + $taxAmount;
                     </tr>
                 </tfoot>
             </table>
+            <div class="col">
+                NOTE :
+                <p>
+                    <?= $row_po['note']; ?>
+                </p>
+            </div>
+            <div class="col text-right">
+                PURCHASING
+                <br><br><br><br>
+                AYU SILVY
+            </div>
+            <div class="row mt-3 justify-content-center no-print">
+                <div class="col-6 col-sm-4 col-md-3 mb-2">
+                    <a href="javascript:history.back()">
+                        <button type="button" class="btn btn-block btn-success"><i class="fas fa-undo"></i></button>
+                    </a>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3">
+                    <button type="button" class="btn btn-block btn-warning" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

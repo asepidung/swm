@@ -37,13 +37,13 @@ $tax = mysqli_real_escape_string($conn, $_POST['tax'] ?? null);
 $idsupplier = mysqli_real_escape_string($conn, $_POST['idsupplier'] ?? null);
 $note = mysqli_real_escape_string($conn, $_POST['note'] ?? null);
 $taxrp = normalizeNumber($_POST['taxrp'] ?? 0); // Normalize taxrp
-$idrawmate = $_POST['idrawmate'] ?? [];
+$idbarang = $_POST['idbarang'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $price = $_POST['price'] ?? [];
 $notes = $_POST['notes'] ?? [];
 
 // Validate required fields
-if (empty($duedate) || empty($idsupplier) || count($idrawmate) === 0) {
+if (empty($duedate) || empty($idsupplier) || count($idbarang) === 0) {
     die("Error: Missing required fields.");
 }
 
@@ -58,7 +58,7 @@ mysqli_begin_transaction($conn);
 
 try {
     // Insert data into the request table
-    $query_request = "INSERT INTO request (norequest, duedate, iduser, idsupplier, note, stat, taxrp, xamount, tax) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $query_request = "INSERT INTO requestbeef (norequest, duedate, iduser, idsupplier, note, stat, taxrp, xamount, tax) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query_request);
     mysqli_stmt_bind_param($stmt, "sssissdds", $norequest, $duedate, $iduser, $idsupplier, $note, $stat, $taxrp, $xamount, $tax);
     if (!mysqli_stmt_execute($stmt)) {
@@ -68,15 +68,15 @@ try {
     $idrequest = mysqli_insert_id($conn);
 
     // Insert data into the requestdetail table for each item
-    $query_requestdetail = "INSERT INTO requestdetail (idrequest, idrawmate, qty, price, notes) VALUES (?, ?, ?, ?, ?)";
+    $query_requestdetail = "INSERT INTO requestbeefdetail (idrequest, idbarang, qty, price, notes) VALUES (?, ?, ?, ?, ?)";
     $stmt_detail = mysqli_prepare($conn, $query_requestdetail);
 
-    foreach ($idrawmate as $i => $rawmate) {
+    foreach ($idbarang as $i => $barang) {
         $qty = normalizeNumber($weight[$i] ?? 0); // Normalize weight
         $product_price = normalizeNumber($price[$i] ?? 0); // Normalize price
         $product_note = mysqli_real_escape_string($conn, $notes[$i] ?? '');
 
-        mysqli_stmt_bind_param($stmt_detail, "iiids", $idrequest, $rawmate, $qty, $product_price, $product_note);
+        mysqli_stmt_bind_param($stmt_detail, "iiids", $idrequest, $barang, $qty, $product_price, $product_note);
         if (!mysqli_stmt_execute($stmt_detail)) {
             throw new Exception("Error inserting into requestdetail table: " . mysqli_stmt_error($stmt_detail));
         }

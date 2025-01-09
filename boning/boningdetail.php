@@ -15,26 +15,30 @@ if (!isset($_GET['id'])) {
   die("Jalankan Dari Modul Produksi");
 }
 
-$idboning = $_GET['id'];
+$idboning = intval($_GET['id']);
 $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 
 $query = "SELECT l.idlabelboning, b.nmbarang, l.qty, l.pcs
           FROM labelboning l
-          INNER JOIN barang b ON l.idbarang = b.idbarang
-          WHERE l.idboning = $idboning AND l.is_deleted = 0";
+          LEFT JOIN barang b ON l.idbarang = b.idbarang
+          WHERE l.idboning = ? AND l.is_deleted = 0";
 
-$result = mysqli_query($conn, $query);
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $idboning);
+$stmt->execute();
+$result = $stmt->get_result();
+
 if (!$result) {
-  die("Query error: " . mysqli_error($conn));
+  die("Query error: " . $stmt->error);
 }
 
 // Buat array untuk menyimpan data barang dengan nama yang sama
 $items = array();
 
-while ($row = mysqli_fetch_assoc($result)) {
-  $currentItem = $row['nmbarang'];
-  $currentQty = $row['qty'];
-  $currentPcs = $row['pcs'];
+while ($row = $result->fetch_assoc()) {
+  $currentItem = $row['nmbarang'] ?? 'Unknown'; // Handle NULL nmbarang
+  $currentQty = $row['qty'] ?? 0;
+  $currentPcs = $row['pcs'] ?? 0;
 
   if (array_key_exists($currentItem, $items)) {
     // Jika item sudah ada dalam array, tambahkan qty, pcs dan totalBox
@@ -92,7 +96,7 @@ require "boningtotal.php";
                   $totalBox = 0; // total box barang
 
                   foreach ($items as $item) {
-                    $itemName = $item['name'];
+                    $itemName = htmlspecialchars($item['name']);
                     $itemQty = $item['qty'];
                     $itemTotalPcs = $item['pcs'];
                     $itemTotalBox = $item['totalBox'];
