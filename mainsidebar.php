@@ -161,10 +161,22 @@ include "notifcount.php";
         <?php endif; ?>
 
         <li class="nav-item">
-          <a href="" class="nav-link">
+          <a href="#" class="nav-link">
             <i class="nav-icon fas fa-hand-holding-usd"></i>
             <p>
               REQUISITION
+              <?php if ($idusers == 13): ?>
+                <?php if ($TotalRequest > 0): ?>
+                  <span class="badge badge-warning right"><?= $TotalRequest ?></span>
+                <?php endif; ?>
+                <?php if ($TotalOrdering > 0): ?>
+                  <span class="badge badge-primary right"><?= $TotalOrdering ?></span>
+                <?php endif; ?>
+              <?php elseif ($idusers == 15): ?>
+                <?php if ($TotalWaiting > 0): ?>
+                  <span class="badge badge-warning right"><?= $TotalWaiting ?></span>
+                <?php endif; ?>
+              <?php endif; ?>
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
@@ -173,26 +185,25 @@ include "notifcount.php";
               <a href="../requisitionbeef/index.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Daging
-                  <?php if ($idusers == 1 && $CountRequest > 0): ?>
+                  <?php if ($idusers == 13 && $CountRequest > 0): ?>
                     <span class="badge badge-warning right"><?= $CountRequest ?></span>
-                  <?php elseif ($idusers == 16 && $CountWaiting > 0): ?>
+                  <?php elseif ($idusers == 15 && $CountWaiting > 0): ?>
                     <span class="badge badge-warning right"><?= $CountWaiting ?></span>
-                  <?php elseif ($idusers == 1 && $CountOrdering > 0): ?>
+                  <?php elseif ($idusers == 13 && $CountOrdering > 0): ?>
                     <span class="badge badge-primary right"><?= $CountOrdering ?></span>
                   <?php endif; ?>
                 </p>
               </a>
             </li>
-
             <li class="nav-item">
               <a href="../requisition/index.php" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Non Daging
-                  <?php if ($idusers == 1 && $CountRequestNonDaging > 0): ?>
+                  <?php if ($idusers == 13 && $CountRequestNonDaging > 0): ?>
                     <span class="badge badge-warning right"><?= $CountRequestNonDaging ?></span>
-                  <?php elseif ($idusers == 16 && $CountWaitingNonDaging > 0): ?>
+                  <?php elseif ($idusers == 15 && $CountWaitingNonDaging > 0): ?>
                     <span class="badge badge-warning right"><?= $CountWaitingNonDaging ?></span>
-                  <?php elseif ($idusers == 1 && $CountOrderingNonDaging > 0): ?>
+                  <?php elseif ($idusers == 13 && $CountOrderingNonDaging > 0): ?>
                     <span class="badge badge-primary right"><?= $CountOrderingNonDaging ?></span>
                   <?php endif; ?>
                 </p>
@@ -200,6 +211,7 @@ include "notifcount.php";
             </li>
           </ul>
         </li>
+
         <?php if ($role['purchase_module'] == 1) : ?>
           <li class="nav-item">
             <a href="#" class="nav-link">

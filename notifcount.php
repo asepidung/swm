@@ -44,3 +44,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         $CountOrderingNonDaging = $row['count'];
     }
 }
+
+$TotalRequest = $CountRequest + $CountRequestNonDaging;
+$TotalOrdering = $CountOrdering + $CountOrderingNonDaging;
+$TotalWaiting = $CountWaiting + $CountWaitingNonDaging;
