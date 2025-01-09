@@ -68,7 +68,7 @@ include "../mainsidebar.php";
                                           echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                                                    Accept
                                                 </a>';
-                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 16) {
+                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 1) {
                                           // Jika status adalah 'Waiting' dan user ID adalah 1, tampilkan tombol Approved
                                           echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                                                    Approved

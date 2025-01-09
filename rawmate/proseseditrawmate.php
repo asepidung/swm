@@ -5,20 +5,20 @@ if (!isset($_SESSION['login'])) {
 }
 require "../konak/conn.php";
 
-// mengambil data dari form
-$idrawmate = $_POST['idrawmate'];
-$nmrawmate = $_POST['nmrawmate'];
-$idrawcategory = $_POST['idrawcategory'];
+// Mengambil data dari form
+$idrawmate = intval($_POST['idrawmate']); // Validasi sebagai integer
+$nmrawmate = mysqli_real_escape_string($conn, $_POST['nmrawmate']); // Escape input untuk keamanan
+$idrawcategory = intval($_POST['idrawcategory']); // Validasi sebagai integer
 
-// membuat query untuk memperbarui data rawmate di database
-$sql = "UPDATE rawmate SET nmrawmate = '$nmrawmate' WHERE idrawmate = '$idrawmate'";
+// Membuat query untuk memperbarui data rawmate di database
+$sql = "UPDATE rawmate SET nmrawmate = '$nmrawmate', idrawcategory = $idrawcategory WHERE idrawmate = $idrawmate";
 
-// mengeksekusi query
+// Mengeksekusi query
 if (mysqli_query($conn, $sql)) {
   echo "<script>alert('Data rawmate berhasil diperbarui.'); window.location='index.php';</script>";
 } else {
   echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }
 
-// menutup koneksi ke database
+// Menutup koneksi ke database
 mysqli_close($conn);
