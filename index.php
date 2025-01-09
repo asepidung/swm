@@ -324,6 +324,7 @@ include "notifcount.php";
                         <i class="nav-icon fas fa-hand-holding-usd"></i>
                         <p>
                            REQUISITION
+                           <!-- gabungan keduanya -->
                            <i class="right fas fa-angle-left"></i>
                         </p>
                      </a>
@@ -331,13 +332,30 @@ include "notifcount.php";
                         <li class="nav-item">
                            <a href="requisitionbeef/index.php" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>Daging</p>
+                              <p>Daging
+                                 <?php if ($idusers == 1 && $CountRequest > 0): ?>
+                                    <span class="badge badge-warning right"><?= $CountRequest ?></span>
+                                 <?php elseif ($idusers == 16 && $CountWaiting > 0): ?>
+                                    <span class="badge badge-warning right"><?= $CountWaiting ?></span>
+                                 <?php elseif ($idusers == 1 && $CountOrdering > 0): ?>
+                                    <span class="badge badge-primary right"><?= $CountOrdering ?></span>
+                                 <?php endif; ?>
+                              </p>
                            </a>
                         </li>
+
                         <li class="nav-item">
                            <a href="requisition/index.php" class="nav-link">
                               <i class="far fa-circle nav-icon"></i>
-                              <p>Non Daging</p>
+                              <p>Non Daging
+                                 <?php if ($idusers == 1 && $CountRequestNonDaging > 0): ?>
+                                    <span class="badge badge-warning right"><?= $CountRequestNonDaging ?></span>
+                                 <?php elseif ($idusers == 16 && $CountWaitingNonDaging > 0): ?>
+                                    <span class="badge badge-warning right"><?= $CountWaitingNonDaging ?></span>
+                                 <?php elseif ($idusers == 1 && $CountOrderingNonDaging > 0): ?>
+                                    <span class="badge badge-primary right"><?= $CountOrderingNonDaging ?></span>
+                                 <?php endif; ?>
+                              </p>
                            </a>
                         </li>
                      </ul>
