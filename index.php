@@ -248,11 +248,29 @@ include "notifcount.php";
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="gr/" class="nav-link">
+                              <a href="#" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Goods Receipt</p>
+                                 <p>
+                                    Goods Receipt
+                                    <i class="right fas fa-angle-left"></i>
+                                 </p>
                               </a>
+                              <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                    <a href="grbeef" class="nav-link">
+                                       <i class="far fa-dot-circle nav-icon"></i>
+                                       <p>Daging</p>
+                                    </a>
+                                 </li>
+                                 <li class="nav-item">
+                                    <a href="gr" class="nav-link">
+                                       <i class="far fa-dot-circle nav-icon"></i>
+                                       <p>Non Daging</p>
+                                    </a>
+                                 </li>
+                              </ul>
                            </li>
+
                            <li class="nav-item">
                               <a href="returjual/" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
@@ -319,6 +337,7 @@ include "notifcount.php";
                      </li>
                   <?php endif; ?>
 
+                  <!-- requisition -->
                   <li class="nav-item">
                      <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-hand-holding-usd"></i>
@@ -376,21 +395,21 @@ include "notifcount.php";
                         <a href="#" class="nav-link">
                            <i class="nav-icon fas fa-shopping-cart"></i>
                            <p>
-                              PURCHASE MODULE
+                              PURCHASE ORDER
                               <i class="right fas fa-angle-left"></i>
                            </p>
                         </a>
                         <ul class="nav nav-treeview">
                            <li class="nav-item">
-                              <a href="poproduct/" class="nav-link">
+                              <a href="pobeef/" class="nav-link">
                                  <i class="far fa-dot-circle nav-icon"></i>
-                                 <p>PO Product</p>
+                                 <p>Daging</p>
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="pomaterial/" class="nav-link">
+                              <a href="po/" class="nav-link">
                                  <i class="far fa-dot-circle nav-icon"></i>
-                                 <p>PO Material Support</p>
+                                 <p>Non Daging</p>
                               </a>
                            </li>
                         </ul>

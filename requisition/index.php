@@ -40,7 +40,8 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Request Date</th>
                               <th>Request Number</th>
-                              <th>User</th>
+                              <th>Requester</th>
+                              <th>Order To</th>
                               <th>Due Date</th>
                               <th>Notes</th>
                               <th>Status</th>
@@ -59,6 +60,7 @@ include "../mainsidebar.php";
                                     <td><?= date("D, d-M-y", strtotime($row['creatime'])) ?></td>
                                     <td><?= $row['norequest'] ?></td>
                                     <td><?= $row['fullname'] ?></td>
+                                    <td><?= $row['idsupplier'] ?></td>
                                     <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
                                     <td class="text-left"><?= $row['note'] ?></td>
                                     <td>
