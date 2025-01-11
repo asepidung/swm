@@ -17,7 +17,8 @@ include "../mainsidebar.php";
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <a href="stockout.php" class="btn btn-sm btn-danger mt-2">Stock Out</a>
+                    <a href="stockout.php" class="btn btn-sm btn-danger mt-2">Proses Stock Out</a>
+                    <a href="history.php" class="btn btn-sm btn-primary mt-2">Riwayat Pengeluaran</a>
                 </div>
                 <div class="col-12 mt-2">
                     <div class="card">
