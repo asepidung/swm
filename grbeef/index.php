@@ -82,7 +82,7 @@ include "../mainsidebar.php";
                                                     <a href="view.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-success" title="Lihat">
                                                         <i class="far fa-eye"></i>
                                                     </a>
-                                                    <a href="deletegr.php?idgr=<?= $idgr; ?>&idpo=<?= $idpo; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
+                                                    <a href="delete.php?idgr=<?= $idgr; ?>&idpo=<?= $idpo; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
                                                         <i class="far fa-trash-alt"></i>
                                                     </a>
                                                 </td>

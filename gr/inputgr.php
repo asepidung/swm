@@ -11,11 +11,10 @@ include "grnumber.php";
 if (isset($_POST['submit'])) {
     $deliveryat = $_POST['deliveryat'];
     $idsupplier = $_POST['idsupplier'];
-    $idnumber = $_POST['idnumber'];
     $note = isset($_POST['note']) && trim($_POST['note']) !== '' ? trim($_POST['note']) : '-';
     $idpo = $_POST['idpo']; // Sesuaikan nama kolom dengan tabel po
     $idusers = $_SESSION['idusers'];
-    $suppcode = $_SESSION['suppcode'];
+    $suppcode = $_POST['suppcode'];
     $idrawmate = $_POST['idrawmate']; // Array idrawmate
     $received_qty = $_POST['received_qty']; // Array qty diterima
 
@@ -32,7 +31,7 @@ if (isset($_POST['submit'])) {
         }
 
         // Bind parameter dan eksekusi
-        $stmt_gr->bind_param("ssisii", $gr, $deliveryat, $idsupplier, $note, $idusers, $idpo, $suppcode);
+        $stmt_gr->bind_param("ssisiis", $gr, $deliveryat, $idsupplier, $note, $idusers, $idpo, $suppcode);
 
         if (!$stmt_gr->execute()) {
             throw new Exception("Error executing insert statement: " . $stmt_gr->error);
