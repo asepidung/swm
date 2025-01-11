@@ -21,10 +21,11 @@ if ($idgr <= 0 || $idpo <= 0) {
 $conn->autocommit(false);
 
 try {
-    // Hapus data dari tabel stockraw berdasarkan idgrrawdetail yang terkait dengan idgr
+    // Soft delete data dari tabel stockraw berdasarkan idtransaksi yang terkait dengan idgr
     $queryDeleteStock = "
-        DELETE FROM stockraw 
-        WHERE idgrrawdetail IN (SELECT idgrrawdetail FROM grrawdetail WHERE idgr = ?)";
+        UPDATE stockraw 
+        SET is_deleted = 1 
+        WHERE idtransaksi IN (SELECT idtransaksi FROM grrawdetail WHERE idgr = ?)";
     $stmtDeleteStock = $conn->prepare($queryDeleteStock);
 
     if (!$stmtDeleteStock) {
@@ -36,8 +37,8 @@ try {
         throw new Exception("Error executing delete stockraw query: " . $stmtDeleteStock->error);
     }
 
-    // Hapus data dari tabel grrawdetail berdasarkan idgr
-    $queryDeleteGrDetail = "DELETE FROM grrawdetail WHERE idgr = ?";
+    // Soft delete data dari tabel grrawdetail berdasarkan idgr
+    $queryDeleteGrDetail = "UPDATE grrawdetail SET is_deleted = 1 WHERE idgr = ?";
     $stmtDeleteGrDetail = $conn->prepare($queryDeleteGrDetail);
 
     if (!$stmtDeleteGrDetail) {

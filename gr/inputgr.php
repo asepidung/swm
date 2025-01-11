@@ -7,6 +7,7 @@ if (!isset($_SESSION['login'])) {
 
 require "../konak/conn.php";
 include "grnumber.php";
+include "idtransaksi.php"; // ID Transaksi di-include dari file ini
 
 if (isset($_POST['submit'])) {
     $deliveryat = $_POST['deliveryat'];
@@ -17,6 +18,12 @@ if (isset($_POST['submit'])) {
     $suppcode = $_POST['suppcode'];
     $idrawmate = $_POST['idrawmate']; // Array idrawmate
     $received_qty = $_POST['received_qty']; // Array qty diterima
+
+    // Pastikan idrawmate dan received_qty memiliki data yang valid
+    if (empty($idrawmate) || empty($received_qty)) {
+        echo "Error: Invalid input for rawmate or received quantities.";
+        exit();
+    }
 
     // Mulai transaksi
     $conn->autocommit(false);
@@ -59,14 +66,14 @@ if (isset($_POST['submit'])) {
         }
 
         // Loop untuk memasukkan data ke tabel grrawdetail dan stockraw
-        $query_grdetail = "INSERT INTO grrawdetail (idgr, idrawmate, qty, orderqty) VALUES (?, ?, ?, ?)";
+        $query_grdetail = "INSERT INTO grrawdetail (idgr, idrawmate, qty, orderqty, idtransaksi) VALUES (?, ?, ?, ?, ?)";
         $stmt_grdetail = $conn->prepare($query_grdetail);
 
         if ($stmt_grdetail === false) {
             throw new Exception("Error preparing grrawdetail statement: " . $conn->error);
         }
 
-        $query_stockraw = "INSERT INTO stockraw (idgrrawdetail, idrawmate, qty) VALUES (?, ?, ?)";
+        $query_stockraw = "INSERT INTO stockraw (idrawmate, qty, idtransaksi) VALUES (?, ?, ?)";
         $stmt_stockraw = $conn->prepare($query_stockraw);
 
         if ($stmt_stockraw === false) {
@@ -78,17 +85,14 @@ if (isset($_POST['submit'])) {
             $order_qty = isset($order_quantities[$idraw]) ? $order_quantities[$idraw] : 0; // Ambil order_qty berdasarkan idrawmate
 
             // Masukkan ke tabel grrawdetail
-            $stmt_grdetail->bind_param("iiid", $idgr, $idraw, $qty_received, $order_qty);
+            $stmt_grdetail->bind_param("iiidi", $idgr, $idraw, $qty_received, $order_qty, $idtransaksi);
 
             if (!$stmt_grdetail->execute()) {
                 throw new Exception("Error inserting into grrawdetail: " . $stmt_grdetail->error);
             }
 
-            // Ambil ID grrawdetail terakhir
-            $idgrrawdetail = $conn->insert_id;
-
             // Masukkan ke tabel stockraw
-            $stmt_stockraw->bind_param("iii", $idgrrawdetail, $idraw, $qty_received);
+            $stmt_stockraw->bind_param("iis", $idraw, $qty_received, $idtransaksi);
 
             if (!$stmt_stockraw->execute()) {
                 throw new Exception("Error inserting into stockraw: " . $stmt_stockraw->error);
@@ -135,7 +139,9 @@ if (isset($_POST['submit'])) {
         echo "Error: " . $e->getMessage();
     } finally {
         $conn->autocommit(true);
-        $stmt_gr->close();
+        if (isset($stmt_gr)) {
+            $stmt_gr->close();
+        }
         if (isset($stmt_grdetail)) {
             $stmt_grdetail->close();
         }

@@ -14,7 +14,7 @@ $query = "
 SELECT grraw.*, supplier.nmsupplier 
 FROM grraw 
 JOIN supplier ON grraw.idsupplier = supplier.idsupplier 
-WHERE grraw.idgr = ?";
+WHERE grraw.idgr = ? AND grraw.is_deleted = 0"; // Tambahkan kondisi is_deleted = 0
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $idgr);
 $stmt->execute();
@@ -80,7 +80,7 @@ $row = $result->fetch_assoc();
                         grd.qty AS received_qty
                     FROM grrawdetail grd
                     JOIN rawmate rm ON grd.idrawmate = rm.idrawmate
-                    WHERE grd.idgr = ?";
+                    WHERE grd.idgr = ? AND grd.is_deleted = 0"; // Tambahkan kondisi is_deleted = 0
                     $stmtdetail = $conn->prepare($querydetail);
                     $stmtdetail->bind_param("i", $idgr);
                     $stmtdetail->execute();
@@ -103,8 +103,8 @@ $row = $result->fetch_assoc();
                         <th colspan="2" class="text-center">TOTAL</th>
                         <th class="text-right">
                             <?php
-                            // Hitung total ordered_qty
-                            $query_total_order = "SELECT SUM(orderqty) AS total_order FROM grrawdetail WHERE idgr = ?";
+                            // Hitung total ordered_qty yang belum di-soft delete
+                            $query_total_order = "SELECT SUM(orderqty) AS total_order FROM grrawdetail WHERE idgr = ? AND is_deleted = 0"; // Tambahkan kondisi is_deleted = 0
                             $stmt_total_order = $conn->prepare($query_total_order);
                             $stmt_total_order->bind_param("i", $idgr);
                             $stmt_total_order->execute();
@@ -115,8 +115,8 @@ $row = $result->fetch_assoc();
                         </th>
                         <th class="text-right">
                             <?php
-                            // Hitung total received_qty
-                            $query_total_received = "SELECT SUM(qty) AS total_received FROM grrawdetail WHERE idgr = ?";
+                            // Hitung total received_qty yang belum di-soft delete
+                            $query_total_received = "SELECT SUM(qty) AS total_received FROM grrawdetail WHERE idgr = ? AND is_deleted = 0"; // Tambahkan kondisi is_deleted = 0
                             $stmt_total_received = $conn->prepare($query_total_received);
                             $stmt_total_received->bind_param("i", $idgr);
                             $stmt_total_received->execute();

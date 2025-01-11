@@ -18,7 +18,7 @@ if ($idgr <= 0) {
 }
 
 // Query untuk mengambil data dari tabel grraw
-$query = "SELECT grraw.receivedate, grraw.note, grraw.idpo, grraw.idsupplier, s.nmsupplier, p.nopo 
+$query = "SELECT grraw.receivedate, grraw.note, grraw.idpo, grraw.idsupplier, grraw.suppcode, s.nmsupplier, p.nopo 
           FROM grraw
           JOIN supplier s ON grraw.idsupplier = s.idsupplier
           JOIN po p ON grraw.idpo = p.idpo
@@ -69,7 +69,7 @@ $row = $result->fetch_assoc();
                                         <div class="form-group">
                                             <label for="idnumber">Supplier Transaction Number</label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" name="idnumber" id="idnumber" placeholder="Biarkan Kosong Jika Tidak Ada" value="-">
+                                                <input type="text" class="form-control" name="idnumber" id="idnumber" placeholder="Biarkan Kosong Jika Tidak Ada" value="<?= $row['suppcode'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@ $row = $result->fetch_assoc();
 
                                         // Query untuk mengambil data dari tabel grrawdetail
                                         $queryDetail = "
-                                        SELECT grd.idgrrawdetail, grd.idrawmate, grd.qty AS received_qty, grd.orderqty, rm.nmrawmate
+                                        SELECT grd.idgrrawdetail, grd.idrawmate, grd.qty AS received_qty, grd.orderqty, rm.nmrawmate, grd.idtransaksi
                                         FROM grrawdetail grd
                                         JOIN rawmate rm ON grd.idrawmate = rm.idrawmate
                                         WHERE grd.idgr = ?";
@@ -129,6 +129,7 @@ $row = $result->fetch_assoc();
                                                 <td class="text-right">
                                                     <input type="hidden" name="idgrrawdetail[]" value="<?= $tampil['idgrrawdetail']; ?>">
                                                     <input type="number" step="0.01" class="form-control" name="received_qty[]" value="<?= $tampil['received_qty']; ?>" required>
+                                                    <input type="hidden" name="idtransaksi[]" value="<?= $tampil['idtransaksi']; ?>"> <!-- Menambahkan idtransaksi -->
                                                 </td>
                                             </tr>
                                         <?php } ?>

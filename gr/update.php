@@ -13,7 +13,7 @@ if (isset($_POST['submit'])) {
     $idsupplier = $_POST['idsupplier'];
     $note = isset($_POST['note']) && trim($_POST['note']) !== '' ? trim($_POST['note']) : '-';
     $idpo = $_POST['idpo'];
-    $idgrrawdetail = $_POST['idgrrawdetail']; // Array idgrrawdetail
+    $idtransaksi = $_POST['idtransaksi']; // Array idtransaksi
     $received_qty = $_POST['received_qty'];   // Array qty diterima
     $idusers = $_SESSION['idusers'];
 
@@ -40,32 +40,33 @@ if (isset($_POST['submit'])) {
             throw new Exception("Error executing grraw update query: " . $stmt_update_gr->error);
         }
 
-        // Update tabel grrawdetail dan stockraw
-        $query_update_grdetail = "UPDATE grrawdetail SET qty = ? WHERE idgrrawdetail = ?";
+        // Update tabel grrawdetail menggunakan idtransaksi
+        $query_update_grdetail = "UPDATE grrawdetail SET qty = ? WHERE idtransaksi = ?";
         $stmt_update_grdetail = $conn->prepare($query_update_grdetail);
 
         if (!$stmt_update_grdetail) {
             throw new Exception("Error preparing grrawdetail update query: " . $conn->error);
         }
 
-        $query_update_stockraw = "UPDATE stockraw SET qty = ? WHERE idgrrawdetail = ?";
+        // Update tabel stockraw dengan menggunakan idtransaksi
+        $query_update_stockraw = "UPDATE stockraw SET qty = ? WHERE idtransaksi = ?";
         $stmt_update_stockraw = $conn->prepare($query_update_stockraw);
 
         if (!$stmt_update_stockraw) {
             throw new Exception("Error preparing stockraw update query: " . $conn->error);
         }
 
-        foreach ($idgrrawdetail as $index => $idgrdetail) {
+        foreach ($idtransaksi as $index => $transaksi_id) {
             $qty_received = $received_qty[$index];
 
-            // Update grrawdetail
-            $stmt_update_grdetail->bind_param("ii", $qty_received, $idgrdetail);
+            // Update grrawdetail berdasarkan idtransaksi
+            $stmt_update_grdetail->bind_param("is", $qty_received, $transaksi_id);
             if (!$stmt_update_grdetail->execute()) {
                 throw new Exception("Error updating grrawdetail: " . $stmt_update_grdetail->error);
             }
 
-            // Update stockraw
-            $stmt_update_stockraw->bind_param("ii", $qty_received, $idgrdetail);
+            // Update stockraw menggunakan idtransaksi
+            $stmt_update_stockraw->bind_param("is", $qty_received, $transaksi_id);
             if (!$stmt_update_stockraw->execute()) {
                 throw new Exception("Error updating stockraw: " . $stmt_update_stockraw->error);
             }
