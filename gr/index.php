@@ -37,6 +37,7 @@ include "../mainsidebar.php";
                                         <th>GR Number</th>
                                         <th>Receiving Date</th>
                                         <th>Supplier</th>
+                                        <th>Supplier ID</th>
                                         <th>Note</th>
                                         <th>Made By</th>
                                         <th>Actions</th>
@@ -70,6 +71,7 @@ include "../mainsidebar.php";
                                             <td class="text-center"><?= htmlspecialchars($tampil['grnumber']); ?></td>
                                             <td class="text-center"><?= date("d-M-y", strtotime($tampil['receivedate'])); ?></td>
                                             <td><?= htmlspecialchars($tampil['nmsupplier']); ?></td>
+                                            <td><?= $tampil['suppcode']; ?></td>
                                             <td><?= htmlspecialchars($tampil['note']); ?></td>
                                             <td class="text-center"><?= htmlspecialchars($fullname); ?></td>
                                             <td class="text-center">
