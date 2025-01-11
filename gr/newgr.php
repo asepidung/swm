@@ -60,7 +60,7 @@ $row = $result->fetch_assoc();
                                         <div class="form-group">
                                             <label for="idnumber">Supplier Transaction Number</label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" name="idnumber" id="idnumber" placeholder="Biarkan Kosong Jika Tidak Ada">
+                                                <input type="text" class="form-control" name="suppcode" id="suppcode" placeholder="Biarkan Kosong Jika Tidak Ada">
                                             </div>
                                         </div>
                                     </div>

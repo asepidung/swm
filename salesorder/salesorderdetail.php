@@ -44,13 +44,27 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                   <div class="card-body">
                      <?php
                      // Query untuk mengambil data dari tabel salesorder dan salesorderdetail
-                     $query = "SELECT s.idso, c.nama_customer, s.deliverydate, s.po, sd.weight, sd.price, sd.notes, s.sonumber, b.nmbarang
-                     FROM salesorder s
-                     INNER JOIN customers c ON s.idcustomer = c.idcustomer
-                     INNER JOIN salesorderdetail sd ON s.idso = sd.idso
-                     INNER JOIN barang b ON sd.idbarang = b.idbarang
-                     WHERE s.deliverydate BETWEEN '$awal' AND '$akhir'
-                     ORDER BY s.idso DESC";
+                     $query = "SELECT s.idso, 
+                     c.nama_customer, 
+                     s.deliverydate, 
+                     s.po, 
+                     sd.weight AS qty_order, 
+                     sd.price, 
+                     sd.notes, 
+                     s.sonumber, 
+                     b.nmbarang,
+                     IFNULL(SUM(dr.weight), 0) AS qty_sent
+              FROM salesorder s
+              INNER JOIN customers c ON s.idcustomer = c.idcustomer
+              INNER JOIN salesorderdetail sd ON s.idso = sd.idso
+              INNER JOIN barang b ON sd.idbarang = b.idbarang
+              LEFT JOIN doreceipt d ON s.idso = d.idso
+              LEFT JOIN doreceiptdetail dr ON d.iddoreceipt = dr.iddoreceipt AND sd.idbarang = dr.idbarang
+              WHERE s.deliverydate BETWEEN '$awal' AND '$akhir'
+              GROUP BY s.idso, c.nama_customer, s.deliverydate, s.po, sd.weight, sd.price, sd.notes, s.sonumber, b.nmbarang
+              ORDER BY s.idso DESC";
+
+
                      $result = $conn->query($query);
 
                      ?>
@@ -64,6 +78,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                               <th>Tgl Kirim</th>
                               <th>Products</th>
                               <th>Qty</th>
+                              <th>Qty Sent</th>
                               <th>Notes</th>
                            </tr>
                         </thead>
@@ -77,13 +92,15 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                  <td class="text-center"> <?= $row["sonumber"]; ?> </td>
                                  <td class="text-center"> <?= date("d-M-y", strtotime($row["deliverydate"])); ?> </td>
                                  <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
-                                 <td class="text-center"> <?= $row["weight"]; ?> </td>
+                                 <td class="text-center"> <?= $row["qty_order"]; ?> </td> <!-- Alias yang benar -->
+                                 <td class="text-center"> <?= $row["qty_sent"]; ?> </td> <!-- Sudah benar -->
                                  <td class="text-left"> <?= $row["notes"]; ?> </td>
                               </tr>
                            <?php $row_number++;
                            }
                            ?>
                         </tbody>
+
                      </table>
 
                   </div>

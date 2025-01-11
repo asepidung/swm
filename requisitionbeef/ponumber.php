@@ -40,7 +40,7 @@ $urut = $data['total'] + 1;
 $ponumber = sprintf("%03s", $urut);
 
 // Membuat kode auto PO
-$kodeauto = "POB-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
+$kodeauto = "POV-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $ponumber;
 
 // Output untuk debugging
 echo $kodeauto;

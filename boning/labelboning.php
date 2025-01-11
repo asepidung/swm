@@ -86,66 +86,66 @@ if ($resultKunci) {
                 <form method="POST" action="insert_labelboning.php" onsubmit="submitForm(event)">
                   <!-- Dropdown Barang -->
                   <div class="form-group">
-                      <div class="input-group">
-                          <select class="form-control" name="idbarang" id="idbarang" required autofocus>
-                              <?php
-                              $selectedIdbarang = $_SESSION['idbarang'] ?? ''; // Default dari session
-                              if ($selectedIdbarang) {
-                                  echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
-                              } else {
-                                  echo '<option value="" selected>--Pilih Item--</option>';
-                              }
-                              while ($row = mysqli_fetch_assoc($resultBarang)) {
-                                  $idbarang = $row['idbarang'];
-                                  $nmbarang = $row['nmbarang'];
-                                  $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
-                                  echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
-                              }
-                              ?>
-                          </select>
-                          <div class="input-group-append">
-                              <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-                          </div>
+                    <div class="input-group">
+                      <select class="form-control" name="idbarang" id="idbarang" required autofocus>
+                        <?php
+                        $selectedIdbarang = $_SESSION['idbarang'] ?? ''; // Default dari session
+                        if ($selectedIdbarang) {
+                          echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
+                        } else {
+                          echo '<option value="" selected>--Pilih Item--</option>';
+                        }
+                        while ($row = mysqli_fetch_assoc($resultBarang)) {
+                          $idbarang = $row['idbarang'];
+                          $nmbarang = $row['nmbarang'];
+                          $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
+                          echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                        }
+                        ?>
+                      </select>
+                      <div class="input-group-append">
+                        <a href="../barang/newbarang.php" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                       </div>
+                    </div>
                   </div>
 
                   <!-- Dropdown Grade -->
                   <div class="form-group">
-                      <div class="input-group">
-                          <select class="form-control" name="idgrade" id="idgrade" required>
-                              <?php
-                              $selectedIdgrade = $_SESSION['idgrade'] ?? ''; // Default dari session
-                              if ($selectedIdgrade) {
-                                  echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
-                              } else {
-                                  echo '<option value="" selected>--Pilih Grade--</option>';
-                              }
-                              while ($row = mysqli_fetch_assoc($resultGrade)) {
-                                  $idgrade = $row['idgrade'];
-                                  $nmgrade = $row['nmgrade'];
-                                  $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
-                                  echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
-                              }
-                              ?>
-                          </select>
-                      </div>
+                    <div class="input-group">
+                      <select class="form-control" name="idgrade" id="idgrade" required>
+                        <?php
+                        $selectedIdgrade = $_SESSION['idgrade'] ?? ''; // Default dari session
+                        if ($selectedIdgrade) {
+                          echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                        } else {
+                          echo '<option value="" selected>--Pilih Grade--</option>';
+                        }
+                        while ($row = mysqli_fetch_assoc($resultGrade)) {
+                          $idgrade = $row['idgrade'];
+                          $nmgrade = $row['nmgrade'];
+                          $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
+                          echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                        }
+                        ?>
+                      </select>
+                    </div>
                   </div>
 
                   <!-- Packed Date -->
                   <div class="form-group">
-                      <div class="input-group">
-                          <?php
-                          $packdate = $_SESSION['packdate'] ?? date('Y-m-d'); // Default: hari ini
-                          ?>
-                          <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $packdate; ?>">
-                      </div>
+                    <div class="input-group">
+                      <?php
+                      $packdate = $_SESSION['packdate'] ?? date('Y-m-d'); // Default: hari ini
+                      ?>
+                      <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $packdate; ?>">
+                    </div>
                   </div>
 
                   <!-- Expired Date -->
                   <div class="form-group">
-                      <div class="input-group">
-                          <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
-                      </div>
+                    <div class="input-group">
+                      <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
+                    </div>
                   </div>
 
 
@@ -202,7 +202,7 @@ if ($resultKunci) {
                   </tr>
                 </thead>
                 <tbody>
-                <?php
+                  <?php
                   $no = 1;
                   $queryData = "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade 
                                 FROM labelboning l
@@ -215,10 +215,10 @@ if ($resultKunci) {
                   $resultData = mysqli_query($conn, $queryData);
 
                   while ($tampil = mysqli_fetch_assoc($resultData)) :
-                      $fullname = $tampil['fullname'];
-                      $kdbarcode = $tampil['kdbarcode'];
-                      $existsTally = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'"))['total'] > 0;
-                      $existsDetailBahan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'"))['total'] > 0;
+                    $fullname = $tampil['fullname'];
+                    $kdbarcode = $tampil['kdbarcode'];
+                    $existsTally = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'"))['total'] > 0;
+                    $existsDetailBahan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'"))['total'] > 0;
                   ?>
 
                     <tr class="text-center">
@@ -226,7 +226,7 @@ if ($resultKunci) {
                       <td><?= $tampil['kdbarcode']; ?></td>
                       <td><?= $tampil['nmgrade']; ?></td>
                       <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                      <td><?= $tampil['qty']; ?></td>
+                      <td><?= number_format($tampil['qty'], 2); ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $fullname; ?></td>
                       <td><?= date("H:i:s", strtotime($tampil['dibuat'])); ?></td>
@@ -240,8 +240,8 @@ if ($resultKunci) {
                             <!-- <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
                               <i class="fas fa-pencil-alt"></i>
                             </a> -->
-                            <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>" 
-                              class="text-danger" 
+                            <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>"
+                              class="text-danger"
                               onclick="return confirm('Apakah anda yakin ingin menghapus label ini?');">
                               <i class="fas fa-minus-square"></i>
                             </a>

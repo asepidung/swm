@@ -86,7 +86,7 @@ include "../mainsidebar.php";
                             title="<?= $is_locked == 1 ? 'Unlock' : 'Lock'; ?>"
                             href="javascript:void(0);"
                             onclick="confirmLock(<?= $tampil['idboning']; ?>, <?= $is_locked == 1 ? 0 : 1; ?>)">
-                            <i class="fas <?= $is_locked == 1 ? 'fa-lock' : 'fa-lock-open'; ?>"></i>
+                            <i class="fas <?= $is_locked == 1 ? 'fa-lock' : 'fa-lock-open fa-spin'; ?>"></i>
                           </a>
                         <?php
                         }
