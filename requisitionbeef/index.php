@@ -26,9 +26,10 @@ include "../mainsidebar.php";
                <div class="card">
                   <div class="card-body">
                      <?php
-                     $sql = "SELECT r.*, u.fullname
+                     $sql = "SELECT r.*, u.fullname, s.nmsupplier
                         FROM requestbeef r
                         INNER JOIN users u ON r.iduser = u.idusers
+                        INNER JOIN supplier s ON r.idsupplier = s.idsupplier
                         WHERE r.is_deleted = 0
                         ORDER BY r.idrequest DESC";
                      $result = $conn->query($sql);
@@ -40,6 +41,7 @@ include "../mainsidebar.php";
                               <th>#</th>
                               <th>Request Date</th>
                               <th>Request Number</th>
+                              <th>Order To</th>
                               <th>User</th>
                               <th>Due Date</th>
                               <th>Notes</th>
@@ -58,38 +60,59 @@ include "../mainsidebar.php";
                                     <td><?= $i ?></td>
                                     <td><?= date("D, d-M-y", strtotime($row['creatime'])) ?></td>
                                     <td><?= $row['norequest'] ?></td>
+                                    <td class="text-left"><?= $row['nmsupplier'] ?></td>
                                     <td><?= $row['fullname'] ?></td>
                                     <td><?= date("D, d-M-y", strtotime($row['duedate'])) ?></td>
                                     <td class="text-left"><?= $row['note'] ?></td>
                                     <td>
                                        <?php
-                                       if ($row['stat'] === 'Request' && $_SESSION['idusers'] == 1) {
-                                          // Jika status adalah 'Request' dan user ID adalah 16, tampilkan tombol Accept
-                                          echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
-                                                   Accept
-                                                </a>';
-                                       } elseif ($row['stat'] === 'Waiting' && $_SESSION['idusers'] == 1) {
-                                          // Jika status adalah 'Waiting' dan user ID adalah 1, tampilkan tombol Approved
-                                          echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
-                                                   Approved
-                                                </a>';
-                                       } elseif ($row['stat'] === 'Ordering' && $_SESSION['idusers'] == 1) {
-                                          // Jika status adalah 'Ordering' dan user ID adalah 16, tampilkan tombol Buat PO
-                                          echo '<a href="makepo.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-success">
-                                                   Buat PO
-                                                </a>';
+                                       if ($row['stat'] === 'Request') {
+                                          if ($_SESSION['idusers'] == 13) {
+                                             // Kondisi asli untuk user ID 13
+                                             echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
+                                                      Accept
+                                                   </a>';
+                                          } else {
+                                             // Kondisi baru untuk selain user ID 13
+                                             echo '<span class="text-muted">Waiting Ayu</span>';
+                                          }
+                                       } elseif ($row['stat'] === 'Waiting') {
+                                          if ($_SESSION['idusers'] == 15) {
+                                             // Kondisi asli untuk user ID 15
+                                             echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
+                                                      Approved
+                                                   </a>';
+                                          } else {
+                                             // Kondisi baru untuk selain user ID 15
+                                             echo '<span class="text-muted">Waiting Widi</span>';
+                                          }
+                                       } elseif ($row['stat'] === 'Ordering') {
+                                          if ($_SESSION['idusers'] == 13) {
+                                             // Kondisi asli untuk user ID 13
+                                             echo '<a href="makepo.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-success">
+                                                      Buat PO
+                                                   </a>';
+                                          } else {
+                                             // Kondisi baru untuk selain user ID 13
+                                             echo '<span class="text-muted">Order Pending</span>';
+                                          }
                                        } elseif ($row['stat'] === 'PO Created') {
-                                          // Jika status adalah 'PO Created', tampilkan tombol Cetak PO
-                                          echo '<a href="lihatpo.php?idrequest=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-secondary">
-                                                   Cetak PO
-                                                </a>';
+                                          if ($_SESSION['idusers'] == 13) {
+                                             // Kondisi asli untuk user ID 13
+                                             echo '<a href="lihatpo.php?idrequest=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-secondary">
+                                                      Cetak PO
+                                                   </a>';
+                                          } else {
+                                             // Kondisi baru untuk selain user ID 13
+                                             echo '<span class="text-muted">In Process</span>';
+                                          }
                                        } else {
-                                          // Jika tidak ada kondisi yang cocok, tampilkan status secara langsung
+                                          // Kondisi default jika tidak ada yang cocok
                                           echo htmlspecialchars($row['stat']);
                                        }
                                        ?>
-                                    </td>
 
+                                    </td>
                                     <td>
                                        <a href="view.php?id=<?= $row['idrequest'] ?>" class='btn btn-info btn-sm' title="Lihat"><i class="fas fa-eye"></i></a>
                                        <a href="edit.php?id=<?= $row['idrequest'] ?>" class='btn btn-warning btn-sm' title="Edit"><i class="fas fa-pencil-alt"></i></a>
