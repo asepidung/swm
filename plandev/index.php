@@ -4,8 +4,6 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
 }
 require "../konak/conn.php";
-// $query = "DELETE FROM plandev WHERE plandelivery < CURDATE()";
-// mysqli_query($conn, $query);
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
@@ -47,14 +45,16 @@ include "../mainsidebar.php";
                            <?php
                            $total_qty = 0;
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT plandev.*, customers.nama_customer, salesorder.progress 
-                                                            FROM plandev
-                                                            JOIN customers ON plandev.idcustomer = customers.idcustomer
-                                                            JOIN salesorder ON plandev.idso = salesorder.idso
-                                                            WHERE (salesorder.progress = 'Waiting' OR salesorder.progress = 'On Process')
-                                                            AND customers.idgroup != 21
-                                                            ORDER BY plandelivery ASC;
-                          ");
+                           // Query untuk menampilkan data berdasarkan deliverydate mulai besok
+                           $ambildata = mysqli_query($conn, "
+                           SELECT plandev.*, customers.nama_customer 
+                           FROM plandev
+                           JOIN customers ON plandev.idcustomer = customers.idcustomer
+                           WHERE plandev.plandelivery >= CURDATE() + INTERVAL 1 DAY
+                           AND customers.idgroup != 21
+                           ORDER BY plandev.plandelivery ASC;
+                        ");
+
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $total_qty += $tampil['weight'];
                            ?>
