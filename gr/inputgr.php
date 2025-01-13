@@ -113,6 +113,39 @@ if (isset($_POST['submit'])) {
             throw new Exception("Error executing update statement: " . $stmt_update->error);
         }
 
+        // Query untuk mendapatkan idrequest dari tabel po
+        $query_idrequest = "SELECT idrequest FROM po WHERE idpo = ?";
+        $stmt_idrequest = $conn->prepare($query_idrequest);
+
+        if ($stmt_idrequest === false) {
+            throw new Exception("Error preparing idrequest query: " . $conn->error);
+        }
+
+        $stmt_idrequest->bind_param("i", $idpo);
+        $stmt_idrequest->execute();
+        $result_idrequest = $stmt_idrequest->get_result();
+
+        if ($result_idrequest->num_rows > 0) {
+            $row = $result_idrequest->fetch_assoc();
+            $idrequest = $row['idrequest'];
+
+            // Update tabel request untuk set stat menjadi 'Completed'
+            $query_update_request = "UPDATE request SET stat = 'Completed' WHERE idrequest = ?";
+            $stmt_update_request = $conn->prepare($query_update_request);
+
+            if ($stmt_update_request === false) {
+                throw new Exception("Error preparing update request statement: " . $conn->error);
+            }
+
+            $stmt_update_request->bind_param("i", $idrequest);
+
+            if (!$stmt_update_request->execute()) {
+                throw new Exception("Error executing update request statement: " . $stmt_update_request->error);
+            }
+        } else {
+            throw new Exception("idrequest not found for the given idpo: " . $idpo);
+        }
+
         // Insert log activity ke tabel logactivity
         $event = "Buat GR RAW";
         $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
@@ -153,6 +186,12 @@ if (isset($_POST['submit'])) {
         }
         if (isset($stmt_update)) {
             $stmt_update->close();
+        }
+        if (isset($stmt_idrequest)) {
+            $stmt_idrequest->close();
+        }
+        if (isset($stmt_update_request)) {
+            $stmt_update_request->close();
         }
         if (isset($stmtLogActivity)) {
             $stmtLogActivity->close();
