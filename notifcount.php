@@ -55,6 +55,8 @@ $resultInvoiceBelumTF = mysqli_query($conn, $queryInvoiceBelumTF);
 $rowInvoiceBelumTF = mysqli_fetch_assoc($resultInvoiceBelumTF);
 $belumTFCount = $rowInvoiceBelumTF['belumTFCount'];
 
+
+// plan delivery
 $queryFutureDeliveries = "
     SELECT COUNT(*) AS futureDeliveryCount
     FROM salesorder so
@@ -66,3 +68,14 @@ $queryFutureDeliveries = "
 $resultFutureDeliveries = mysqli_query($conn, $queryFutureDeliveries);
 $rowFutureDeliveries = mysqli_fetch_assoc($resultFutureDeliveries);
 $futureDeliveryCount = $rowFutureDeliveries['futureDeliveryCount'];
+
+
+// plan kedatangan
+$queryPobeefCount = "
+    SELECT COUNT(*) AS pobeefCount
+    FROM pobeef
+    WHERE is_deleted = 0 AND stat = 0
+";
+$resultPobeefCount = mysqli_query($conn, $queryPobeefCount);
+$rowPobeefCount = mysqli_fetch_assoc($resultPobeefCount);
+$pobeefCount = $rowPobeefCount['pobeefCount'];
