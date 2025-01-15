@@ -48,3 +48,21 @@ while ($row = mysqli_fetch_assoc($result)) {
 $TotalRequest = $CountRequest + $CountRequestNonDaging;
 $TotalOrdering = $CountOrdering + $CountOrderingNonDaging;
 $TotalWaiting = $CountWaiting + $CountWaitingNonDaging;
+
+// Query untuk menghitung data di tabel invoice dengan status 'Belum TF' dan is_deleted = 0
+$queryInvoiceBelumTF = "SELECT COUNT(*) AS belumTFCount FROM invoice WHERE status = 'Belum TF' AND is_deleted = 0";
+$resultInvoiceBelumTF = mysqli_query($conn, $queryInvoiceBelumTF);
+$rowInvoiceBelumTF = mysqli_fetch_assoc($resultInvoiceBelumTF);
+$belumTFCount = $rowInvoiceBelumTF['belumTFCount'];
+
+$queryFutureDeliveries = "
+    SELECT COUNT(*) AS futureDeliveryCount
+    FROM salesorder so
+    JOIN customers c ON so.idcustomer = c.idcustomer
+    WHERE so.deliverydate >= CURDATE() + INTERVAL 1 DAY 
+      AND so.is_deleted = 0
+      AND c.idgroup != 21
+";
+$resultFutureDeliveries = mysqli_query($conn, $queryFutureDeliveries);
+$rowFutureDeliveries = mysqli_fetch_assoc($resultFutureDeliveries);
+$futureDeliveryCount = $rowFutureDeliveries['futureDeliveryCount'];

@@ -630,13 +630,7 @@ include "notifcount.php";
                   <div class="col-lg col-6">
                      <div class="small-box bg-info">
                         <div class="inner">
-                           <?php
-                           $query = "SELECT COUNT(*) as jumlah_plandev FROM salesorder WHERE progress = 'On Process' OR progress = 'Waiting'";
-                           $result = mysqli_query($conn, $query);
-                           $row = mysqli_fetch_assoc($result);
-                           $jumlah_plandev = $row['jumlah_plandev'];
-                           ?>
-                           <h3><?= $jumlah_plandev; ?></h3>
+                           <h3><?= $futureDeliveryCount; ?></h3>
                            <p>Plan Delivery</p>
                         </div>
                         <div class="icon">
