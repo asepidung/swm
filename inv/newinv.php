@@ -164,20 +164,26 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                     <div class="form-group">
                                        <div class="input-group">
                                           <?php
-                                          // Menentukan nilai discount berdasarkan nama_customer dan nilai yang ada pada salesorderdetail
+                                          // Menentukan nilai default discount sebagai 0
                                           $discountValue = 0;
 
-                                          // Cek apakah nama customer mengandung 'DCA' atau 'DCB'
-                                          if (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false) {
+                                          // Cek apakah 'nama_customer' mengandung 'DCA' atau 'DCB'
+                                          if (
+                                             isset($rowDo['nama_customer']) &&
+                                             (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false)
+                                          ) {
                                              $discountValue = 2; // Diskon 2% untuk DCA atau DCB
-                                          } else {
-                                             // Jika bukan DCA atau DCB, ambil diskon dari hasil query join salesorderdetail
-                                             $discountValue = $rowdoreceiptdetail['discount']; // Nilai diskon dari salesorderdetail
+                                          } elseif (isset($rowdoreceiptdetail['discount']) && is_numeric($rowdoreceiptdetail['discount'])) {
+                                             // Jika bukan DCA atau DCB, gunakan nilai discount dari query join salesorderdetail jika ada
+                                             $discountValue = $rowdoreceiptdetail['discount'];
                                           }
-                                          ?>
-                                          <input type="text" class="form-control text-center" name="discount[]" value="<?= $discountValue ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
 
+                                          // Pastikan nilai discount selalu 0 jika tidak valid
+                                          $discountValue = is_numeric($discountValue) ? $discountValue : 0;
+                                          ?>
+                                          <input type="text" class="form-control text-center" name="discount[]" value="<?= htmlspecialchars($discountValue) ?>" onkeydown="moveFocusToNextInput(event, this, 'discount[]')">
                                        </div>
+
                                     </div>
                                  </div>
                                  <div class=" col-2">

@@ -46,6 +46,16 @@ if (isset($_POST['submit'])) {
    $balance = normalizeNumber($_POST['balance']);
    $tukarfaktur = $_POST['tukarfaktur'];
 
+   // Cek apakah iddoreceipt sudah ada di tabel invoice
+   $checkInvoiceQuery = "SELECT COUNT(*) AS invoiceCount FROM invoice WHERE iddoreceipt = '$iddoreceipt' AND is_deleted = 0";
+   $checkInvoiceResult = mysqli_query($conn, $checkInvoiceQuery);
+   $checkInvoiceRow = mysqli_fetch_assoc($checkInvoiceResult);
+
+   if ($checkInvoiceRow['invoiceCount'] > 0) {
+      header("location: invoice.php?message=Invoice Sudah Dibuat");
+      exit();
+   }
+
    // Hitung due date
    $invoice_date_obj = new DateTime($invoice_date);
    $duedate_obj = clone $invoice_date_obj; // Duplikasi objek tanggal invoice_date_obj

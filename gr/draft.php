@@ -10,9 +10,10 @@ include "../navbar.php";
 include "../mainsidebar.php";
 
 // Query untuk mendapatkan data dari tabel po yang is_deleted = 0 dan stat = 0, join dengan tabel supplier
-$query = "SELECT p.idpo, s.nmsupplier, p.duedate AS deliveryat, p.nopo, p.note, p.stat
+$query = "SELECT p.idpo, s.nmsupplier, p.duedate AS deliveryat, p.nopo, r.norequest, p.note, p.stat
           FROM po p
           JOIN supplier s ON p.idsupplier = s.idsupplier
+          JOIN request r ON p.idrequest = r.idrequest
           WHERE p.is_deleted = 0 AND p.stat = 0";
 
 $result = mysqli_query($conn, $query);
@@ -35,6 +36,7 @@ if (!$result) {
                                         <th>Supplier</th>
                                         <th>Receiving Date</th>
                                         <th>PO</th>
+                                        <th>Request No</th>
                                         <th>Note</th>
                                         <th>Actions</th>
                                     </tr>
@@ -43,18 +45,20 @@ if (!$result) {
                                     <?php
                                     $counter = 1;
                                     while ($row = mysqli_fetch_assoc($result)) {
-                                        echo '<tr>
-                                       <td class="text-center">' . $counter++ . '</td>
-                                       <td>' . htmlspecialchars($row['nmsupplier']) . '</td>
-                                       <td class="text-center">' . htmlspecialchars($row['deliveryat']) . '</td>
-                                       <td class="text-center">' . htmlspecialchars($row['nopo']) . '</td>
-                                       <td class="text-center">' . htmlspecialchars($row['note']) . '</td>
-                                       <td class="text-center">
-                                          <a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" title="Buat GR" href="newgr.php?id=' . $row['idpo'] . '">
-                                          Proses GR <i class="fas fa-truck"></i>
-                                          </a>
-                                       </td>
-                                    </tr>';
+                                        echo
+                                        '<tr>
+                                            <td class="text-center">' . $counter++ . '</td>
+                                            <td>' . htmlspecialchars($row['nmsupplier']) . '</td>
+                                            <td class="text-center">' . htmlspecialchars($row['deliveryat']) . '</td>
+                                            <td class="text-center">' . htmlspecialchars($row['nopo']) . '</td>
+                                            <td class="text-center">' . htmlspecialchars($row['norequest']) . '</td>
+                                            <td class="text-center">' . htmlspecialchars($row['note']) . '</td>
+                                            <td class="text-center">
+                                                <a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" title="Buat GR" href="newgr.php?id=' . $row['idpo'] . '">
+                                                Proses GR <i class="fas fa-truck"></i>
+                                                </a>
+                                            </td>
+                                        </tr>';
                                     }
                                     ?>
                                 </tbody>

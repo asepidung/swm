@@ -10,7 +10,7 @@ include "../mainsidebar.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 
-$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM do WHERE status = 'Approved'";
+$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM do WHERE status = 'Approved' AND is_deleted = 0";
 $resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
 $rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
 $approvedCount = $rowApprovedCount['approved_count'];
@@ -95,7 +95,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                  <td class="text-center"><?= $tampil['noinvoice']; ?></td>
                                  <td class="text-center">
                                     <a href="../do/lihatdo.php?iddo=<?= $iddo ?>">
-                                       <?= substr($tampil['donumber'], -5); ?>
+                                       <?= substr($tampil['donumber'], -4); ?>
                                     </a>
                                  </td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['invoice_date'])); ?></td>
