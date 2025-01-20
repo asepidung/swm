@@ -2,28 +2,27 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
+
 require "../konak/conn.php";
 
 if (isset($_GET['iddo'])) {
    $iddo = $_GET['iddo'];
 
-   // Delete data dari tabel doreceiptdetail berdasarkan $iddo
-   $query_delete_doreceiptdetail = "DELETE FROM doreceiptdetail WHERE iddoreceipt IN (SELECT iddoreceipt FROM doreceipt WHERE iddo = ?)";
-   $stmt_delete_doreceiptdetail = $conn->prepare($query_delete_doreceiptdetail);
-   $stmt_delete_doreceiptdetail->bind_param("i", $iddo);
-   $stmt_delete_doreceiptdetail->execute();
-   $stmt_delete_doreceiptdetail->close();
-
-   // Delete data dari tabel doreceipt berdasarkan $iddo
-   $query_delete_doreceipt = "DELETE FROM doreceipt WHERE iddo = ?";
-   $stmt_delete_doreceipt = $conn->prepare($query_delete_doreceipt);
-   $stmt_delete_doreceipt->bind_param("i", $iddo);
-   $stmt_delete_doreceipt->execute();
-   $stmt_delete_doreceipt->close();
+   // Soft delete data dari tabel doreceipt
+   $query_soft_delete_doreceipt = "UPDATE doreceipt 
+                                    SET is_deleted = 1 
+                                    WHERE iddo = ?";
+   $stmt_soft_delete_doreceipt = $conn->prepare($query_soft_delete_doreceipt);
+   $stmt_soft_delete_doreceipt->bind_param("i", $iddo);
+   $stmt_soft_delete_doreceipt->execute();
+   $stmt_soft_delete_doreceipt->close();
 
    // Update data di tabel do kolom status menjadi Unapproved
-   $query_update_do = "UPDATE do SET status = 'Unapproved' WHERE iddo = ?";
+   $query_update_do = "UPDATE do 
+                        SET status = 'Unapproved' 
+                        WHERE iddo = ?";
    $stmt_update_do = $conn->prepare($query_update_do);
    $stmt_update_do->bind_param("i", $iddo);
    $stmt_update_do->execute();
@@ -45,12 +44,13 @@ if (isset($_GET['iddo'])) {
    $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
 
    $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
-                        VALUES ('$idusers', '$event', '$docnumb', '$waktu')";
-   $resultLogActivity = mysqli_query($conn, $queryLogActivity);
+                         VALUES (?, ?, ?, ?)";
+   $stmt_log_activity = $conn->prepare($queryLogActivity);
+   $stmt_log_activity->bind_param("isss", $idusers, $event, $docnumb, $waktu);
+   $stmt_log_activity->execute();
+   $stmt_log_activity->close();
 
-   if (!$resultLogActivity) {
-      die("Error saat memasukkan data log activity: " . mysqli_error($conn));
-   }
+   // Redirect ke halaman daftar DO
+   header("location: do.php");
+   exit();
 }
-
-header("location: do.php"); // Redirect to the list page

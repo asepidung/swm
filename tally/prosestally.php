@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
    $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
 
    // Cek apakah idso sudah ada di tabel tally
-   $checkQuery = "SELECT idso FROM tally WHERE idso = ?";
+   $checkQuery = "SELECT idso FROM tally WHERE idso = ? AND is_deleted = 0";
    if ($stmt_check = $conn->prepare($checkQuery)) {
       $stmt_check->bind_param("i", $idso);
       $stmt_check->execute();
@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
       // Jika ada hasil (idso sudah ada), redirect ke index.php
       if ($stmt_check->num_rows > 0) {
          // idso sudah ada, redirect ke halaman index.php
-         header("location: index.php?error=Tally Sudah Di Generate");
+         header("location: index.php?error=Tally Sudah Di Ada Di List");
          exit();
       }
 

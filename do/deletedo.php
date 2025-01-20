@@ -33,25 +33,6 @@ try {
       throw new Exception("Error updating tally: " . $stmtUpdateTally->error);
    }
 
-   // Menghapus data dari tabel doreceiptdetail berdasarkan iddoreceipt dari tabel doreceipt
-   $sqlDeleteDoreceiptdetail = "DELETE doreceiptdetail 
-                                 FROM doreceiptdetail
-                                 INNER JOIN doreceipt ON doreceiptdetail.iddoreceipt = doreceipt.iddoreceipt
-                                 WHERE doreceipt.iddo = ?";
-   $stmtDeleteDoreceiptdetail = $conn->prepare($sqlDeleteDoreceiptdetail);
-   $stmtDeleteDoreceiptdetail->bind_param("i", $iddo);
-   if (!$stmtDeleteDoreceiptdetail->execute()) {
-      throw new Exception("Error deleting doreceiptdetail: " . $stmtDeleteDoreceiptdetail->error);
-   }
-
-   // Menghapus data dari tabel doreceipt
-   $sqlDeleteDoreceipt = "DELETE FROM doreceipt WHERE iddo = ?";
-   $stmtDeleteDoreceipt = $conn->prepare($sqlDeleteDoreceipt);
-   $stmtDeleteDoreceipt->bind_param("i", $iddo);
-   if (!$stmtDeleteDoreceipt->execute()) {
-      throw new Exception("Error deleting doreceipt: " . $stmtDeleteDoreceipt->error);
-   }
-
    // Soft delete data dari tabel do
    $sqlSoftDeleteDO = "UPDATE do SET is_deleted = 1 WHERE iddo = ?";
    $stmtSoftDeleteDO = $conn->prepare($sqlSoftDeleteDO);
@@ -80,7 +61,5 @@ try {
 
 // Menutup prepared statements dan koneksi database
 $stmtUpdateTally->close();
-$stmtDeleteDoreceiptdetail->close();
-$stmtDeleteDoreceipt->close();
 $stmtSoftDeleteDO->close();
 $conn->close();

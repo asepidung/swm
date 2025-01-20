@@ -73,7 +73,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                            JOIN users ON do.idusers = users.idusers
                            LEFT JOIN tally ON do.idtally = tally.idtally
                            WHERE do.deliverydate BETWEEN '$awal' AND '$akhir' AND do.is_deleted = 0
-                           ORDER BY iddo DESC;");                    
+                           ORDER BY iddo DESC;");
                            while ($tampil = mysqli_fetch_array($ambildata)) {
                               $idso = $tampil['idso'];
                            ?>
@@ -91,7 +91,7 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
-                                       <a href="editapprovedo.php?iddo=<?= $tampil['iddo'] ?>" onclick="return confirm('Apakah Anda yakin akan melakukan Approve ulang?')">
+                                       <a href="editapprovedo.php?iddo=<?= $tampil['iddo'] ?>" onclick="return confirm('Apakah Anda yakin akan Meng Unaprove?')">
                                           <span class="text-primary" data-toggle="tooltip" data-placement="bottom" title="Approve By <?= $fullname ?>">
                                              <?= $tampil['status']; ?>
                                           </span>
