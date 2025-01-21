@@ -2,22 +2,20 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
+
 require "../konak/conn.php";
 
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
-$idcarcase = $_GET['idcarcase'] ?? null;
-if (!$idcarcase) {
+// Validasi idcarcase
+$idcarcase = intval($_GET['idcarcase'] ?? 0);
+if ($idcarcase <= 0) {
    echo "<script>alert('ID Carcase tidak ditemukan!'); window.location='carcase.php';</script>";
-   exit;
-}
-
-// Menyimpan pilihan breed ke session
-if (isset($_POST['breed'])) {
-   $_SESSION['breed'] = $_POST['breed'];
+   exit();
 }
 
 // Menghitung jumlah detail carcase untuk mendapatkan nomor urut berikutnya
@@ -28,7 +26,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $nextNumber = $row['total'] + 1;
-
 $stmt->close();
 ?>
 
@@ -41,28 +38,33 @@ $stmt->close();
                   <div class="card-header">
                      <h3 class="card-title">Input Detail Carcase</h3>
                      <span class="float-right text-primary">
-                        <h5><?= $nextNumber ?></h5>
+                        <h5><?= htmlspecialchars($nextNumber) ?></h5>
                      </span>
                   </div>
                   <div class="card-body">
                      <form id="carcaseDetailForm" action="prosescarcasedetail.php" method="POST">
                         <input type="hidden" name="idcarcase" value="<?= htmlspecialchars($idcarcase); ?>">
 
+                        <!-- Dropdown Breed -->
                         <div class="form-group">
                            <select class="form-control" id="breed" name="breed" required>
                               <option value="">Pilih Ras</option>
-                              <option value="STEER" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'STEER' ? 'selected' : '' ?>>STEER</option>
-                              <option value="HEIFER" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'HEIFER' ? 'selected' : '' ?>>HEIFER</option>
-                              <option value="COW" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'COW' ? 'selected' : '' ?>>COW</option>
-                              <option value="LIMOUSIN" <?= isset($_SESSION['breed']) && $_SESSION['breed'] == 'LIMOUSIN' ? 'selected' : '' ?>>LIMOUSIN</option>
+                              <?php
+                              $breeds = ['STEER', 'HEIFER', 'COW', 'LIMOUSIN'];
+                              foreach ($breeds as $breed) {
+                                 $selected = isset($_SESSION['breed']) && $_SESSION['breed'] === $breed ? 'selected' : '';
+                                 echo "<option value=\"$breed\" $selected>$breed</option>";
+                              }
+                              ?>
                            </select>
                         </div>
 
+                        <!-- Input Fields -->
                         <div class="form-group">
-                           <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat">
+                           <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat (Opsional)">
                         </div>
                         <div class="form-group">
-                           <input type="number" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
+                           <input type="text" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
                         </div>
                         <div class="form-group">
                            <input type="number" step="0.01" class="form-control" id="carcase1" name="carcase1" required placeholder="Carcase A">
@@ -71,18 +73,21 @@ $stmt->close();
                            <input type="number" step="0.01" class="form-control" id="carcase2" name="carcase2" required placeholder="Carcase B">
                         </div>
                         <div class="form-group">
-                           <input type="number" step="0.01" class="form-control" id="hides" name="hides" required placeholder="Hides">
+                           <input type="number" step="0.01" class="form-control" id="hides" name="hides" placeholder="Hides (Maksimal 100)">
                         </div>
                         <div class="form-group">
-                           <input type="number" step="0.01" class="form-control" id="tail" name="tail" placeholder="Tails">
+                           <input type="number" step="0.01" class="form-control" id="tail" name="tail" placeholder="Tail (Maksimal 100)">
                         </div>
 
+                        <!-- Navigation Buttons -->
                         <div class="form-group text-center">
                            <?php if (isset($_SESSION['last_iddetail'])): ?>
-                              <a href="editcarcasedetail.php?iddetail=<?= $_SESSION['last_iddetail'] ?>" class="btn btn-secondary"><i class="fas fa-step-backward"></i> Prev</a>
+                              <a href="editcarcasedetail.php?iddetail=<?= htmlspecialchars($_SESSION['last_iddetail']) ?>" class="btn btn-secondary"><i class="fas fa-step-backward"></i> Prev</a>
                            <?php endif; ?>
-                           <button type="submit" name="simpan" class="btn btn-success" id="btnSimpan"><i class="fas fa-save"></i> Simpan</button>
-                           <button type="submit" name="next" class="btn btn-primary"><i class="fas fa-step-forward"></i> Next</button>
+                           <!-- Tombol "Simpan" diarahkan ke halaman datacarcase.php -->
+                           <button type="submit" name="simpan" value="save" class="btn btn-success" id="btnSimpan"><i class="fas fa-save"></i> Simpan</button>
+                           <!-- Tombol "Next" melanjutkan input berikutnya -->
+                           <button type="submit" name="next" value="next" class="btn btn-primary"><i class="fas fa-step-forward"></i> Next</button>
                         </div>
                      </form>
                   </div>
@@ -94,21 +99,35 @@ $stmt->close();
 </div>
 
 <script>
-   // Fokus pada input berikutnya ketika menggunakan tab
-   document.querySelectorAll("input, select").forEach((elem) => {
-      elem.addEventListener("keydown", function(event) {
-         if (event.key === "Enter") {
-            const formElements = Array.from(document.querySelectorAll("input, select"));
-            const index = formElements.indexOf(event.target);
-            if (index !== -1 && index < formElements.length - 1) {
-               formElements[index + 1].focus();
-               event.preventDefault(); // Mencegah form submit saat tekan Enter
-            }
+   document.querySelectorAll("input[type='number']").forEach(input => {
+      input.addEventListener("change", function() {
+         let maxWeight;
+         const fieldName = this.getAttribute("name");
+
+         // Tetapkan batas maksimal untuk masing-masing field
+         if (fieldName === "berat") {
+            maxWeight = 1000.00; // Batas untuk berat total
+         } else if (fieldName === "hides" || fieldName === "tail") {
+            maxWeight = 100.00; // Batas untuk hides dan tail
+         } else {
+            maxWeight = 200.00; // Batas untuk karkas
+         }
+
+         const minWeight = 0.01; // Batas minimal untuk semua field
+
+         // Validasi input
+         if (this.value > maxWeight) {
+            alert(`Nilai untuk ${fieldName} terlalu besar. Maksimal adalah ${maxWeight}.`);
+            this.focus();
+            this.value = ""; // Kosongkan input jika melebihi batas
+         } else if (this.value < minWeight && this.value !== "") {
+            alert(`Nilai untuk ${fieldName} terlalu kecil. Minimal adalah ${minWeight}.`);
+            this.focus();
+            this.value = ""; // Kosongkan input jika kurang dari batas
          }
       });
    });
 
-   // Konfirmasi hanya pada tombol "Simpan"
    document.getElementById("btnSimpan").addEventListener("click", function(event) {
       if (!confirm("Pastikan Semua data yang kamu isi sudah benar")) {
          event.preventDefault(); // Mencegah form disubmit jika user tidak setuju

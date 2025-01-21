@@ -42,21 +42,23 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                      <?php
                      // Query yang diupdate
                      $query = "SELECT i.iddo, c.nama_customer, i.deliverydate, i.donumber, i.po,
-                          b.nmbarang, id.weight AS do_weight, id.notes,
-                          s.sonumber,
-                          (
-                              SELECT weight
-                              FROM salesorderdetail sod
-                              WHERE sod.idbarang = id.idbarang AND sod.idso = s.idso
-                              LIMIT 1
-                          ) AS so_weight
-                  FROM do i
-                  INNER JOIN customers c ON i.idcustomer = c.idcustomer
-                  LEFT JOIN dodetail id ON i.iddo = id.iddo
-                  LEFT JOIN barang b ON id.idbarang = b.idbarang
-                  LEFT JOIN salesorder s ON i.idso = s.idso
-                  WHERE i.deliverydate BETWEEN ? AND ?
-                  ORDER BY i.iddo DESC";
+                 b.nmbarang, id.weight AS do_weight, id.notes,
+                 s.sonumber,
+                 (
+                     SELECT weight
+                     FROM salesorderdetail sod
+                     WHERE sod.idbarang = id.idbarang AND sod.idso = s.idso
+                     LIMIT 1
+                 ) AS so_weight
+          FROM do i
+          INNER JOIN customers c ON i.idcustomer = c.idcustomer
+          LEFT JOIN dodetail id ON i.iddo = id.iddo
+          LEFT JOIN barang b ON id.idbarang = b.idbarang
+          LEFT JOIN salesorder s ON i.idso = s.idso
+          WHERE i.deliverydate BETWEEN ? AND ?
+          AND i.is_deleted = 0
+          ORDER BY i.iddo DESC";
+
                      $stmt = $conn->prepare($query);
                      if ($stmt === false) {
                         die('Prepare error: ' . htmlspecialchars($conn->error));

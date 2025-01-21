@@ -71,7 +71,7 @@ include "../mainsidebar.php";
                                     <td class="text-left"><?= htmlspecialchars($row['fullname']) ?></td>
                                     <td class="text-center">
                                        <a href="lihatcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-info btn-sm" title="Lihat"><i class="fas fa-eye"></i></a>
-                                       <a href="editcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-paper-plane"></i></a>
+                                       <a href="editcarcase.php?idcarcase=<?= $row['idcarcase'] ?>" class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                        <a href="deletecarcase.php?idcarcase=<?= $row['idcarcase'] ?>" onclick="return confirmDelete()" class="btn btn-danger btn-sm" title="Hapus"><i class="fas fa-minus-square"></i></a>
                                     </td>
 
