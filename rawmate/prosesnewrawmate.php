@@ -4,6 +4,7 @@ require "../konak/conn.php";
 // mengambil data dari form
 $kdrawmate = $_POST['kdrawmate'];
 $nmrawmate = $_POST['nmrawmate'];
+$tampilkan_stock = $_POST['tampilkan_stock'];
 $idrawcategory = $_POST['idrawcategory'];
 // Mengecek apakah nama rawmate sudah ada dalam database
 $checkQuery = "SELECT nmrawmate FROM rawmate WHERE nmrawmate = '$nmrawmate'";
@@ -18,7 +19,7 @@ if (mysqli_num_rows($checkResult) > 0) {
    // Nama rawmate belum ada dalam database, lanjutkan dengan penyimpanan
 
    // membuat query untuk menyimpan data ke database
-   $sql = "INSERT INTO rawmate (kdrawmate, nmrawmate, idrawcategory) VALUES ('$kdrawmate', '$nmrawmate', '$idrawcategory')";
+   $sql = "INSERT INTO rawmate (kdrawmate, nmrawmate, idrawcategory, stock) VALUES ('$kdrawmate', '$nmrawmate', '$idrawcategory', '$tampilkan_stock')";
 
    // mengeksekusi query
    if (mysqli_query($conn, $sql)) {

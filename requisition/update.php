@@ -18,6 +18,8 @@ $idrequest = $_POST['idrequest'] ?? null;
 $duedate = $_POST['duedate'] ?? null;
 $idsupplier = $_POST['idsupplier'] ?? null;
 $note = $_POST['note'] ?? null;
+$tax = $_POST['tax'] ?? null; // Ambil nilai tax
+$top = $_POST['top'] ?? null;
 
 // Ambil data detail
 $idrawmate = $_POST['idrawmate'] ?? [];
@@ -30,8 +32,12 @@ $totalAmount = array_sum(array_map(function ($weight, $price) {
     return normalizeNumber($weight) * normalizeNumber($price);
 }, $weight, $price));
 
-// Total amount langsung tanpa pajak
-$xamount = $totalAmount;
+// Hitung pajak berdasarkan nilai tax
+$taxRate = $tax === '11' ? 0.11 : ($tax === '12' ? 0.12 : 0);
+$taxAmount = $totalAmount * $taxRate;
+
+// Total amount termasuk pajak
+$xamount = $totalAmount + $taxAmount;
 
 // Validasi data wajib
 if (!$idrequest || !$duedate || !$idsupplier) {
@@ -43,9 +49,9 @@ mysqli_begin_transaction($conn);
 
 try {
     // Update data di tabel `request`
-    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, note = ?, xamount = ? WHERE idrequest = ?";
+    $query_request = "UPDATE request SET duedate = ?, idsupplier = ?, note = ?, tax = ?, top = ?, taxrp = ?, xamount = ? WHERE idrequest = ?";
     $stmt_request = mysqli_prepare($conn, $query_request);
-    mysqli_stmt_bind_param($stmt_request, "sisdi", $duedate, $idsupplier, $note, $xamount, $idrequest);
+    mysqli_stmt_bind_param($stmt_request, "sisdsddi", $duedate, $idsupplier, $note, $tax, $top, $taxAmount, $xamount, $idrequest);
 
     if (!mysqli_stmt_execute($stmt_request)) {
         throw new Exception("Error updating request table: " . mysqli_stmt_error($stmt_request));

@@ -13,7 +13,7 @@ include "../mainsidebar.php";
 $query = "SELECT t.idtally, c.nama_customer, t.deliverydate, t.po, t.sonumber, t.notally, t.stat
           FROM tally t
           JOIN customers c ON t.idcustomer = c.idcustomer
-          WHERE t.stat = 'Approved'";
+          WHERE t.stat = 'Approved' AND is_deleted = 0 ";
 
 $result = mysqli_query($conn, $query);
 if (!$result) {

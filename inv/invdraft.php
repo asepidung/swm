@@ -36,7 +36,7 @@ include "../mainsidebar.php";
                            $no = 1;
                            $ambildata = mysqli_query($conn, "SELECT doreceipt.*, customers.nama_customer FROM doreceipt
                            JOIN customers ON doreceipt.idcustomer = customers.idcustomer
-                           WHERE status = 'Approved'
+                           WHERE status = 'Approved' AND is_deleted = 0
                            ORDER BY doreceipt.donumber ASC");
 
                            while ($tampil = mysqli_fetch_array($ambildata)) {

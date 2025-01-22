@@ -45,7 +45,7 @@ include "../mainsidebar.php";
                                     FROM stockraw sr
                                     JOIN rawmate rm ON sr.idrawmate = rm.idrawmate
                                     JOIN rawcategory rc ON rm.idrawcategory = rc.idrawcategory
-                                    WHERE sr.is_deleted = 0  -- Kondisi untuk memilih data yang di-soft delete
+                                    WHERE sr.is_deleted = 0 AND rm.stock = 1
                                     GROUP BY rm.kdrawmate, rm.nmrawmate, rc.nmcategory
                                     ORDER BY rm.nmrawmate ASC";
 

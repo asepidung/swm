@@ -45,8 +45,8 @@ $row = mysqli_fetch_assoc($result);
                   <input type="text" class="form-control" name="nmrawmate" id="nmrawmate" value="<?= $row['nmrawmate']; ?>">
                 </div>
                 <div class="form-group">
-                <label for="category">Category <span class="text-danger">*</span></label>
-                <div class="input-group">
+                  <label for="category">Category <span class="text-danger">*</span></label>
+                  <div class="input-group">
                     <select name="idrawcategory" id="category" class="form-control" required>
                       <option value="">-- Select Category --</option>
                       <?php
@@ -55,17 +55,43 @@ $row = mysqli_fetch_assoc($result);
 
                       // Looping untuk menampilkan data ke dalam option
                       while ($category = mysqli_fetch_assoc($result)) {
-                          $selected = ($category['idrawcategory'] == $row['idrawcategory']) ? 'selected' : '';
-                          echo "<option value='" . $category['idrawcategory'] . "' $selected>" . htmlspecialchars($category['nmcategory']) . "</option>";
+                        $selected = ($category['idrawcategory'] == $row['idrawcategory']) ? 'selected' : '';
+                        echo "<option value='" . $category['idrawcategory'] . "' $selected>" . htmlspecialchars($category['nmcategory']) . "</option>";
                       }
                       ?>
                     </select>
                     <div class="input-group-append">
                       <a href="addrawcategory.php" class="btn btn-dark"><i class="fas fa-plus"></i></a>
                     </div>
-                </div>
-              </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="tampilkan_stock">Tampilkan di Stock</label>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="stock"
+                        id="tampilkan_stock_yes"
+                        value="1"
+                        required
+                        <?= $row['stock'] == 1 ? 'checked' : ''; ?>>
+                      <label class="form-check-label" for="tampilkan_stock_yes">Ya</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="stock"
+                        id="tampilkan_stock_no"
+                        value="0"
+                        required
+                        <?= $row['stock'] == 0 ? 'checked' : ''; ?>>
+                      <label class="form-check-label" for="tampilkan_stock_no">Tidak</label>
+                    </div>
+                  </div>
 
+
+                </div>
               </div>
               <div class="form-group mr-3 text-right">
                 <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-level-up-alt"></i> Update</button>
@@ -81,7 +107,7 @@ $row = mysqli_fetch_assoc($result);
 </div><!-- /.container-fluid -->
 <!-- /.content-wrapper -->
 <script>
-   document.title = "EDIT RAW MATERIAL";
+  document.title = "EDIT RAW MATERIAL";
 </script>
 <?php
 include "../footer.php";

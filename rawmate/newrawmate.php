@@ -54,6 +54,17 @@ include "../mainsidebar.php";
                               </div>
                            </div>
                         </div>
+                        <div class="form-group">
+                           <label for="tampilkan_stock">Tampilkan di Stock</label>
+                           <div class="form-check">
+                              <input class="form-check-input" type="radio" name="tampilkan_stock" id="tampilkan_stock_yes" value="1" required checked>
+                              <label class="form-check-label" for="tampilkan_stock_yes">Ya</label>
+                           </div>
+                           <div class="form-check">
+                              <input class="form-check-input" type="radio" name="tampilkan_stock" id="tampilkan_stock_no" value="0" required>
+                              <label class="form-check-label" for="tampilkan_stock_no">Tidak</label>
+                           </div>
+                        </div>
                      </div>
                      <div class="form-group mr-3 text-right">
                         <button type="submit" class="btn bg-gradient-primary">Submit</button>

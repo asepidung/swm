@@ -46,7 +46,7 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
             <div class="col">
                <div class="card">
                   <div class="card-body">
-                     <form id="editCarcaseForm" action="prosesupdate.php" method="post">
+                     <form id="editCarcaseForm" action="prosesupdate.php" method="post" onsubmit="return validateForm()">
                         <h4>Data Carcase</h4>
                         <div class="form-group">
                            <label>Killing Date:</label>
@@ -97,6 +97,7 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
                                     echo "<td><input type='number' class='form-control text-right' name='carcase1[]' value='" . htmlspecialchars($carcase1) . "' step='0.01' required></td>";
                                     echo "<td><input type='number' class='form-control text-right' name='carcase2[]' value='" . htmlspecialchars($carcase2) . "' step='0.01' required></td>";
                                     echo "<td><input type='number' class='form-control text-right' name='hides[]' value='" . htmlspecialchars($hides) . "' step='0.01' required></td>";
+                                    $tail = ($row_carcasedetail['tail'] === '' || $row_carcasedetail['tail'] === null) ? '0' : $row_carcasedetail['tail'];
                                     echo "<td><input type='number' class='form-control text-right' name='tail[]' value='" . htmlspecialchars($tail) . "' step='0.01'></td>";
                                     echo "<td><input type='text' class='form-control text-center' name='breed[]' value='" . htmlspecialchars($row_carcasedetail['breed']) . "' required></td>";
                                     echo "</tr>";
@@ -118,30 +119,43 @@ $result_carcasedetail = mysqli_query($conn, $query_carcasedetail);
 </div>
 
 <script>
-   // Logika untuk memindahkan fokus ke kolom bawah dengan Tab dan ke tombol Simpan dengan Enter
-   document.querySelectorAll('input').forEach((input) => {
-      input.addEventListener('keydown', function(e) {
-         if (e.key === 'Enter') {
-            e.preventDefault(); // Cegah aksi default Enter
-            document.getElementById('submitBtn').focus(); // Pindah ke tombol Simpan
-         } else if (e.key === 'Tab') {
-            e.preventDefault(); // Cegah aksi default Tab
-            let colIndex = Array.from(input.parentElement.parentElement.children).indexOf(input.parentElement);
-            let nextRow = input.parentElement.parentElement.nextElementSibling;
+   function validateForm() {
+      const berat = document.querySelectorAll('input[name="berat[]"]');
+      const eartag = document.querySelectorAll('input[name="eartag[]"]');
+      const carcase1 = document.querySelectorAll('input[name="carcase1[]"]');
+      const carcase2 = document.querySelectorAll('input[name="carcase2[]"]');
+      const hides = document.querySelectorAll('input[name="hides[]"]');
+      const tails = document.querySelectorAll('input[name="tail[]"]');
 
-            // Cek apakah ada baris berikutnya
-            if (nextRow) {
-               let nextInput = nextRow.children[colIndex].querySelector('input');
-               if (nextInput) {
-                  nextInput.focus();
-               }
-            }
+      for (let i = 0; i < berat.length; i++) {
+         if (!berat[i].value || berat[i].value > 1000) {
+            alert(`Baris ${i + 1}: Berat Sapi Mencurigakan Silahkan Periksa lagi.`);
+            return false;
          }
-      });
-   });
-</script>
+         if (!eartag[i].value) {
+            alert(`Baris ${i + 1}: Eartag tidak boleh kosong.`);
+            return false;
+         }
+         if (!carcase1[i].value || carcase1[i].value > 250) {
+            alert(`Baris ${i + 1}: Berat Carcase 1 Mencurigakan Silahkan Periksa lagi.`);
+            return false;
+         }
+         if (!carcase2[i].value || carcase2[i].value > 250) {
+            alert(`Baris ${i + 1}: Berat Carcase 2 Mencurigakan Silahkan Periksa lagi.`);
+            return false;
+         }
+         if (!hides[i].value || hides[i].value > 100) {
+            alert(`Baris ${i + 1}: Berat Hides Mencurigakan Silahkan Periksa lagi.`);
+            return false;
+         }
+         if (tails[i].value && tails[i].value > 100) {
+            alert(`Baris ${i + 1}: Berat Tails Mencurigakan Silahkan Periksa lagi.`);
+            return false;
+         }
+      }
+      return true;
+   }
 
-<script>
    // Mengubah judul halaman web
    document.title = "Edit Carcase - ID: <?php echo $row_carcase['idcarcase']; ?>";
 </script>

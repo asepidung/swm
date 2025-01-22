@@ -9,9 +9,12 @@ require "../konak/conn.php";
 $idrawmate = intval($_POST['idrawmate']); // Validasi sebagai integer
 $nmrawmate = mysqli_real_escape_string($conn, $_POST['nmrawmate']); // Escape input untuk keamanan
 $idrawcategory = intval($_POST['idrawcategory']); // Validasi sebagai integer
+$stock = intval($_POST['stock']); // Validasi nilai stock sebagai integer (1 atau 0)
 
 // Membuat query untuk memperbarui data rawmate di database
-$sql = "UPDATE rawmate SET nmrawmate = '$nmrawmate', idrawcategory = $idrawcategory WHERE idrawmate = $idrawmate";
+$sql = "UPDATE rawmate 
+        SET nmrawmate = '$nmrawmate', idrawcategory = $idrawcategory, stock = $stock 
+        WHERE idrawmate = $idrawmate";
 
 // Mengeksekusi query
 if (mysqli_query($conn, $sql)) {
