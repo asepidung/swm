@@ -108,9 +108,9 @@ $stmt->close();
          if (fieldName === "berat") {
             maxWeight = 1000.00; // Batas untuk berat total
          } else if (fieldName === "hides" || fieldName === "tail") {
-            maxWeight = 100.00; // Batas untuk hides dan tail
+            maxWeight = 50.00; // Batas untuk hides dan tail
          } else {
-            maxWeight = 200.00; // Batas untuk karkas
+            maxWeight = 250.00; // Batas untuk karkas
          }
 
          const minWeight = 0.01; // Batas minimal untuk semua field

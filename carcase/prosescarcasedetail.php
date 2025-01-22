@@ -19,7 +19,7 @@ $tail = isset($_POST['tail']) && $_POST['tail'] !== '' ? floatval($_POST['tail']
 
 // Rentang angka yang logis
 $maxWeight = 1000.00; // Maksimal untuk berat
-$maxPartWeight = 200.00; // Maksimal untuk karkas
+$maxPartWeight = 250.00; // Maksimal untuk karkas
 $maxHidesTail = 100.00; // Maksimal untuk hides dan tail
 $minWeight = 0.01; // Minimal untuk semua input (kecuali berat, hides, dan tail yang bisa kosong)
 
