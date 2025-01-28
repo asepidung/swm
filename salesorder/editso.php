@@ -79,14 +79,7 @@ if (isset($_GET['idso'])) {
                            <div class="col">
                               <div class="form-group">
                                  <label for="alamat">Alamat <span class="text-danger">*</span></label>
-                                 <div class="input-group">
-                                    <select class="form-control" name="alamat" id="alamat" required>
-                                       <option value="">Pilih Alamat</option>
-                                       <?php
-                                       // Retrieve and display addresses as needed
-                                       ?>
-                                    </select>
-                                 </div>
+                                 <input type="text" class="form-control" name="alamat" id="alamat" value="<?php echo $data['alamat']; ?>">
                               </div>
                            </div>
                         </div>

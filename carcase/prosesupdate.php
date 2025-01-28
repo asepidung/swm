@@ -15,23 +15,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
    // Validasi input
    for ($i = 0; $i < count($berat); $i++) {
-      if (empty($berat[$i]) || $berat[$i] > 1000) {
-         die("Baris " . ($i + 1) . ": Berat tidak boleh kosong dan maksimal 1000.");
+      if (!isset($berat[$i]) || $berat[$i] > 1000) {
+         die("Baris " . ($i + 1) . ": Berat harus antara 0 dan maksimal 1000.");
       }
       if (empty($eartag[$i])) {
          die("Baris " . ($i + 1) . ": Eartag tidak boleh kosong.");
       }
-      if (empty($carcase1[$i]) || $carcase1[$i] > 250) {
-         die("Baris " . ($i + 1) . ": Carcase 1 tidak boleh kosong dan maksimal 250.");
+      if (!isset($carcase1[$i]) || $carcase1[$i] > 250) {
+         die("Baris " . ($i + 1) . ": Carcase 1 harus antara 0 dan maksimal 250.");
       }
-      if (empty($carcase2[$i]) || $carcase2[$i] > 250) {
-         die("Baris " . ($i + 1) . ": Carcase 2 tidak boleh kosong dan maksimal 250.");
+      if (!isset($carcase2[$i]) || $carcase2[$i] > 250) {
+         die("Baris " . ($i + 1) . ": Carcase 2 harus antara 0 dan maksimal 250.");
       }
-      if (empty($hides[$i]) || $hides[$i] > 100) {
-         die("Baris " . ($i + 1) . ": Hides tidak boleh kosong dan maksimal 100.");
+      if (!isset($hides[$i]) || $hides[$i] > 100) {
+         die("Baris " . ($i + 1) . ": Hides harus antara 0 dan maksimal 100.");
       }
-      if (!empty($tail[$i]) && $tail[$i] > 100) {
-         die("Baris " . ($i + 1) . ": Tails maksimal 100.");
+      if (isset($tail[$i]) && $tail[$i] > 100) {
+         die("Baris " . ($i + 1) . ": Tail maksimal 100.");
       }
    }
 

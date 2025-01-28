@@ -30,11 +30,10 @@ if (isset($_GET['id'])) {
         $tax = floatval($request['tax']); // Pastikan tax adalah angka
 
         // Debug untuk memastikan nilai numerik
-        var_dump($xamount, $tax); // Hapus setelah debugging selesai
+        var_dump($xamount, $tax); // Debugging, hapus jika tidak diperlukan
 
         $taxrp = ($tax > 0) ? ($xamount * $tax / 100) : 0; // Jumlah pajak
         $totalWithTax = $xamount + $taxrp; // Total setelah pajak
-
 
         // Insert ke tabel po
         $sql_po = "INSERT INTO po (nopo, idrequest, idsupplier, xamount, taxrp, tax, duedate, note, top) 
@@ -47,7 +46,9 @@ if (isset($_GET['id'])) {
         $top = $request['top']; // Ambil nilai TOP dari tabel request
 
         $stmt_po->bind_param("siiddssss", $nopo, $idrequest, $idsupplier, $xamount, $taxrp, $tax, $duedate, $note, $top);
-        $stmt_po->execute();
+        if (!$stmt_po->execute()) {
+            throw new Exception("Error inserting into PO: " . $stmt_po->error);
+        }
 
         // Ambil idpo yang baru dibuat
         $idpo = $conn->insert_id;
@@ -70,15 +71,22 @@ if (isset($_GET['id'])) {
             $price = $detail['price'];
             $notes = $detail['notes'];
 
+            // Debug untuk memastikan data detail benar
+            var_dump($idrawmate, $qty, $price, $notes);
+
             $stmt_podetail->bind_param("iiids", $idpo, $idrawmate, $qty, $price, $notes);
-            $stmt_podetail->execute();
+            if (!$stmt_podetail->execute()) {
+                throw new Exception("Error inserting into PODetail: " . $stmt_podetail->error);
+            }
         }
 
         // Update status di tabel request
         $sql_update_request = "UPDATE request SET stat = 'PO Created' WHERE idrequest = ?";
         $stmt_update_request = $conn->prepare($sql_update_request);
         $stmt_update_request->bind_param("i", $idrequest);
-        $stmt_update_request->execute();
+        if (!$stmt_update_request->execute()) {
+            throw new Exception("Error updating Request status: " . $stmt_update_request->error);
+        }
 
         // Commit transaksi
         $conn->commit();

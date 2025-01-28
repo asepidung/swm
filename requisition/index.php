@@ -67,7 +67,7 @@ include "../mainsidebar.php";
                                     <td>
                                        <?php
                                        if ($row['stat'] === 'Request') {
-                                          if ($_SESSION['idusers'] == 13) {
+                                          if ($_SESSION['idusers'] == 1) {
                                              // Kondisi asli untuk user ID 13
                                              echo '<a href="accept.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                  Accept
@@ -77,7 +77,7 @@ include "../mainsidebar.php";
                                              echo '<span class="text-muted">Waiting Ayu</span>';
                                           }
                                        } elseif ($row['stat'] === 'Waiting') {
-                                          if ($_SESSION['idusers'] == 15) {
+                                          if ($_SESSION['idusers'] == 1) {
                                              // Kondisi asli untuk user ID 15
                                              echo '<a href="wtoap.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-primary">
                  Approved
@@ -87,7 +87,7 @@ include "../mainsidebar.php";
                                              echo '<span class="text-muted">Waiting Widi</span>';
                                           }
                                        } elseif ($row['stat'] === 'Ordering') {
-                                          if ($_SESSION['idusers'] == 13) {
+                                          if ($_SESSION['idusers'] == 1) {
                                              // Kondisi asli untuk user ID 13
                                              echo '<a href="makepo.php?id=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-success">
                  Buat PO
@@ -97,7 +97,7 @@ include "../mainsidebar.php";
                                              echo '<span class="text-muted">Order Pending</span>';
                                           }
                                        } elseif ($row['stat'] === 'PO Created') {
-                                          if ($_SESSION['idusers'] == 13) {
+                                          if ($_SESSION['idusers'] == 1) {
                                              // Kondisi asli untuk user ID 13
                                              echo '<a href="lihatpo.php?idrequest=' . htmlspecialchars($row['idrequest']) . '" class="btn btn-sm btn-secondary">
                  Cetak PO

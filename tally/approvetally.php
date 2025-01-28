@@ -12,7 +12,23 @@ if (isset($_GET['id'])) {
    $idso = intval($_GET['idso']);
    $iduser = $_SESSION['idusers']; // Mengambil iduser dari session
 
-   // Jika form sudah disubmit, lanjutkan eksekusi PHP
+   // Cek status di tabel tally sebelum melanjutkan
+   $stmtCheck = $conn->prepare("SELECT stat FROM tally WHERE idtally = ?");
+   if (!$stmtCheck) {
+      echo "Error: Prepare failed (" . $conn->errno . ") " . $conn->error;
+      exit();
+   }
+   $stmtCheck->bind_param("i", $idtally);
+   $stmtCheck->execute();
+   $resultCheck = $stmtCheck->get_result();
+   $rowCheck = $resultCheck->fetch_assoc();
+
+   if ($rowCheck['stat'] === "Approved") {
+      // Jika status sudah "Approved", redirect ke index.php
+      header("location: index.php?message=already_approved");
+      exit();
+   }
+
    if (isset($_POST['submit'])) {
       $sealnumb = !empty($_POST['sealnumb']) ? $_POST['sealnumb'] : NULL;
 

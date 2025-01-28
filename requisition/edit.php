@@ -175,7 +175,7 @@ mysqli_stmt_close($stmt_details);
 
                                     <div class="col-6 col-md mb-1">
                                         <button type="submit" class="btn btn-primary btn-block" name="update">
-                                            Accept Request
+                                            Update Request
                                         </button>
                                     </div>
                                 </div>
