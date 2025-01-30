@@ -2,109 +2,89 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
-   exit(); // Pastikan untuk menghentikan eksekusi setelah redirect
+   exit();
 }
 
 require "../konak/conn.php";
 
-if (isset($_GET['id'])) {
+if (isset($_GET['id']) && isset($_GET['idso'])) {
    $idtally = intval($_GET['id']);
    $idso = intval($_GET['idso']);
    $iduser = $_SESSION['idusers']; // Mengambil iduser dari session
 
    // Cek status di tabel tally sebelum melanjutkan
-   $stmtCheck = $conn->prepare("SELECT stat FROM tally WHERE idtally = ?");
+   $stmtCheck = $conn->prepare("SELECT stat, notally FROM tally WHERE idtally = ?");
    if (!$stmtCheck) {
-      echo "Error: Prepare failed (" . $conn->errno . ") " . $conn->error;
-      exit();
+      die("Error: Prepare failed (" . $conn->errno . ") " . $conn->error);
    }
    $stmtCheck->bind_param("i", $idtally);
    $stmtCheck->execute();
    $resultCheck = $stmtCheck->get_result();
    $rowCheck = $resultCheck->fetch_assoc();
 
-   if ($rowCheck['stat'] === "Approved") {
-      // Jika status sudah "Approved", redirect ke index.php
-      header("location: index.php?message=already_approved");
+   // Jika status sudah "Approved" atau "DO", hentikan eksekusi dan redirect
+   if ($rowCheck['stat'] === "Approved" || $rowCheck['stat'] === "DO") {
+      header("location: index.php?message=status_invalid");
       exit();
    }
 
-   if (isset($_POST['submit'])) {
-      $sealnumb = !empty($_POST['sealnumb']) ? $_POST['sealnumb'] : NULL;
+   // Simpan notally untuk digunakan dalam log
+   $notally = $rowCheck['notally'];
 
-      // Mulai transaksi
+   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+      $sealnumb = !empty($_POST['sealnumb']) ? htmlspecialchars($_POST['sealnumb'], ENT_QUOTES, 'UTF-8') : NULL;
+
+      // Mulai transaksi database
       $conn->autocommit(false);
 
       try {
-         // Prepare statement untuk update tabel tally
-         $stmt = $conn->prepare("UPDATE tally SET stat = ?, sealnumb = ? WHERE idtally = ?");
+         // Update status di tabel tally
+         $stmt = $conn->prepare("UPDATE tally SET stat = 'Approved', sealnumb = ? WHERE idtally = ?");
          if (!$stmt) {
             throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
          }
-
-         $status = "Approved";
-         $stmt->bind_param("ssi", $status, $sealnumb, $idtally);
-
+         $stmt->bind_param("si", $sealnumb, $idtally);
          if (!$stmt->execute()) {
             throw new Exception("Execute failed: " . $stmt->error);
          }
 
-         // Dapatkan nomor tally (notally)
-         $queryNotally = "SELECT notally FROM tally WHERE idtally = ?";
-         $stmtNotally = $conn->prepare($queryNotally);
-         if (!$stmtNotally) {
-            throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-         }
-
-         $stmtNotally->bind_param("i", $idtally);
-         $stmtNotally->execute();
-         $resultNotally = $stmtNotally->get_result();
-         $rowNotally = $resultNotally->fetch_assoc();
-         $notally = $rowNotally['notally'];
-
-         // Prepare statement untuk update tabel salesorder
+         // Update progress di tabel salesorder
          $stmt_so = $conn->prepare("UPDATE salesorder SET progress = 'DRAFT' WHERE idso = ?");
          if (!$stmt_so) {
             throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
          }
-
          $stmt_so->bind_param("i", $idso);
-
          if (!$stmt_so->execute()) {
             throw new Exception("Execute failed: " . $stmt_so->error);
          }
 
-         // Insert log activity ke tabel logactivity
+         // Simpan log aktivitas
          $event = "Approved Tally";
-         $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
-         $stmtLogActivity = $conn->prepare($queryLogActivity);
+         $stmtLogActivity = $conn->prepare("INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)");
          if (!$stmtLogActivity) {
             throw new Exception("Prepare failed: (" . $conn->errno . ") " . $conn->error);
          }
-
          $stmtLogActivity->bind_param('iss', $iduser, $event, $notally);
-
          if (!$stmtLogActivity->execute()) {
             throw new Exception("Execute failed: " . $stmtLogActivity->error);
          }
 
-         // Commit transaksi jika semua query berhasil dieksekusi
+         // Commit transaksi jika semua query berhasil
          $conn->commit();
 
-         // Redirect ke halaman index.php setelah update berhasil
-         header("location: index.php");
+         // Redirect ke halaman index.php dengan pesan sukses
+         header("location: index.php?message=success");
          exit();
       } catch (Exception $e) {
-         // Rollback transaksi jika terjadi kesalahan
+         // Rollback jika terjadi kesalahan
          $conn->rollback();
-         echo "Error: " . $e->getMessage();
+         echo "Terjadi kesalahan: " . $e->getMessage();
          exit();
       } finally {
-         // Set autocommit kembali ke true setelah selesai
+         // Kembalikan autocommit ke true
          $conn->autocommit(true);
       }
    } else {
-      // Tampilkan form input
 ?>
       <!DOCTYPE html>
       <html>
@@ -121,7 +101,6 @@ if (isset($_GET['id'])) {
             }
          </script>
          <style>
-            /* Gaya untuk form popup */
             #popupForm {
                display: none;
                position: fixed;
@@ -149,8 +128,8 @@ if (isset($_GET['id'])) {
       <body onload="showPopup()">
          <div id="popupFormOverlay"></div>
          <div id="popupForm">
-            <form method="post" action="">
-               <label for="sealnumb">Isi Nomor Segel, Apabila Kiriman Tidak Menggunakan Segel Biarkan Kosong:</label><br>
+            <form method="post">
+               <label for="sealnumb">Isi Nomor Segel (Jika Ada)</label><br>
                <input type="text" id="sealnumb" name="sealnumb"><br><br>
                <button type="submit" name="submit" class="btn btn-sm btn-primary">Submit</button>
                <button type="button" onclick="hidePopup()">Cancel</button>
@@ -160,10 +139,10 @@ if (isset($_GET['id'])) {
 
       </html>
 <?php
-      exit(); // Pastikan untuk menghentikan eksekusi setelah menampilkan form
+      exit();
    }
 } else {
-   echo "ID tally tidak ditemukan.";
+   header("location: index.php?message=invalid_id");
    exit();
 }
 

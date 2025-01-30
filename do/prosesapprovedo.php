@@ -2,7 +2,9 @@
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
+   exit();
 }
+
 require "../konak/conn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,13 +21,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
    $status = "Approved";
    $idso = $_POST['idso'];
 
-   // Insert data ke tabel doreceipt
-   $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, idso, donumber, deliverydate, idcustomer, po, note, xbox, xweight, idusers, status)
-   VALUES ('$iddo', '$idso', '$donumber', '$deliverydate', '$idcustomer', '$po', '$note', '$xbox', '$xweight', '$idusers', '$status')";
-   $resultInsertDoreceipt = mysqli_query($conn, $queryInsertDoreceipt);
+   // **Pengecekan Status di Tabel DO**
+   $stmtCheckDO = $conn->prepare("SELECT status, is_deleted FROM do WHERE iddo = ?");
+   if (!$stmtCheckDO) {
+      die("Error: Prepare failed (" . $conn->errno . ") " . $conn->error);
+   }
+   $stmtCheckDO->bind_param("i", $iddo);
+   $stmtCheckDO->execute();
+   $resultCheckDO = $stmtCheckDO->get_result();
+   $rowCheckDO = $resultCheckDO->fetch_assoc();
 
-   if ($resultInsertDoreceipt) {
-      $iddoreceipt = mysqli_insert_id($conn); // Mendapatkan ID dari data yang baru saja di-insert
+   // **Jika DO sudah Approved dan is_deleted = 0, hentikan eksekusi**
+   if ($rowCheckDO['status'] === "Approved" && $rowCheckDO['is_deleted'] == 0) {
+      header("location: do.php?message=DO Sudah di Approved");
+      exit();
+   }
+
+   // **Jika DO sudah Invoiced dan is_deleted = 0, hentikan eksekusi**
+   if ($rowCheckDO['status'] === "Invoiced" && $rowCheckDO['is_deleted'] == 0) {
+      header("location: do.php?message=Invoiced Sudah Terbuat");
+      exit();
+   }
+
+   // **Jika tidak dalam kondisi di atas, lanjutkan proses**
+   $conn->autocommit(false); // Mulai transaksi
+
+   try {
+      // Insert data ke tabel doreceipt
+      $queryInsertDoreceipt = "INSERT INTO doreceipt (iddo, idso, donumber, deliverydate, idcustomer, po, note, xbox, xweight, idusers, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      $stmtInsertDoreceipt = $conn->prepare($queryInsertDoreceipt);
+      if (!$stmtInsertDoreceipt) {
+         throw new Exception("Prepare failed: " . $conn->error);
+      }
+      $stmtInsertDoreceipt->bind_param("iisssssddss", $iddo, $idso, $donumber, $deliverydate, $idcustomer, $po, $note, $xbox, $xweight, $idusers, $status);
+      $stmtInsertDoreceipt->execute();
+      $iddoreceipt = $conn->insert_id;
 
       // Insert data ke tabel doreceiptdetail
       if (isset($_POST['idbarang']) && isset($_POST['box']) && isset($_POST['weight'])) {
@@ -34,52 +65,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          $weights = $_POST['weight'];
          $notes = $_POST['notes'];
 
+         $queryInsertDoreceiptDetail = "INSERT INTO doreceiptdetail (iddoreceipt, idbarang, box, weight, notes) VALUES (?, ?, ?, ?, ?)";
+         $stmtInsertDoreceiptDetail = $conn->prepare($queryInsertDoreceiptDetail);
+
          for ($i = 0; $i < count($idbarang); $i++) {
             $box = intval($boxes[$i]);
             $weight = floatval($weights[$i]);
             $note = $notes[$i];
 
-            $queryInsertDoreceiptDetail = "INSERT INTO doreceiptdetail (iddoreceipt, idbarang, box, weight, notes)
-                                              VALUES ('$iddoreceipt', '$idbarang[$i]', '$box', '$weight', '$note')";
-            $resultInsertDoreceiptDetail = mysqli_query($conn, $queryInsertDoreceiptDetail);
-            if (!$resultInsertDoreceiptDetail) {
-               die("Error saat memasukkan data doreceiptdetail: " . mysqli_error($conn));
-            }
+            $stmtInsertDoreceiptDetail->bind_param("iidss", $iddoreceipt, $idbarang[$i], $box, $weight, $note);
+            $stmtInsertDoreceiptDetail->execute();
          }
       }
 
-      // Update status pada tabel do menjadi "Approved"
-      $queryUpdateDo = "UPDATE do SET status = 'Approved', rweight = '$xweight' WHERE iddo = '$iddo'";
-      $resultUpdateDo = mysqli_query($conn, $queryUpdateDo);
+      // Update status pada tabel do
+      $queryUpdateDo = "UPDATE do SET status = 'Approved', rweight = ? WHERE iddo = ?";
+      $stmtUpdateDo = $conn->prepare($queryUpdateDo);
+      $stmtUpdateDo->bind_param("di", $xweight, $iddo);
+      $stmtUpdateDo->execute();
 
-      if (!$resultUpdateDo) {
-         die("Error saat mengupdate status pada tabel do: " . mysqli_error($conn));
-      }
-
-      // Update status pada tabel salesorder menjadi "Delivered"
-      $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE idso = '$idso'";
-      $resultUpdateSo = mysqli_query($conn, $queryUpdateSo);
-
-      if (!$resultUpdateSo) {
-         die("Error saat mengupdate progress pada tabel salesorder: " . mysqli_error($conn));
-      }
+      // Update status pada tabel salesorder
+      $queryUpdateSo = "UPDATE salesorder SET progress = 'Delivered' WHERE idso = ?";
+      $stmtUpdateSo = $conn->prepare($queryUpdateSo);
+      $stmtUpdateSo->bind_param("i", $idso);
+      $stmtUpdateSo->execute();
 
       // Insert ke tabel logactivity
       $event = "Approve DO";
-      $docnumb = $donumber;
-      $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
+      $waktu = date('Y-m-d H:i:s');
+      $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, ?)";
+      $stmtLogActivity = $conn->prepare($queryLogActivity);
+      $stmtLogActivity->bind_param("isss", $idusers, $event, $donumber, $waktu);
+      $stmtLogActivity->execute();
 
-      $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
-                           VALUES ('$idusers', '$event', '$docnumb', '$waktu')";
-      $resultLogActivity = mysqli_query($conn, $queryLogActivity);
+      // Commit transaksi jika semua query berhasil
+      $conn->commit();
 
-      if (!$resultLogActivity) {
-         die("Error saat memasukkan data log activity: " . mysqli_error($conn));
-      }
-
-      header("Location: do.php"); // Ganti do.php dengan halaman tujuan setelah data berhasil disimpan
-      exit;
-   } else {
-      die("Error saat memasukkan data doreceipt: " . mysqli_error($conn));
+      header("Location: do.php?message=success");
+      exit();
+   } catch (Exception $e) {
+      // Rollback jika terjadi kesalahan
+      $conn->rollback();
+      echo "Terjadi kesalahan: " . $e->getMessage();
+      exit();
+   } finally {
+      $conn->autocommit(true);
    }
 }
