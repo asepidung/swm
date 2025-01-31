@@ -9,37 +9,39 @@ include "../navbar.php";
 include "../mainsidebar.php";
 $awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
-
-$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM do WHERE status = 'Approved' AND is_deleted = 0";
-$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
-$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
-$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 <div class="content-wrapper">
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
-         <div class="row">
-            <div class="col-2">
+         <div class="row g-2 align-items-center">
+            <div class="col-lg-2 col-md-3 col-6">
                <form method="GET" action="">
                   <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
             </div>
-            <div class="col-2">
+            <div class="col-lg-2 col-md-3 col-6">
                <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
             </div>
-            <div class="col-2">
-               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+            <div class="col-lg-1 col-md-2 col-12 d-grid">
+               <button type="submit" class="btn btn-sm btn-primary" name="search">
+                  <i class="fas fa-search"></i> Cari
+               </button>
                </form>
             </div>
-            <div class="col-3">
-               <a href="invdraft.php" class="btn btn-sm btn-outline-primary float-right"><span class="badge badge-danger"> <?= $approvedCount; ?></span> Draft Invoice</button></a>
-            </div>
-            <div class="col-3">
-               <a href="tf.php" class="btn btn-sm btn-outline-warning float-right"><span class="badge badge-warning"> <?= $belumTFCount; ?></span> Invoice Belum TF</button></a>
+            <div class="col-lg-3 col-md-4 col-12 text-end">
+               <a href="invdraft.php" class="btn btn-sm btn-outline-primary">
+                  <span class="badge badge-danger"><?= $draftinvoice; ?></span> Draft Invoice
+               </a>
+               <a href="tf.php" class="btn btn-sm btn-outline-warning">
+                  <span class="badge badge-warning"><?= $belumTFCount; ?></span> Invoice Belum TF
+               </a>
             </div>
          </div>
-      </div><!-- /.container-fluid -->
+      </div>
    </div>
+
+
+
    <!-- /.content-header -->
 
    <!-- Main content -->

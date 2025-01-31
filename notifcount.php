@@ -7,6 +7,19 @@ $resulttallyCount = mysqli_query($conn, $querytallyCount);
 $rowtallyCount = mysqli_fetch_assoc($resulttallyCount);
 $drafttally = $rowtallyCount['drafttally'];
 
+// hitung draft do
+$querydoCount = "SELECT COUNT(*) AS draftdo FROM tally WHERE stat = 'Approved' AND is_deleted = 0";
+$resultdoCount = mysqli_query($conn, $querydoCount);
+$rowdoCount = mysqli_fetch_assoc($resultdoCount);
+$draftdo = $rowdoCount['draftdo'];
+
+// hitung draft invoice
+$queryinvoiceCount = "SELECT COUNT(*) AS draftinvoice FROM doreceipt WHERE status = 'Approved' AND is_deleted = 0";
+$resultinvoiceCount = mysqli_query($conn, $queryinvoiceCount);
+$rowinvoiceCount = mysqli_fetch_assoc($resultinvoiceCount);
+$draftinvoice = $rowinvoiceCount['draftinvoice'];
+
+
 // requestbeef
 $CountRequest = 0;
 $CountWaiting = 0;

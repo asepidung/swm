@@ -324,7 +324,9 @@ include "notifcount.php";
                            <li class="nav-item">
                               <a href="do/do.php" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Delivery Order</p>
+                                 <p>Delivery Order
+                                    <span class="badge badge-info right"><?= $draftdo ?></span>
+                                 </p>
                               </a>
                            </li>
                            <li class="nav-item">
@@ -467,7 +469,9 @@ include "notifcount.php";
                            <li class="nav-item">
                               <a href="inv/invoice.php" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Invoice</p>
+                                 <p>Invoice
+                                    <span class="badge badge-info right"><?= $draftinvoice ?></span>
+                                 </p>
                               </a>
                            </li>
                            <li class="nav-item">

@@ -9,6 +9,7 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+include "../notifcount.php";
 
 // Ambil parameter pesan dari URL (jika ada)
 $message = isset($_GET['message']) ? $_GET['message'] : "";
@@ -21,10 +22,6 @@ $rowMaxDate = mysqli_fetch_assoc($resultMaxDate);
 $maxDate = $rowMaxDate['max_date'];
 $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
 
-$queryApprovedCount = "SELECT COUNT(*) AS approved_count FROM tally WHERE stat = 'Approved'";
-$resultApprovedCount = mysqli_query($conn, $queryApprovedCount);
-$rowApprovedCount = mysqli_fetch_assoc($resultApprovedCount);
-$approvedCount = $rowApprovedCount['approved_count'];
 ?>
 
 <div class="content-wrapper">
@@ -40,6 +37,24 @@ $approvedCount = $rowApprovedCount['approved_count'];
                      </button>
                   </div>
                <?php endif; ?>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-2">
+               <form method="GET" action="">
+                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+            </div>
+            <div class="col-2">
+               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+            </div>
+            <div class="col">
+               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+               </form>
+            </div>
+            <div class="col-2">
+               <a href="draftdo.php" class="btn btn-block btn-sm btn-outline-primary">
+                  <span class="badge badge-danger"><?= $draftdo ?></span> Draft DO
+               </a>
             </div>
          </div>
       </div>
@@ -96,28 +111,23 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
                                        <a href="editapprovedo.php?iddo=<?= $tampil['iddo'] ?>" onclick="return confirm('Apakah Anda yakin ingin meng-unapprove DO ini?')">
-                                          <span class="badge badge-primary" data-toggle="tooltip" data-placement="bottom" title="Klik untuk Unapprove">
-                                             <?= $tampil['status']; ?>
-                                          </span>
+                                          <span class="badge badge-primary">Approved</span>
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
-                                          <span class="badge badge-danger" data-toggle="tooltip" data-placement="bottom" title="Klik Untuk Approve">
-                                             Klik Untuk Approve
-                                          </span>
+                                          <span class="badge badge-danger">Klik Untuk Approve</span>
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Rejected") { ?>
-                                       <span class="badge badge-warning"> <?= $tampil['status']; ?></span>
+                                       <span class="badge badge-warning">Rejected</span>
                                     <?php } elseif ($tampil['status'] == "Invoiced") { ?>
-                                       <!-- <span class="badge badge-success"> <?= $tampil['status']; ?></span> -->
-                                       Invoiced
+                                       <span class="badge badge-success">Invoiced</span>
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>
                                  </td>
                                  <td class="text-center">
                                     <div class="btn-group">
-                                       <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown">
                                           <i class="fas fa-bars"></i>
                                        </button>
                                        <div class="dropdown-menu">
@@ -127,12 +137,6 @@ $approvedCount = $rowApprovedCount['approved_count'];
                                           <?php if ($tampil['status'] !== "Rejected" && $tampil['status'] !== "Invoiced") { ?>
                                              <a class="dropdown-item" href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                                 <i class="fas fa-edit"></i> Edit
-                                             </a>
-                                             <a class="dropdown-item" href="rejectdo.php?iddo=<?= $tampil['iddo']; ?>&idso=<?= $idso ?>" onclick="return confirm('Apakah Anda yakin ingin menolak DO ini?')">
-                                                <i class="fas fa-times"></i> Reject
-                                             </a>
-                                             <a class="dropdown-item" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus Surat Jalan ini?')">
-                                                <i class="fas fa-trash"></i> Hapus
                                              </a>
                                           <?php } ?>
                                        </div>
