@@ -246,7 +246,7 @@ $accnumber = $row_invoice['accnumber'];
             <b class="bggelap">
                Says :
                <i>
-                  <?= terbilang($row_invoice['balance']) . " " . "Rupiah" ?>
+                  <?= terbilang_desimal($row_invoice['balance']); ?>
                </i>
             </b>
          </td>
@@ -262,31 +262,87 @@ $accnumber = $row_invoice['accnumber'];
    </table>
    <br>
    <div class=" h2tea">Payment Methods</div>
-   <table width="100%">
-      <tr>
-         <td colspan="4"><?= $banksegment; ?></td>
-         <td valign="top" align="center" rowspan="2">
-            F I N A N C E
-         </td>
-      </tr>
-      <tr>
-         <td width="20%">ACC Name</td>
-         <td width="5%">:</td>
-         <td width="25%"><strong><?= $accname; ?></strong></td>
-         <td width="25%"></td>
-      </tr>
-      <tr>
-         <td width="20%">ACC. NUMBER</td>
-         <td width="5%">:</td>
-         <td width="25%"><strong><?= $accnumber; ?></strong></td>
-         <td></td>
-      </tr>
-      <tr>
-         <td colspan="4"></td>
-         <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
-      </tr>
-   </table>
-  
+   <br>
+   <?php
+   // Mengecek apakah nama_customer mengandung kata "LION"
+   if (strpos(strtoupper($row_invoice['nama_customer']), "LION") !== false) {
+   ?>
+      <!-- Jika nama_customer mengandung kata "LION" -->
+      <table width="100%">
+         <tr>
+            <td colspan="4">BNI (BANK NEGARA INDONESIA) KCP BEKASI CITRA GRAND</td>
+            <td valign="top" align="center" rowspan="2">
+               F I N A N C E
+            </td>
+         </tr>
+         <tr>
+            <td width="20%">ACC Name</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>SANTI WIJAYA L</strong></td>
+            <td width="25%"></td>
+         </tr>
+         <tr>
+            <td width="20%">ACC. NUMBER</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>0335163001</strong></td>
+            <td></td>
+         </tr>
+         <tr>
+            <td colspan="4"></td>
+            <td valign="bottom" align="center" width="25%"><br><br>....................................</td>
+         </tr>
+      </table>
+   <?php
+   } else {
+   ?>
+      <!-- Jika nama_customer TIDAK mengandung kata "LION" -->
+      <table width="100%">
+         <tr>
+            <td colspan="4">BCA (BANK CENTRAL ASIA) KCP BEKASI CITRA GRAND</td>
+            <td valign="top" align="center" rowspan="7">
+               F I N A N C E
+               <br><br><br><br><br>
+               ..................................
+            </td>
+         </tr>
+         <tr>
+            <td width="20%">ACC Name</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>PT. SANTI WIJAYA MEAT</strong></td>
+            <td width="25%"></td>
+         </tr>
+         <tr>
+            <td width="20%">ACC. NUMBER</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>7115534882</strong></td>
+            <td></td>
+         </tr>
+         <tr>
+            <td width="20%"><br></td>
+            <td width="5%"></td>
+            <td width="25%"></td>
+            <td valign="bottom" align="center" width="25%"></td>
+         </tr>
+         <tr>
+            <td width="20%" colspan="4">BNI (BANK NEGARA INDONESIA) KCP BEKASI CITRA GRAND</td>
+         </tr>
+         <tr>
+            <td width="20%">ACC Name</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>PT. SANTI WIJAYA MEAT</strong></td>
+            <td width="25%"></td>
+         </tr>
+         <tr>
+            <td width="20%">ACC. NUMBER</td>
+            <td width="5%">:</td>
+            <td width="25%"><strong>8585889991</strong></td>
+            <td></td>
+         </tr>
+      </table>
+   <?php
+   }
+   ?>
+
    <div class="floatingButtonContainer">
       <button class="floatingButton" onclick="window.history.back();">Kembali</button>
       <button class="floatingButton" onclick="window.print();">Print</button>
