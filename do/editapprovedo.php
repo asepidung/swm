@@ -7,50 +7,78 @@ if (!isset($_SESSION['login'])) {
 
 require "../konak/conn.php";
 
-if (isset($_GET['iddo'])) {
-   $iddo = $_GET['iddo'];
+$iddo = isset($_GET['iddo']) ? intval($_GET['iddo']) : 0;
 
-   // Soft delete data dari tabel doreceipt
-   $query_soft_delete_doreceipt = "UPDATE doreceipt 
-                                    SET is_deleted = 1 
-                                    WHERE iddo = ?";
-   $stmt_soft_delete_doreceipt = $conn->prepare($query_soft_delete_doreceipt);
-   $stmt_soft_delete_doreceipt->bind_param("i", $iddo);
-   $stmt_soft_delete_doreceipt->execute();
-   $stmt_soft_delete_doreceipt->close();
+if ($iddo > 0) {
+   // Cek apakah iddo ada di database
+   $query_check = "SELECT COUNT(*) FROM do WHERE iddo = ?";
+   $stmt_check = $conn->prepare($query_check);
+   $stmt_check->bind_param("i", $iddo);
+   $stmt_check->execute();
+   $stmt_check->bind_result($count);
+   $stmt_check->fetch();
+   $stmt_check->close();
 
-   // Update data di tabel do kolom status menjadi Unapproved
-   $query_update_do = "UPDATE do 
-                        SET status = 'Unapproved' 
-                        WHERE iddo = ?";
-   $stmt_update_do = $conn->prepare($query_update_do);
-   $stmt_update_do->bind_param("i", $iddo);
-   $stmt_update_do->execute();
-   $stmt_update_do->close();
+   if ($count == 0) {
+      die("Error: Data DO tidak ditemukan.");
+   }
 
-   // Mendapatkan donumber dari tabel do berdasarkan $iddo
+   // Cek apakah status DO sudah "Invoiced"
+   $query_check_status = "SELECT status FROM do WHERE iddo = ?";
+   $stmt_check_status = $conn->prepare($query_check_status);
+   $stmt_check_status->bind_param("i", $iddo);
+   $stmt_check_status->execute();
+   $stmt_check_status->bind_result($status);
+   $stmt_check_status->fetch();
+   $stmt_check_status->close();
+
+   if ($status == "Invoiced") {
+      // Jika status DO sudah "Invoiced", kembalikan ke halaman do.php dengan pesan error
+      header("location: do.php?message=Gagal Unapprove! Invoice sudah terbit.");
+      exit();
+   }
+
+   // Soft delete doreceipt
+   $query_soft_delete_doreceipt = "UPDATE doreceipt SET is_deleted = 1 WHERE iddo = ?";
+   $stmt = $conn->prepare($query_soft_delete_doreceipt);
+   $stmt->bind_param("i", $iddo);
+   $stmt->execute();
+   $stmt->close();
+
+   // Update status do menjadi Unapproved
+   $query_update_do = "UPDATE do SET status = 'Unapproved' WHERE iddo = ?";
+   $stmt = $conn->prepare($query_update_do);
+   $stmt->bind_param("i", $iddo);
+   $stmt->execute();
+   $stmt->close();
+
+   // Ambil donumber berdasarkan iddo
    $query_select_donumber = "SELECT donumber FROM do WHERE iddo = ?";
-   $stmt_select_donumber = $conn->prepare($query_select_donumber);
-   $stmt_select_donumber->bind_param("i", $iddo);
-   $stmt_select_donumber->execute();
-   $stmt_select_donumber->bind_result($donumber);
-   $stmt_select_donumber->fetch();
-   $stmt_select_donumber->close();
+   $stmt = $conn->prepare($query_select_donumber);
+   $stmt->bind_param("i", $iddo);
+   $stmt->execute();
+   $stmt->bind_result($donumber);
+   $stmt->fetch();
+   $stmt->close();
 
-   // Insert ke tabel logactivity
+   if (!isset($_SESSION['idusers'])) {
+      die("Error: Pengguna tidak dikenali.");
+   }
+
+   // Insert ke logactivity
    $idusers = $_SESSION['idusers'];
    $event = "Unapproved DO";
-   $docnumb = $donumber;
-   $waktu = date('Y-m-d H:i:s'); // Waktu saat ini
+   $waktu = date('Y-m-d H:i:s');
 
-   $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) 
-                         VALUES (?, ?, ?, ?)";
-   $stmt_log_activity = $conn->prepare($queryLogActivity);
-   $stmt_log_activity->bind_param("isss", $idusers, $event, $docnumb, $waktu);
-   $stmt_log_activity->execute();
-   $stmt_log_activity->close();
+   $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, ?)";
+   $stmt = $conn->prepare($queryLogActivity);
+   $stmt->bind_param("isss", $idusers, $event, $donumber, $waktu);
+   $stmt->execute();
+   $stmt->close();
 
-   // Redirect ke halaman daftar DO
+   // Redirect ke halaman do.php
    header("location: do.php");
    exit();
+} else {
+   die("Error: ID DO tidak valid.");
 }

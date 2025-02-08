@@ -131,22 +131,27 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                           <i class="fas fa-bars"></i>
                                        </button>
                                        <div class="dropdown-menu">
+                                          <!-- Opsi Lihat -->
                                           <a class="dropdown-item" href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>">
                                              <i class="fas fa-eye"></i> Lihat
                                           </a>
+
+                                          <!-- Opsi Edit (hanya jika status bukan Rejected atau Invoiced) -->
                                           <?php if ($tampil['status'] !== "Rejected" && $tampil['status'] !== "Invoiced") { ?>
                                              <a class="dropdown-item" href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                                 <i class="fas fa-edit"></i> Edit
                                              </a>
                                           <?php } ?>
-                                          <?php if ($tampil['status'] !== "Rejected" && $tampil['status'] !== "Invoiced") { ?>
-                                             <a class="dropdown-item" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus DO ini?');">
+
+                                          <!-- Opsi Hapus (hanya muncul jika status Unapproved) -->
+                                          <?php if ($tampil['status'] === "Unapproved") { ?>
+                                             <a class="dropdown-item" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus DO ini?');">
                                                 <i class="fas fa-trash"></i> Hapus
                                              </a>
                                           <?php } ?>
                                        </div>
                                     </div>
-                                 </td>
                                  </td>
                               </tr>
                            <?php $no++;

@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
@@ -9,19 +8,33 @@ if (!isset($_SESSION['login'])) {
 require "../konak/conn.php";
 $iddo = intval($_GET['iddo']);
 
+// Pengecekan awal: Pastikan `iddo` ada dalam tabel `do`
+$sqlCheckDO = "SELECT status, donumber FROM do WHERE iddo = ?";
+$stmtCheckDO = $conn->prepare($sqlCheckDO);
+$stmtCheckDO->bind_param("i", $iddo);
+$stmtCheckDO->execute();
+$stmtCheckDO->store_result();
+
+// Jika tidak ditemukan DO dengan `iddo`
+if ($stmtCheckDO->num_rows == 0) {
+   die("Error: Delivery Order tidak ditemukan.");
+}
+
+// Ambil status dan donumber DO
+$stmtCheckDO->bind_result($status, $donumber);
+$stmtCheckDO->fetch();
+$stmtCheckDO->close();
+
+// Pengecekan jika status DO bukan "Unapproved"
+if ($status !== "Unapproved") {
+   echo "<script>alert('Gagal menghapus! Silahkan Unapproved terlebih dahulu!.'); window.location='do.php';</script>";
+   exit();
+}
+
 // Mulai transaksi
 $conn->begin_transaction();
 
 try {
-   // Dapatkan nomor DO (donumber) sebelum dihapus
-   $sqlGetDonumber = "SELECT donumber FROM do WHERE iddo = ?";
-   $stmtGetDonumber = $conn->prepare($sqlGetDonumber);
-   $stmtGetDonumber->bind_param("i", $iddo);
-   $stmtGetDonumber->execute();
-   $stmtGetDonumber->bind_result($donumber);
-   $stmtGetDonumber->fetch();
-   $stmtGetDonumber->close();
-
    // Update kolom stat di tabel tally menjadi 'Approved'
    $sqlUpdateTally = "UPDATE tally 
                        INNER JOIN do ON tally.idtally = do.idtally
