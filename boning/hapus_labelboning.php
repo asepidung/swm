@@ -4,6 +4,7 @@ if (!isset($_SESSION['login'])) {
    header("location: ../verifications/login.php");
    exit(); // Pastikan eksekusi berhenti setelah redirect
 }
+
 // Koneksi ke database
 require "../konak/conn.php";
 
@@ -13,20 +14,40 @@ if (isset($_GET['id']) && isset($_GET['idboning'])) {
    $idboning = $_GET['idboning'];
    $kdbarcode = $_GET['kdbarcode'];
 
-   // Lakukan soft delete data di tabel labelboning dengan mengupdate status is_deleted menjadi 1
-   $updateLabelBoning = mysqli_query($conn, "UPDATE labelboning SET is_deleted = 1 WHERE idlabelboning = '$idlabelboning'");
+   // Cek terlebih dahulu apakah kdbarcode masih ada di tabel stock
+   $stmtCheckStock = $conn->prepare("SELECT COUNT(*) FROM stock WHERE kdbarcode = ?");
+   $stmtCheckStock->bind_param("s", $kdbarcode);
+   $stmtCheckStock->execute();
+   $stmtCheckStock->bind_result($stockCount);
+   $stmtCheckStock->fetch();
+   $stmtCheckStock->close();
 
-   // Lakukan hard delete data di tabel stock berdasarkan kdbarcode
-   $hapusstock = mysqli_query($conn, "DELETE FROM stock WHERE kdbarcode = '$kdbarcode'");
+   // Jika barcode tidak ditemukan di tabel stock, hentikan query dan beri alert
+   if ($stockCount == 0) {
+      echo "<script>alert('Product Sudah digunakan di proses lain'); window.location='labelboning.php?id=$idboning';</script>";
+      exit; // Menghentikan eksekusi lebih lanjut
+   }
+
+   // Lakukan soft delete data di tabel labelboning
+   $stmtLabelBoning = $conn->prepare("UPDATE labelboning SET is_deleted = 1 WHERE idlabelboning = ?");
+   $stmtLabelBoning->bind_param("i", $idlabelboning);
+   $stmtLabelBoning->execute();
+
+   // Lakukan hard delete data di tabel stock
+   $stmtStock = $conn->prepare("DELETE FROM stock WHERE kdbarcode = ?");
+   $stmtStock->bind_param("s", $kdbarcode);
+   $stmtStock->execute();
 
    // Periksa apakah penghapusan data berhasil dilakukan
-   if ($hapusstock && $updateLabelBoning) {
+   if ($stmtStock->affected_rows > 0 && $stmtLabelBoning->affected_rows > 0) {
       // Catat aktivitas ke logactivity setelah data berhasil dihapus
       $idusers = $_SESSION['idusers'];
-      $logSql = "INSERT INTO logactivity (iduser, event, docnumb) VALUES ('$idusers', 'Soft Hapus Label Boning', '$kdbarcode')";
-      mysqli_query($conn, $logSql);
+      $logSql = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, 'Hapus Label Boning', ?)";
+      $stmtLog = $conn->prepare($logSql);
+      $stmtLog->bind_param("is", $idusers, $kdbarcode);
+      $stmtLog->execute();
 
-      // Jika berhasil, arahkan kembali ke halaman sebelumnya dengan pesan sukses dan idboning yang dilewatkan sebagai parameter query string
+      // Jika berhasil, arahkan kembali ke halaman sebelumnya dengan pesan sukses
       header("Location: labelboning.php?id=$idboning");
       exit;
    } else {
@@ -38,4 +59,3 @@ if (isset($_GET['id']) && isset($_GET['idboning'])) {
    header("Location: labelboning.php?id=$idboning");
    exit;
 }
-?>
