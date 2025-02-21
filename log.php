@@ -11,6 +11,8 @@ $query = "SELECT * FROM role WHERE idusers = $idusers";
 $result = mysqli_query($conn, $query);
 $role = mysqli_fetch_assoc($result);
 include "kebutuhanindex.php";
+$awal = isset($_GET['awal']) ? $_GET['awal'] : date('Y-m-01');
+$akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -525,6 +527,25 @@ include "kebutuhanindex.php";
          <!-- /.sidebar -->
       </aside>
       <div class="content-wrapper">
+         <div class="content-header">
+            <div class="container-fluid">
+               <div class="row g-2 align-items-center">
+                  <div class="col-lg-2 col-md-3 col-6">
+                     <form method="GET" action="">
+                        <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
+                  </div>
+                  <div class="col-lg-2 col-md-3 col-6">
+                     <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
+                  </div>
+                  <div class="col-lg-1 col-md-2 col-12 d-grid">
+                     <button type="submit" class="btn btn-sm btn-primary" name="search">
+                        <i class="fas fa-search"></i> Cari
+                     </button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
          <section class="content">
             <div class="container-fluid">
                <div class="row">
@@ -547,6 +568,7 @@ include "kebutuhanindex.php";
                                  $query = "SELECT l.*, u.fullname 
                                      FROM logactivity l
                                      JOIN users u ON l.iduser = u.idusers
+                                      WHERE l.waktu BETWEEN '$awal' AND '$akhir'
                                      ORDER BY l.waktu DESC";
                                  $result = mysqli_query($conn, $query);
 

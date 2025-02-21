@@ -61,6 +61,7 @@ $limit = $_SESSION['limit'];
                                  <th>Pcs</th>
                                  <th>POD</th>
                                  <th>Origin</th>
+                                 <th>TimeScan</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -77,6 +78,7 @@ $limit = $_SESSION['limit'];
                                  $nmgrade = $tampil['nmgrade'];
                                  $barcode = $tampil['barcode'];
                                  $pod = $tampil['pod'];
+                                 $creatime = $tampil['creatime'];
                                  $podDate = new DateTime($pod);
                                  $today = new DateTime();
                                  $interval = $today->diff($podDate);
@@ -124,6 +126,9 @@ $limit = $_SESSION['limit'];
                                           echo "Unindentified";
                                        }
                                        ?>
+                                    </td>
+                                    <td>
+                                       <?= date("H:i:s", strtotime($creatime)); ?>
                                     </td>
                                  </tr>
                               <?php

@@ -109,6 +109,7 @@ $limit = $_SESSION['limit'];
                                  <th>POD</th>
                                  <th>Origin</th>
                                  <th>Hapus</th>
+                                 <th>ScanTime</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -125,6 +126,7 @@ $limit = $_SESSION['limit'];
                                  $nmgrade = $tampil['nmgrade'];
                                  $barcode = $tampil['barcode'];
                                  $pod = $tampil['pod'];
+                                 $scantime = $tampil['creatime'];
                                  $podDate = new DateTime($pod);
                                  $today = new DateTime();
                                  $interval = $today->diff($podDate);
@@ -182,6 +184,9 @@ $limit = $_SESSION['limit'];
                                           <i class="far fa-times-circle"></i>
                                        </a>
                                     </td>
+                                    <td>
+                                       <?= date("H:i:s", strtotime($scantime)); ?>
+                                    </td>
                                  </tr>
                               <?php
                                  $no++;
@@ -223,19 +228,19 @@ $limit = $_SESSION['limit'];
                                        <td class="ml-1"> <?= $row['nmbarang'] ?></td>
                                        <td class="text-center"><?= number_format($row['weight'], 2) ?></td>
                                        <td class="text-right">
-                                       <?php
-                                       $totalWeightQuery = "SELECT SUM(weight) AS total_weight
+                                          <?php
+                                          $totalWeightQuery = "SELECT SUM(weight) AS total_weight
                                        FROM tallydetail
                                        WHERE idtally = $idtally AND idbarang = " . $row['idbarang'];
-                                       $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
-                                       if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
-                                          // Menggunakan null coalescing operator untuk memastikan nilai default jika null
-                                          $totalWeight = $totalWeightRow['total_weight'] ?? 0; // default ke 0 jika null
-                                          echo number_format($totalWeight, 2); // Format dengan dua desimal
-                                       } else {
-                                          echo "0"; // Jika tidak ada data, tampilkan 0
-                                       }
-                                       ?>
+                                          $totalWeightResult = mysqli_query($conn, $totalWeightQuery);
+                                          if ($totalWeightResult && $totalWeightRow = mysqli_fetch_assoc($totalWeightResult)) {
+                                             // Menggunakan null coalescing operator untuk memastikan nilai default jika null
+                                             $totalWeight = $totalWeightRow['total_weight'] ?? 0; // default ke 0 jika null
+                                             echo number_format($totalWeight, 2); // Format dengan dua desimal
+                                          } else {
+                                             echo "0"; // Jika tidak ada data, tampilkan 0
+                                          }
+                                          ?>
                                        </td>
                                        <td class="text-center">
                                           <?php
