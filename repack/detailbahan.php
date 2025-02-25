@@ -13,7 +13,20 @@ $idrepack = $_GET['id'];
       <div class="row">
          <div class="col-3">
             <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Kembali</button></a>
-            <a href="detailhasil.php?id=<?= $idrepack ?>"><button type="button" class="btn btn-outline-success">Cetak Hasil <i class="fas fa-arrow-alt-circle-right"></i></button></a>
+            <?php
+            // Query untuk memeriksa apakah ada data di tabel detailbahan
+            $queryDetailBahan = "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack";
+            $resultDetailBahan = mysqli_query($conn, $queryDetailBahan);
+            $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
+
+            // Cek jika tidak ada data di detailbahan, maka tombol disabled
+            $disabled = ($rowDetailBahan['total'] == 0) ? 'disabled' : '';
+            ?>
+
+            <a href="detailhasil.php?id=<?= $idrepack ?>" class="btn btn-outline-success <?= $disabled; ?>" title="Cetak Hasil" <?= $disabled ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
+               Cetak Hasil <i class="fas fa-arrow-alt-circle-right"></i>
+            </a>
+
          </div>
          <div class="col">
             <span class="text-danger text-center">
@@ -205,47 +218,47 @@ $idrepack = $_GET['id'];
                         </table>
                         <strong>HASIL</strong>
                         <table class="table table-bordered table-striped table-sm">
-   <thead class="text-center">
-      <tr>
-         <th>NAMA BARANG</th>
-         <th>BOX</th>
-         <th>QTY</th>
-      </tr>
-   </thead>
-   <tbody>
-      <?php
-      $query = "SELECT detailhasil.idbarang, barang.nmbarang, 
+                           <thead class="text-center">
+                              <tr>
+                                 <th>NAMA BARANG</th>
+                                 <th>BOX</th>
+                                 <th>QTY</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <?php
+                              $query = "SELECT detailhasil.idbarang, barang.nmbarang, 
                 SUM(detailhasil.qty) AS total_qty, 
                 COUNT(detailhasil.qty) AS count_qty
                 FROM detailhasil
                 INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
                 WHERE detailhasil.idrepack = $idrepack AND detailhasil.is_deleted = 0
                 GROUP BY detailhasil.idbarang, barang.nmbarang";
-      $result = mysqli_query($conn, $query);
-      while ($row = mysqli_fetch_assoc($result)) { ?>
-         <tr>
-            <td><?= $row['nmbarang'] ?></td>
-            <td class="text-center"><?= $row['count_qty'] ?></td>
-            <td class="text-right"><?= number_format($row['total_qty'], 2) ?></td>
-         </tr>
-      <?php }
-      ?>
-   </tbody>
-   <tfoot>
-      <?php
-      $queryhasil = "SELECT SUM(detailhasil.qty) AS hasilqty, COUNT(detailhasil.qty) AS hasilbox
+                              $result = mysqli_query($conn, $query);
+                              while ($row = mysqli_fetch_assoc($result)) { ?>
+                                 <tr>
+                                    <td><?= $row['nmbarang'] ?></td>
+                                    <td class="text-center"><?= $row['count_qty'] ?></td>
+                                    <td class="text-right"><?= number_format($row['total_qty'], 2) ?></td>
+                                 </tr>
+                              <?php }
+                              ?>
+                           </tbody>
+                           <tfoot>
+                              <?php
+                              $queryhasil = "SELECT SUM(detailhasil.qty) AS hasilqty, COUNT(detailhasil.qty) AS hasilbox
                      FROM detailhasil
                      WHERE detailhasil.idrepack = $idrepack AND detailhasil.is_deleted = 0";
-      $resulthasil = mysqli_query($conn, $queryhasil);
-      $rowhasil = mysqli_fetch_assoc($resulthasil);
-      ?>
-      <tr class="text-right">
-         <th>TOTAL</th>
-         <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
-         <th><?= isset($rowhasil['hasilqty']) ? number_format($rowhasil['hasilqty'], 2) : '0.00'; ?></th>
-      </tr>
-   </tfoot>
-</table>
+                              $resulthasil = mysqli_query($conn, $queryhasil);
+                              $rowhasil = mysqli_fetch_assoc($resulthasil);
+                              ?>
+                              <tr class="text-right">
+                                 <th>TOTAL</th>
+                                 <th class="text-center"><?= $rowhasil['hasilbox']; ?></th>
+                                 <th><?= isset($rowhasil['hasilqty']) ? number_format($rowhasil['hasilqty'], 2) : '0.00'; ?></th>
+                              </tr>
+                           </tfoot>
+                        </table>
 
                      </div>
                   </div>

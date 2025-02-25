@@ -656,7 +656,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
          $('#example2').DataTable({
             "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": true,
             "autoWidth": true,

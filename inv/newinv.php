@@ -170,7 +170,7 @@ $resultdoreceiptdetail = mysqli_query($conn, $querydoreceiptdetail);
                                           // Cek apakah 'nama_customer' mengandung 'DCA' atau 'DCB'
                                           if (
                                              isset($rowDo['nama_customer']) &&
-                                             (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false)
+                                             (strpos($rowDo['nama_customer'], 'DCA') !== false || strpos($rowDo['nama_customer'], 'DCB') !== false || strpos($rowDo['nama_customer'], 'DCC') !== false)
                                           ) {
                                              $discountValue = 2; // Diskon 2% untuk DCA atau DCB
                                           } elseif (isset($rowdoreceiptdetail['discount']) && is_numeric($rowdoreceiptdetail['discount'])) {

@@ -92,3 +92,13 @@ $queryPobeefCount = "
 $resultPobeefCount = mysqli_query($conn, $queryPobeefCount);
 $rowPobeefCount = mysqli_fetch_assoc($resultPobeefCount);
 $pobeefCount = $rowPobeefCount['pobeefCount'];
+
+// repack
+$queryrepackCount = "
+    SELECT COUNT(*) AS repackCount
+    FROM repack
+    WHERE is_deleted = 0 AND kunci = 1
+";
+$resultrepackCount = mysqli_query($conn, $queryrepackCount);
+$rowrepackCount = mysqli_fetch_assoc($resultrepackCount);
+$repackCount = $rowrepackCount['repackCount'];

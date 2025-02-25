@@ -32,7 +32,7 @@ include "../mainsidebar.php";
                         <div class="col">
                            <div class="form-group">
                               <label for="note">Keterangan</label>
-                              <input type="text" class="form-control" name="note">
+                              <input type="text" class="form-control" name="note" required>
                            </div>
                         </div>
                         <div class="col">

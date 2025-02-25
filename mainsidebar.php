@@ -57,7 +57,9 @@ include "notifcount.php";
               <li class="nav-item">
                 <a href="../repack" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Repack</p>
+                  <p>Repack
+                    <span class="badge badge-info right"><?= $repackCount ?></span>
+                  </p>
                 </a>
               </li>
               <li class="nav-item">
