@@ -54,17 +54,15 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                      s.sonumber, 
                      b.nmbarang,
                      IFNULL(SUM(dr.weight), 0) AS qty_sent
-              FROM salesorder s
-              INNER JOIN customers c ON s.idcustomer = c.idcustomer
-              INNER JOIN salesorderdetail sd ON s.idso = sd.idso
-              INNER JOIN barang b ON sd.idbarang = b.idbarang
-              LEFT JOIN doreceipt d ON s.idso = d.idso
-              LEFT JOIN doreceiptdetail dr ON d.iddoreceipt = dr.iddoreceipt AND sd.idbarang = dr.idbarang
-              WHERE s.deliverydate BETWEEN '$awal' AND '$akhir'
-              GROUP BY s.idso, c.nama_customer, s.deliverydate, s.po, sd.weight, sd.price, sd.notes, s.sonumber, b.nmbarang
-              ORDER BY s.idso DESC";
-
-
+                     FROM salesorder s
+                     INNER JOIN customers c ON s.idcustomer = c.idcustomer
+                     INNER JOIN salesorderdetail sd ON s.idso = sd.idso
+                     INNER JOIN barang b ON sd.idbarang = b.idbarang
+                     LEFT JOIN doreceipt d ON s.idso = d.idso
+                     LEFT JOIN doreceiptdetail dr ON d.iddoreceipt = dr.iddoreceipt AND sd.idbarang = dr.idbarang
+                     WHERE s.is_deleted = 0 AND s.deliverydate BETWEEN '$awal' AND '$akhir'
+                     GROUP BY s.idso, c.nama_customer, s.deliverydate, s.po, sd.weight, sd.price, sd.notes, s.sonumber, b.nmbarang
+                     ORDER BY s.idso DESC";
                      $result = $conn->query($query);
 
                      ?>

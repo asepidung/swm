@@ -7,7 +7,6 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
-
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -40,6 +39,7 @@ include "../mainsidebar.php";
                                         <th>Hasil</th>
                                         <th>Balance</th>
                                         <th>Catatan</th>
+                                        <th>Status</th>
                                         <th>AKSI</th>
                                     </tr>
                                 </thead>
@@ -87,39 +87,69 @@ include "../mainsidebar.php";
                                             </td>
                                             <td class="text-left"><?= $tampil['note']; ?></td>
                                             <td>
+                                                <?php
+                                                // Mendapatkan iduser yang sedang login
+                                                $idusers = $_SESSION['idusers'];
+
+                                                // Menampilkan status berdasarkan nilai kunci
+                                                if ($tampil['kunci'] == 0) {
+                                                    echo "On Process"; // Jika kunci = 0
+                                                } elseif ($tampil['kunci'] == 1) {
+                                                    // Jika kunci = 1 dan yang login adalah user 1 atau 2
+                                                    if ($idusers == 1 || $idusers == 2) {
+                                                        echo '<a href="lockrepack.php?id=' . htmlspecialchars($idrepack) . '" class="btn btn-sm btn-warning" title="Lock">LOCK</a>';
+                                                    } else {
+                                                        echo "Approved"; // Tampilkan Approved bagi selain user 1 dan 2
+                                                    }
+                                                } elseif ($tampil['kunci'] == 2) {
+                                                    // Jika kunci = 2 (Locked)
+                                                    if ($idusers == 1 || $idusers == 2) {
+                                                        // Jika kunci = 2 dan yang login adalah user 1 atau 2, tampilkan link untuk Unlock
+                                                        echo '<a href="unlockrepack.php?id=' . htmlspecialchars($idrepack) . '" class="btn btn-sm btn-danger" title="Unlock">LOCKED</a>';
+                                                    } else {
+                                                        // Jika kunci = 2 tetapi yang login bukan user 1 atau 2, tampilkan Locked
+                                                        echo "Locked";
+                                                    }
+                                                }
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <!-- Tombol Approve dan Unapprove -->
                                                 <?php if ($tampil['kunci'] == 1) { ?>
                                                     <!-- Tombol Unapprove jika kunci = 1 -->
-                                                    <a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Unapprove" href="unapproverepack.php?id=<?= htmlspecialchars($idrepack) ?>">
+                                                    <a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Unapprove"
+                                                        href="unapproverepack.php?id=<?= htmlspecialchars($idrepack) ?>"
+                                                        <?= ($tampil['kunci'] == 2) ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
                                                         <i class="fas fa-calendar-times"></i>
                                                     </a>
                                                 <?php } else { ?>
                                                     <!-- Tombol Approve jika kunci = 0 -->
-                                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve" href="approverepack.php?id=<?= htmlspecialchars($idrepack) ?>">
+                                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve"
+                                                        href="approverepack.php?id=<?= htmlspecialchars($idrepack) ?>"
+                                                        <?= ($tampil['kunci'] == 2) ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
                                                         <i class="far fa-calendar-check"></i>
                                                     </a>
                                                 <?php } ?>
 
                                                 <!-- Tombol Detail Bahan -->
                                                 <?php
-                                                // Jika tombol Detail Bahan tidak aktif, hanya akan aktif jika kunci = 0
-                                                $disabledBahan = ($tampil['kunci'] == 1) ? 'disabled' : '';  // Disable tombol jika kunci = 1
+                                                // Disable tombol Detail Bahan jika kunci >= 1
+                                                $disabledBahan = ($tampil['kunci'] >= 1) ? 'disabled' : '';
                                                 ?>
-
                                                 <a href="detailbahan.php?id=<?= $idrepack ?>&stat=ready" class="btn btn-sm btn-warning <?= $disabledBahan; ?>" title="Detail Bahan" <?= $disabledBahan ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
                                                     <i class="fas fa-box-open"></i>
                                                 </a>
 
                                                 <!-- Tombol Detail Hasil -->
                                                 <?php
-                                                // Query untuk memeriksa apakah ada data di tabel detailbahan
+                                                // Tombol Detail Hasil hanya aktif jika ada bahan dan kunci = 0
                                                 $queryDetailBahan = "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack";
                                                 $resultDetailBahan = mysqli_query($conn, $queryDetailBahan);
                                                 $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
 
-                                                // Cek jika ada data di detailbahan dan kunci = 0, maka tombol tidak di-disable
-                                                $disabledHasil = ($rowDetailBahan['total'] == 0 || $tampil['kunci'] == 1) ? 'disabled' : '';  // Disable tombol jika kunci = 1 atau detailbahan kosong
+                                                // Disable tombol Detail Hasil jika tidak ada bahan atau kunci >= 1
+                                                $disabledHasil = ($rowDetailBahan['total'] == 0 || $tampil['kunci'] >= 1) ? 'disabled' : '';
                                                 ?>
-
                                                 <a href="detailhasil.php?id=<?= $idrepack ?>" class="btn btn-sm btn-success <?= $disabledHasil; ?>" title="Detail Hasil" <?= $disabledHasil ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
                                                     <i class="fas fa-tags"></i>
                                                 </a>
@@ -130,32 +160,24 @@ include "../mainsidebar.php";
                                                 </a>
 
                                                 <!-- Tombol Edit Proses Repack -->
-                                                <a href="editrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-dark" title="Edit Proses Repack" <?= $tampil['kunci'] == 1 ? 'disabled' : ''; ?>>
+                                                <a href="editrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-dark" title="Edit Proses Repack" <?= $tampil['kunci'] == 2 ? 'disabled style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
                                                     <i class="fas fa-edit"></i>
                                                 </a>
 
+
                                                 <!-- Tombol Hapus Proses Repack -->
                                                 <?php
-                                                $query = "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack";
-                                                $result_detailbahan = mysqli_query($conn, $query);
-                                                $row_detailbahan = mysqli_fetch_assoc($result_detailbahan);
-
-                                                $query = "SELECT COUNT(*) AS total FROM detailhasil WHERE idrepack = $idrepack AND is_deleted = 0";
-                                                $result_detailhasil = mysqli_query($conn, $query);
-                                                $row_detailhasil = mysqli_fetch_assoc($result_detailhasil);
-
-                                                if ($row_detailbahan['total'] == 0 && $row_detailhasil['total'] == 0 && $tampil['kunci'] == 0) {
+                                                if ($rowDetailBahan['total'] == 0 && $tampil['kunci'] == 0) {
                                                     echo '<a href="deleterepack.php?id=' . $idrepack . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Apakah kamu yakin ingin menghapus repack ini?\')" title="Hapus Proses Repack">
-                                                                <i class="fas fa-trash"></i>
-                                                            </a>';
+                    <i class="fas fa-trash"></i>
+                </a>';
                                                 } else {
-                                                    echo '<a href="#" class="btn btn-sm btn-secondary" title="Tidak Bisa Dihapus">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>';
+                                                    echo '<a href="#" class="btn btn-sm btn-danger disabled" title="Tidak Bisa Dihapus" disabled>
+                        <i class="fas fa-trash"></i>
+                    </a>';
                                                 }
                                                 ?>
                                             </td>
-
 
                                         </tr>
                                     <?php $no++;
@@ -184,37 +206,3 @@ include "../mainsidebar.php";
 <?php
 include "../footer.php";
 ?>
-
-<!-- Styling untuk Tabel -->
-<style>
-    table tbody tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
-
-    table tbody tr:nth-child(even) {
-        background-color: #ffffff;
-    }
-
-    table tbody tr:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-
-    .btn-tooltip {
-        position: relative;
-    }
-
-    .btn-tooltip:hover::after {
-        content: attr(title);
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 5px;
-        background-color: #333;
-        color: #fff;
-        font-size: 12px;
-        border-radius: 5px;
-        white-space: nowrap;
-    }
-</style>
