@@ -1,23 +1,35 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
+   header("Location: ../verifications/login.php");
+   exit;
 }
 require "../konak/conn.php";
 include "../header.php";
-$idst = $_GET['id'];
+
+// Validasi ID
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+   echo "<script>alert('ID tidak ditemukan'); window.location='index.php';</script>";
+   exit;
+}
+$idst = intval($_GET['id']);
 ?>
+
 <div class="content-header">
    <div class="container-fluid">
       <div class="row">
          <div class="col">
-            <a href="index.php"><button type="button" class="btn btn-outline-primary"><i class="fas fa-arrow-alt-circle-left"></i> Summary</button></a>
-            <a href="lihatst.php?id=<?= $idst ?>"><button type="button" class="btn btn-outline-success"><i class="fas fa-arrow-alt-circle-right"></i> Lihat </button></a>
+            <a href="index.php" class="btn btn-outline-primary">
+               <i class="fas fa-arrow-alt-circle-left"></i> Summary
+            </a>
+            <a href="lihatst.php?id=<?= $idst ?>" class="btn btn-outline-success">
+               <i class="fas fa-arrow-alt-circle-right"></i> Lihat
+            </a>
          </div>
       </div>
    </div>
 </div>
-<!-- Main content -->
+
 <section class="content">
    <div class="container-fluid">
       <div class="row">
@@ -25,43 +37,40 @@ $idst = $_GET['id'];
             <form method="POST" action="inputstdetail.php">
                <div class="card">
                   <div class="card-body">
-                     <div id="items-container">
-                        <div class="row mb-n2">
-                           <div class="col-xs-2">
-                              <div class="form-group">
-                                 <input type="text" placeholder="Scan Here" class="form-control text-center" name="kdbarcode" id="kdbarcode" autofocus>
-                              </div>
-                           </div>
-                           <input type="hidden" name="idst" value="<?= $idst ?>">
-                           <div class="col-1">
-                              <div class="form-group">
-                                 <button type="submit" class="btn btn-block btn-primary">Submit</button>
-                              </div>
-                           </div>
-                           <div class="col">
-                              <?php if ($_GET['stat'] == "success") { ?>
-                                 <h3 class="headline text-success"><i class="fas fa-check-circle"></i> Success</h3>
-                              <?php } elseif ($_GET['stat'] == "ready") { ?>
-                                 <h3 class="headline text-secondary"> Ready To Scan</h3>
-                              <?php } elseif ($_GET['stat'] == "deleted") { ?>
-                                 <h3 class="headline text-success"> Data berhasil dihapus</h3>
-                              <?php } elseif ($_GET['stat'] == "duplicate") { ?>
-                                 <h3 class="headline text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
-                              <?php } elseif ($_GET['stat'] == "unlisted") { ?>
-                                 <h3 class="headline text-danger"><i class="fas fa-times-circle"></i> Barang Tidak ada di PO</h3>
-                              <?php } elseif ($_GET['stat'] == "unknown") { ?>
+                     <div class="row mb-2">
+                        <div class="col-xs-2">
+                           <input type="text" placeholder="Scan Here" class="form-control text-center" name="kdbarcode" id="kdbarcode" autofocus required>
+                        </div>
+                        <input type="hidden" name="idst" value="<?= $idst ?>">
+                        <div class="col-1">
+                           <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        </div>
+                        <div class="col">
+                           <?php if (isset($_GET['stat'])): ?>
+                              <?php if ($_GET['stat'] == "success"): ?>
+                                 <h3 class="text-success"><i class="fas fa-check-circle"></i> Success</h3>
+                              <?php elseif ($_GET['stat'] == "ready"): ?>
+                                 <h3 class="text-secondary"> Ready To Scan</h3>
+                              <?php elseif ($_GET['stat'] == "deleted"): ?>
+                                 <h3 class="text-success"> Data berhasil dihapus</h3>
+                              <?php elseif ($_GET['stat'] == "duplicate"): ?>
+                                 <h3 class="text-warning"><i class="fas fa-exclamation-triangle"></i> Barang Sudah Terinput</h3>
+                              <?php elseif ($_GET['stat'] == "unlisted"): ?>
+                                 <h3 class="text-danger"><i class="fas fa-times-circle"></i> Barang Tidak ada di PO</h3>
+                              <?php elseif ($_GET['stat'] == "unknown"): ?>
                                  <a href="inputmanual.php?id=<?= $idst ?>">
-                                    <span class="headline text-danger">BARANG TIDAK TERDAFTAR <br>
+                                    <span class="text-danger">BARANG TIDAK TERDAFTAR <br>
                                        Manual ADD <i class="fas fa-arrow-circle-right"></i>
                                     </span>
                                  </a>
-                              <?php } ?>
-                           </div>
+                              <?php endif; ?>
+                           <?php endif; ?>
                         </div>
                      </div>
                   </div>
                </div>
             </form>
+
             <div class="row">
                <div class="col-lg-8">
                   <div class="card">
@@ -83,78 +92,47 @@ $idst = $_GET['id'];
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT stocktakedetail.*, barang.nmbarang, grade.nmgrade
-                              FROM stocktakedetail
-                              INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
-                              LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
-                              WHERE idst = $idst ORDER BY idstdetail DESC");
+                              $stmt = $conn->prepare("
+                                            SELECT s.*, b.nmbarang, g.nmgrade,
+                                            (SELECT COUNT(*) FROM tallydetail WHERE barcode = s.kdbarcode) AS tally_count,
+                                            (SELECT COUNT(*) FROM detailbahan WHERE barcode = s.kdbarcode) AS bahan_count
+                                            FROM stocktakedetail s
+                                            INNER JOIN barang b ON s.idbarang = b.idbarang
+                                            LEFT JOIN grade g ON s.idgrade = g.idgrade
+                                            WHERE s.idst = ?
+                                            ORDER BY s.idstdetail DESC
+                                        ");
+                              $stmt->bind_param("i", $idst);
+                              $stmt->execute();
+                              $result = $stmt->get_result();
 
-                              while ($tampil = mysqli_fetch_array($ambildata)) {
-                                 $origin = $tampil['origin'];
-                                 $nmbarang = $tampil['nmbarang'];
-                                 $pod =  $tampil['pod'];
-                                 $kdbarcode = $tampil['kdbarcode'];
-                                 $checkTallyDetailQuery = "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'";
-                                 $checkDetailBahanQuery = "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'";
-
-                                 $resultTallyDetail = mysqli_query($conn, $checkTallyDetailQuery);
-                                 $resultDetailBahan = mysqli_query($conn, $checkDetailBahanQuery);
-
-                                 $rowTallyDetail = mysqli_fetch_assoc($resultTallyDetail);
-                                 $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
-
-                                 $barcodeExistInTallyDetail = $rowTallyDetail['total'] > 0;
-                                 $barcodeExistInDetailBahan = $rowDetailBahan['total'] > 0;
-
-                                 // Create DateTime objects for each iteration
-                                 $podDate = new DateTime($pod);
-                                 $currentDate = new DateTime();
-                                 $umur = $currentDate->diff($podDate)->days;
+                              while ($row = $result->fetch_assoc()) {
+                                 $umur = (new DateTime())->diff(new DateTime($row['pod']))->days;
                               ?>
                                  <tr>
-                                    <td class="text-center"><?= $no; ?></td>
-                                    <td class="text-center"><?= $tampil['kdbarcode']; ?></td>
-                                    <td><?= $nmbarang; ?></td>
-                                    <td class="text-center"><?= $tampil['nmgrade']; ?></td>
-                                    <td class="text-right"><?= $tampil['qty']; ?></td>
-                                    <td class="text-center"><?= $tampil['pcs']; ?></td>
-                                    <td class="text-center" title="<?= date("d-M-y", strtotime($pod)); ?>"><?= $umur; ?></td>
+                                    <td class="text-center"><?= $no++; ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($row['kdbarcode']); ?></td>
+                                    <td><?= htmlspecialchars($row['nmbarang']); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($row['nmgrade']); ?></td>
+                                    <td class="text-right"><?= $row['qty']; ?></td>
+                                    <td class="text-center"><?= $row['pcs']; ?></td>
+                                    <td class="text-center"><?= $umur . ' ' . 'Days'; ?></td>
                                     <td>
-                                       <?php
-                                       if ($origin == 1) {
-                                          echo "BONING";
-                                       } elseif ($origin == 2) {
-                                          echo "TRADING";
-                                       } elseif ($origin == 3) {
-                                          echo "REPACK";
-                                       } elseif ($origin == 4) {
-                                          echo "RELABEL";
-                                       } elseif ($origin == 5) {
-                                          echo "IMPORT";
-                                       } else {
-                                          echo "Unindentified";
-                                       }
-                                       ?>
+                                       <?= ["Unidentified", "BONING", "TRADING", "REPACK", "RELABEL", "IMPORT"][$row['origin']] ?? "Unknown"; ?>
                                     </td>
                                     <td class="text-center">
-                                       <?php if ($barcodeExistInTallyDetail) { ?>
+                                       <?php if ($row['tally_count'] > 0) { ?>
                                           <i class="fas fa-check-circle"></i>
-                                       <?php } elseif ($barcodeExistInDetailBahan) { ?>
+                                       <?php } elseif ($row['bahan_count'] > 0) { ?>
                                           <i class="fas fa-box-open text-success"></i>
                                        <?php } else { ?>
-                                          <a href="deletestdetail.php?iddetail=<?= $tampil['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
+                                          <a href="deletestdetail.php?iddetail=<?= $row['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
                                              <i class="far fa-times-circle"></i>
                                           </a>
                                        <?php } ?>
                                     </td>
-                                    <!-- <td class="text-center">
-                                       <a href="deletestdetail.php?iddetail=<?= $tampil['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
-                                          <i class="far fa-times-circle"></i>
-                                       </a>
-                                    </td> -->
                                  </tr>
                               <?php
-                                 $no++;
                               }
                               ?>
                            </tbody>
@@ -162,6 +140,7 @@ $idst = $_GET['id'];
                      </div>
                   </div>
                </div>
+
                <div class="col-lg-4">
                   <div class="card">
                      <div class="card-body">
@@ -177,43 +156,26 @@ $idst = $_GET['id'];
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT stocktakedetail.*, barang.nmbarang, grade.nmgrade
-                              FROM stocktakedetail
-                              INNER JOIN barang ON stocktakedetail.idbarang = barang.idbarang
-                              LEFT JOIN grade ON stocktakedetail.idgrade = grade.idgrade
-                              WHERE idst = $idst
-                              ORDER BY idstdetail DESC");
+                              $stmt = $conn->prepare("
+                                            SELECT b.nmbarang, SUM(s.qty) AS total_qty, COUNT(s.idbarang) AS total_box
+                                            FROM stocktakedetail s
+                                            INNER JOIN barang b ON s.idbarang = b.idbarang
+                                            WHERE s.idst = ?
+                                            GROUP BY s.idbarang
+                                        ");
+                              $stmt->bind_param("i", $idst);
+                              $stmt->execute();
+                              $result = $stmt->get_result();
 
-                              // Inisialisasi array untuk mengelompokkan data berdasarkan idbarang
-                              $groupedData = array();
-
-                              while ($tampil = mysqli_fetch_array($ambildata)) {
-                                 $idbarang = $tampil['idbarang'];
-
-                                 // Menyusun data dalam array berdasarkan idbarang
-                                 if (!isset($groupedData[$idbarang])) {
-                                    $groupedData[$idbarang] = array(
-                                       'nmbarang' => $tampil['nmbarang'],
-                                       'qty' => 0,
-                                       'box' => 0,
-                                    );
-                                 }
-
-                                 $groupedData[$idbarang]['qty'] += $tampil['qty'];
-                                 $groupedData[$idbarang]['box'] += 1; // Menghitung jumlah unik idbarang
-                                 $groupedData[$idbarang]['pod'] = $tampil['pod'];
-                              }
-
-                              foreach ($groupedData as $idbarang => $data) {
+                              while ($row = $result->fetch_assoc()) {
                               ?>
                                  <tr>
-                                    <td class="text-center"><?= $no; ?></td>
-                                    <td><?= $data['nmbarang']; ?></td>
-                                    <td class="text-right"><?= $data['qty']; ?></td>
-                                    <td class="text-center"><?= $data['box']; ?></td>
+                                    <td class="text-center"><?= $no++; ?></td>
+                                    <td><?= htmlspecialchars($row['nmbarang']); ?></td>
+                                    <td class="text-right"><?= $row['total_qty']; ?></td>
+                                    <td class="text-center"><?= $row['total_box']; ?></td>
                                  </tr>
                               <?php
-                                 $no++;
                               }
                               ?>
                            </tbody>
@@ -226,8 +188,5 @@ $idst = $_GET['id'];
       </div>
    </div>
 </section>
-<script>
-   document.title = "STOCK OPNAME";
-</script>
-<?php
-include "../footer.php" ?>
+
+<?php include "../footer.php"; ?>

@@ -1,63 +1,72 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
+   header("Location: ../verifications/login.php");
+   exit;
 }
 
 require "../konak/conn.php";
 
-if (isset($_POST['kdbarcode'])) {
-   $kdbarcode = mysqli_real_escape_string($conn, $_POST['kdbarcode']);
-   $idst = $_POST['idst'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kdbarcode'], $_POST['idst'])) {
+   $kdbarcode = trim($_POST['kdbarcode']);
+   $idst = intval($_POST['idst']);
 
-   // Cek apakah barcode sudah ada di tabel stock
-   $query = "SELECT idbarang, qty, pcs, pod, idgrade, origin FROM stock WHERE kdbarcode = '$kdbarcode'";
-   $result = mysqli_query($conn, $query);
+   if (empty($kdbarcode)) {
+      header("Location: starttaking.php?id=$idst&stat=invalid");
+      exit;
+   }
 
-   if ($result) {
-      if (mysqli_num_rows($result) > 0) {
-         $row = mysqli_fetch_assoc($result);
+   // Gunakan Prepared Statements untuk keamanan
+   $query = $conn->prepare("SELECT idbarang, qty, pcs, pod, idgrade, origin FROM stock WHERE kdbarcode = ?");
+   $query->bind_param("s", $kdbarcode);
+   $query->execute();
+   $result = $query->get_result();
 
-         // Data ditemukan, cek apakah sudah ada di stocktakedetail
-         $checkDuplicateQuery = "SELECT * FROM stocktakedetail WHERE kdbarcode = '$kdbarcode' AND idst = $idst";
-         $duplicateResult = mysqli_query($conn, $checkDuplicateQuery);
+   if ($result && $result->num_rows > 0) {
+      $row = $result->fetch_assoc();
 
-         if ($duplicateResult && mysqli_num_rows($duplicateResult) > 0) {
-            // Barcode sudah ada di stocktakedetail, redirect ke halaman duplicate
-            header("location: starttaking.php?id=$idst&stat=duplicate");
+      // Cek apakah barcode sudah ada di stocktakedetail
+      $checkDuplicateQuery = $conn->prepare("SELECT idstdetail FROM stocktakedetail WHERE kdbarcode = ? AND idst = ?");
+      $checkDuplicateQuery->bind_param("si", $kdbarcode, $idst);
+      $checkDuplicateQuery->execute();
+      $duplicateResult = $checkDuplicateQuery->get_result();
+
+      if ($duplicateResult->num_rows > 0) {
+         // Barcode sudah ada di stocktakedetail
+         header("Location: starttaking.php?id=$idst&stat=duplicate");
+         exit;
+      } else {
+         // Data dari tabel stock
+         $idgrade = $row['idgrade'];
+         $idbarang = $row['idbarang'];
+         $qty = $row['qty'];
+         $pcs = $row['pcs'];
+         $pod = $row['pod'];
+         $origin = $row['origin'];
+
+         // Handle nilai NULL
+         $idgradeValue = ($idgrade !== null) ? $idgrade : null;
+
+         // Insert data ke stocktakedetail
+         $insertQuery = $conn->prepare("INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+         $insertQuery->bind_param("issiiisi", $idst, $kdbarcode, $idgradeValue, $idbarang, $qty, $pcs, $pod, $origin);
+
+         if ($insertQuery->execute()) {
+            header("Location: starttaking.php?id=$idst&stat=success");
             exit;
          } else {
-            // Barcode belum ada di stocktakedetail, lakukan insert
-            $idgrade = $row['idgrade'];
-            $idbarang = $row['idbarang'];
-            $qty = $row['qty'];
-            $pcs = $row['pcs'];
-            $pod = $row['pod'];
-            $origin = $row['origin'];
-
-            // Handle NULL idgrade
-            $idgradeValue = ($idgrade !== null) ? "'$idgrade'" : "NULL";
-
-            // Lakukan insert ke stocktakedetail
-            $insertQuery = "INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES ('$idst', '$kdbarcode', $idgradeValue, '$idbarang', '$qty', '$pcs', '$pod', '$origin')";
-            $insertResult = mysqli_query($conn, $insertQuery);
-
-            if (!$insertResult) {
-               // Handle error saat insert
-               exit;
-            }
-
-            header("location: starttaking.php?id=$idst&stat=success");
+            error_log("Gagal insert: " . $conn->error);
+            header("Location: starttaking.php?id=$idst&stat=error");
+            exit;
          }
-      } else {
-         // Data tidak ditemukan di tabel stock
-         $_SESSION['barcode'] = $kdbarcode;
-         header("location: starttaking.php?id=$idst&stat=unknown");
-         exit;
       }
    } else {
-      // Handle query execution error
+      // Data tidak ditemukan di tabel stock
+      $_SESSION['barcode'] = $kdbarcode;
+      header("Location: starttaking.php?id=$idst&stat=unknown");
+      exit;
    }
+} else {
+   header("Location: starttaking.php?id=$idst&stat=invalid");
+   exit;
 }
-// ...
