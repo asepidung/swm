@@ -71,11 +71,12 @@ $idst = intval($_GET['id']);
                </div>
             </form>
 
+            <!-- Tabel Data -->
             <div class="row">
                <div class="col-lg-8">
                   <div class="card">
                      <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
+                        <table id="stockTable" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
                                  <th>#</th>
@@ -89,53 +90,6 @@ $idst = intval($_GET['id']);
                                  <th>Hapus</th>
                               </tr>
                            </thead>
-                           <tbody>
-                              <?php
-                              $no = 1;
-                              $stmt = $conn->prepare("
-                                            SELECT s.*, b.nmbarang, g.nmgrade,
-                                            (SELECT COUNT(*) FROM tallydetail WHERE barcode = s.kdbarcode) AS tally_count,
-                                            (SELECT COUNT(*) FROM detailbahan WHERE barcode = s.kdbarcode) AS bahan_count
-                                            FROM stocktakedetail s
-                                            INNER JOIN barang b ON s.idbarang = b.idbarang
-                                            LEFT JOIN grade g ON s.idgrade = g.idgrade
-                                            WHERE s.idst = ?
-                                            ORDER BY s.idstdetail DESC
-                                        ");
-                              $stmt->bind_param("i", $idst);
-                              $stmt->execute();
-                              $result = $stmt->get_result();
-
-                              while ($row = $result->fetch_assoc()) {
-                                 $umur = (new DateTime())->diff(new DateTime($row['pod']))->days;
-                              ?>
-                                 <tr>
-                                    <td class="text-center"><?= $no++; ?></td>
-                                    <td class="text-center"><?= htmlspecialchars($row['kdbarcode']); ?></td>
-                                    <td><?= htmlspecialchars($row['nmbarang']); ?></td>
-                                    <td class="text-center"><?= htmlspecialchars($row['nmgrade']); ?></td>
-                                    <td class="text-right"><?= $row['qty']; ?></td>
-                                    <td class="text-center"><?= $row['pcs']; ?></td>
-                                    <td class="text-center"><?= $umur . ' ' . 'Days'; ?></td>
-                                    <td>
-                                       <?= ["Unidentified", "BONING", "TRADING", "REPACK", "RELABEL", "IMPORT"][$row['origin']] ?? "Unknown"; ?>
-                                    </td>
-                                    <td class="text-center">
-                                       <?php if ($row['tally_count'] > 0) { ?>
-                                          <i class="fas fa-check-circle"></i>
-                                       <?php } elseif ($row['bahan_count'] > 0) { ?>
-                                          <i class="fas fa-box-open text-success"></i>
-                                       <?php } else { ?>
-                                          <a href="deletestdetail.php?iddetail=<?= $row['idstdetail']; ?>&id=<?= $idst; ?>" class="text-danger" onclick="return confirm('Yakinkan Dirimu?')">
-                                             <i class="far fa-times-circle"></i>
-                                          </a>
-                                       <?php } ?>
-                                    </td>
-                                 </tr>
-                              <?php
-                              }
-                              ?>
-                           </tbody>
                         </table>
                      </div>
                   </div>
@@ -190,3 +144,17 @@ $idst = intval($_GET['id']);
 </section>
 
 <?php include "../footer.php"; ?>
+
+<!-- DataTables AJAX -->
+<script>
+   $(document).ready(function() {
+      $('#stockTable').DataTable({
+         "processing": true,
+         "serverSide": true,
+         "ajax": {
+            "url": "fetch_data.php?id=<?= $idst ?>",
+            "type": "POST"
+         }
+      });
+   });
+</script>
