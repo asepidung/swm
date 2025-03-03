@@ -108,5 +108,7 @@ $total_missing = $result->num_rows;
         </div>
     </div>
 </section>
-
+<script>
+    document.title = "Waiting Product";
+</script>
 <?php include "../footer.php"; ?>

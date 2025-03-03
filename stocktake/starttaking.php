@@ -157,4 +157,6 @@ $idst = intval($_GET['id']);
          }
       });
    });
+
+   document.title = "Scanning Proses";
 </script>

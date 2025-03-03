@@ -172,5 +172,7 @@ $total_manual = $result_manual->num_rows;
         </div>
     </div>
 </section>
-
+<script>
+    document.title = "Missing & Founding";
+</script>
 <?php include "../footer.php"; ?>
