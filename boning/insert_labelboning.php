@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $packdate = $_POST['packdate'];
     $exp = $_POST['exp'];
     $idboning = $_POST['idboning'];
-    // $idboningWithPrefix = $_POST['idboningWithPrefix'];
     $tenderstreachActive = isset($_POST['tenderstreach']) ? true : false;
     $qtyPcsInput = $_POST['qty'];
 
@@ -27,11 +26,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $qty = $qtyPcsInput;
     }
     $qty = number_format($qty, 2, '.', '');
+
+    // Pastikan pcs memiliki nilai default jika kosong
+    if (empty($pcs)) {
+        $pcs = "NULL"; // Jika kolom di database bisa menerima NULL
+    } else {
+        $pcs = (int) $pcs; // Konversi ke integer agar MySQL tidak error
+    }
+
     $kdbarcode = "1" . $idboning . $kodeauto;
+
+    // Debugging opsional (bisa dihapus setelah tidak dibutuhkan)
+    // var_dump($pcs);
+    // exit;
 
     // Simpan data ke tabel labelboning
     $queryInsertLabel = "INSERT INTO labelboning (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade)
-                         VALUES ('$idboning', '$idbarang', $qty, '$pcs', '$packdate', '$kdbarcode', '$idusers', '$idgrade')";
+                         VALUES ('$idboning', '$idbarang', $qty, $pcs, '$packdate', '$kdbarcode', '$idusers', '$idgrade')";
     mysqli_query($conn, $queryInsertLabel);
 
     // Ambil idlabelboning yang baru saja di-insert
@@ -39,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Simpan data ke tabel stock
     $queryInsertStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
-                         VALUES ('$kdbarcode', '$idgrade', $idbarang, $qty, '$pcs', '$packdate', 1)";
+                         VALUES ('$kdbarcode', '$idgrade', '$idbarang', $qty, $pcs, '$packdate', 1)";
     mysqli_query($conn, $queryInsertStock);
 
     $_SESSION['idbarang'] = $_POST['idbarang'] ?? '';
