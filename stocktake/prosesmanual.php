@@ -34,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $query1 = "INSERT INTO stocktakedetail (idst, kdbarcode, idbarang, idgrade, qty, pcs, pod, origin) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
       $stmt1 = mysqli_prepare($conn, $query1);
-      mysqli_stmt_bind_param($stmt1, "isssiiss", $idst, $kdbarcode, $idbarang, $idgrade, $qty, $pcs, $pod, $origin);
+      mysqli_stmt_bind_param($stmt1, "isssdiss", $idst, $kdbarcode, $idbarang, $idgrade, $qty, $pcs, $pod, $origin);
       mysqli_stmt_execute($stmt1);
 
       // Query untuk manualstock
       $query2 = "INSERT INTO manualstock (idst, kdbarcode, idbarang, idgrade, qty, pcs, pod, origin) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
       $stmt2 = mysqli_prepare($conn, $query2);
-      mysqli_stmt_bind_param($stmt2, "isssiiss", $idst, $kdbarcode, $idbarang, $idgrade, $qty, $pcs, $pod, $origin);
+      mysqli_stmt_bind_param($stmt2, "isssdiss", $idst, $kdbarcode, $idbarang, $idgrade, $qty, $pcs, $pod, $origin);
       mysqli_stmt_execute($stmt2);
 
       // Commit transaksi jika keduanya berhasil

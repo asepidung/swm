@@ -73,12 +73,12 @@ $idst = intval($_GET['id']);
 
             <!-- Tabel Data -->
             <div class="row">
-               <div class="col-lg-8">
+               <div class="col-lg-9">
                   <div class="card">
                      <div class="card-body">
                         <table id="stockTable" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
-                              <tr>
+                              <tr class="text-center">
                                  <th>#</th>
                                  <th>Barcode</th>
                                  <th>Item</th>
@@ -95,10 +95,10 @@ $idst = intval($_GET['id']);
                   </div>
                </div>
 
-               <div class="col-lg-4">
+               <div class="col-lg-3">
                   <div class="card">
                      <div class="card-body">
-                        <table class="table table-bordered table-striped table-sm">
+                        <table id="example2" class="table table-bordered table-striped table-sm">
                            <thead class="text-center">
                               <tr>
                                  <th>No</th>
@@ -126,7 +126,7 @@ $idst = intval($_GET['id']);
                                  <tr>
                                     <td class="text-center"><?= $no++; ?></td>
                                     <td><?= htmlspecialchars($row['nmbarang']); ?></td>
-                                    <td class="text-right"><?= $row['total_qty']; ?></td>
+                                    <td class="text-right"><?= number_format($row['total_qty'], 2); ?></td>
                                     <td class="text-center"><?= $row['total_box']; ?></td>
                                  </tr>
                               <?php
@@ -154,7 +154,46 @@ $idst = intval($_GET['id']);
          "ajax": {
             "url": "fetch_data.php?id=<?= $idst ?>",
             "type": "POST"
-         }
+         },
+         "columns": [{
+               "data": 0
+            }, // #
+            {
+               "data": 1
+            }, // Barcode
+            {
+               "data": 2
+            }, // Item
+            {
+               "data": 3
+            }, // Grade
+            {
+               "data": 4
+            }, // Weight
+            {
+               "data": 5
+            }, // Pcs
+            {
+               "data": 6
+            }, // POD
+            {
+               "data": 7
+            }, // Origin
+            {
+               "data": 8,
+               "orderable": false
+            } // Hapus
+         ],
+         "order": [
+            [0, "desc"]
+         ]
+      });
+
+      // Tambahkan event listener untuk refresh DataTable setelah scan
+      $('form').on('submit', function() {
+         setTimeout(function() {
+            $('#stockTable').DataTable().ajax.reload(null, false);
+         }, 500);
       });
    });
 

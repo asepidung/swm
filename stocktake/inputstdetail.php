@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kdbarcode'], $_POST['
 
          // Insert data ke stocktakedetail
          $insertQuery = $conn->prepare("INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-         $insertQuery->bind_param("issiiisi", $idst, $kdbarcode, $idgradeValue, $idbarang, $qty, $pcs, $pod, $origin);
+         $insertQuery->bind_param("issidisi", $idst, $kdbarcode, $idgradeValue, $idbarang, $qty, $pcs, $pod, $origin);
 
          if ($insertQuery->execute()) {
             header("Location: starttaking.php?id=$idst&stat=success");
