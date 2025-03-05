@@ -3,21 +3,27 @@ session_start();
 if (!isset($_SESSION['login'])) {
     header("location: ../verifications/login.php");
 }
-require "../konak/conn.php";
+require "../konak/conn.php"; // Koneksi ke database
+
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
+                <div class="col-12 col-md-4 mb-2">
+                    <input type="text" class="form-control" name="track" id="track" placeholder="Masukkan kode barcode" autofocus>
+                </div>
                 <div class="col-12 col-md-2 mb-2">
-                    <input type="text" class="form-control" name="track" id="track" autofocus>
+                    <button class="btn btn-primary" id="btnSearch">Cari</button>
                 </div>
             </div>
         </div>
     </div>
+    
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -28,26 +34,15 @@ include "../mainsidebar.php";
                                 <thead class="text-center">
                                     <tr>
                                         <th>#</th>
-                                        <th>Barcode</th>
-                                        <th>Item</th>
-                                        <th>grade</th>
-                                        <th>Weight</th>
-                                        <th>Pcs</th>
-                                        <th>pod</th>
-                                        <th>Origin</th>
+                                        <th>Proses</th> <!-- Nama tabel database -->
+                                        <th>Waktu</th> <!-- Timestamp atau kosong jika tidak ada -->
+                                        <th>Item</th> <!-- nmbarang dari tabel barang -->
+                                        <th>Weight</th> <!-- qty atau weight -->
+                                        <th>pod</th> <!-- pod -->
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                <tbody id="resultTable">
+                                    <tr><td colspan="6" class="text-center">Masukkan kode untuk mencari</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -55,9 +50,29 @@ include "../mainsidebar.php";
                 </div>
             </div>
         </div>
-
     </section>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("#btnSearch").click(function() {
+        let barcode = $("#track").val().trim();
+        if (barcode !== "") {
+            $.ajax({
+                url: "search_history.php",
+                type: "POST",
+                data: { search: barcode },
+                success: function(data) {
+                    $("#resultTable").html(data);
+                }
+            });
+        } else {
+            $("#resultTable").html("<tr><td colspan='6' class='text-center'>Masukkan kode untuk mencari</td></tr>");
+        }
+    });
+});
+</script>
 
 <?php
 include "../footer.php";

@@ -229,7 +229,7 @@ if ($resultKunci) {
                       <td><?= number_format($tampil['qty'],2); ?></td>
                       <td><?= $tampil['pcs']; ?></td>
                       <td><?= $fullname; ?></td>
-                      <td><?= date("H:i:s", strtotime($tampil['dibuat'])); ?></td>
+                      <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
                       <td>
                         <?php if ($existsTally) : ?>
                           <i class="fas fa-check-circle"></i>

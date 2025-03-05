@@ -10,7 +10,7 @@ $currentDay = date("d");   // Tanggal dalam format 2 digit
 $prefix = $currentYear . $currentMonth . $currentDay;  // Misalnya: 240229
 
 // Menghitung jumlah data dalam tahun berjalan
-$sql = mysqli_query($conn, "SELECT COUNT(*) AS total FROM labelboning WHERE YEAR(dibuat) = YEAR(CURRENT_DATE)");
+$sql = mysqli_query($conn, "SELECT COUNT(*) AS total FROM labelboning WHERE YEAR(creatime) = YEAR(CURRENT_DATE)");
 $data = mysqli_fetch_array($sql);
 $count = $data['total'];  // Jumlah data yang ditemukan untuk tahun ini
 
