@@ -72,7 +72,7 @@ include "notifcount.php";
           </li>
         <?php endif; ?>
 
-        <?php if ($role['warehouse'] == 1) : ?>
+        <?php if (isset($role['warehouse']) && $role['warehouse'] == 1) : ?>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-warehouse"></i>
@@ -85,8 +85,8 @@ include "notifcount.php";
               <li class="nav-item">
                 <a href="../tally/" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Taly Sheet
-                    <span class="badge badge-info right"><?= $drafttally ?></span>
+                  <p>Tally Sheet
+                    <span class="badge badge-info right"><?= isset($drafttally) ? $drafttally : '0' ?></span>
                   </p>
                 </a>
               </li>
@@ -125,39 +125,55 @@ include "notifcount.php";
                   <p>Mutasi</p>
                 </a>
               </li>
+
+              <!-- MENU STOCK DI DALAM WAREHOUSE -->
               <li class="nav-item">
-                <a href="../stock/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock</p>
+                <a href="#" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>
+                    STOCK
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../stock/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Data Stock</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../stockraw/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock Raw</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../stock/tofroz.php" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>> 60 Days</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../stocktake" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock Take</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../track" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Track Product</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a href="../stockraw/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock Raw</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../stock/tofroz.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>> 60 Days</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../stocktake" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock Take</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../track" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Track Product</p>
-                </a>
-              </li>
+              <!-- END MENU STOCK DI DALAM WAREHOUSE -->
+
             </ul>
           </li>
         <?php endif; ?>
+
 
         <?php if ($role['distributions'] == 1) : ?>
           <li class="nav-item">
