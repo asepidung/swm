@@ -149,6 +149,12 @@ include "notifcount.php";
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a href="../stockin/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock In</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a href="../stock/tofroz.php" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>> 60 Days</p>

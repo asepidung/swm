@@ -19,9 +19,11 @@ $idboning = intval($_GET['id']);
 $idboningWithPrefix = str_pad($idboning, 4, "0", STR_PAD_LEFT);
 
 $query = "SELECT l.idlabelboning, b.nmbarang, l.qty, l.pcs
-          FROM labelboning l
-          LEFT JOIN barang b ON l.idbarang = b.idbarang
-          WHERE l.idboning = ? AND l.is_deleted = 0";
+FROM labelboning l
+LEFT JOIN barang b ON l.idbarang = b.idbarang
+WHERE l.idboning = ? AND l.is_deleted = 0
+ORDER BY b.nmbarang;
+";
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $idboning);

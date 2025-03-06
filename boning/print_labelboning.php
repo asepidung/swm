@@ -1,15 +1,15 @@
 <?php
 session_start();
 if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit;
+   header("location: ../verifications/login.php");
+   exit;
 }
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 
 // Validasi dan sanitasi input
 if (!isset($_GET['idlabelboning']) || empty($_GET['idlabelboning'])) {
-    die('Error: idlabelboning is missing or invalid.');
+   die('Error: idlabelboning is missing or invalid.');
 }
 $idlabelboning = intval($_GET['idlabelboning']);
 $idboning = intval($_GET['idboning']);
@@ -24,8 +24,8 @@ $data = mysqli_fetch_assoc($result);
 
 // Pastikan data ditemukan
 if (!$data) {
-    header("Location: labelboning.php?id=$idboning");
-    exit;
+   header("Location: labelboning.php?id=$idboning");
+   exit;
 }
 
 // Variabel untuk digunakan di halaman cetak

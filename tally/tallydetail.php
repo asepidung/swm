@@ -174,6 +174,8 @@ $limit = $_SESSION['limit'];
                                           echo "IMPORT";
                                        } elseif ($origin == 6) {
                                           echo "RTN";
+                                       } elseif ($origin == 7) {
+                                          echo "STOCKIN";
                                        } else {
                                           echo "Unindentified";
                                        }
