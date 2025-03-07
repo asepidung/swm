@@ -1,5 +1,5 @@
 <?php
-session_start();
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Pastikan idrepack diterima

@@ -1,78 +1,74 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit();
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "../dist/vendor/autoload.php";
 require "seriallabelrepack.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validasi dan sanitasi input
-    $idbarang = mysqli_real_escape_string($conn, $_POST['idbarang']);
-    $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
-    $origin = mysqli_real_escape_string($conn, $_POST['origin']);
-    $idrepack = mysqli_real_escape_string($conn, $_POST['idrepack']);
-    $idgrade = mysqli_real_escape_string($conn, $_POST['idgrade']);
-    $packdate = mysqli_real_escape_string($conn, $_POST['packdate']);
-    $exp = null; // Tetap null sesuai kebutuhan
-    $qtyPcsInput = $_POST['qty'];
+   // Validasi dan sanitasi input
+   $idbarang = mysqli_real_escape_string($conn, $_POST['idbarang']);
+   $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
+   $origin = mysqli_real_escape_string($conn, $_POST['origin']);
+   $idrepack = mysqli_real_escape_string($conn, $_POST['idrepack']);
+   $idgrade = mysqli_real_escape_string($conn, $_POST['idgrade']);
+   $packdate = mysqli_real_escape_string($conn, $_POST['packdate']);
+   $exp = null; // Tetap null sesuai kebutuhan
+   $qtyPcsInput = $_POST['qty'];
 
-    $barcode = $origin . $idrepack . $kodeauto;
-    $tenderstreachActive = isset($_POST['tenderstreach']);
-    $pembulatan = isset($_POST['pembulatan']);
-    
-    // Simpan data untuk referensi session
-    $_SESSION['idbarang'] = $idbarang;
-    $_SESSION['idgrade'] = $idgrade;
-    $_SESSION['packdate'] = $packdate;
-    $_SESSION['origin'] = $origin;
-    $_SESSION['tenderstreach'] = $tenderstreachActive;
-    $_SESSION['pembulatan'] = $pembulatan;
-    $_SESSION['exp'] = $exp;
+   $barcode = $origin . $idrepack . $kodeauto;
+   $tenderstreachActive = isset($_POST['tenderstreach']);
+   $pembulatan = isset($_POST['pembulatan']);
 
-    // Mengolah input qty dan pcs
-    $qty = null;
-    $pcs = null;
-    if (strpos($qtyPcsInput, "/") !== false) {
-        list($qty, $pcs) = explode("/", $qtyPcsInput);
-    } else {
-        $qty = $qtyPcsInput;
-    }
+   // Simpan data untuk referensi session
+   $_SESSION['idbarang'] = $idbarang;
+   $_SESSION['idgrade'] = $idgrade;
+   $_SESSION['packdate'] = $packdate;
+   $_SESSION['origin'] = $origin;
+   $_SESSION['tenderstreach'] = $tenderstreachActive;
+   $_SESSION['pembulatan'] = $pembulatan;
+   $_SESSION['exp'] = $exp;
 
-    // Pastikan qty dalam format decimal (2 desimal)
-    $qty = is_numeric($qty) ? number_format((float)$qty, 2, '.', '') : null;
-    $pcs = is_numeric($pcs) ? (int)$pcs : null;
+   // Mengolah input qty dan pcs
+   $qty = null;
+   $pcs = null;
+   if (strpos($qtyPcsInput, "/") !== false) {
+      list($qty, $pcs) = explode("/", $qtyPcsInput);
+   } else {
+      $qty = $qtyPcsInput;
+   }
 
-    if ($qty === null || $qty <= 0) {
-        die("Invalid quantity.");
-    }
+   // Pastikan qty dalam format decimal (2 desimal)
+   $qty = is_numeric($qty) ? number_format((float)$qty, 2, '.', '') : null;
+   $pcs = is_numeric($pcs) ? (int)$pcs : null;
 
-    // Query insert untuk tabel detailhasil
-    $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, note)
+   if ($qty === null || $qty <= 0) {
+      die("Invalid quantity.");
+   }
+
+   // Query insert untuk tabel detailhasil
+   $queryDetailhasil = "INSERT INTO detailhasil (idrepack, kdbarcode, idbarang, idgrade, qty, pcs, packdate, note)
                          VALUES ('$idrepack', '$barcode', '$idbarang', '$idgrade', $qty, '$pcs', '$packdate', '$note')";
-    if (!mysqli_query($conn, $queryDetailhasil)) {
-        die("Error inserting into detailhasil: " . mysqli_error($conn));
-    }
+   if (!mysqli_query($conn, $queryDetailhasil)) {
+      die("Error inserting into detailhasil: " . mysqli_error($conn));
+   }
 
-    // Query insert untuk tabel stock
-    $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
+   // Query insert untuk tabel stock
+   $queryStock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin)
                    VALUES ('$barcode', '$idgrade', '$idbarang', $qty, '$pcs', '$packdate', '$origin')";
-    if (!mysqli_query($conn, $queryStock)) {
-        die("Error inserting into stock: " . mysqli_error($conn));
-    }
+   if (!mysqli_query($conn, $queryStock)) {
+      die("Error inserting into stock: " . mysqli_error($conn));
+   }
 }
 
 // Query untuk mendapatkan nama barang
 if (isset($idbarang)) {
-    $query = "SELECT nmbarang FROM barang WHERE idbarang = ?";
-    $stmtBarang = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmtBarang, "i", $idbarang);
-    mysqli_stmt_execute($stmtBarang);
-    mysqli_stmt_bind_result($stmtBarang, $nmbarang);
-    mysqli_stmt_fetch($stmtBarang);
-    mysqli_stmt_close($stmtBarang);
+   $query = "SELECT nmbarang FROM barang WHERE idbarang = ?";
+   $stmtBarang = mysqli_prepare($conn, $query);
+   mysqli_stmt_bind_param($stmtBarang, "i", $idbarang);
+   mysqli_stmt_execute($stmtBarang);
+   mysqli_stmt_bind_result($stmtBarang, $nmbarang);
+   mysqli_stmt_fetch($stmtBarang);
+   mysqli_stmt_close($stmtBarang);
 }
 ?>
 

@@ -2,6 +2,26 @@
 session_start();
 if (isset($_SESSION['login'])) {
    header("location: ../index.php");
+   exit();
+}
+
+// Cek apakah ada error dari proses login
+$errorMessage = "";
+if (isset($_GET['error'])) {
+   switch ($_GET['error']) {
+      case "invalid":
+         $errorMessage = "Username atau password salah.";
+         break;
+      case "notfound":
+         $errorMessage = "Akun tidak ditemukan.";
+         break;
+      case "inactive":
+         $errorMessage = "Akun Anda dinonaktifkan. Hubungi administrator.";
+         break;
+      case "timeout":
+         $errorMessage = "Anda telah logout karena tidak aktif selama 5 menit.";
+         break;
+   }
 }
 ?>
 <!DOCTYPE html>
@@ -13,7 +33,7 @@ if (isset($_SESSION['login'])) {
    <title>CMS-SWM | Log in</title>
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
    <!-- Google Font: Source Sans Pro -->
-   <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
    <!-- Font Awesome -->
    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
    <!-- icheck bootstrap -->
@@ -25,12 +45,20 @@ if (isset($_SESSION['login'])) {
 <body class="hold-transition login-page">
    <div class="login-box">
       <div class="login-logo">
-         <a href="../dist/img/logoSWM.png"><b>Silahkan Login</b></a>
+         <a href="#"><b>Silahkan Login</b></a>
       </div>
       <!-- /.login-logo -->
       <div class="card">
          <div class="card-body login-card-body">
             <p class="login-box-msg">Sign in to start your session</p>
+
+            <!-- Notifikasi Error -->
+            <?php if (!empty($errorMessage)): ?>
+               <div class="alert alert-danger text-center" role="alert">
+                  <?php echo $errorMessage; ?>
+               </div>
+            <?php endif; ?>
+
             <form action="proseslogin.php" method="post">
                <div class="input-group mb-3">
                   <input type="text" class="form-control" name="userid" id="userid" placeholder="Username" required>

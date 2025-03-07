@@ -1,4 +1,5 @@
 <?php
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Mendapatkan tahun, bulan, dan tanggal sekarang
@@ -25,4 +26,3 @@ $kodeauto = $prefix . $seriallabel;
 
 // Menampilkan nomor auto-generated
 // echo $kodeauto;
-?>

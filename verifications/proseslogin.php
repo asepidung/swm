@@ -1,54 +1,70 @@
 <?php
-require "../konak/conn.php";
+require "../konak/conn.php"; // Koneksi ke database
+session_start(); // Mulai sesi
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   $userid = $_POST['userid'];
-   $password = $_POST['password'];
+   $userid = trim($_POST['userid']);
+   $password = trim($_POST['password']);
 
-   // Query untuk memeriksa apakah username sesuai di database
-   $sql = "SELECT * FROM users WHERE userid = '$userid'";
-   $result = mysqli_query($conn, $sql);
+   // Gunakan prepared statement untuk menghindari SQL Injection
+   $sql = "SELECT idusers, userid, passuser, fullname, status FROM users WHERE userid = ?";
+   $stmt = mysqli_prepare($conn, $sql);
 
-   if (mysqli_num_rows($result) == 1) {
-      $row = mysqli_fetch_assoc($result);
+   if ($stmt) {
+      mysqli_stmt_bind_param($stmt, "s", $userid);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
 
-      // Memeriksa status akun
-      $status = $row['status'];
+      if ($result && mysqli_num_rows($result) == 1) {
+         $row = mysqli_fetch_assoc($result);
+         $hashedPassword = $row['passuser'];
+         $idusers = $row['idusers'];
 
-      if ($status == 'INAKTIF') {
-         // Jika status INAKTIF, tampilkan pesan dan hentikan proses login
-         echo "<script>alert('Akun Anda dinonaktifkan. Silahkan hubungi administrator.'); window.location='login.php';</script>";
-         exit();
-      }
+         // Cek apakah akun dalam status INAKTIF
+         if ($row['status'] === 'INAKTIF') {
+            header("Location: login.php?error=inactive");
+            exit();
+         }
 
-      // Lanjutkan dengan memeriksa kecocokan password
-      $hashedPassword = $row['passuser'];
-      $idusers = $row['idusers']; // Ambil idusers dari database
+         // Verifikasi password
+         if (password_verify($password, $hashedPassword)) {
+            // Regenerasi ID sesi untuk mencegah session fixation
+            session_regenerate_id(true);
 
-      // Memeriksa kecocokan password yang dimasukkan dengan hash yang ada dalam database
-      if (password_verify($password, $hashedPassword)) {
-         // Jika password cocok, buat session dan redirect ke halaman dashboard
-         session_start();
-         $_SESSION['login'] = true;
-         $_SESSION['userid'] = $userid;
-         $_SESSION['idusers'] = $idusers; // Simpan idusers ke dalam session
-         $_SESSION['fullname'] = $row['fullname'];
+            // Set sesi login
+            $_SESSION['login'] = true;
+            $_SESSION['userid'] = $userid;
+            $_SESSION['idusers'] = $idusers;
+            $_SESSION['fullname'] = $row['fullname'];
+            $_SESSION['last_activity'] = time(); // Catat waktu login
+            $_SESSION['timeout'] = 30; // 5 menit dalam detik
 
-         // Insert ke tabel logactivity
-         $logSql = "INSERT INTO logactivity (iduser, event) VALUES ('$idusers', 'Login')";
-         mysqli_query($conn, $logSql);
+            // Catat aktivitas login ke database
+            $logSql = "INSERT INTO logactivity (iduser, event) VALUES (?, 'Login')";
+            $logStmt = mysqli_prepare($conn, $logSql);
+            mysqli_stmt_bind_param($logStmt, "i", $idusers);
+            mysqli_stmt_execute($logStmt);
+            mysqli_stmt_close($logStmt);
 
-         header("Location: ../index.php");
-         exit();
+            // Redirect ke halaman utama
+            header("Location: ../index.php");
+            exit();
+         } else {
+            // Jika password salah
+            header("Location: login.php?error=invalid");
+            exit();
+         }
       } else {
-         // Jika password tidak cocok, tampilkan pesan error
-         echo "<script>alert('Invalid username or password. Please try again.'); window.location='login.php';</script>";
+         // Jika username tidak ditemukan
+         header("Location: login.php?error=notfound");
+         exit();
       }
+
+      mysqli_stmt_close($stmt);
    } else {
-      // Jika data tidak ditemukan, tampilkan pesan error
-      echo "<script>alert('Invalid username or password. Please try again.'); window.location='login.php';</script>";
+      die("Query gagal: " . mysqli_error($conn));
    }
 }
 
-// Menutup koneksi ke database
+// Tutup koneksi database
 mysqli_close($conn);

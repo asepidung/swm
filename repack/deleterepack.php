@@ -1,10 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit(); // Pastikan untuk keluar dari skrip setelah mengarahkan pengguna ke halaman login
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Validasi input idrepack

@@ -26,6 +26,26 @@
 
 <!-- Page specific script -->
 <script>
+   $(document).ready(function() {
+      setInterval(function() {
+         $.ajax({
+            url: "../verifications/session_checker.php",
+            method: "GET",
+            dataType: "json",
+            success: function(response) {
+               console.log("Session status:", response.status); // Debugging
+               if (response.status === "expired") {
+                  alert("Sesi Anda telah berakhir. Silakan login kembali.");
+                  window.location.href = "../verifications/login.php";
+               }
+            },
+            error: function() {
+               console.log("Gagal menghubungi server.");
+            }
+         });
+      }, 10000); // Jalankan setiap 10 detik untuk mengecek sesi, tapi tidak memperbarui last_activity
+   });
+
    $(function() {
       // Initialize Select2 Elements
       if ($('.select2').length) {
