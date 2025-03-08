@@ -1,12 +1,6 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit();
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
-
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";

@@ -1,12 +1,5 @@
 <?php
-session_start();
-
-// Periksa apakah pengguna sudah login
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit(); // Pastikan untuk menghentikan eksekusi kode lebih lanjut jika belum login
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Periksa apakah ada parameter ID yang diberikan

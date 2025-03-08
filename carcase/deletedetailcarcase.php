@@ -1,4 +1,5 @@
 <?php
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Periksa apakah parameter iddetail dan idcarcase ada

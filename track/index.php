@@ -1,8 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-}
+require "../verifications/auth.php";
 require "../konak/conn.php"; // Koneksi ke database
 
 include "../header.php";
@@ -23,7 +20,7 @@ include "../mainsidebar.php";
             </div>
         </div>
     </div>
-    
+
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -42,7 +39,9 @@ include "../mainsidebar.php";
                                     </tr>
                                 </thead>
                                 <tbody id="resultTable">
-                                    <tr><td colspan="6" class="text-center">Masukkan kode untuk mencari</td></tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center">Masukkan kode untuk mencari</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -55,23 +54,25 @@ include "../mainsidebar.php";
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    $("#btnSearch").click(function() {
-        let barcode = $("#track").val().trim();
-        if (barcode !== "") {
-            $.ajax({
-                url: "search_history.php",
-                type: "POST",
-                data: { search: barcode },
-                success: function(data) {
-                    $("#resultTable").html(data);
-                }
-            });
-        } else {
-            $("#resultTable").html("<tr><td colspan='6' class='text-center'>Masukkan kode untuk mencari</td></tr>");
-        }
+    $(document).ready(function() {
+        $("#btnSearch").click(function() {
+            let barcode = $("#track").val().trim();
+            if (barcode !== "") {
+                $.ajax({
+                    url: "search_history.php",
+                    type: "POST",
+                    data: {
+                        search: barcode
+                    },
+                    success: function(data) {
+                        $("#resultTable").html(data);
+                    }
+                });
+            } else {
+                $("#resultTable").html("<tr><td colspan='6' class='text-center'>Masukkan kode untuk mencari</td></tr>");
+            }
+        });
     });
-});
 </script>
 
 <?php

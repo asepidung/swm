@@ -1,5 +1,5 @@
 <?php
-session_start();
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 $idgr = intval($_POST['idgr']);

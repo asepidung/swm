@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$_SESSION['timeout'] = 600; // Timeout dikurangi menjadi 30 detik untuk ujicoba
+$_SESSION['timeout'] = 900; // Timeout dikurangi menjadi 30 detik untuk ujicoba
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['login'])) {

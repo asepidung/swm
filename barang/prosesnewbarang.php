@@ -1,4 +1,5 @@
 <?php
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Mengambil data dari form

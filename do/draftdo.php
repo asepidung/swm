@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit(); // Pastikan untuk menghentikan eksekusi setelah redirect
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";

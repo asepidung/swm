@@ -1,13 +1,6 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("Location: ../verifications/login.php");
-    exit;
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
-
-// Ambil ID dari URL
 $idrequest = $_GET['id'] ?? null;
 
 if (!$idrequest) {

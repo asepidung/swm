@@ -1,8 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "../header.php";
 require "../navbar.php";
@@ -145,12 +142,12 @@ while ($row = mysqli_fetch_assoc($result)) {
                         </thead>
                         <tbody>
                            <?php
-                          $no = 1;
-                          $ambildata = mysqli_query($conn, "SELECT returjualdetail.*, barang.nmbarang, grade.nmgrade
+                           $no = 1;
+                           $ambildata = mysqli_query($conn, "SELECT returjualdetail.*, barang.nmbarang, grade.nmgrade
                                 FROM returjualdetail
                                 INNER JOIN barang ON returjualdetail.idbarang = barang.idbarang
                                 INNER JOIN grade ON returjualdetail.idgrade = grade.idgrade
-                                WHERE idreturjual = $idreturjual AND returjualdetail.is_deleted = 0 ORDER BY idreturjualdetail DESC");                          
+                                WHERE idreturjual = $idreturjual AND returjualdetail.is_deleted = 0 ORDER BY idreturjualdetail DESC");
                            while ($tampil = mysqli_fetch_array($ambildata)) { ?>
                               <tr class="text-center">
                                  <td><?= $no; ?></td>

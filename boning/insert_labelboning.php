@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit;
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "seriallabelboning.php";
 
@@ -62,4 +58,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: print_labelboning.php?idlabelboning=$idlabelboning&idboning=$idboning");
     exit;
 }
-?>

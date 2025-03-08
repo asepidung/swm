@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-}
-
+require "../verifications/auth.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
    require "../konak/conn.php";
 

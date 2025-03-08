@@ -1,10 +1,7 @@
 sekarang amati dengan seksama kode berikut
 
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 include "../header.php";
 $idtally = $_GET['id'];

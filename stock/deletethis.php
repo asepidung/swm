@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit();
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 if (isset($_GET['id'])) {

@@ -1,7 +1,5 @@
 <?php
-session_start();
-
-// Periksa apakah pengguna sudah login
+require "../verifications/auth.php";
 if (!isset($_SESSION['login'])) {
     header("location: ../verifications/login.php");
     exit;

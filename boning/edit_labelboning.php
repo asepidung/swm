@@ -1,16 +1,6 @@
 <?php
-session_start();
-
-// Periksa apakah pengguna sudah login
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit;
-}
-
-// Koneksi ke database
+require "../verifications/auth.php";
 require "../konak/conn.php";
-
-// Sertakan header, navbar, dan sidebar
 require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";

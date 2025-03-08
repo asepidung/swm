@@ -1,10 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit();
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 if (isset($_GET['id']) && isset($_GET['idso']) && is_numeric($_GET['id']) && is_numeric($_GET['idso'])) {
@@ -104,4 +99,3 @@ if (isset($_GET['id']) && isset($_GET['idso']) && is_numeric($_GET['id']) && is_
     header("location: index.php?stat=invalid_params");
     exit();
 }
-?>

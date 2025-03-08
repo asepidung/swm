@@ -1,11 +1,5 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit();
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 if (isset($_POST['idpoproduct'], $_POST['tglpoproduct'], $_POST['deliveryat'], $_POST['nopoproduct'], $_POST['idsupplier'], $_POST['terms'], $_POST['note'], $_POST['xweight'], $_POST['xamount'], $_POST['idbarang'], $_POST['weight'], $_POST['price'], $_POST['amount'], $_POST['notes'])) {

@@ -1,13 +1,5 @@
 <?php
-session_start();
-
-// Periksa apakah pengguna sudah login
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit;
-}
-
-// Koneksi ke database
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "kdlabel.php"; // Mengambil $kodeauto dari kdlabel.php
 

@@ -1,8 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 $idreturjual = $_GET['idreturjual'];
 $query = "SELECT returjual.*, customers.nama_customer

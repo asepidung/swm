@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: verifications/login.php");
-    exit(); // Menghentikan eksekusi setelah redirect
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 $idgr = isset($_GET['idgr']) ? intval($_GET['idgr']) : 0;

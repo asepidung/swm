@@ -1,11 +1,5 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit;
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 $idinvoice = isset($_GET['idinvoice']) ? intval($_GET['idinvoice']) : 0;

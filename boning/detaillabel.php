@@ -1,5 +1,5 @@
 <?php
-session_start();
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Ambil ID label boning dari GET

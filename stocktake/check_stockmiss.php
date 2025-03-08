@@ -1,5 +1,5 @@
 <?php
-session_start();
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {

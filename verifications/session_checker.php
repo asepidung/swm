@@ -10,7 +10,7 @@ if (!isset($_SESSION['login'])) {
 
 // Cek apakah sesi sudah habis berdasarkan waktu terakhir aktivitas
 $inactive_time = time() - ($_SESSION['last_activity'] ?? time());
-$timeout = $_SESSION['timeout'] ?? 600;
+$timeout = $_SESSION['timeout'] ?? 900;
 
 if ($inactive_time > $timeout) {
     session_unset();

@@ -1,10 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-    header("location: ../verifications/login.php");
-    exit();
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 include "grnumber.php";
 include "idtransaksi.php"; // ID Transaksi di-include dari file ini

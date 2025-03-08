@@ -1,10 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit(); // Pastikan untuk menghentikan eksekusi kode lebih lanjut jika belum login
-}
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "ponumber.php";
 

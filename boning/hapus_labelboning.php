@@ -1,11 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit(); // Pastikan eksekusi berhenti setelah redirect
-}
-
-// Koneksi ke database
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Periksa apakah parameter idlabelboning dan idboning telah diterima

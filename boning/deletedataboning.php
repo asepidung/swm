@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['login'])) {
-   header("location: ../verifications/login.php");
-   exit(); // Pastikan eksekusi berhenti setelah redirect
-}
+require "../verifications/auth.php";
 require "../konak/conn.php";
 
 // Mendapatkan idboning dari parameter URL
@@ -25,7 +21,7 @@ foreach ($kdbarcodes as $kdbarcode) {
     $checkStockQuery = "SELECT COUNT(*) as total FROM stock WHERE kdbarcode = '$kdbarcode'";
     $checkStockResult = mysqli_query($conn, $checkStockQuery);
     $stockData = mysqli_fetch_assoc($checkStockResult);
-    
+
     // Jika ada satu kdbarcode yang tidak ada di tabel stock, set flag menjadi false
     if ($stockData['total'] == 0) {
         $allExist = false;
@@ -38,7 +34,7 @@ if (!$allExist) {
     echo '<div class="alert alert-danger" role="alert">';
     echo 'Pengahpusan GAGAL !!! ada barang yang sudah di proses di modul lain, silahkan klik Back';
     echo '</div>';
-    
+
     // Tombol Back untuk kembali ke halaman sebelumnya
     echo '<button onclick="history.back()" class="btn btn-secondary">Back</button>';
     exit;
@@ -69,4 +65,3 @@ if (!$allExist) {
 
 // Tutup koneksi database
 mysqli_close($conn);
-?>

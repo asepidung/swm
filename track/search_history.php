@@ -1,4 +1,5 @@
 <?php
+require "../verifications/auth.php";
 require "../konak/conn.php"; // Koneksi database
 
 $search = $_POST['search'] ?? '';
@@ -37,7 +38,7 @@ foreach ($tables as $table => $columns) {
     ";
 
     $result = $conn->query($query);
-    
+
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             // Format tanggal untuk creatime (26-Feb-2025 16:24:38)
@@ -69,15 +70,14 @@ if (!empty($results)) {
     $no = 1;
     foreach ($results as $row) {
         echo "<tr class='text-center'>
-                <td>".$no++."</td>
-                <td class='text-left'>".$row['source']."</td>
-                <td>".$row['real_timestamp']."</td>
-                <td>".$row['item']."</td>
-                <td class='text-right'>".$row['weight']."</td>
-                <td>".$row['pod']."</td>
+                <td>" . $no++ . "</td>
+                <td class='text-left'>" . $row['source'] . "</td>
+                <td>" . $row['real_timestamp'] . "</td>
+                <td>" . $row['item'] . "</td>
+                <td class='text-right'>" . $row['weight'] . "</td>
+                <td>" . $row['pod'] . "</td>
               </tr>";
     }
 } else {
     echo "<tr><td colspan='6' class='text-center'>Data tidak ditemukan</td></tr>";
 }
-?>

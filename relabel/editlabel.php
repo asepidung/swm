@@ -1,7 +1,5 @@
 <?php
-session_start();
-// Tidak perlu memeriksa session untuk halaman ini
-
+require "../verifications/auth.php";
 require "../konak/conn.php";
 require "../header.php";
 require "../navbar.php";
