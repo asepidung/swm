@@ -58,7 +58,7 @@ $stmt->close();
                            <input type="number" step="0.01" class="form-control" id="berat" name="berat" placeholder="Berat (Opsional)">
                         </div>
                         <div class="form-group">
-                           <input type="text" class="form-control" id="eartag" name="eartag" maxlength="5" required placeholder="Eartag" autofocus>
+                           <input type="text" class="form-control" id="eartag" name="eartag" maxlength="6" required placeholder="Eartag" autofocus>
                         </div>
                         <div class="form-group">
                            <input type="number" step="0.01" class="form-control" id="carcase1" name="carcase1" required placeholder="Carcase A">
