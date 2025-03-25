@@ -56,6 +56,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                               <th>Customer</th>
                               <th>Tgl Kirim</th>
                               <th>PO</th>
+                              <th>Note</th>
                               <th>Progress</th>
                               <th>Made By</th>
                               <th>Action</th>
@@ -79,6 +80,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['po']; ?></td>
+                                 <td><?= $tampil['note']; ?></td>
                                  <?php
                                  if ($progress == "Delivered") { ?>
                                     <td class="text-success"><i class="fas fa-check-circle"></i> Delivered </td>
