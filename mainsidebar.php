@@ -25,7 +25,7 @@ include "notifcount.php";
         <img src="../dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
       </div>
       <div class="info">
-        <a href="#" class="d-block"><?= $fullname; ?></a>
+        <a href="../verifications/edituser.php?id=<?= $idusers ?>" class="d-block"><?= $fullname; ?></a>
       </div>
     </div>
     <!-- Sidebar Menu -->
