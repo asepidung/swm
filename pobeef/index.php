@@ -34,9 +34,9 @@ include "../mainsidebar.php";
                                         <th>#</th>
                                         <th>PO Number</th>
                                         <th>Request Number</th>
-                                        <th>Supplier</th>
+                                        <th class="text-left">Supplier</th>
                                         <th>Due Date</th>
-                                        <th>Amount</th>
+                                        <th class="text-right">Amount</th>
                                         <th>Tax</th>
                                         <th>Terms</th>
                                         <th>Notes</th>

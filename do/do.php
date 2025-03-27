@@ -69,6 +69,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                               <th>Tgl Kirim</th>
                               <th>Customer</th>
                               <th>PO</th>
+                              <th>SO</th>
                               <th>Tally</th>
                               <th>xQty</th>
                               <th>rQty</th>
@@ -80,9 +81,10 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                         <tbody>
                            <?php
                            $no = 1;
-                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname, tally.notally 
+                           $ambildata = mysqli_query($conn, "SELECT do.*, customers.nama_customer, users.fullname, tally.notally, salesorder.sonumber 
                            FROM do
                            JOIN customers ON do.idcustomer = customers.idcustomer
+                           JOIN salesorder ON do.idso = salesorder.idso
                            JOIN users ON do.idusers = users.idusers
                            LEFT JOIN tally ON do.idtally = tally.idtally
                            WHERE do.deliverydate BETWEEN '$awal' AND '$akhir' AND do.is_deleted = 0
@@ -99,6 +101,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <td class="text-center"><?= date("d-M-y", strtotime($tampil['deliverydate'])); ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
                                  <td><?= $tampil['po']; ?></td>
+                                 <td class="text-center"><?= substr($tampil['sonumber'], -4); ?></td>
                                  <td><a href="../tally/printtally.php?id=<?= $tampil['idtally'] ?> "><?= $tampil['notally']; ?></a></td>
                                  <td class="text-right"><?= number_format($tampil['xweight'], 2); ?></td>
                                  <td class="text-right"><?= number_format($tampil['rweight'] ?? 0, 2); ?></td>
@@ -106,16 +109,16 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                  <td class="text-center">
                                     <?php if ($tampil['status'] == "Approved") { ?>
                                        <a href="editapprovedo.php?iddo=<?= $tampil['iddo'] ?>" onclick="return confirm('Apakah Anda yakin ingin meng-unapprove DO ini?')">
-                                          <span class="badge badge-primary">Approved</span>
+                                          <span class="badge badge-primary">Unapproved</span>
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Unapproved") { ?>
                                        <a href="approvedo.php?iddo=<?= $tampil['iddo'] ?>">
-                                          <span class="badge badge-danger">Klik Untuk Approve</span>
+                                          <span class="badge badge-danger">Approve</span>
                                        </a>
                                     <?php } elseif ($tampil['status'] == "Rejected") { ?>
                                        <span class="badge badge-warning">Rejected</span>
                                     <?php } elseif ($tampil['status'] == "Invoiced") { ?>
-                                       <span class="badge badge-success">Invoiced</span>
+                                       Invoiced
                                     <?php } else {
                                        echo $tampil['status'];
                                     } ?>
