@@ -152,40 +152,52 @@ $idst = intval($_GET['id']);
             "type": "POST"
          },
          "columns": [{
-               "data": 0
-            }, // #
+               "data": null,
+               "render": function(data, type, row, meta) {
+                  return meta.row + meta.settings._iDisplayStart + 1;
+               },
+               "className": "text-center",
+               "orderable": false
+            },
             {
-               "data": 1
-            }, // Barcode
+               "data": 1,
+               "className": "text-center" // Tambahkan class text-center untuk barcode
+            },
             {
                "data": 2
-            }, // Item
+            },
             {
-               "data": 3
-            }, // Grade
+               "data": 3,
+               "className": "text-center"
+            },
             {
-               "data": 4
-            }, // Weight
+               "data": 4,
+               "className": "text-right"
+            },
             {
-               "data": 5
-            }, // Pcs
+               "data": 5,
+               "className": "text-center"
+            },
             {
-               "data": 6
-            }, // POD
+               "data": 6,
+               "className": "text-center"
+            },
             {
-               "data": 7
-            }, // Origin
+               "data": 7,
+               "className": "text-center"
+            },
             {
                "data": 8,
+               "className": "text-center",
                "orderable": false
-            } // Hapus
+            }
          ],
          "order": [
             [0, "desc"]
          ]
       });
 
-      // Tambahkan event listener untuk refresh DataTable setelah scan
+      // Event listener untuk refresh DataTable setelah scan
       $('form').on('submit', function() {
          setTimeout(function() {
             $('#stockTable').DataTable().ajax.reload(null, false);

@@ -73,6 +73,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                               <th>Tgl Kirim</th>
                               <th>Products</th>
                               <th>Qty</th>
+                              <th>Price</th>
                               <th>Qty Sent</th>
                               <th>Notes</th>
                            </tr>
@@ -88,6 +89,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                  <td class="text-center"> <?= date("d-M-y", strtotime($row["deliverydate"])); ?> </td>
                                  <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
                                  <td class="text-center"> <?= $row["qty_order"]; ?> </td> <!-- Alias yang benar -->
+                                 <td class="text-right"><?= number_format($row["price"]) ?></td>
                                  <td class="text-center"> <?= $row["qty_sent"]; ?> </td> <!-- Sudah benar -->
                                  <td class="text-left"> <?= $row["notes"]; ?> </td>
                               </tr>

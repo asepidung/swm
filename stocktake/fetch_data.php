@@ -66,7 +66,7 @@ while ($row = $result->fetch_assoc()) {
         htmlspecialchars($row['nmgrade'] ?? "N/A"), // Jika grade kosong, tampilkan "N/A"
         number_format($row['qty'], 2), // Format angka qty
         intval($row['pcs']), // Pastikan pcs dalam bentuk integer
-        htmlspecialchars($row['pod']) . " Days",
+        htmlspecialchars(date("d-M-y", strtotime($row['pod']))),
         ["Unidentified", "BONING", "TRADING", "REPACK", "RELABEL", "IMPORT"][$row['origin']] ?? "Unknown",
         '<a href="deletestdetail.php?iddetail=' . $row['idstdetail'] . '&id=' . $idst . '" class="text-danger" onclick="return confirm(\'Yakinkan Dirimu?\')">
             <i class="far fa-times-circle"></i>
