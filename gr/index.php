@@ -34,7 +34,7 @@ include "../mainsidebar.php";
                                         <th>GR Number</th>
                                         <th>Supplier</th>
                                         <th>PO Number</th>
-                                        <!-- <th>Req Number</th> -->
+                                        <th>Req Number</th>
                                         <th>Receiving Date</th>
                                         <!-- <th>Supplier ID</th> -->
                                         <th>Note</th>
@@ -47,9 +47,10 @@ include "../mainsidebar.php";
                                     $no = 1;
                                     // Query untuk mengambil data dari tabel grraw dan tabel terkait
                                     $query = "
-                                    SELECT grraw.*, supplier.nmsupplier, po.nopo, users.fullname 
+                                    SELECT grraw.*, supplier.nmsupplier, po.nopo, request.norequest, users.fullname 
                                     FROM grraw
                                     LEFT JOIN po ON grraw.idpo = po.idpo
+                                    LEFT JOIN request ON po.idrequest = request.idrequest
                                     JOIN supplier ON grraw.idsupplier = supplier.idsupplier
                                     LEFT JOIN users ON grraw.idusers = users.idusers
                                     WHERE grraw.is_deleted = 0
@@ -70,6 +71,7 @@ include "../mainsidebar.php";
                                             <td class="text-center"><?= htmlspecialchars($tampil['grnumber']); ?></td>
                                             <td><?= htmlspecialchars($tampil['nmsupplier']); ?></td>
                                             <td class="text-center"><?= htmlspecialchars($tampil['nopo']); ?></td>
+                                            <td class="text-center"><?= htmlspecialchars($tampil['norequest']); ?></td>
                                             <td class="text-center"><?= date("d-M-y", strtotime($tampil['receivedate'])); ?></td>
                                             <!-- <td><?= $tampil['suppcode']; ?></td> -->
                                             <td><?= htmlspecialchars($tampil['note']); ?></td>

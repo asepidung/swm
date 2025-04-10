@@ -50,7 +50,10 @@ $result = $conn->query($sql);
                                     $podDate = date_create($row['pod']);
                                     $currentDate = date_create();
                                     $podDiff = date_diff($podDate, $currentDate);
-                                    $podInterval = $podDiff->format('%a days');
+
+                                    // 💡 Format jadi 3 digit angka + ' days'
+                                    $days = (int)$podDiff->format('%a');
+                                    $podInterval = sprintf('%03d days', $days);
                               ?>
                                     <tr>
                                        <td class="text-center"><?= $no; ?></td>
@@ -68,6 +71,7 @@ $result = $conn->query($sql);
                               }
                               ?>
                            </tbody>
+
                         </table>
                      </div>
                   </div>

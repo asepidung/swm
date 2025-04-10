@@ -16,13 +16,18 @@ include "../mainsidebar.php";
                         <div class="card-body">
                             <?php
                             // Query data dari tabel po
-                            $sql = "SELECT p.idpo, p.nopo, p.duedate, p.note, p.creatime, p.xamount, p.taxrp, p.tax, p.top,
-                                           r.norequest, s.nmsupplier
-                                    FROM po p
-                                    LEFT JOIN request r ON p.idrequest = r.idrequest
-                                    LEFT JOIN supplier s ON p.idsupplier = s.idsupplier
-                                    WHERE p.is_deleted = 0
-                                    ORDER BY p.idpo DESC";
+                            $sql = "SELECT 
+                            p.idpo, p.nopo, p.duedate, p.note, p.creatime, p.xamount, p.taxrp, p.tax, p.top,
+                            r.norequest, s.nmsupplier,
+                            EXISTS (
+                                SELECT 1 FROM grraw g WHERE g.idpo = p.idpo AND g.is_deleted = 0
+                            ) AS has_gr
+                        FROM po p
+                        LEFT JOIN request r ON p.idrequest = r.idrequest
+                        LEFT JOIN supplier s ON p.idsupplier = s.idsupplier
+                        WHERE p.is_deleted = 0
+                        ORDER BY p.idpo DESC";
+
                             $stmt = $conn->prepare($sql);
                             $stmt->execute();
                             $result = $stmt->get_result();
@@ -53,20 +58,26 @@ include "../mainsidebar.php";
                                                 <td><?= $i ?></td>
                                                 <td><?= htmlspecialchars($row['nopo']) ?></td>
                                                 <td><?= htmlspecialchars($row['norequest']) ?></td>
-                                                <td><?= htmlspecialchars($row['nmsupplier']) ?></td>
+                                                <td class="text-left"><?= htmlspecialchars($row['nmsupplier']) ?></td>
                                                 <td><?= htmlspecialchars(date("D, d-M-y", strtotime($row['duedate']))) ?></td>
-                                                <td><?= number_format($row['xamount'], 2) ?></td>
-                                                <td><?= htmlspecialchars($row['tax']) ?> (<?= number_format($row['taxrp'], 2) ?>)</td>
+                                                <td class="text-right"><?= number_format($row['xamount'], 2) ?></td>
+                                                <td class="text-right"><?= htmlspecialchars($row['tax']) ?> (<?= number_format($row['taxrp'], 2) ?>)</td>
                                                 <td><?= htmlspecialchars($row['top']) ?> Hari</td>
                                                 <td class="text-left"><?= htmlspecialchars($row['note']) ?></td>
                                                 <td>
                                                     <a href="view.php?id=<?= intval($row['idpo']) ?>" class='btn btn-info btn-sm' title="View PO"><i class="fas fa-eye"></i></a>
-                                                    <a href="delete.php?id=<?= intval($row['idpo']) ?>"
-                                                        class="btn btn-danger btn-sm"
-                                                        title="Delete PO"
-                                                        onclick="return confirm('Are you sure you want to delete this PO?');">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
+                                                    <?php if (!$row['has_gr']): ?>
+                                                        <a href="delete.php?id=<?= intval($row['idpo']) ?>"
+                                                            class="btn btn-danger btn-sm"
+                                                            title="Delete PO"
+                                                            onclick="return confirm('Are you sure you want to delete this PO?');">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <button class="btn btn-secondary btn-sm" title="PO sudah memiliki GR" disabled>
+                                                            <i class="fas fa-ban"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                     <?php

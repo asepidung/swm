@@ -102,3 +102,24 @@ $queryrepackCount = "
 $resultrepackCount = mysqli_query($conn, $queryrepackCount);
 $rowrepackCount = mysqli_fetch_assoc($resultrepackCount);
 $repackCount = $rowrepackCount['repackCount'];
+
+
+// po belum grraw
+
+$queryPoBelumGR = "
+    SELECT COUNT(*) AS poBelumGRCount
+    FROM po p
+    JOIN request r ON p.idrequest = r.idrequest
+    WHERE p.is_deleted = 0
+      AND p.stat = 0
+      AND r.iduser = $idusers
+      AND NOT EXISTS (
+          SELECT 1
+          FROM grraw g
+          WHERE g.idpo = p.idpo
+            AND g.is_deleted = 0
+      )
+";
+$resultPoBelumGR = mysqli_query($conn, $queryPoBelumGR);
+$rowPoBelumGR = mysqli_fetch_assoc($resultPoBelumGR);
+$poBelumGRCount = $rowPoBelumGR['poBelumGRCount'];

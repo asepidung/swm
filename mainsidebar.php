@@ -108,7 +108,11 @@ include "notifcount.php";
                   <li class="nav-item">
                     <a href="../gr" class="nav-link">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Non Daging</p>
+                      <p>Non Daging
+                        <?php if ($poBelumGRCount > 0): ?>
+                          <span class="badge badge-info right"><?= $poBelumGRCount ?></span>
+                        <?php endif; ?>
+                      </p>
                     </a>
                   </li>
                 </ul>
@@ -179,7 +183,6 @@ include "notifcount.php";
             </ul>
           </li>
         <?php endif; ?>
-
 
         <?php if ($role['distributions'] == 1) : ?>
           <li class="nav-item">
