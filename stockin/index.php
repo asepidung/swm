@@ -45,7 +45,12 @@ $result_stockin = mysqli_query($conn, $query_stockin);
                                     <div class="input-group">
                                         <select class="form-control" name="idbarang" id="idbarang" required>
                                             <option value="">Pilih Barang</option>
-                                            <?php while ($row_barang = mysqli_fetch_assoc($result_barang)) : ?>
+                                            <?php
+                                            // Pastikan query SQL diurutkan berdasarkan nmbarang
+                                            $query_barang = "SELECT * FROM barang ORDER BY nmbarang ASC";
+                                            $result_barang = mysqli_query($conn, $query_barang);
+
+                                            while ($row_barang = mysqli_fetch_assoc($result_barang)) : ?>
                                                 <option value="<?= $row_barang['idbarang'] ?>" <?= (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] == $row_barang['idbarang']) ? 'selected' : ''; ?>>
                                                     <?= $row_barang['nmbarang'] ?>
                                                 </option>

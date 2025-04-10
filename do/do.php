@@ -129,21 +129,30 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                                           <i class="fas fa-bars"></i>
                                        </button>
                                        <div class="dropdown-menu">
-                                          <!-- Opsi Lihat -->
+                                          <!-- Opsi Lihat (Selalu Tampil) -->
                                           <a class="dropdown-item" href="lihatdo.php?iddo=<?= $tampil['iddo']; ?>">
                                              <i class="fas fa-eye"></i> Lihat
                                           </a>
 
-                                          <!-- Opsi Edit (hanya jika status bukan Rejected atau Invoiced) -->
+                                          <!-- Opsi Edit (Nonaktif untuk Rejected/Invoiced) -->
                                           <?php if ($tampil['status'] !== "Rejected" && $tampil['status'] !== "Invoiced") { ?>
                                              <a class="dropdown-item" href="editdo.php?iddo=<?= $tampil['iddo']; ?>">
                                                 <i class="fas fa-edit"></i> Edit
                                              </a>
                                           <?php } ?>
 
-                                          <!-- Opsi Hapus (hanya muncul jika status Unapproved) -->
+                                          <!-- Opsi Reject (Hanya untuk Unapproved) -->
                                           <?php if ($tampil['status'] === "Unapproved") { ?>
-                                             <a class="dropdown-item" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>"
+                                             <a class="dropdown-item text-danger"
+                                                href="rejectdo.php?iddo=<?= $tampil['iddo'] ?>&idso=<?= $tampil['idso'] ?>"
+                                                onclick="return confirm('Yakin ingin Mereject DO ini?');">
+                                                <i class="fas fa-times-circle"></i> Reject
+                                             </a>
+                                          <?php } ?>
+
+                                          <!-- Opsi Hapus (Hanya untuk Unapproved) -->
+                                          <?php if ($tampil['status'] === "Unapproved") { ?>
+                                             <a class="dropdown-item text-danger" href="deletedo.php?iddo=<?= $tampil['iddo']; ?>"
                                                 onclick="return confirm('Apakah Anda yakin ingin menghapus DO ini?');">
                                                 <i class="fas fa-trash"></i> Hapus
                                              </a>
