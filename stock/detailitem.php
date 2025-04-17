@@ -72,8 +72,9 @@ $conn->close();
                         // Menghitung selisih waktu antara POD dan hari ini
                         $podDiff = date_diff($podDate, $currentDate);
 
-                        // Menampilkan selisih waktu dalam format yang diinginkan
-                        $podInterval = $podDiff->format('%a days'); // Format: X days
+                        $days = (int)$podDiff->format('%a');
+                        $podInterval = sprintf('%03d days', $days);
+
                     ?>
                         <tr class="text-center">
                           <td><?= $no; ?></td>

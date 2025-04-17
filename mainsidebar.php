@@ -110,7 +110,7 @@ include "notifcount.php";
                       <i class="far fa-dot-circle nav-icon"></i>
                       <p>Non Daging
                         <?php if ($poBelumGRCount > 0): ?>
-                          <span class="badge badge-info right"><?= $poBelumGRCount ?></span>
+                          <span class="badge badge-danger right"><?= $poBelumGRCount ?></span>
                         <?php endif; ?>
                       </p>
                     </a>
