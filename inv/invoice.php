@@ -60,7 +60,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                               <th>PO</th>
                               <th>Amount</th>
                               <!-- <th>Due Date</th> -->
-                              <th>Status</th>
+                              <!-- <th>Status</th> -->
                               <th>Action</th>
                            </tr>
                         </thead>
@@ -101,7 +101,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                  <td><?= $tampil['pocustomer']; ?></td>
                                  <td class="text-right"><?= number_format($tampil['balance'], 2); ?></td>
                                  <!-- <td class="text-center"><?= date("d-M-y", strtotime($tampil['duedate'])); ?></td> -->
-                                 <td class="text-center">
+                                 <!-- <td class="text-center">
                                     <?php if ($tampil['status'] == '-') {
                                        echo "-";
                                     } else if ($tampil['status'] == 'Belum TF') { ?>
@@ -111,7 +111,7 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                     <?php } else { ?>
                                        <span class="text-primary" data-toggle="tooltip" data-placement="left" title="<?= date("d-M-y", strtotime($tampil['tgltf'])) . " " . $tampil['note']; ?>"><?= $tampil['status']; ?></span>
                                     <?php } ?>
-                                 </td>
+                                 </td> -->
                                  <td class="text-center">
                                     <!-- <div class="row"> -->
                                     <!-- <div class="col"> -->
