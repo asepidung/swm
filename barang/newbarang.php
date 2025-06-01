@@ -19,8 +19,6 @@ include "../mainsidebar.php";
                   <div class="card-header">
                      <h3 class="card-title">Input Item Baru</h3>
                   </div>
-                  <!-- /.card-header -->
-                  <!-- form start -->
                   <form method="POST" action="prosesnewbarang.php">
                      <div class=" card-body">
                         <div class="form-group">
@@ -35,13 +33,15 @@ include "../mainsidebar.php";
                            <label for="cut">Kategori <span class="text-danger">*</span></label>
                            <select class="form-control" name="cut" id="cut" required>
                               <option value="">Pilih Kategori</option>
-                              <option value="1">PRIME CUT</option>
-                              <option value="2">SECONDARY CUT</option>
-                              <option value="3">BONES</option>
-                              <option value="4">OFFAL</option>
-                              <option value="5">FAT</option>
-                              <option value="6">GRADES</option>
-                              <option value="7">MATERIAL SUPPORT</option>
+                              <?php
+                              // Ambil data dari tabel cuts
+                              $query = mysqli_query($conn, "SELECT idcut, nmcut FROM cuts ORDER BY idcut ASC");
+
+                              // Loop setiap baris hasil query dan buat option
+                              while ($row = mysqli_fetch_assoc($query)) {
+                                 echo '<option value="' . $row['idcut'] . '">' . strtoupper($row['nmcut']) . '</option>';
+                              }
+                              ?>
                            </select>
                         </div>
                      </div>
@@ -50,17 +50,13 @@ include "../mainsidebar.php";
                      </div>
                </div>
                <!-- /.card-body -->
-
                </form>
             </div>
             <!-- /.card -->
          </div>
       </div>
    </section>
-</div><!-- /.container-fluid -->
-<!-- /.content -->
-<!-- </div> -->
-<!-- /.content-wrapper -->
+</div>
 
 <?php
 include "../footer.php";
