@@ -128,7 +128,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                   <div class="card-body">
                      <div class="col">
                         <div class="search-export-container mb-2">
-                           <input type="text" id="searchInput" placeholder="Search table..." class="form-control" />
+                           <input type="text" id="searchInput" autofocus placeholder="Search table..." class="form-control" />
                            <button id="exportPdfBtn" class="btn btn-sm btn-danger">Export PDF</button>
                         </div>
 

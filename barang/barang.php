@@ -39,11 +39,13 @@ include "../mainsidebar.php";
                               <?php
                               $no = 1;
                               $ambildata = mysqli_query($conn, "SELECT barang.*, cuts.nmcut 
-                              FROM barang 
-                              LEFT JOIN cuts ON barang.idcut = cuts.idcut");
+                                  FROM barang 
+                                  LEFT JOIN cuts ON barang.idcut = cuts.idcut
+                                  ORDER BY nmbarang ASC");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
                                  $idbarang = $tampil['idbarang'];
                               ?>
+
                                  <tr class="text-right">
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= $tampil['kdbarang']; ?></td>
