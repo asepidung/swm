@@ -9,7 +9,7 @@ if ($conn->connect_error) {
    die("Connection failed: " . $conn->connect_error);
 }
 
-// Query utama: ambil data produk per kategori cut
+// Query utama: ambil data produk per kategori cut dan urutkan berdasarkan kdbarang
 $sql = "SELECT
             b.kdbarang,
             b.nmbarang,
@@ -25,7 +25,7 @@ $sql = "SELECT
         JOIN barang b ON s.idbarang = b.idbarang
         JOIN cuts c ON b.idcut = c.idcut
         GROUP BY b.idbarang, b.kdbarang, b.nmbarang, c.idcut, c.nmcut
-        ORDER BY c.idcut, b.nmbarang";
+        ORDER BY c.idcut, b.kdbarang"; // Urutkan berdasarkan kdbarang
 
 $result = $conn->query($sql);
 
@@ -112,7 +112,6 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
       <div class="container-fluid">
          <div class="row">
             <div class="col-12 mt-3">
-
                <div class="btn-group mb-2">
                   <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                      Sort By
@@ -153,6 +152,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                                  <?php
                                  $currentCut = "";
                                  while ($row = $result->fetch_assoc()):
+                                    // Menampilkan header kategori `cuts` sekali per kategori
                                     if ($row['nmcut'] != $currentCut):
                                        $currentCut = $row['nmcut'];
                                        $totalCut = $totalsPerCut[$currentCut];
