@@ -56,7 +56,8 @@ $row = mysqli_fetch_assoc($result);
             <thead class="thead-dark">
                <tr class="text-center">
                   <th>#</th>
-                  <th>Product Desc</th>
+                  <th>Product Code</th>
+                  <th>Product Name</th>
                   <th>Order Qty</th>
                   <!-- <th>Price</th> -->
                   <th>Notes</th>
@@ -65,7 +66,7 @@ $row = mysqli_fetch_assoc($result);
             <tbody>
                <?php
                $no = 1;
-               $query_salesorderdetail = "SELECT salesorderdetail.*, barang.nmbarang
+               $query_salesorderdetail = "SELECT salesorderdetail.*, barang.nmbarang, barang.kdbarang
                 FROM salesorderdetail
                 INNER JOIN barang ON salesorderdetail.idbarang = barang.idbarang
                 WHERE idso = '$idso'";
@@ -73,6 +74,7 @@ $row = mysqli_fetch_assoc($result);
                while ($row_salesorderdetail = mysqli_fetch_assoc($result_salesorderdetail)) { ?>
                   <tr>
                      <td class="text-center"><?= $no; ?></td>
+                     <td><?= $row_salesorderdetail['kdbarang']; ?></td>
                      <td><?= $row_salesorderdetail['nmbarang']; ?></td>
                      <td class="text-right"><?= number_format($row_salesorderdetail['weight'], 2); ?></td>
                      <!-- <td class="text-center">*****</td> -->
@@ -83,7 +85,7 @@ $row = mysqli_fetch_assoc($result);
             </tbody>
             <tfoot>
                <tr>
-                  <th colspan="2" class="text-right">Weight Total</th>
+                  <th colspan="3" class="text-right">Weight Total</th>
                   <th class="text-right"><?= number_format($totalPO, 2); ?></th>
                   <th></th>
                </tr>
