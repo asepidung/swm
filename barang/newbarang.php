@@ -31,7 +31,6 @@ include "../mainsidebar.php";
                            <select class="form-control" name="kodeinduk" id="kodeinduk">
                               <option value="" selected disabled>Pilih Barang Induk</option>
                               <?php
-                              // Ambil barang utama diurutkan berdasarkan nama barang alfabet
                               $query = mysqli_query($conn, "SELECT kdbarang, nmbarang FROM barang WHERE kodeinduk IS NULL ORDER BY nmbarang ASC");
                               while ($row = mysqli_fetch_assoc($query)) {
                                  echo '<option value="' . htmlspecialchars($row['kdbarang']) . '">' . strtoupper(htmlspecialchars($row['nmbarang'])) . ' - ' . htmlspecialchars($row['kdbarang']) . '</option>';
@@ -39,12 +38,6 @@ include "../mainsidebar.php";
                               ?>
                            </select>
                            <small class="form-text text-muted">Pilih barang utama sebagai induk untuk produk turunan.</small>
-                        </div>
-
-                        <div class="form-group d-none" id="kodeContainer">
-                           <label for="kdbarang">Kode Barang <span class="text-danger">*</span></label>
-                           <input type="text" class="form-control" name="kdbarang" id="kdbarang" value="" placeholder="Masukkan kode barang utama">
-                           <small class="form-text text-muted" id="kodeHelp">Masukkan kode barang sesuai handbook untuk barang utama.</small>
                         </div>
 
                         <div class="form-group">
@@ -79,27 +72,14 @@ include "../mainsidebar.php";
 <script>
    document.addEventListener('DOMContentLoaded', function() {
       const tipeBarang = document.getElementById('tipebarang');
-      const kodeContainer = document.getElementById('kodeContainer');
-      const kodeBarang = document.getElementById('kdbarang');
       const parentContainer = document.getElementById('parentContainer');
       const kodeIndukSelect = document.getElementById('kodeinduk');
 
       tipeBarang.addEventListener('change', function() {
-         if (this.value === 'utama') {
-            kodeContainer.classList.remove('d-none');
-            kodeBarang.readOnly = false;
-            kodeBarang.value = '';
-            parentContainer.classList.add('d-none');
-            kodeIndukSelect.value = '';
-         } else if (this.value === 'turunan') {
-            kodeContainer.classList.remove('d-none');
-            kodeBarang.readOnly = true;
-            kodeBarang.value = '';
+         if (this.value === 'turunan') {
             parentContainer.classList.remove('d-none');
          } else {
-            kodeContainer.classList.add('d-none');
             parentContainer.classList.add('d-none');
-            kodeBarang.value = '';
             kodeIndukSelect.value = '';
          }
       });
