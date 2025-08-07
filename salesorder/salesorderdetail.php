@@ -24,7 +24,9 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                </form>
             </div>
             <div class="col-1">
-               <a href="index.php" class="btn btn-sm btn-outline-primary float right"><i class="fas fa-plus"></i> Back</button></a>
+               <a href="javascript:history.back()" class="btn btn-sm btn-outline-primary float-right">
+                  <i class="fas fa-arrow-left"></i> Back
+               </a>
             </div>
          </div>
       </div><!-- /.container-fluid -->

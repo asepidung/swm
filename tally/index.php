@@ -31,12 +31,16 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : $maxDate;
                </form>
             </div>
             <div class="col-12 col-md-1 mb-2">
-               <a href="drafttally.php">
-                  <button type="button" class="btn btn-sm btn-outline-primary btn-block">
-                     <span class="badge badge-danger"> <?= $drafttally; ?></span> Draft
-                  </button>
+               <a href="drafttally.php" class="btn btn-sm btn-outline-primary btn-block d-flex align-items-center justify-content-center">
+                  <span class="badge badge-danger mr-1"><?= $drafttally; ?></span> Draft
                </a>
             </div>
+            <div class="col-12 col-md-1 mb-2">
+               <a href="penyiapan.php" class="btn btn-sm btn-outline-warning btn-block d-flex align-items-center justify-content-center">
+                  <span class="badge badge-warning mr-1"><i class="fas fa-tools"></i></span> Penyiapan
+               </a>
+            </div>
+
          </div>
       </div><!-- /.container-fluid -->
    </div>
