@@ -9,62 +9,83 @@ if ($conn->connect_error) {
    die("Connection failed: " . $conn->connect_error);
 }
 
-// Query utama: ambil data produk per kategori cut dan urutkan berdasarkan kdbarang
+/**
+ * SYARAT kdbarang VALID:
+ * - tidak NULL
+ * - bukan string kosong / '-' / '–' / '—'
+ * - mengandung minimal satu huruf/angka
+ */
+$validCodeWhere = "b.kdbarang IS NOT NULL
+                   AND TRIM(b.kdbarang) <> ''
+                   AND TRIM(b.kdbarang) NOT IN ('-', '–', '—')
+                   AND TRIM(b.kdbarang) REGEXP '[[:alnum:]]'";
+
+/**
+ * QUERY UTAMA
+ * - cuts -> barang -> LEFT JOIN stock
+ * - Filter barang berkode valid
+ * - GROUP BY lengkap (ONLY_FULL_GROUP_BY safe)
+ */
 $sql = "SELECT
+            b.idbarang,
             b.kdbarang,
             b.nmbarang,
-            s.idbarang,
             c.idcut,
             c.nmcut,
-            SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END) AS chill_jonggol,
-            SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END) AS frozen_jonggol,
-            SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END) AS chill_perum,
-            SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END) AS frozen_perum,
-            SUM(s.qty) AS total_qty
-        FROM stock s
-        JOIN barang b ON s.idbarang = b.idbarang
-        JOIN cuts c ON b.idcut = c.idcut
+            COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS chill_jonggol,
+            COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS frozen_jonggol,
+            COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS chill_perum,
+            COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS frozen_perum,
+            COALESCE(SUM(s.qty), 0) AS total_qty
+        FROM cuts c
+        JOIN barang b ON b.idcut = c.idcut
+        LEFT JOIN stock s ON s.idbarang = b.idbarang
+        WHERE $validCodeWhere
         GROUP BY b.idbarang, b.kdbarang, b.nmbarang, c.idcut, c.nmcut
-        ORDER BY c.idcut, b.kdbarang"; // Urutkan berdasarkan kdbarang
-
+        ORDER BY c.idcut, b.kdbarang";
 $result = $conn->query($sql);
 
-// Query total per kategori cut
+/**
+ * TOTAL PER KATEGORI CUT
+ * - Filter barang berkode valid
+ */
 $totalCutSql = "SELECT
     c.idcut,
     c.nmcut,
-    SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END) AS total_chill_jonggol,
-    SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END) AS total_frozen_jonggol,
-    SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END) AS total_chill_perum,
-    SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END) AS total_frozen_perum,
-    SUM(s.qty) AS total_qty
-FROM stock s
-JOIN barang b ON s.idbarang = b.idbarang
-JOIN cuts c ON b.idcut = c.idcut
+    COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
+    COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
+    COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
+    COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+    COALESCE(SUM(s.qty), 0) AS total_qty
+FROM cuts c
+JOIN barang b ON b.idcut = c.idcut
+LEFT JOIN stock s ON s.idbarang = b.idbarang
+WHERE $validCodeWhere
 GROUP BY c.idcut, c.nmcut
 ORDER BY c.idcut";
-
 $totalCutResult = $conn->query($totalCutSql);
 $totalsPerCut = [];
 while ($totalRow = $totalCutResult->fetch_assoc()) {
-   $totalsPerCut[$totalRow['nmcut']] = $totalRow;
+   $totalsPerCut[(int)$totalRow['idcut']] = $totalRow;
 }
 
-// Query total semua grade
+/**
+ * GRAND TOTAL (selaras dengan filter barang berkode valid)
+ */
 $totalGradeSql = "SELECT
-    SUM(CASE WHEN idgrade = 1 THEN qty ELSE 0 END) AS total_chill_jonggol,
-    SUM(CASE WHEN idgrade = 2 THEN qty ELSE 0 END) AS total_frozen_jonggol,
-    SUM(CASE WHEN idgrade = 3 THEN qty ELSE 0 END) AS total_chill_perum,
-    SUM(CASE WHEN idgrade = 4 THEN qty ELSE 0 END) AS total_frozen_perum,
-    SUM(qty) AS total_qty
-    FROM stock";
-
+    COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
+    COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
+    COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
+    COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+    COALESCE(SUM(s.qty), 0) AS total_qty
+FROM barang b
+LEFT JOIN stock s ON s.idbarang = b.idbarang
+WHERE $validCodeWhere";
 $totalGradeResult = $conn->query($totalGradeSql);
 $totalGradeRow = $totalGradeResult->fetch_assoc();
 ?>
 
 <style>
-   /* Responsive & nyaman di mobile */
    @media (max-width: 767.98px) {
       .table-responsive {
          overflow-x: auto;
@@ -135,7 +156,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                            <table class="table table-bordered table-striped table-sm" id="stockTable">
                               <thead class="text-center">
                                  <tr>
-                                    <th rowspan="2">#</th>
+                                    <th rowspan="2">Code</th>
                                     <th rowspan="2">Product Name</th>
                                     <th colspan="2">G. Jonggol</th>
                                     <th colspan="2">G. Perum</th>
@@ -150,43 +171,56 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                               </thead>
                               <tbody>
                                  <?php
-                                 $currentCut = "";
+                                 $currentCutId = null;
                                  while ($row = $result->fetch_assoc()):
-                                    // Menampilkan header kategori `cuts` sekali per kategori
-                                    if ($row['nmcut'] != $currentCut):
-                                       $currentCut = $row['nmcut'];
-                                       $totalCut = $totalsPerCut[$currentCut];
+                                    $rowCutId = (int)$row['idcut'];
+
+                                    if ($rowCutId !== $currentCutId):
+                                       $currentCutId = $rowCutId;
+                                       $totalCut = $totalsPerCut[$currentCutId] ?? [
+                                          'nmcut' => $row['nmcut'],
+                                          'total_chill_jonggol' => 0,
+                                          'total_frozen_jonggol' => 0,
+                                          'total_chill_perum' => 0,
+                                          'total_frozen_perum' => 0,
+                                          'total_qty' => 0,
+                                       ];
                                  ?>
                                        <tr>
-                                          <td colspan="2" class="bg-secondary text-white text-center font-weight-bold"><?= htmlspecialchars($currentCut) ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= number_format((float)$totalCut['total_chill_jonggol'], 2) ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= number_format((float)$totalCut['total_frozen_jonggol'], 2) ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= number_format((float)$totalCut['total_chill_perum'], 2) ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= number_format((float)$totalCut['total_frozen_perum'], 2) ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= number_format((float)$totalCut['total_qty'], 2) ?></td>
+                                          <td colspan="2" class="bg-secondary text-white text-center font-weight-bold">
+                                             <?= htmlspecialchars($totalCut['nmcut']) ?>
+                                          </td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_chill_jonggol']  != 0.00 ? number_format((float)$totalCut['total_chill_jonggol'], 2)  : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_frozen_jonggol'] != 0.00 ? number_format((float)$totalCut['total_frozen_jonggol'], 2) : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_chill_perum']    != 0.00 ? number_format((float)$totalCut['total_chill_perum'], 2)    : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold><?= ((float)$totalCut['total_frozen_perum']   != 0.00 ? number_format((float)$totalCut['total_frozen_perum'], 2)   : '') ?></td>
+                                          <td class=" bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_qty']            != 0.00 ? number_format((float)$totalCut['total_qty'], 2)            : '') ?></td>
                                        </tr>
-                                    <?php
-                                    endif;
-                                    ?>
+                                    <?php endif; ?>
+
                                     <tr class="text-right">
                                        <td class="text-center"><?= htmlspecialchars($row['kdbarang']) ?></td>
-                                       <td class="text-left"><a href="detailitem.php?id=<?= $row['idbarang'] ?>"><?= htmlspecialchars($row['nmbarang']) ?></a></td>
-                                       <td><?= ((float)$row['chill_jonggol'] != 0.00 ? number_format((float)$row['chill_jonggol'], 2) : '') ?></td>
+                                       <td class="text-left">
+                                          <a href="detailitem.php?id=<?= (int)$row['idbarang'] ?>">
+                                             <?= htmlspecialchars($row['nmbarang']) ?>
+                                          </a>
+                                       </td>
+                                       <td><?= ((float)$row['chill_jonggol']  != 0.00 ? number_format((float)$row['chill_jonggol'],  2) : '') ?></td>
                                        <td><?= ((float)$row['frozen_jonggol'] != 0.00 ? number_format((float)$row['frozen_jonggol'], 2) : '') ?></td>
-                                       <td><?= ((float)$row['chill_perum'] != 0.00 ? number_format((float)$row['chill_perum'], 2) : '') ?></td>
-                                       <td><?= ((float)$row['frozen_perum'] != 0.00 ? number_format((float)$row['frozen_perum'], 2) : '') ?></td>
-                                       <td><?= ((float)$row['total_qty'] != 0.00 ? number_format((float)$row['total_qty'], 2) : '') ?></td>
+                                       <td><?= ((float)$row['chill_perum']    != 0.00 ? number_format((float)$row['chill_perum'],    2) : '') ?></td>
+                                       <td><?= ((float)$row['frozen_perum']   != 0.00 ? number_format((float)$row['frozen_perum'],   2) : '') ?></td>
+                                       <td><?= ((float)$row['total_qty']      != 0.00 ? number_format((float)$row['total_qty'],      2) : '') ?></td>
                                     </tr>
                                  <?php endwhile; ?>
                               </tbody>
                               <tfoot>
                                  <tr class="text-right">
                                     <th colspan="2">TOTAL</th>
-                                    <th><?= ((float)$totalGradeRow['total_chill_jonggol'] != 0.00 ? number_format((float)$totalGradeRow['total_chill_jonggol'], 2) : '') ?></th>
+                                    <th><?= ((float)$totalGradeRow['total_chill_jonggol']  != 0.00 ? number_format((float)$totalGradeRow['total_chill_jonggol'],  2) : '') ?></th>
                                     <th><?= ((float)$totalGradeRow['total_frozen_jonggol'] != 0.00 ? number_format((float)$totalGradeRow['total_frozen_jonggol'], 2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_chill_perum'] != 0.00 ? number_format((float)$totalGradeRow['total_chill_perum'], 2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_frozen_perum'] != 0.00 ? number_format((float)$totalGradeRow['total_frozen_perum'], 2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_qty'] != 0.00 ? number_format((float)$totalGradeRow['total_qty'], 2) : '') ?></th>
+                                    <th><?= ((float)$totalGradeRow['total_chill_perum']    != 0.00 ? number_format((float)$totalGradeRow['total_chill_perum'],    2) : '') ?></th>
+                                    <th><?= ((float)$totalGradeRow['total_frozen_perum']   != 0.00 ? number_format((float)$totalGradeRow['total_frozen_perum'],   2) : '') ?></th>
+                                    <th><?= ((float)$totalGradeRow['total_qty']            != 0.00 ? number_format((float)$totalGradeRow['total_qty'],            2) : '') ?></th>
                                  </tr>
                               </tfoot>
                            </table>
@@ -194,6 +228,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                      </div>
                   </div>
                </div>
+
             </div>
          </div>
       </div>
@@ -205,25 +240,46 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-   // Mengubah judul halaman web
    document.title = "DATA STOCK";
 
-   // Search filter
-   document.getElementById('searchInput').addEventListener('keyup', function() {
+   // Pencarian: jaga header kategori tampil jika ada item match
+   document.getElementById('searchInput').addEventListener('input', function() {
       const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#stockTable tbody tr');
+      const tbody = document.querySelector('#stockTable tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
 
-      rows.forEach(row => {
+      let currentCategoryRow = null;
+      let anyChildVisibleUnderCategory = false;
+
+      rows.forEach((row) => {
          const isCategoryRow = row.querySelector('td[colspan="2"]') !== null;
+
          if (isCategoryRow) {
-            row.style.display = filter === '' || row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            if (currentCategoryRow) {
+               currentCategoryRow.style.display = anyChildVisibleUnderCategory ? '' : (filter === '' ? '' : 'none');
+            }
+            currentCategoryRow = row;
+            anyChildVisibleUnderCategory = false;
+            row.style.display = 'none';
          } else {
-            row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            const match = row.textContent.toLowerCase().includes(filter);
+            row.style.display = (filter === '' || match) ? '' : 'none';
+            if (row.style.display !== 'none') anyChildVisibleUnderCategory = true;
          }
       });
+
+      if (currentCategoryRow) {
+         currentCategoryRow.style.display = anyChildVisibleUnderCategory ? '' : (filter === '' ? '' : 'none');
+      }
+
+      if (filter === '') {
+         rows.forEach(row => {
+            if (row.querySelector('td[colspan="2"]')) row.style.display = '';
+         });
+      }
    });
 
-   // Export PDF
+   // Export PDF (mengikuti tampilan; 0 tetap kosong)
    document.getElementById('exportPdfBtn').addEventListener('click', () => {
       const {
          jsPDF
@@ -231,7 +287,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
       const doc = new jsPDF();
 
       const headers = [
-         ['#', 'Product Name', 'CHILL (J)', 'FROZEN (J)', 'CHILL (P)', 'FROZEN (P)', 'Total']
+         ['Code', 'Product Name', 'CHILL (J)', 'FROZEN (J)', 'CHILL (P)', 'FROZEN (P)', 'Total']
       ];
 
       const rows = [];
@@ -240,7 +296,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
 
          if (row.querySelector('td[colspan="2"]')) {
             const kategori = row.querySelector('td[colspan="2"]').textContent.trim();
-            rows.push([kategori, '', '', '', '', '', '']);
+            rows.push([kategori, '', '', '', '', '', '']); // baris kategori
          } else {
             const cols = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
             rows.push(cols);
@@ -259,9 +315,9 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
             fillColor: [60, 60, 60]
          },
          didDrawCell: data => {
-            if (data.row.index !== undefined) {
+            if (data.row && typeof data.row.index === 'number') {
                const row = rows[data.row.index];
-               if (row[1] === '' && row[2] === '') {
+               if (row && row[1] === '' && row[2] === '') {
                   if (data.column.index === 0) {
                      data.cell.colSpan = 7;
                      data.cell.styles.fillColor = [60, 60, 60];
