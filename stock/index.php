@@ -10,10 +10,7 @@ if ($conn->connect_error) {
 }
 
 /**
- * SYARAT kdbarang VALID:
- * - tidak NULL
- * - bukan string kosong / '-' / '–' / '—'
- * - mengandung minimal satu huruf/angka
+ * SYARAT kdbarang VALID
  */
 $validCodeWhere = "b.kdbarang IS NOT NULL
                    AND TRIM(b.kdbarang) <> ''
@@ -21,10 +18,12 @@ $validCodeWhere = "b.kdbarang IS NOT NULL
                    AND TRIM(b.kdbarang) REGEXP '[[:alnum:]]'";
 
 /**
+ * CEK MODE HIDE EMPTY
+ */
+$hideEmpty = isset($_GET['hide_empty']) && $_GET['hide_empty'] == 1;
+
+/**
  * QUERY UTAMA
- * - cuts -> barang -> LEFT JOIN stock
- * - Filter barang berkode valid
- * - GROUP BY lengkap (ONLY_FULL_GROUP_BY safe)
  */
 $sql = "SELECT
             b.idbarang,
@@ -42,12 +41,12 @@ $sql = "SELECT
         LEFT JOIN stock s ON s.idbarang = b.idbarang
         WHERE $validCodeWhere
         GROUP BY b.idbarang, b.kdbarang, b.nmbarang, c.idcut, c.nmcut
+        " . ($hideEmpty ? "HAVING total_qty > 0" : "") . "
         ORDER BY c.idcut, b.kdbarang";
 $result = $conn->query($sql);
 
 /**
  * TOTAL PER KATEGORI CUT
- * - Filter barang berkode valid
  */
 $totalCutSql = "SELECT
     c.idcut,
@@ -70,7 +69,7 @@ while ($totalRow = $totalCutResult->fetch_assoc()) {
 }
 
 /**
- * GRAND TOTAL (selaras dengan filter barang berkode valid)
+ * GRAND TOTAL
  */
 $totalGradeSql = "SELECT
     COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
@@ -98,7 +97,8 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
       }
 
       .btn-group,
-      #exportPdfBtn {
+      #exportPdfBtn,
+      #toggleEmptyBtn {
          width: 100% !important;
          margin-bottom: 0.5rem;
       }
@@ -121,7 +121,8 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
          max-width: 100%;
       }
 
-      #exportPdfBtn {
+      #exportPdfBtn,
+      #toggleEmptyBtn {
          flex-shrink: 0;
          white-space: nowrap;
       }
@@ -134,7 +135,7 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
          <div class="row">
             <div class="col-12 mt-3">
                <div class="btn-group mb-2">
-                  <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
                      Sort By
                   </button>
                   <div class="dropdown-menu">
@@ -149,6 +150,9 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                      <div class="col">
                         <div class="search-export-container mb-2">
                            <input type="text" id="searchInput" autofocus placeholder="Search table..." class="form-control" />
+                           <a href="?hide_empty=<?= $hideEmpty ? 0 : 1 ?>" id="toggleEmptyBtn" class="btn btn-sm btn-outline-secondary">
+                              <?= $hideEmpty ? "Show All Stock" : "Hide Empty Stock" ?>
+                           </a>
                            <button id="exportPdfBtn" class="btn btn-sm btn-danger">Export PDF</button>
                         </div>
 
@@ -186,41 +190,41 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
                                           'total_qty' => 0,
                                        ];
                                  ?>
-                                       <tr>
+                                       <tr class="category-row">
                                           <td colspan="2" class="bg-secondary text-white text-center font-weight-bold">
                                              <?= htmlspecialchars($totalCut['nmcut']) ?>
                                           </td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_chill_jonggol']  != 0.00 ? number_format((float)$totalCut['total_chill_jonggol'], 2)  : '') ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_frozen_jonggol'] != 0.00 ? number_format((float)$totalCut['total_frozen_jonggol'], 2) : '') ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_chill_perum']    != 0.00 ? number_format((float)$totalCut['total_chill_perum'], 2)    : '') ?></td>
-                                          <td class="bg-secondary text-white text-right font-weight-bold><?= ((float)$totalCut['total_frozen_perum']   != 0.00 ? number_format((float)$totalCut['total_frozen_perum'], 2)   : '') ?></td>
-                                          <td class=" bg-secondary text-white text-right font-weight-bold"><?= ((float)$totalCut['total_qty']            != 0.00 ? number_format((float)$totalCut['total_qty'], 2)            : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ($totalCut['total_chill_jonggol']  != 0.00 ? number_format($totalCut['total_chill_jonggol'], 2)  : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ($totalCut['total_frozen_jonggol'] != 0.00 ? number_format($totalCut['total_frozen_jonggol'], 2) : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ($totalCut['total_chill_perum']    != 0.00 ? number_format($totalCut['total_chill_perum'], 2)    : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ($totalCut['total_frozen_perum']   != 0.00 ? number_format($totalCut['total_frozen_perum'], 2)   : '') ?></td>
+                                          <td class="bg-secondary text-white text-right font-weight-bold"><?= ($totalCut['total_qty']            != 0.00 ? number_format($totalCut['total_qty'], 2)            : '') ?></td>
                                        </tr>
                                     <?php endif; ?>
 
-                                    <tr class="text-right">
+                                    <tr class="text-right item-row">
                                        <td class="text-center"><?= htmlspecialchars($row['kdbarang']) ?></td>
                                        <td class="text-left">
                                           <a href="detailitem.php?id=<?= (int)$row['idbarang'] ?>">
                                              <?= htmlspecialchars($row['nmbarang']) ?>
                                           </a>
                                        </td>
-                                       <td><?= ((float)$row['chill_jonggol']  != 0.00 ? number_format((float)$row['chill_jonggol'],  2) : '') ?></td>
-                                       <td><?= ((float)$row['frozen_jonggol'] != 0.00 ? number_format((float)$row['frozen_jonggol'], 2) : '') ?></td>
-                                       <td><?= ((float)$row['chill_perum']    != 0.00 ? number_format((float)$row['chill_perum'],    2) : '') ?></td>
-                                       <td><?= ((float)$row['frozen_perum']   != 0.00 ? number_format((float)$row['frozen_perum'],   2) : '') ?></td>
-                                       <td><?= ((float)$row['total_qty']      != 0.00 ? number_format((float)$row['total_qty'],      2) : '') ?></td>
+                                       <td><?= ($row['chill_jonggol']  != 0.00 ? number_format($row['chill_jonggol'],  2) : '') ?></td>
+                                       <td><?= ($row['frozen_jonggol'] != 0.00 ? number_format($row['frozen_jonggol'], 2) : '') ?></td>
+                                       <td><?= ($row['chill_perum']    != 0.00 ? number_format($row['chill_perum'],    2) : '') ?></td>
+                                       <td><?= ($row['frozen_perum']   != 0.00 ? number_format($row['frozen_perum'],   2) : '') ?></td>
+                                       <td><?= ($row['total_qty']      != 0.00 ? number_format($row['total_qty'],      2) : '') ?></td>
                                     </tr>
                                  <?php endwhile; ?>
                               </tbody>
                               <tfoot>
                                  <tr class="text-right">
                                     <th colspan="2">TOTAL</th>
-                                    <th><?= ((float)$totalGradeRow['total_chill_jonggol']  != 0.00 ? number_format((float)$totalGradeRow['total_chill_jonggol'],  2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_frozen_jonggol'] != 0.00 ? number_format((float)$totalGradeRow['total_frozen_jonggol'], 2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_chill_perum']    != 0.00 ? number_format((float)$totalGradeRow['total_chill_perum'],    2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_frozen_perum']   != 0.00 ? number_format((float)$totalGradeRow['total_frozen_perum'],   2) : '') ?></th>
-                                    <th><?= ((float)$totalGradeRow['total_qty']            != 0.00 ? number_format((float)$totalGradeRow['total_qty'],            2) : '') ?></th>
+                                    <th><?= ($totalGradeRow['total_chill_jonggol']  != 0.00 ? number_format($totalGradeRow['total_chill_jonggol'],  2) : '') ?></th>
+                                    <th><?= ($totalGradeRow['total_frozen_jonggol'] != 0.00 ? number_format($totalGradeRow['total_frozen_jonggol'], 2) : '') ?></th>
+                                    <th><?= ($totalGradeRow['total_chill_perum']    != 0.00 ? number_format($totalGradeRow['total_chill_perum'],    2) : '') ?></th>
+                                    <th><?= ($totalGradeRow['total_frozen_perum']   != 0.00 ? number_format($totalGradeRow['total_frozen_perum'],   2) : '') ?></th>
+                                    <th><?= ($totalGradeRow['total_qty']            != 0.00 ? number_format($totalGradeRow['total_qty'],            2) : '') ?></th>
                                  </tr>
                               </tfoot>
                            </table>
@@ -242,44 +246,44 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
 <script>
    document.title = "DATA STOCK";
 
-   // Pencarian: jaga header kategori tampil jika ada item match
+   // ==========================
+   // Pencarian
+   // ==========================
    document.getElementById('searchInput').addEventListener('input', function() {
       const filter = this.value.toLowerCase();
       const tbody = document.querySelector('#stockTable tbody');
       const rows = Array.from(tbody.querySelectorAll('tr'));
-
-      let currentCategoryRow = null;
-      let anyChildVisibleUnderCategory = false;
+      let currentCategory = null;
+      let anyVisible = false;
 
       rows.forEach((row) => {
-         const isCategoryRow = row.querySelector('td[colspan="2"]') !== null;
-
-         if (isCategoryRow) {
-            if (currentCategoryRow) {
-               currentCategoryRow.style.display = anyChildVisibleUnderCategory ? '' : (filter === '' ? '' : 'none');
+         if (row.classList.contains('category-row')) {
+            if (currentCategory) {
+               currentCategory.style.display = anyVisible ? '' : (filter === '' ? '' : 'none');
             }
-            currentCategoryRow = row;
-            anyChildVisibleUnderCategory = false;
+            currentCategory = row;
+            anyVisible = false;
             row.style.display = 'none';
          } else {
             const match = row.textContent.toLowerCase().includes(filter);
             row.style.display = (filter === '' || match) ? '' : 'none';
-            if (row.style.display !== 'none') anyChildVisibleUnderCategory = true;
+            if (row.style.display !== 'none') anyVisible = true;
          }
       });
 
-      if (currentCategoryRow) {
-         currentCategoryRow.style.display = anyChildVisibleUnderCategory ? '' : (filter === '' ? '' : 'none');
+      if (currentCategory) {
+         currentCategory.style.display = anyVisible ? '' : (filter === '' ? '' : 'none');
       }
-
       if (filter === '') {
          rows.forEach(row => {
-            if (row.querySelector('td[colspan="2"]')) row.style.display = '';
+            if (row.classList.contains('category-row')) row.style.display = '';
          });
       }
    });
 
-   // Export PDF (mengikuti tampilan; 0 tetap kosong)
+   // ==========================
+   // Export PDF
+   // ==========================
    document.getElementById('exportPdfBtn').addEventListener('click', () => {
       const {
          jsPDF
@@ -289,19 +293,23 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
       const headers = [
          ['Code', 'Product Name', 'CHILL (J)', 'FROZEN (J)', 'CHILL (P)', 'FROZEN (P)', 'Total']
       ];
-
       const rows = [];
+
       document.querySelectorAll('#stockTable tbody tr').forEach(row => {
          if (row.style.display === 'none') return;
 
-         if (row.querySelector('td[colspan="2"]')) {
+         if (row.classList.contains('category-row')) {
             const kategori = row.querySelector('td[colspan="2"]').textContent.trim();
-            rows.push([kategori, '', '', '', '', '', '']); // baris kategori
+            rows.push([kategori, '', '', '', '', '', '']);
          } else {
             const cols = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
             rows.push(cols);
          }
       });
+
+      // tambahkan total di footer
+      const footer = Array.from(document.querySelector('#stockTable tfoot tr').querySelectorAll('th')).map(th => th.textContent.trim());
+      rows.push(footer);
 
       doc.autoTable({
          head: headers,
@@ -314,19 +322,17 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
          headStyles: {
             fillColor: [60, 60, 60]
          },
-         didDrawCell: data => {
-            if (data.row && typeof data.row.index === 'number') {
-               const row = rows[data.row.index];
-               if (row && row[1] === '' && row[2] === '') {
-                  if (data.column.index === 0) {
-                     data.cell.colSpan = 7;
-                     data.cell.styles.fillColor = [60, 60, 60];
-                     data.cell.styles.textColor = 255;
-                     data.cell.styles.fontStyle = 'bold';
-                  } else {
-                     data.cell.styles.cellPadding = 0;
-                     data.cell.styles.fillColor = [255, 255, 255, 0];
-                  }
+         didParseCell: function(data) {
+            // styling baris kategori
+            if (data.row.raw && data.row.raw[1] === '' && data.row.raw[2] === '') {
+               if (data.column.index === 0) {
+                  data.cell.colSpan = 7;
+                  data.cell.styles.fillColor = [60, 60, 60];
+                  data.cell.styles.textColor = 255;
+                  data.cell.styles.fontStyle = 'bold';
+               } else {
+                  data.cell.styles.cellPadding = 0;
+                  data.cell.styles.fillColor = [255, 255, 255, 0];
                }
             }
          }
@@ -335,14 +341,12 @@ $totalGradeRow = $totalGradeResult->fetch_assoc();
       const now = new Date();
       const timestamp = now.getFullYear().toString() +
          ('0' + (now.getMonth() + 1)).slice(-2) +
-         ('0' + now.getDate()).slice(-2) + '_' +
-         ('0' + now.getHours()).slice(-2) +
+         ('0' + now.getDate()).slice(-2) +
+         '_' + ('0' + now.getHours()).slice(-2) +
          ('0' + now.getMinutes()).slice(-2);
 
       doc.save(`Data-Stock_${timestamp}.pdf`);
    });
 </script>
 
-<?php
-include "../footer.php";
-?>
+<?php include "../footer.php"; ?>
