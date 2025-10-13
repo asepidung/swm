@@ -199,65 +199,67 @@ include "notifcount.php";
                                  <p>Mutasi</p>
                               </a>
                            </li>
-
-                           <!-- MENU STOCK DI DALAM WAREHOUSE -->
-                           <li class="nav-item">
-                              <a href="#" class="nav-link">
-                                 <i class="far fa-dot-circle nav-icon"></i>
-                                 <p>
-                                    STOCK
-                                    <i class="right fas fa-angle-left"></i>
-                                 </p>
-                              </a>
-                              <ul class="nav nav-treeview">
-                                 <li class="nav-item">
-                                    <a href="stock/" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>Data Stock</p>
-                                    </a>
-                                 </li>
-                                 <li class="nav-item">
-                                    <a href="stockraw/" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>Stock Raw</p>
-                                    </a>
-                                 </li>
-                                 <li class="nav-item">
-                                    <a href="stockin/" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>Stock In</p>
-                                    </a>
-                                 </li>
-                                 <li class="nav-item">
-                                    <a href="stock/tofroz.php" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>> 60 Days</p>
-                                    </a>
-                                 </li>
-                                 <li class="nav-item">
-                                    <a href="stocktake" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>Stock Take</p>
-                                    </a>
-                                 </li>
-                                 <li class="nav-item">
-                                    <a href="track" class="nav-link">
-                                       <i class="far fa-circle nav-icon"></i>
-                                       <p>Track Product</p>
-                                    </a>
-                                 </li>
-                              </ul>
-                           </li>
-                           <!-- END MENU STOCK DI DALAM WAREHOUSE -->
-
                         </ul>
                      </li>
                   <?php endif; ?>
 
 
+                  <!-- MENU STOCK DIPISAH DARI WAREHOUSE -->
+                  <?php if (isset($role['warehouse']) && $role['warehouse'] == 1) : ?>
+                     <li class="nav-item">
+                        <a href="#" class="nav-link">
+                           <i class="nav-icon fas fa-boxes"></i>
+                           <p>
+                              STOCK
+                              <i class="right fas fa-angle-left"></i>
+                           </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                           <li class="nav-item">
+                              <a href="stock/" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Data Stock</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="stockraw/" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Stock Raw</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="stockin/" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Stock In</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="stock/tofroz.php" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>> 60 Days</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="stocktake" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Stock Take</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="track" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Track Product</p>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                  <?php endif; ?>
+                  <!-- END MENU STOCK -->
+
+
                   <?php if ($role['distributions'] == 1) : ?>
                      <li class="nav-item">
-                        <a href="404.php" class="nav-link">
+                        <a href="#" class="nav-link">
                            <i class="nav-icon fas fa-truck"></i>
                            <p>
                               DISTRIBUTIONS
@@ -288,6 +290,7 @@ include "notifcount.php";
                         </ul>
                      </li>
                   <?php endif; ?>
+
 
                   <!-- requisition -->
                   <li class="nav-item">
@@ -422,6 +425,12 @@ include "notifcount.php";
                               <a href="inv/invoicedetail.php" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
                                  <p>Invoice Detail</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="piutang" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Piutang</p>
                               </a>
                            </li>
                         </ul>

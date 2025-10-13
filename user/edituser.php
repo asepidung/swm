@@ -11,9 +11,11 @@ $idusers = $_GET['id'];
 $ambildata = mysqli_query($conn, "SELECT * FROM role WHERE idusers = $idusers");
 $tampil = mysqli_fetch_assoc($ambildata);
 
+// Tambahkan role 'stock' di sini
 $roles = [
    'produksi' => 'Produksi',
    'warehouse' => 'Warehouse',
+   'stock' => 'Stock', // 🔹 DITAMBAHKAN BARU
    'distributions' => 'Distributions',
    'purchase_module' => 'Purchase Module',
    'sales' => 'Sales',
@@ -55,9 +57,11 @@ $roles = [
       </div>
    </section>
 </div>
+
 <script>
    document.title = "Edit User";
 </script>
+
 <?php
 include "../footer.php";
 ?>
