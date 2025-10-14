@@ -73,8 +73,8 @@ if (isset($_POST['submit'])) {
    $invoiceID = mysqli_insert_id($conn);
 
    // Insert data into the 'piutang' table
-   $sql2 = "INSERT INTO piutang (idgroup, idinvoice, idcustomer, balance, duedate, progress) 
-           VALUES ('$idgroup', '$invoiceID', '$idcustomer', '$balance', '$duedate', '$status')";
+   $sql2 = "INSERT INTO piutang (idgroup, idinvoice, idcustomer) 
+           VALUES ('$idgroup', '$invoiceID', '$idcustomer')";
    mysqli_query($conn, $sql2);
 
    // Insert data into the 'invoicedetail' table
