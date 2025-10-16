@@ -428,13 +428,13 @@ include "notifcount.php";
                   <li class="nav-item">
                     <a href="../barang/barang.php" class="nav-link">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Product</p>
+                      <p>Daging</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="../rawmate/" class="nav-link">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>NoN Product</p>
+                      <p>Bahan Penolong</p>
                     </a>
                   </li>
                   <li class="nav-item">

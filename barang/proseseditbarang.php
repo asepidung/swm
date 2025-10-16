@@ -2,19 +2,24 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 
-$idbarang = $_POST['idbarang'] ?? 0;
+$idbarang        = $_POST['idbarang'] ?? 0;
 $tipebarang_baru = $_POST['tipebarang'] ?? '';
-$kdbarang_input = isset($_POST['kdbarang']) ? intval($_POST['kdbarang']) : 0;
-$nmbarang = trim($_POST['nmbarang'] ?? '');
-$cut = $_POST['cut'] ?? '';
-$kodeinduk_baru = isset($_POST['kodeinduk']) ? intval($_POST['kodeinduk']) : null;
+$kdbarang_input  = trim($_POST['kdbarang'] ?? '');
+$nmbarang        = strtoupper(trim($_POST['nmbarang'] ?? ''));
+$cut             = $_POST['cut'] ?? '';
+$kodeinduk_baru  = isset($_POST['kodeinduk']) ? intval($_POST['kodeinduk']) : null;
+
+// tambahan field baru
+$karton  = strtoupper(trim($_POST['karton'] ?? ''));
+$drylog  = trim($_POST['drylog'] ?? '');
+$plastik = strtoupper(trim($_POST['plastik'] ?? ''));
 
 if (!$idbarang || !$nmbarang || !$cut) {
   echo "<script>alert('Mohon lengkapi data wajib diisi.'); window.history.back();</script>";
   exit;
 }
 
-// Ambil data lama
+// --- Ambil data lama ---
 $stmt = $conn->prepare("SELECT kdbarang, kodeinduk FROM barang WHERE idbarang = ?");
 $stmt->bind_param("i", $idbarang);
 $stmt->execute();
@@ -24,7 +29,7 @@ $stmt->close();
 
 $tipebarang_lama = is_null($kodeinduk_lama) ? 'utama' : 'turunan';
 
-// Tentukan kode barang yang akan disimpan
+// --- Tentukan kode barang yang akan disimpan ---
 if ($tipebarang_baru === 'utama') {
   if (!$kdbarang_input) {
     echo "<script>alert('Kode barang wajib diisi untuk barang utama.'); window.history.back();</script>";
@@ -36,9 +41,9 @@ if ($tipebarang_baru === 'utama') {
     echo "<script>alert('Barang induk wajib dipilih untuk produk turunan.'); window.history.back();</script>";
     exit;
   }
-  // Jika tipe berubah dari utama ke turunan atau pindah induk turunan, generate kode baru
+
+  // Jika tipe berubah atau pindah induk, buat kode baru
   if ($tipebarang_lama === 'utama' || $kodeinduk_lama !== $kodeinduk_baru) {
-    // Hitung jumlah turunan induk baru
     $stmt = $conn->prepare("SELECT COUNT(*) FROM barang WHERE kodeinduk = ?");
     $stmt->bind_param("i", $kodeinduk_baru);
     $stmt->execute();
@@ -48,9 +53,9 @@ if ($tipebarang_baru === 'utama') {
 
     $kdbarang_db = $kodeinduk_baru + $jumlahTurunan + 1;
 
-    // Cek apakah kode sudah dipakai
+    // Cek duplikat kode
     $stmt = $conn->prepare("SELECT 1 FROM barang WHERE kdbarang = ? AND idbarang != ?");
-    $stmt->bind_param("ii", $kdbarang_db, $idbarang);
+    $stmt->bind_param("si", $kdbarang_db, $idbarang);
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows > 0) {
@@ -61,7 +66,6 @@ if ($tipebarang_baru === 'utama') {
     }
     $stmt->close();
   } else {
-    // Tetap pakai kode lama jika tidak pindah induk
     $kdbarang_db = $kdbarang_lama;
   }
 } else {
@@ -69,9 +73,9 @@ if ($tipebarang_baru === 'utama') {
   exit;
 }
 
-// Cek duplikat kode barang di luar record ini (untuk tipe utama atau turunan yg kode tetap)
+// --- Cek duplikat kode (umum) ---
 $stmt = $conn->prepare("SELECT 1 FROM barang WHERE kdbarang = ? AND idbarang != ?");
-$stmt->bind_param("ii", $kdbarang_db, $idbarang);
+$stmt->bind_param("si", $kdbarang_db, $idbarang);
 $stmt->execute();
 $stmt->store_result();
 if ($stmt->num_rows > 0) {
@@ -82,7 +86,7 @@ if ($stmt->num_rows > 0) {
 }
 $stmt->close();
 
-// Cek duplikat nama barang di luar record ini
+// --- Cek duplikat nama ---
 $stmt = $conn->prepare("SELECT 1 FROM barang WHERE nmbarang = ? AND idbarang != ?");
 $stmt->bind_param("si", $nmbarang, $idbarang);
 $stmt->execute();
@@ -95,18 +99,26 @@ if ($stmt->num_rows > 0) {
 }
 $stmt->close();
 
-if ($tipebarang_baru === 'utama') {
-  $kodeinduk_db = null;
-} else {
-  $kodeinduk_db = $kodeinduk_baru;
-}
+// --- Tentukan nilai kodeinduk (NULL atau induk) ---
+$kodeinduk_db = ($tipebarang_baru === 'utama') ? null : $kodeinduk_baru;
 
+// --- Proses UPDATE ---
 if ($kodeinduk_db === null) {
-  $stmt = $conn->prepare("UPDATE barang SET kdbarang = ?, nmbarang = ?, idcut = ?, kodeinduk = NULL WHERE idbarang = ?");
-  $stmt->bind_param("ssii", $kdbarang_db, $nmbarang, $cut, $idbarang);
+  $stmt = $conn->prepare("
+      UPDATE barang 
+      SET kdbarang = ?, nmbarang = ?, idcut = ?, kodeinduk = NULL, 
+          karton = ?, drylog = ?, plastik = ?
+      WHERE idbarang = ?
+  ");
+  $stmt->bind_param("ssisssi", $kdbarang_db, $nmbarang, $cut, $karton, $drylog, $plastik, $idbarang);
 } else {
-  $stmt = $conn->prepare("UPDATE barang SET kdbarang = ?, nmbarang = ?, idcut = ?, kodeinduk = ? WHERE idbarang = ?");
-  $stmt->bind_param("ssiii", $kdbarang_db, $nmbarang, $cut, $kodeinduk_db, $idbarang);
+  $stmt = $conn->prepare("
+      UPDATE barang 
+      SET kdbarang = ?, nmbarang = ?, idcut = ?, kodeinduk = ?, 
+          karton = ?, drylog = ?, plastik = ?
+      WHERE idbarang = ?
+  ");
+  $stmt->bind_param("ssiisssi", $kdbarang_db, $nmbarang, $cut, $kodeinduk_db, $karton, $drylog, $plastik, $idbarang);
 }
 
 if ($stmt->execute()) {

@@ -20,16 +20,18 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
   <section class="content">
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="card card-dark mt-3">
             <div class="card-header">
               <h3 class="card-title">Edit Barang</h3>
             </div>
+
             <form method="POST" action="proseseditbarang.php" id="formEditBarang">
               <div class="card-body">
 
                 <input type="hidden" name="idbarang" value="<?= htmlspecialchars($idbarang) ?>">
 
+                <!-- TIPE BARANG -->
                 <div class="form-group">
                   <label for="tipebarang">Tipe Barang <span class="text-danger">*</span></label>
                   <select class="form-control" name="tipebarang" id="tipebarang" required>
@@ -38,11 +40,14 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
                   </select>
                 </div>
 
+                <!-- KODE BARANG -->
                 <div class="form-group" id="kodeContainer">
                   <label for="kdbarang">Kode Barang <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" name="kdbarang" id="kdbarang" value="<?= htmlspecialchars($row['kdbarang']) ?>" required>
+                  <input type="text" class="form-control" name="kdbarang" id="kdbarang"
+                    value="<?= htmlspecialchars($row['kdbarang']) ?>" required>
                 </div>
 
+                <!-- BARANG INDUK -->
                 <div class="form-group <?= $tipebarang === 'turunan' ? '' : 'd-none' ?>" id="parentContainer">
                   <label for="kodeinduk">Barang Induk <span class="text-danger">*</span></label>
                   <select class="form-control" name="kodeinduk" id="kodeinduk">
@@ -58,11 +63,14 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
                   </select>
                 </div>
 
+                <!-- NAMA BARANG -->
                 <div class="form-group">
                   <label for="nmbarang">Nama Product <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" name="nmbarang" id="nmbarang" value="<?= htmlspecialchars($row['nmbarang']) ?>" required>
+                  <input type="text" class="form-control text-uppercase" name="nmbarang" id="nmbarang"
+                    value="<?= htmlspecialchars($row['nmbarang']) ?>" required>
                 </div>
 
+                <!-- KATEGORI -->
                 <div class="form-group">
                   <label for="cut">Kategori <span class="text-danger">*</span></label>
                   <select class="form-control" name="cut" id="cut" required>
@@ -71,16 +79,57 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
                     $query = mysqli_query($conn, "SELECT idcut, nmcut FROM cuts ORDER BY nmcut ASC");
                     while ($cutRow = mysqli_fetch_assoc($query)) {
                       $selected = ($cutRow['idcut'] == $row['idcut']) ? 'selected' : '';
-                      echo "<option value=\"{$cutRow['idcut']}\" $selected>{$cutRow['nmcut']}</option>";
+                      echo "<option value=\"{$cutRow['idcut']}\" $selected>" . strtoupper($cutRow['nmcut']) . "</option>";
                     }
                     ?>
                   </select>
                 </div>
 
+                <!-- INLINE FIELDS: KARTON, DRYLOG, PLASTIK -->
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label for="karton">Jenis Karton</label>
+                    <select class="form-control" name="karton" id="karton">
+                      <option value="" disabled <?= !$row['karton'] ? 'selected' : '' ?>>Pilih Jenis Karton</option>
+                      <option value="COKELAT" <?= ($row['karton'] === 'COKELAT') ? 'selected' : '' ?>>COKELAT</option>
+                      <option value="PUTIH" <?= ($row['karton'] === 'PUTIH') ? 'selected' : '' ?>>PUTIH</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <label for="drylog">Jml Dry Log /pcs</label>
+                    <input type="number" class="form-control" name="drylog" id="drylog"
+                      value="<?= htmlspecialchars($row['drylog']) ?>" placeholder="Contoh: 10" min="0">
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <label for="plastik">Jenis Plastik</label>
+                    <select class="form-control" name="plastik" id="plastik">
+                      <option value="" disabled <?= !$row['plastik'] ? 'selected' : '' ?>>Pilih Jenis Plastik</option>
+                      <?php
+                      $plastikList = [
+                        "200 x 550 MM",
+                        "400 x 600 MM",
+                        "300 x 500 MM",
+                        "250 x 550 MM",
+                        "350 x 550 MM",
+                        "200 x 700 MM",
+                        "325 x 410 MM",
+                        "250 x 375 MM"
+                      ];
+                      foreach ($plastikList as $p) {
+                        $sel = ($row['plastik'] === $p) ? 'selected' : '';
+                        echo "<option value=\"$p\" $sel>$p</option>";
+                      }
+                      ?>
+                    </select>
+                  </div>
+                </div>
+
               </div>
 
-              <div class="form-group text-right mr-3">
-                <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-level-up-alt"></i> Update</button>
+              <div class="card-footer text-right">
+                <button type="submit" class="btn bg-gradient-primary"><i class="fas fa-save"></i> Update</button>
               </div>
 
             </form>
@@ -112,9 +161,7 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
     }
 
     tipeBarang.addEventListener('change', toggleFields);
-
-    // Jalankan saat load
-    toggleFields();
+    toggleFields(); // panggil saat halaman load
   });
 </script>
 

@@ -6,18 +6,18 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
-   <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
          <div class="row mb-2">
             <div class="col-sm-6">
-               <a href="newbarang.php"><button type="button" class="btn btn-info"> Product Baru</button></a>
+               <a href="newbarang.php" class="btn bg-gradient-success btn-md shadow-sm">
+                  <i class="fas fa-plus-circle"></i> Product Baru
+               </a>
             </div>
          </div>
       </div>
    </div>
 
-   <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
          <div class="row">
@@ -25,13 +25,16 @@ include "../mainsidebar.php";
                <div class="card">
                   <div class="card-body">
                      <div class="col">
-                        <table id="example1" class="table table-bordered table-striped table-sm">
-                           <thead class="text-center">
+                        <table id="example1" class="table table-bordered table-striped table-hover table-sm">
+                           <thead class="text-center bg-light">
                               <tr>
                                  <th>#</th>
                                  <th>Kode</th>
                                  <th>Nama Product</th>
                                  <th>Kategori</th>
+                                 <th>J Karton</th>
+                                 <th>Jml DryLog</th>
+                                 <th>Jenis Plastik</th>
                                  <th>Actions</th>
                               </tr>
                            </thead>
@@ -39,25 +42,33 @@ include "../mainsidebar.php";
                               <?php
                               $no = 1;
                               $ambildata = mysqli_query($conn, "SELECT barang.*, cuts.nmcut 
-                                  FROM barang 
-                                  LEFT JOIN cuts ON barang.idcut = cuts.idcut
-                                  ORDER BY nmbarang ASC");
+                        FROM barang 
+                        LEFT JOIN cuts ON barang.idcut = cuts.idcut
+                        ORDER BY nmbarang ASC");
                               while ($tampil = mysqli_fetch_array($ambildata)) {
-                                 $idbarang = $tampil['idbarang'];
                               ?>
-
-                                 <tr class="text-right">
-                                    <td class="text-center"><?= $no; ?></td>
-                                    <td class="text-center"><?= $tampil['kdbarang']; ?></td>
-                                    <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                                    <td class="text-center"><?= $tampil['nmcut']; ?></td>
+                                 <tr>
+                                    <td class="text-center"><?= $no++; ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['kdbarang']); ?></td>
+                                    <td class="text-left"><?= htmlspecialchars($tampil['nmbarang']); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['nmcut']); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['karton'] ?? ''); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['drylog'] ?? ''); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['plastik'] ?? ''); ?></td>
                                     <td class="text-center">
-                                       <a href="editbarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="btn btn-xs btn-warning"><i class="fas fa-pencil-alt"></i></a>
-                                       <a href="deletebarang.php?idbarang=<?= $tampil['idbarang']; ?>" class="btn btn-xs btn-danger" onclick="return confirm('apakah anda yakin ingin menghapus barang ini?')"><i class="fas fa-minus-square"></i></a>
+                                       <a href="editbarang.php?idbarang=<?= $tampil['idbarang']; ?>"
+                                          class="btn btn-sm btn-warning mx-1" title="Edit">
+                                          <i class="fas fa-edit"></i>
+                                       </a>
+                                       <a href="deletebarang.php?idbarang=<?= $tampil['idbarang']; ?>"
+                                          class="btn btn-sm btn-danger mx-1"
+                                          title="Hapus"
+                                          onclick="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">
+                                          <i class="fas fa-trash-alt"></i>
+                                       </a>
                                     </td>
                                  </tr>
-                              <?php $no++;
-                              } ?>
+                              <?php } ?>
                            </tbody>
                         </table>
                      </div>
@@ -68,6 +79,7 @@ include "../mainsidebar.php";
       </div>
    </section>
 </div>
+
 <script>
    document.title = "DATA BARANG";
 </script>
