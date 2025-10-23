@@ -45,7 +45,7 @@ while ($r = $res->fetch_assoc()) {
           <div class="small text-muted">Ringkasan per material untuk BONING ini.</div>
         </div>
         <div class="col-sm-6 text-right">
-          <a href="boningdetail.php?id=<?= $idboning ?>" class="btn btn-secondary btn-sm">
+          <a href="databoning.php" class="btn btn-secondary btn-sm">
             <i class="fas fa-undo-alt"></i> Kembali
           </a>
         </div>

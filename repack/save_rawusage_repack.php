@@ -4,26 +4,30 @@ require "../konak/conn.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') die("Akses tidak diizinkan.");
 
+// =====================================================
+// 0) Data dasar
+// =====================================================
 $iduser   = $_SESSION['idusers'] ?? 0;
-$idboning = intval($_POST['idboning'] ?? 0);
-$sumber   = $_POST['sumber'] ?? 'BONING';
-$idsumber = $idboning;
-if ($idsumber <= 0) die("ID sumber tidak valid.");
+$idrepack = intval($_POST['idrepack'] ?? 0);
+$sumber   = 'REPACK';
+$idsumber = $idrepack;
+
+if ($idsumber <= 0) die("ID repack tidak valid.");
 
 $rows = $_POST['rows'] ?? [];
 if (!is_array($rows) || empty($rows)) die("Tidak ada data produk yang dikirim.");
 
-// =====================================================================
-// 0) Bersihkan data lama proses ini (agar tidak ada sisa SKU lama)
-// =====================================================================
+// =====================================================
+// 1) Hapus data lama pemakaian bahan repack ini
+// =====================================================
 $stmtDel = $conn->prepare("DELETE FROM raw_usage WHERE sumber=? AND idsumber=?");
 $stmtDel->bind_param("si", $sumber, $idsumber);
 $stmtDel->execute();
 $stmtDel->close();
 
-// =====================================================================
-// 1) Helper: ambil mapping ID material dari BOM per produk
-// =====================================================================
+// =====================================================
+// 2) Helper: ambil mapping BOM aktif per barang
+// =====================================================
 function get_bom_map_by_barang(mysqli $conn, int $idbarang): array
 {
     $sql = "SELECT r.idrawmate, r.nmrawmate, r.idrawcategory
@@ -48,7 +52,7 @@ function get_bom_map_by_barang(mysqli $conn, int $idbarang): array
         $cat = (int)$r['idrawcategory'];
         $nmU = strtoupper($r['nmrawmate']);
 
-        // Karton (cat 2): bedakan TOP/BOTTOM dari nama
+        // Karton (cat 2): TOP / BOTTOM
         if ($cat === 2) {
             if (strpos($nmU, 'TOP') !== false && $map['top'] === 0) {
                 $map['top'] = (int)$r['idrawmate'];
@@ -56,12 +60,11 @@ function get_bom_map_by_barang(mysqli $conn, int $idbarang): array
                 $map['bottom'] = (int)$r['idrawmate'];
             }
         }
-        // Plastik (cat 3): LINIER vs VACUUM/CRYOVAC
+        // Plastik (cat 3): LINIER vs VACUUM
         elseif ($cat === 3) {
             if (strpos($nmU, 'LINIER') !== false && $map['linier'] === 0) {
                 $map['linier'] = (int)$r['idrawmate'];
             } else {
-                // anggap lainnya adalah VACUUM/CRYOVAC (ukuran ikut BOM)
                 if ($map['vacuum'] === 0) $map['vacuum'] = (int)$r['idrawmate'];
             }
         }
@@ -69,7 +72,7 @@ function get_bom_map_by_barang(mysqli $conn, int $idbarang): array
         elseif ($cat === 21 && $map['karung'] === 0) {
             $map['karung'] = (int)$r['idrawmate'];
         }
-        // Tray (cat 22) atau nama mengandung TRAY
+        // Tray (cat 22)
         elseif (($cat === 22 || strpos($nmU, 'TRAY') !== false) && $map['tray'] === 0) {
             $map['tray'] = (int)$r['idrawmate'];
         }
@@ -79,10 +82,10 @@ function get_bom_map_by_barang(mysqli $conn, int $idbarang): array
     return $map;
 }
 
-// =====================================================================
-// 2) Akumulasi total per idrawmate berdasarkan BOM spesifik
-// =====================================================================
-$totalUsage = []; // [idrawmate] => qty total
+// =====================================================
+// 3) Hitung total pemakaian bahan berdasarkan BOM
+// =====================================================
+$totalUsage = []; // [idrawmate] => total qty
 
 foreach ($rows as $idbarang => $vals) {
     $idbarang = (int)$idbarang;
@@ -93,17 +96,17 @@ foreach ($rows as $idbarang => $vals) {
         $qty = (float)$qty;
         if ($qty <= 0) continue;
 
-        $idraw = $bom[$key] ?? 0;        // <<— ambil SKU spesifik dari BOM
-        if ($idraw <= 0) continue;       // jika BOM tidak mendefinisikan, lewati
+        $idraw = $bom[$key] ?? 0;
+        if ($idraw <= 0) continue;
 
         if (!isset($totalUsage[$idraw])) $totalUsage[$idraw] = 0;
         $totalUsage[$idraw] += $qty;
     }
 }
 
-// =====================================================================
-// 3) Simpan hasil agregat (1 baris per material)
-// =====================================================================
+// =====================================================
+// 4) Simpan hasil agregasi ke raw_usage
+// =====================================================
 $ins = $conn->prepare("
     INSERT INTO raw_usage (sumber, idsumber, idrawmate, qty, note, iduser, createtime)
     VALUES (?, ?, ?, ?, ?, ?, NOW())
@@ -115,16 +118,15 @@ $ins = $conn->prepare("
 ");
 
 foreach ($totalUsage as $idraw => $totalQty) {
-    // note bisa dikosongkan; kalau mau, bisa isi nama kategori/label
     $note = '';
     $ins->bind_param("siidis", $sumber, $idsumber, $idraw, $totalQty, $note, $iduser);
     $ins->execute();
 }
 $ins->close();
 
-// =====================================================================
-// 4) Material tambahan (EXTRA) — tetap disimpan apa adanya
-// =====================================================================
+// =====================================================
+// 5) Simpan material tambahan (EXTRA)
+// =====================================================
 if (!empty($_POST['extra_idrawmate']) && !empty($_POST['extra_qty'])) {
     $ins2 = $conn->prepare("
         INSERT INTO raw_usage (sumber, idsumber, idrawmate, qty, note, iduser, createtime)
@@ -135,6 +137,7 @@ if (!empty($_POST['extra_idrawmate']) && !empty($_POST['extra_qty'])) {
             iduser = VALUES(iduser),
             createtime = NOW()
     ");
+
     foreach ($_POST['extra_idrawmate'] as $i => $idr) {
         $idr = (int)$idr;
         $qty = (float)($_POST['extra_qty'][$i] ?? 0);
@@ -145,6 +148,6 @@ if (!empty($_POST['extra_idrawmate']) && !empty($_POST['extra_qty'])) {
     $ins2->close();
 }
 
-// =====================================================================
-header("Location: laporan_rawusage.php?id=$idsumber&msg=" . urlencode("Pemakaian bahan tersimpan (BOM spesifik)."));
+// =====================================================
+header("Location: laporan_rawusage_repack.php?id=$idsumber&msg=" . urlencode("Pemakaian bahan repack berhasil disimpan."));
 exit;

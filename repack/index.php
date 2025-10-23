@@ -11,12 +11,15 @@ include "../mainsidebar.php";
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <a href="newrepack.php"><button type="button" class="btn btn-info"><i class="fas fa-plus-circle"></i> Baru</button></a>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+                    <a href="newrepack.php">
+                        <button type="button" class="btn btn-info">
+                            <i class="fas fa-plus-circle"></i> Baru
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
 
     <!-- Main content -->
     <section class="content">
@@ -24,7 +27,6 @@ include "../mainsidebar.php";
             <div class="row">
                 <div class="col">
                     <div class="card">
-                        <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped table-sm">
                                 <thead class="text-center">
@@ -43,163 +45,185 @@ include "../mainsidebar.php";
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $ambildata = mysqli_query($conn, "SELECT repack.*, users.fullname
-                                    FROM repack 
-                                    INNER JOIN users ON repack.idusers = users.idusers 
-                                    WHERE repack.is_deleted = 0 
-                                    ORDER BY idrepack DESC");
+                                    $ambildata = mysqli_query($conn, "
+                                        SELECT repack.*, users.fullname
+                                        FROM repack 
+                                        INNER JOIN users ON repack.idusers = users.idusers 
+                                        WHERE repack.is_deleted = 0 
+                                        ORDER BY idrepack DESC
+                                    ");
 
-                                    while ($tampil = mysqli_fetch_array($ambildata)) {
+                                    while ($tampil = mysqli_fetch_array($ambildata)):
                                         include "hitungtotal.php";
-                                        $idrepack = $tampil['idrepack'];
+                                        $idrepack = (int)$tampil['idrepack'];
 
-                                        // Hitung total bahan dengan kondisi is_deleted = 0
-                                        $queryBahan = "SELECT SUM(qty) AS total_bahan 
-                                                   FROM detailbahan 
-                                                   WHERE idrepack = $idrepack";
-                                        $resultBahan = mysqli_query($conn, $queryBahan);
-                                        $rowTotalBahan = mysqli_fetch_assoc($resultBahan);
+                                        // Total bahan
+                                        $qBahan = mysqli_query($conn, "SELECT SUM(qty) AS total_bahan FROM detailbahan WHERE idrepack = $idrepack");
+                                        $totalBahan = mysqli_fetch_assoc($qBahan)['total_bahan'] ?? 0;
 
-                                        // Hitung total hasil dengan kondisi is_deleted = 0
-                                        $queryHasil = "SELECT SUM(qty) AS total_hasil 
-                                                   FROM detailhasil 
-                                                   WHERE idrepack = $idrepack AND is_deleted = 0";
-                                        $resultHasil = mysqli_query($conn, $queryHasil);
-                                        $rowTotalHasil = mysqli_fetch_assoc($resultHasil);
+                                        // Total hasil
+                                        $qHasil = mysqli_query($conn, "SELECT SUM(qty) AS total_hasil FROM detailhasil WHERE idrepack = $idrepack AND is_deleted = 0");
+                                        $totalHasil = mysqli_fetch_assoc($qHasil)['total_hasil'] ?? 0;
 
-                                        $lost = ($rowTotalHasil['total_hasil'] ?? 0) - ($rowTotalBahan['total_bahan'] ?? 0);
+                                        $lost = $totalHasil - $totalBahan;
+
+                                        // Cek apakah sudah ada data raw_usage REPACK untuk idrepack ini
+                                        $qCekUsage = mysqli_query($conn, "SELECT COUNT(*) AS total_usage FROM raw_usage WHERE sumber = 'REPACK' AND idsumber = $idrepack");
+                                        $hasUsage = mysqli_fetch_assoc($qCekUsage)['total_usage'] ?? 0;
+
+                                        // Cek ada bahan (untuk kontrol tombol Detail Hasil & Hapus)
+                                        $qDetail = mysqli_query($conn, "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack");
+                                        $adaBahan = mysqli_fetch_assoc($qDetail)['total'] ?? 0;
+
+                                        // Disabled states
+                                        $disabledBahan   = ($tampil['kunci'] >= 1) ? 'disabled style="opacity:0.5;"' : '';
+                                        $disabledHasil   = ($adaBahan == 0 || $tampil['kunci'] >= 1) ? 'disabled style="opacity:0.5;"' : '';
+                                        $disabledUsage   = ($tampil['kunci'] >= 1) ? 'disabled style="pointer-events:none;opacity:0.5;"' : '';
                                     ?>
-                                        <tr class="text-center">
-                                            <td><?= $no; ?></td>
-                                            <td><?= $tampil['norepack']; ?></td>
+                                        <tr class="text-center align-middle">
+                                            <td><?= $no++; ?></td>
+
+                                            <!-- Norepack sebagai link jika sudah ada raw_usage -->
+                                            <td>
+                                                <?php if ($hasUsage > 0): ?>
+                                                    <a href="laporan_rawusage_repack.php?id=<?= $idrepack ?>"
+                                                        class="font-weight-bold text-primary"
+                                                        title="Lihat Laporan Pemakaian Bahan">
+                                                        <?= htmlspecialchars($tampil['norepack']); ?>
+                                                        <i class="fas fa-link small"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <?= htmlspecialchars($tampil['norepack']); ?>
+                                                <?php endif; ?>
+                                            </td>
+
                                             <td><?= date("d-M-y", strtotime($tampil['tglrepack'])); ?></td>
-                                            <td class="text-right"><?= number_format($rowTotalBahan['total_bahan'] ?? 0, 2); ?></td>
-                                            <td class="text-right"><?= number_format($rowTotalHasil['total_hasil'] ?? 0, 2); ?></td>
+                                            <td class="text-right"><?= number_format($totalBahan, 2); ?></td>
+                                            <td class="text-right"><?= number_format($totalHasil, 2); ?></td>
                                             <td class="text-right">
-                                                <?php if ($lost < 0) { ?>
-                                                    <span class="text-danger"><?= number_format($lost, 2); ?></span>
-                                                <?php } else {
-                                                    echo number_format($lost, 2);
-                                                } ?>
+                                                <?= ($lost < 0) ? "<span class='text-danger'>" . number_format($lost, 2) . "</span>" : number_format($lost, 2); ?>
                                             </td>
-                                            <td class="text-left"><?= $tampil['note']; ?></td>
+                                            <td class="text-left"><?= htmlspecialchars($tampil['note']); ?></td>
+
+                                            <!-- STATUS -->
                                             <td>
                                                 <?php
-                                                // Mendapatkan iduser yang sedang login
-                                                $idusers = $_SESSION['idusers'];
-
-                                                // Menampilkan status berdasarkan nilai kunci
+                                                $idusers = $_SESSION['idusers'] ?? 0;
                                                 if ($tampil['kunci'] == 0) {
-                                                    echo "On Process"; // Jika kunci = 0
+                                                    echo '<span class="badge badge-secondary">On Process</span>';
                                                 } elseif ($tampil['kunci'] == 1) {
-                                                    // Jika kunci = 1 dan yang login adalah user 1 atau 2
-                                                    if ($idusers == 1 || $idusers == 2) {
-                                                        echo '<a href="lockrepack.php?id=' . htmlspecialchars($idrepack) . '" class="btn btn-sm btn-warning" title="Lock">LOCK</a>';
-                                                    } else {
-                                                        echo "Approved"; // Tampilkan Approved bagi selain user 1 dan 2
-                                                    }
+                                                    echo ($idusers == 1 || $idusers == 2)
+                                                        ? '<a href="lockrepack.php?id=' . $idrepack . '" class="badge badge-warning text-dark" title="Lock">LOCK</a>'
+                                                        : '<span class="badge badge-success">Approved</span>';
                                                 } elseif ($tampil['kunci'] == 2) {
-                                                    // Jika kunci = 2 (Locked)
-                                                    if ($idusers == 1 || $idusers == 2) {
-                                                        // Jika kunci = 2 dan yang login adalah user 1 atau 2, tampilkan link untuk Unlock
-                                                        echo '<a href="unlockrepack.php?id=' . htmlspecialchars($idrepack) . '" class="btn btn-sm btn-danger" title="Unlock">LOCKED</a>';
-                                                    } else {
-                                                        // Jika kunci = 2 tetapi yang login bukan user 1 atau 2, tampilkan Locked
-                                                        echo "Locked";
-                                                    }
-                                                }
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <!-- Tombol Approve dan Unapprove -->
-                                                <?php if ($tampil['kunci'] == 1) { ?>
-                                                    <!-- Tombol Unapprove jika kunci = 1 -->
-                                                    <a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Unapprove"
-                                                        href="unapproverepack.php?id=<?= htmlspecialchars($idrepack) ?>"
-                                                        <?= ($tampil['kunci'] == 2) ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
-                                                        <i class="fas fa-calendar-times"></i>
-                                                    </a>
-                                                <?php } else { ?>
-                                                    <!-- Tombol Approve jika kunci = 0 -->
-                                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Approve"
-                                                        href="approverepack.php?id=<?= htmlspecialchars($idrepack) ?>"
-                                                        <?= ($tampil['kunci'] == 2) ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
-                                                        <i class="far fa-calendar-check"></i>
-                                                    </a>
-                                                <?php } ?>
-
-                                                <!-- Tombol Detail Bahan -->
-                                                <?php
-                                                // Disable tombol Detail Bahan jika kunci >= 1
-                                                $disabledBahan = ($tampil['kunci'] >= 1) ? 'disabled' : '';
-                                                ?>
-                                                <a href="detailbahan.php?id=<?= $idrepack ?>&stat=ready" class="btn btn-sm btn-warning <?= $disabledBahan; ?>" title="Detail Bahan" <?= $disabledBahan ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
-                                                    <i class="fas fa-box-open"></i>
-                                                </a>
-
-                                                <!-- Tombol Detail Hasil -->
-                                                <?php
-                                                // Tombol Detail Hasil hanya aktif jika ada bahan dan kunci = 0
-                                                $queryDetailBahan = "SELECT COUNT(*) AS total FROM detailbahan WHERE idrepack = $idrepack";
-                                                $resultDetailBahan = mysqli_query($conn, $queryDetailBahan);
-                                                $rowDetailBahan = mysqli_fetch_assoc($resultDetailBahan);
-
-                                                // Disable tombol Detail Hasil jika tidak ada bahan atau kunci >= 1
-                                                $disabledHasil = ($rowDetailBahan['total'] == 0 || $tampil['kunci'] >= 1) ? 'disabled' : '';
-                                                ?>
-                                                <a href="detailhasil.php?id=<?= $idrepack ?>" class="btn btn-sm btn-success <?= $disabledHasil; ?>" title="Detail Hasil" <?= $disabledHasil ? 'style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
-                                                    <i class="fas fa-tags"></i>
-                                                </a>
-
-                                                <!-- Tombol Lihat Proses Repack -->
-                                                <a href="lihatrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-primary" title="Lihat Proses Repack">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-
-                                                <!-- Tombol Edit Proses Repack -->
-                                                <a href="editrepack.php?id=<?= $idrepack ?>" class="btn btn-sm btn-dark" title="Edit Proses Repack" <?= $tampil['kunci'] == 2 ? 'disabled style="pointer-events: none; opacity: 0.5;"' : ''; ?>>
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-
-
-                                                <!-- Tombol Hapus Proses Repack -->
-                                                <?php
-                                                if ($rowDetailBahan['total'] == 0 && $tampil['kunci'] == 0) {
-                                                    echo '<a href="deleterepack.php?id=' . $idrepack . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Apakah kamu yakin ingin menghapus repack ini?\')" title="Hapus Proses Repack">
-                    <i class="fas fa-trash"></i>
-                </a>';
-                                                } else {
-                                                    echo '<a href="#" class="btn btn-sm btn-danger disabled" title="Tidak Bisa Dihapus" disabled>
-                        <i class="fas fa-trash"></i>
-                    </a>';
+                                                    echo ($idusers == 1 || $idusers == 2)
+                                                        ? '<a href="unlockrepack.php?id=' . $idrepack . '" class="badge badge-danger" title="Unlock">LOCKED</a>'
+                                                        : '<span class="badge badge-dark">Locked</span>';
                                                 }
                                                 ?>
                                             </td>
 
+                                            <!-- AKSI -->
+                                            <td class="text-center">
+                                                <div class="btn-group btn-group-sm" role="group" aria-label="Aksi Repack">
+
+                                                    <!-- Approve / Unapprove -->
+                                                    <?php if ($tampil['kunci'] == 1): ?>
+                                                        <!-- Tombol Unapprove -->
+                                                        <a href="unapproverepack.php?id=<?= $idrepack ?>"
+                                                            class="btn btn-outline-danger"
+                                                            title="Unapprove">
+                                                            <i class="fas fa-calendar-times"></i>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <?php if ($tampil['kunci'] == 2): ?>
+                                                            <!-- Sudah Locked -->
+                                                            <button class="btn btn-outline-secondary" disabled style="opacity:0.5;">
+                                                                <i class="far fa-calendar-check"></i>
+                                                            </button>
+                                                        <?php elseif ($hasUsage == 0): ?>
+                                                            <!-- Belum ada raw_usage -->
+                                                            <button type="button"
+                                                                class="btn btn-outline-primary"
+                                                                title="Approve"
+                                                                onclick="alert('Tidak dapat Approve karena pemakaian bahan belum dibuat untuk Repack ini!')">
+                                                                <i class="far fa-calendar-check"></i>
+                                                            </button>
+                                                        <?php else: ?>
+                                                            <!-- Boleh Approve -->
+                                                            <a href="approverepack.php?id=<?= $idrepack ?>"
+                                                                class="btn btn-outline-primary"
+                                                                title="Approve">
+                                                                <i class="far fa-calendar-check"></i>
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+
+                                                    <!-- Detail Bahan -->
+                                                    <a href="detailbahan.php?id=<?= $idrepack ?>&stat=ready"
+                                                        class="btn btn-outline-warning"
+                                                        title="Detail Bahan" <?= $disabledBahan; ?>>
+                                                        <i class="fas fa-box-open"></i>
+                                                    </a>
+
+                                                    <!-- Detail Hasil -->
+                                                    <a href="detailhasil.php?id=<?= $idrepack ?>"
+                                                        class="btn btn-outline-success"
+                                                        title="Detail Hasil" <?= $disabledHasil; ?>>
+                                                        <i class="fas fa-tags"></i>
+                                                    </a>
+
+                                                    <!-- Pemakaian Bahan -->
+                                                    <a href="rawusage_repack.php?id=<?= $idrepack ?>"
+                                                        class="btn btn-outline-info"
+                                                        title="Material Bahan" <?= $disabledUsage; ?>>
+                                                        <i class="fas fa-cogs"></i>
+                                                    </a>
+
+                                                    <!-- Lihat -->
+                                                    <a href="lihatrepack.php?id=<?= $idrepack ?>"
+                                                        class="btn btn-outline-secondary"
+                                                        title="Lihat Proses">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+
+                                                    <!-- Edit -->
+                                                    <a href="editrepack.php?id=<?= $idrepack ?>"
+                                                        class="btn btn-outline-dark"
+                                                        title="Edit"
+                                                        <?= ($tampil['kunci'] == 2) ? 'disabled style="opacity:0.5;"' : ''; ?>>
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+
+                                                    <!-- Hapus -->
+                                                    <?php if ($adaBahan == 0 && $tampil['kunci'] == 0): ?>
+                                                        <a href="deleterepack.php?id=<?= $idrepack ?>"
+                                                            class="btn btn-outline-danger"
+                                                            onclick="return confirm('Yakin ingin menghapus repack ini?')"
+                                                            title="Hapus">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <button class="btn btn-outline-danger" disabled title="Tidak Bisa Dihapus" style="opacity:0.5;">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
+
+                                                </div>
+                                            </td>
                                         </tr>
-                                    <?php $no++;
-                                    }
-                                    ?>
+                                    <?php endwhile; ?>
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
                 </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 
 <script>
     document.title = "Data Repack";
 </script>
-<?php
-include "../footer.php";
-?>
+<?php include "../footer.php"; ?>

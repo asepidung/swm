@@ -16,11 +16,34 @@ $qbarang = mysqli_query($conn, "SELECT nmbarang FROM barang WHERE idbarang = $id
 $dbarang = mysqli_fetch_assoc($qbarang);
 $nmbarang = $dbarang['nmbarang'] ?? 'Produk Tidak Diketahui';
 
-// Ambil data dropdown
-$karton = mysqli_query($conn, "SELECT * FROM rawmate WHERE idrawcategory = 2 AND stock = 1 ORDER BY nmrawmate ASC");
-$plastik = mysqli_query($conn, "SELECT * FROM rawmate WHERE idrawcategory = 3 AND stock = 1 ORDER BY nmrawmate ASC");
+// ===============================
+// AMBIL DATA DROPDOWN (DIFILTER)
+// ===============================
 
-// Ambil data BOM dari database
+// Karton Top (hanya yang mengandung 'TOP')
+$karton_top = mysqli_query($conn, "
+    SELECT * FROM rawmate 
+    WHERE idrawcategory = 2 AND stock = 1 AND nmrawmate LIKE '%TOP%' 
+    ORDER BY nmrawmate ASC
+");
+
+// Karton Bottom (hanya yang mengandung 'BOTTOM')
+$karton_bottom = mysqli_query($conn, "
+    SELECT * FROM rawmate 
+    WHERE idrawcategory = 2 AND stock = 1 AND nmrawmate LIKE '%BOTTOM%' 
+    ORDER BY nmrawmate ASC
+");
+
+// Plastik Cryovac (semua plastik kecuali Linier)
+$plastik = mysqli_query($conn, "
+    SELECT * FROM rawmate 
+    WHERE idrawcategory = 3 AND stock = 1 AND nmrawmate NOT LIKE '%LINIER%' 
+    ORDER BY nmrawmate ASC
+");
+
+// ===============================
+// AMBIL DATA BOM
+// ===============================
 $bom = [];
 $qbom = mysqli_query($conn, "
     SELECT b.idrawmate, b.qty, b.is_active, r.idrawcategory, r.nmrawmate
@@ -32,7 +55,9 @@ while ($row = mysqli_fetch_assoc($qbom)) {
     $bom[] = $row;
 }
 
-// Ambil ID bahan dari data aktif
+// ===============================
+// HELPER FUNCTIONS
+// ===============================
 function has_material($bom, $idrawmate)
 {
     foreach ($bom as $b) {
@@ -49,10 +74,10 @@ function get_qty($bom, $idrawmate)
     return 0;
 }
 
-function get_selected($bom, $idrawcategory, $idrawmate)
+function get_selected($bom, $idrawmate)
 {
     foreach ($bom as $b) {
-        if ($b['idrawcategory'] == $idrawcategory && $b['idrawmate'] == $idrawmate && $b['is_active'] == 1)
+        if ($b['idrawmate'] == $idrawmate && $b['is_active'] == 1)
             return 'selected';
     }
     return '';
@@ -101,7 +126,7 @@ function get_material_id($conn, $idcategory)
                             <div class="col-md-6">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="karung" name="karung" value="1"
-                                        <?= has_material($bom,  /* ID Karung */  get_material_id($conn, 21)) ? 'checked' : ''; ?>>
+                                        <?= has_material($bom, get_material_id($conn, 21)) ? 'checked' : ''; ?>>
                                     <label class="form-check-label" for="karung">Gunakan Karung</label>
                                 </div>
                             </div>
@@ -113,9 +138,9 @@ function get_material_id($conn, $idcategory)
                             <div class="col-md-6">
                                 <select name="karton_top" id="karton_top" class="form-control select2">
                                     <option value="">-- Pilih Karton Top --</option>
-                                    <?php mysqli_data_seek($karton, 0);
-                                    while ($r = mysqli_fetch_assoc($karton)) { ?>
-                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, 2, $r['idrawmate']); ?>>
+                                    <?php
+                                    while ($r = mysqli_fetch_assoc($karton_top)) { ?>
+                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, $r['idrawmate']); ?>>
                                             <?= htmlspecialchars($r['nmrawmate']); ?>
                                         </option>
                                     <?php } ?>
@@ -129,9 +154,9 @@ function get_material_id($conn, $idcategory)
                             <div class="col-md-6">
                                 <select name="karton_bottom" id="karton_bottom" class="form-control select2">
                                     <option value="">-- Pilih Karton Bottom --</option>
-                                    <?php mysqli_data_seek($karton, 0);
-                                    while ($r = mysqli_fetch_assoc($karton)) { ?>
-                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, 2, $r['idrawmate']); ?>>
+                                    <?php
+                                    while ($r = mysqli_fetch_assoc($karton_bottom)) { ?>
+                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, $r['idrawmate']); ?>>
                                             <?= htmlspecialchars($r['nmrawmate']); ?>
                                         </option>
                                     <?php } ?>
@@ -145,9 +170,9 @@ function get_material_id($conn, $idcategory)
                             <div class="col-md-6">
                                 <select name="plastik" id="plastik" class="form-control select2">
                                     <option value="">-- Pilih Jenis Plastik --</option>
-                                    <?php mysqli_data_seek($plastik, 0);
+                                    <?php
                                     while ($r = mysqli_fetch_assoc($plastik)) { ?>
-                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, 3, $r['idrawmate']); ?>>
+                                        <option value="<?= $r['idrawmate']; ?>" <?= get_selected($bom, $r['idrawmate']); ?>>
                                             <?= htmlspecialchars($r['nmrawmate']); ?>
                                         </option>
                                     <?php } ?>
