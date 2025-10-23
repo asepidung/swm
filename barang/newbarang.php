@@ -67,9 +67,9 @@ include "../mainsidebar.php";
                         <!-- BARIS INLINE: KARTON, DRY LOG, PLASTIK -->
                         <div class="form-row">
                            <div class="form-group col-md-4">
-                              <label for="karton">Jenis Karton</label>
-                              <select class="form-control" name="karton" id="karton">
-                                 <option value="" selected disabled>Pilih Jenis Karton</option>
+                              <label for="karton">Jenis Karton <span class="text-danger">*</span></label>
+                              <select class="form-control" name="karton" id="karton" required>
+                                 <option value="" disabled selected hidden>Pilih Jenis Karton</option>
                                  <option value="COKELAT">COKELAT</option>
                                  <option value="PUTIH">PUTIH</option>
                               </select>

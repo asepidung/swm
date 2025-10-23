@@ -88,9 +88,9 @@ $tipebarang = is_null($row['kodeinduk']) ? 'utama' : 'turunan';
                 <!-- INLINE FIELDS: KARTON, DRYLOG, PLASTIK -->
                 <div class="form-row">
                   <div class="form-group col-md-4">
-                    <label for="karton">Jenis Karton</label>
-                    <select class="form-control" name="karton" id="karton">
-                      <option value="" disabled <?= !$row['karton'] ? 'selected' : '' ?>>Pilih Jenis Karton</option>
+                    <label for="karton">Jenis Karton <span class="text-danger">*</span></label>
+                    <select class="form-control" name="karton" id="karton" required>
+                      <option value="" disabled <?= empty($row['karton']) ? 'selected hidden' : '' ?>>Pilih Jenis Karton</option>
                       <option value="COKELAT" <?= ($row['karton'] === 'COKELAT') ? 'selected' : '' ?>>COKELAT</option>
                       <option value="PUTIH" <?= ($row['karton'] === 'PUTIH') ? 'selected' : '' ?>>PUTIH</option>
                     </select>

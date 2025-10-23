@@ -37,12 +37,18 @@ include "../mainsidebar.php";
                               <select name="idrawcategory" id="category" class="form-control" required>
                                  <option value="">-- Select Category --</option>
                                  <?php
-                                 $query = "SELECT idrawcategory, nmcategory FROM rawcategory";
+                                 // Urutkan berdasarkan nama kategori (A-Z)
+                                 $query  = "SELECT idrawcategory, nmcategory FROM rawcategory ORDER BY nmcategory ASC";
                                  $result = mysqli_query($conn, $query);
 
-                                 // Looping untuk menampilkan data ke dalam option
-                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<option value='" . $row['idrawcategory'] . "'>" . htmlspecialchars($row['nmcategory']) . "</option>";
+                                 if ($result) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                       echo "<option value='" . htmlspecialchars($row['idrawcategory'], ENT_QUOTES, 'UTF-8') . "'>"
+                                          . htmlspecialchars($row['nmcategory'], ENT_QUOTES, 'UTF-8') . "</option>";
+                                    }
+                                 } else {
+                                    // opsional: debug kalau query gagal
+                                    // echo "DB error: " . mysqli_error($conn);
                                  }
                                  ?>
                               </select>

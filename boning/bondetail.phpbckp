@@ -31,8 +31,8 @@ if (!$result) {
 $items = array();
 while ($row = $result->fetch_assoc()) {
   $name = $row['nmbarang'] ?? 'Unknown';
-  $qty  = floatval($row['qty'] ?? 0);
-  $pcs  = intval($row['pcs'] ?? 0);
+  $qty = floatval($row['qty'] ?? 0);
+  $pcs = intval($row['pcs'] ?? 0);
 
   if (isset($items[$name])) {
     $items[$name]['qty'] += $qty;
@@ -40,10 +40,10 @@ while ($row = $result->fetch_assoc()) {
     $items[$name]['box'] += 1;
   } else {
     $items[$name] = [
-      'idbarang' => (int)$row['idbarang'],
-      'qty'      => $qty,
-      'pcs'      => $pcs,
-      'box'      => 1
+      'idbarang' => $row['idbarang'],
+      'qty' => $qty,
+      'pcs' => $pcs,
+      'box' => 1
     ];
   }
 }
@@ -68,6 +68,7 @@ while ($row = $result->fetch_assoc()) {
     </div>
   </div>
 
+
   <section class="content">
     <div class="container-fluid">
       <div class="card card-dark shadow-sm">
@@ -88,6 +89,7 @@ while ($row = $result->fetch_assoc()) {
                   <th>C Bottom</th>
                   <th>Vacuum</th>
                   <th>Linier</th>
+                  <th>Drylog</th>
                   <th>Tray</th>
                   <th>Karung</th>
                 </tr>
@@ -95,11 +97,10 @@ while ($row = $result->fetch_assoc()) {
               <tbody>
                 <?php
                 $no = 1;
-                $grandBox = $grandPcs = 0;
-                $grandQty = 0.0;
+                $grandBox = $grandPcs = $grandQty = 0;
 
                 foreach ($items as $nmbarang => $item) {
-                  $idbarang = (int)$item['idbarang'];
+                  $idbarang = $item['idbarang'];
 
                   // Ambil bahan penolong (BOM)
                   $qbom = mysqli_query($conn, "
@@ -109,33 +110,28 @@ while ($row = $result->fetch_assoc()) {
                     WHERE b.idbarang = $idbarang AND b.is_active = 1
                   ");
 
-                  $karton_top    = '';
+                  $karton_top = '';
                   $karton_bottom = '';
-                  $plastik       = '';
-                  $linier        = 0;
-                  $karung        = 0;
-                  $tray          = 0;
+                  $plastik = '';
+                  $linier = 0;
+                  $karung = 0;
+                  $drylog = 0;
+                  $tray = 0;
 
                   while ($rb = mysqli_fetch_assoc($qbom)) {
-                    $cat = (int)$rb['idrawcategory'];
-                    $nmM = $rb['nmrawmate'];
-
-                    switch ($cat) {
+                    switch ($rb['idrawcategory']) {
                       case 2: // Karton
-                        if (stripos($nmM, 'TOP') !== false) {
-                          $karton_top = $nmM;
-                        } else {
-                          $karton_bottom = $nmM;
-                        }
+                        if (stripos($rb['nmrawmate'], 'TOP') !== false)
+                          $karton_top = $rb['nmrawmate'];
+                        else
+                          $karton_bottom = $rb['nmrawmate'];
                         break;
 
                       case 3: // Plastik
-                        if (stripos($nmM, 'LINIER') !== false) {
+                        if (stripos($rb['nmrawmate'], 'LINIER') !== false)
                           $linier = 1;
-                        } else {
-                          // anggap plastik vacuum
-                          $plastik = $nmM;
-                        }
+                        else
+                          $plastik = $rb['nmrawmate'];
                         break;
 
                       case 21: // Karung
@@ -143,11 +139,14 @@ while ($row = $result->fetch_assoc()) {
                         break;
 
                       case 22: // Tray
-                        $tray = (float)$rb['qty'];
+                        $tray = $rb['qty'];
                         break;
 
                       default:
-                        // (Drylog dihilangkan – tidak diproses apa pun di sini)
+                        // Drylog langsung berdasarkan idrawmate = 5
+                        if ($rb['idrawmate'] == 5) {
+                          $drylog = $rb['qty'];
+                        }
                         break;
                     }
                   }
@@ -155,31 +154,31 @@ while ($row = $result->fetch_assoc()) {
                   echo "<tr class='text-center'>
                           <td>" . $no++ . "</td>
                           <td class='text-left'>" . htmlspecialchars($nmbarang) . "</td>
-                          <td>" . (int)$item['box'] . "</td>
-                          <td>" . (int)$item['pcs'] . "</td>
-                          <td class='text-right'>" . number_format((float)$item['qty'], 2) . "</td>
+                          <td>" . $item['box'] . "</td>
+                          <td>" . $item['pcs'] . "</td>
+                          <td class='text-right'>" . number_format($item['qty'], 2) . "</td>
                           <td>" . htmlspecialchars($karton_top) . "</td>
                           <td>" . htmlspecialchars($karton_bottom) . "</td>
                           <td>" . htmlspecialchars($plastik) . "</td>
                           <td>" . ($linier ? '1' : '') . "</td>
-                          <td>" . ($tray ? (0 + $tray) : '') . "</td>
+                          <td>" . ($drylog ?: '') . "</td>
+                          <td>" . ($tray ?: '') . "</td>
                           <td>" . ($karung ? '1' : '') . "</td>
                         </tr>";
 
-                  $grandBox += (int)$item['box'];
-                  $grandPcs += (int)$item['pcs'];
-                  $grandQty += (float)$item['qty'];
+                  $grandBox += $item['box'];
+                  $grandPcs += $item['pcs'];
+                  $grandQty += $item['qty'];
                 }
                 ?>
               </tbody>
               <tfoot>
                 <tr>
                   <th colspan="2" class="text-right">GRAND TOTAL</th>
-                  <th class="text-center"><?= (int)$grandBox; ?></th>
-                  <th class="text-center"><?= (int)$grandPcs; ?></th>
-                  <th class="text-right"><?= number_format((float)$grandQty, 2); ?></th>
-                  <!-- kolom sisa setelah Qty: C Top, C Bottom, Vacuum, Linier, Tray, Karung = 6 -->
-                  <th colspan="6"></th>
+                  <th class="text-center"><?= $grandBox; ?></th>
+                  <th class="text-center"><?= $grandPcs; ?></th>
+                  <th class="text-right"><?= number_format($grandQty, 2); ?></th>
+                  <th colspan="7"></th>
                 </tr>
               </tfoot>
             </table>
@@ -193,18 +192,23 @@ while ($row = $result->fetch_assoc()) {
 <script>
   $(function() {
     $("#example1").DataTable({
-      responsive: true,
-      lengthChange: false,
-      autoWidth: false,
-      ordering: false,
-      paging: false,
-      searching: true,
-      info: false,
-      buttons: ["copy", "excel", "pdf", "print", "colvis"]
+      "responsive": true,
+      "lengthChange": false,
+      "autoWidth": false,
+      "ordering": false,
+      "paging": false,
+      "searching": true,
+      "info": false,
+      "buttons": ["copy", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    // ubah title setelah semua elemen selesai dimuat
+    setTimeout(() => {
+      document.title = "Detail Boning BN<?= addslashes($idboningWithPrefix); ?> | SWM Apps";
+    }, 300);
   });
-  document.title = "Detail Boning - <?= addslashes($idboningWithPrefix); ?>";
 </script>
+
 
 <?php include "../footnote.php"; ?>
 <?php include "../footer.php"; ?>

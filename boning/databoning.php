@@ -64,7 +64,13 @@ include "../mainsidebar.php";
 
                     <tr class="text-center">
                       <td><?= $no; ?></td>
-                      <td><?= $tampil['batchboning']; ?></td>
+                      <td>
+                        <a href="laporan_rawusage.php?id=<?= $tampil['idboning']; ?>"
+                          class="text-primary font-weight-bold"
+                          title="Lihat Laporan Pemakaian Rawmate">
+                          <?= htmlspecialchars($tampil['batchboning']); ?>
+                        </a>
+                      </td>
                       <td><?= date("d-M-Y", strtotime($tampil['tglboning'])); ?></td>
                       <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
                       <td><?= $tampil['qtysapi']; ?></td>

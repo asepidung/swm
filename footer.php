@@ -1,7 +1,28 @@
 <!-- REQUIRED SCRIPTS -->
+
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables -->
+<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<!-- DataTables Buttons -->
+<script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="../plugins/jszip/jszip.min.js"></script>
+<script src="../plugins/pdfmake/pdfmake.min.js"></script>
+<script src="../plugins/pdfmake/vfs_fonts.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Plugin tambahan -->
 <script src="../plugins/select2/js/select2.full.min.js"></script>
 <script src="../plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
 <script src="../plugins/moment/moment.min.js"></script>
@@ -11,29 +32,24 @@
 <script src="../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="../plugins/bs-stepper/js/bs-stepper.min.js"></script>
 <script src="../plugins/dropzone/min/dropzone.min.js"></script>
-<script src="../dist/js/adminlte.min.js"></script>
-<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../plugins/jszip/jszip.min.js"></script>
-<script src="../plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
 
-<!-- Page specific script -->
+<!-- AdminLTE App -->
+<script src="../dist/js/adminlte.min.js"></script>
+
+<!-- ============================ -->
+<!-- PAGE SPECIFIC SCRIPT -->
+<!-- ============================ -->
 <script>
    $(document).ready(function() {
+
+      // ===== Session Checker =====
       setInterval(function() {
          $.ajax({
             url: "../verifications/session_checker.php",
             method: "GET",
             dataType: "json",
             success: function(response) {
-               console.log("Session status:", response.status); // Debugging
+               console.log("Session status:", response.status);
                if (response.status === "expired") {
                   alert("Sesi Anda telah berakhir. Silakan login kembali.");
                   window.location.href = "../verifications/login.php";
@@ -43,28 +59,29 @@
                console.log("Gagal menghubungi server.");
             }
          });
-      }, 10000); // Jalankan setiap 10 detik untuk mengecek sesi, tapi tidak memperbarui last_activity
-   });
+      }, 10000);
 
-   $(function() {
-      // Initialize Select2 Elements
+      // ===== Select2 =====
       if ($('.select2').length) {
          $('.select2').select2({
-            theme: 'bootstrap4' // Menggunakan tema bootstrap4
+            theme: 'bootstrap4'
          });
       }
 
-      // Initialize DataTables for #example1
+      // ===== DataTables #example1 =====
       if ($('#example1').length) {
          $("#example1").DataTable({
             responsive: true,
-            lengthChange: false,
             autoWidth: false,
+            lengthChange: true,
+            ordering: true,
+            paging: true,
+            searching: true,
             buttons: ["copy", "excel", "pdf", "print", "colvis"]
          }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
       }
 
-      // Initialize DataTables for #example2
+      // ===== DataTables #example2 =====
       if ($('#example2').length) {
          $('#example2').DataTable({
             paging: true,
@@ -77,39 +94,40 @@
          });
       }
 
-      // Initialize Date Range Picker
+      // ===== Date Range Picker =====
       if ($('.daterangepicker').length) {
          $('.daterangepicker').daterangepicker();
       }
 
-      // Initialize Input Mask
+      // ===== Input Mask =====
       if ($('[data-mask]').length) {
          $('[data-mask]').inputmask();
       }
 
-      // Initialize Color Picker
+      // ===== Color Picker =====
       if ($('.colorpicker').length) {
          $('.colorpicker').colorpicker();
       }
 
-      // Initialize Tempus Dominus for Date Time Picker
+      // ===== Tempus Dominus (Datetime Picker) =====
       if ($('.datetimepicker').length) {
          $('.datetimepicker').datetimepicker({
             format: 'L'
          });
       }
 
-      // Initialize BS Stepper
+      // ===== BS Stepper =====
       if (document.querySelector('.bs-stepper')) {
          window.stepper = new Stepper(document.querySelector('.bs-stepper'));
       }
 
-      // Initialize DropzoneJS
-      if (Dropzone) {
+      // ===== Dropzone =====
+      if (typeof Dropzone !== 'undefined') {
          Dropzone.autoDiscover = false;
       }
    });
 </script>
+
 </body>
 
 </html>
