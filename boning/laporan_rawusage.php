@@ -94,6 +94,7 @@ while ($r = $res->fetch_assoc()) {
 </div>
 
 <script>
+  document.title = "Raw Usage <?= $noBatch ?>"
   $(function() {
     $("#usageReport").DataTable({
       responsive: true,

@@ -60,9 +60,23 @@ while ($row = $result->fetch_assoc()) {
           <a href="databoning.php" class="btn btn-success btn-sm">
             <i class="fas fa-undo-alt"></i> Kembali
           </a>
-          <a href="rawusage.php?id=<?= $idboning; ?>" class="btn btn-primary btn-sm ml-2">
-            <i class="fas fa-boxes"></i> Pemakaian Bahan
-          </a>
+          <?php
+          // Ambil status kunci dari tabel boning
+          $q = $conn->query("SELECT kunci FROM boning WHERE idboning = $idboning LIMIT 1");
+          $bon = $q->fetch_assoc();
+          $isLocked = (int)($bon['kunci'] ?? 0);
+          ?>
+
+          <?php if ($isLocked === 1): ?>
+            <button class="btn btn-secondary btn-sm ml-2" disabled title="Data boning sudah dikunci">
+              <i class="fas fa-lock"></i> Pemakaian Bahan (Terkunci)
+            </button>
+          <?php else: ?>
+            <a href="rawusage.php?id=<?= $idboning; ?>" class="btn btn-primary btn-sm ml-2">
+              <i class="fas fa-boxes"></i> Pemakaian Bahan
+            </a>
+          <?php endif; ?>
+
         </div>
       </div>
     </div>
