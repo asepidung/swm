@@ -133,10 +133,9 @@ include "notifcount.php";
           </li>
         <?php endif; ?>
 
-
         <!-- MENU STOCK DIPISAH -->
         <?php if (isset($role['stock']) && $role['stock'] == 1) : ?>
-          <li class="nav-item">
+          <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-boxes"></i>
               <p>
@@ -144,43 +143,90 @@ include "notifcount.php";
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="../stock/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Data Stock</p>
+
+              <!-- PERSEDIAAN -->
+              <li class="nav-item has-treeview">
+                <a href="#" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>
+                    Persediaan
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../stock/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Data Stock (Daging)</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../stockraw/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock Raw (Bahan Penolong)</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a href="../stockraw/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock Raw</p>
+
+              <!-- OPERASIONAL -->
+              <li class="nav-item has-treeview">
+                <a href="#" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>
+                    Operasional
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../stockin/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock In (Input Daging Baru)</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../material/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock Out (Bahan Material)</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../stocktake" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Stock Take (Opname)</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a href="../stockin/" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock In</p>
+
+              <!-- MONITORING -->
+              <li class="nav-item has-treeview">
+                <a href="#" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>
+                    Monitoring
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../stock/tofroz.php" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>&gt; 60 Days (Umur Stok)</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../track" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Track Product (Barcode)</p>
+                    </a>
+                  </li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a href="../stock/tofroz.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>> 60 Days</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../stocktake" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stock Take</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="../track" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Track Product</p>
-                </a>
-              </li>
+
             </ul>
           </li>
         <?php endif; ?>

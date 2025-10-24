@@ -5,85 +5,47 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
-/* =========================
-   Input & helper "Back"
-   ========================= */
-$idrepack = intval($_GET['id'] ?? 0);
-if ($idrepack <= 0) die("Jalankan dari modul Repack yang valid.");
+$idother = (int)($_GET['id'] ?? 0);
+if ($idother <= 0) die("ID dokumen tidak valid.");
 
-function back_target(string $default): string
-{
-    $ret = $_GET['ret'] ?? '';
-    // izinkan hanya URL relatif internal (tanpa protokol & tanpa newline)
-    if (
-        $ret !== '' && strpos($ret, "\n") === false && strpos($ret, "\r") === false
-        && !preg_match('~^(?:https?:)?//~i', $ret)
-    ) {
-        return $ret;
-    }
-    // fallback referer jika 1 host
-    $ref = $_SERVER['HTTP_REFERER'] ?? '';
-    if ($ref) {
-        $hostRef = parse_url($ref, PHP_URL_HOST);
-        $hostNow = $_SERVER['HTTP_HOST'] ?? '';
-        if ($hostRef === $hostNow) return $ref;
-    }
-    return $default;
-}
-$backUrl = back_target('index.php');
+$qH = mysqli_query($conn, "SELECT noother, tgl, note FROM usage_other WHERE idother=$idother LIMIT 1");
+$h  = mysqli_fetch_assoc($qH);
+$noother = $h['noother'] ?? 'OU-????';
+$tgl     = $h['tgl'] ?? date('Y-m-d');
+$note    = $h['note'] ?? '';
 
-/* =========================
-   Ambil nomor Repack
-   ========================= */
-$stmtRep = $conn->prepare("SELECT norepack FROM repack WHERE idrepack = ? LIMIT 1");
-$stmtRep->bind_param("i", $idrepack);
-$stmtRep->execute();
-$drep = $stmtRep->get_result()->fetch_assoc();
-$stmtRep->close();
-
-$norepack = $drep['norepack'] ?? "RPC-???";
-
-/* =========================
-   Query ringkasan material
-   ========================= */
 $sql = "
-  SELECT 
-      ru.idrawmate,
-      COALESCE(rm.nmrawmate, CONCAT('ID#', ru.idrawmate)) AS nmrawmate,
-      SUM(ru.qty) AS total_qty
+  SELECT ru.idrawmate, COALESCE(rm.nmrawmate, CONCAT('ID#', ru.idrawmate)) AS nmrawmate,
+         SUM(ru.qty) AS total_qty
   FROM raw_usage ru
   LEFT JOIN rawmate rm ON rm.idrawmate = ru.idrawmate
-  WHERE ru.sumber = 'REPACK'
-    AND ru.idsumber = ?
+  WHERE ru.sumber='LAINNYA' AND ru.idsumber=?
   GROUP BY ru.idrawmate
   ORDER BY nmrawmate ASC
 ";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idrepack);
-$stmt->execute();
-$res = $stmt->get_result();
+$st = $conn->prepare($sql);
+$st->bind_param("i", $idother);
+$st->execute();
+$res = $st->get_result();
 
 $rows = [];
-$grand = 0.0;
+$grand = 0;
 while ($r = $res->fetch_assoc()) {
     $rows[] = $r;
     $grand += (float)$r['total_qty'];
 }
-$stmt->close();
+$st->close();
 ?>
-
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
-                    <h4><i class="fas fa-clipboard-list"></i> Laporan Pemakaian Bahan - <?= htmlspecialchars($norepack) ?></h4>
-                    <div class="small text-muted">Ringkasan per material untuk proses REPACK ini.</div>
+                    <h4><i class="fas fa-clipboard-list"></i> Laporan Pengeluaran Lainnya — <?= htmlspecialchars($noother) ?></h4>
+                    <div class="small text-muted">Tanggal: <?= htmlspecialchars($tgl) ?> · Catatan: <?= htmlspecialchars($note) ?></div>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <a href="<?= htmlspecialchars($backUrl) ?>" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-undo-alt"></i> Kembali
-                    </a>
+                    <a href="index.php" class="btn btn-secondary btn-sm"><i class="fas fa-undo-alt"></i> Kembali</a>
                 </div>
             </div>
         </div>
@@ -93,16 +55,16 @@ $stmt->close();
         <div class="container-fluid">
             <div class="card card-dark shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">Ringkasan Pemakaian Material</h3>
+                    <h3 class="card-title">Ringkasan per Material</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="usageReport" class="table table-bordered table-striped table-sm">
                             <thead class="text-center">
                                 <tr>
-                                    <th style="width:48px">#</th>
+                                    <th style="width:60px">#</th>
                                     <th>Material</th>
-                                    <th style="width:140px">Qty Terpakai</th>
+                                    <th style="width:160px">Qty Terpakai</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,7 +92,7 @@ $stmt->close();
 </div>
 
 <script>
-    document.title = "Laporan Raw Usage <?= htmlspecialchars($norepack) ?>";
+    document.title = "Laporan Other Usage <?= htmlspecialchars($noother) ?>";
     $(function() {
         $("#usageReport").DataTable({
             responsive: true,
