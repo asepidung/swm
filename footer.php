@@ -77,7 +77,7 @@
             ordering: true,
             paging: true,
             searching: true,
-            buttons: ["copy", "excel", "pdf", "print", "colvis"]
+            buttons: ["excel", "pdf", "print"]
          }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
       }
 

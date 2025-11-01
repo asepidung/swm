@@ -32,6 +32,7 @@ $packdate = $data['packdate'];
 $exp = $data['exp'];
 $idgrade = $data['idgrade'];
 $kdbarcode = $data['kdbarcode'];
+$ph = $data['ph'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,10 +92,16 @@ $kdbarcode = $data['kdbarcode'];
          </tr>
          <tr>
             <td height="20" style="font-style: normal; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+
+               <!-- sementara tenderstreatch tidak aktif -->
                <!-- <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'CUBEROLL') !== false || strpos($nmbarang, 'OPERIB') !== false)) { ?><strong><i>Tenderstreach</i></strong>
                <?php } else { ?>
                   &nbsp;
                <?php } ?> -->
+
+
+               <!-- diganti dengan Ph -->
+               <span style="font-size: 12px">pH <?= number_format($ph, 1); ?></span>
             </td>
          </tr>
          <tr>
@@ -172,7 +179,7 @@ $kdbarcode = $data['kdbarcode'];
          };
          setTimeout(function() {
             window.close();
-         }, 500); // Menunda penutupan jendela setelah 0,5 detik
+         }, 500);
       };
    </script>
 </body>

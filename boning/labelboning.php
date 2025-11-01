@@ -5,91 +5,63 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// Periksa apakah ID boning tersedia di parameter GET
+// Validasi idboning
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
   die("Jalankan Dari Modul Produksi");
 }
-$idboning = intval($_GET['id']);
-$idusers = $_SESSION['idusers'] ?? 0;
+$idboning = (int)$_GET['id'];
+$idusers  = $_SESSION['idusers'] ?? 0;
 
-// Query daftar barang
-$queryBarang = "SELECT * FROM barang ORDER BY nmbarang ASC";
-$resultBarang = mysqli_query($conn, $queryBarang);
-if (!$resultBarang) {
-  die("Error pada query barang: " . mysqli_error($conn));
-}
+// Dropdown data
+$qBarang = $conn->query("SELECT idbarang, nmbarang FROM barang ORDER BY nmbarang ASC");
+if (!$qBarang) die("Error barang: " . $conn->error);
+$qGrade  = $conn->query("SELECT idgrade, nmgrade FROM grade ORDER BY nmgrade ASC");
+if (!$qGrade) die("Error grade: " . $conn->error);
 
-// Query daftar grade
-$queryGrade = "SELECT * FROM grade ORDER BY nmgrade ASC";
-$resultGrade = mysqli_query($conn, $queryGrade);
-if (!$resultGrade) {
-  die("Error pada query grade: " . mysqli_error($conn));
-}
+// Default tanggal
+if (empty($_SESSION['packdate'])) $_SESSION['packdate'] = date('Y-m-d');
 
-// Set tanggal default untuk packed date
-if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
-  $_SESSION['packdate'] = date('Y-m-d');
-}
-
-$querybatch = "SELECT batchboning FROM boning WHERE idboning = $idboning";
-$resultbatch = mysqli_query($conn, $querybatch);
-if ($resultbatch) {
-  $rowbatch = mysqli_fetch_assoc($resultbatch);
-  $is_batch = $rowbatch['batchboning']; // Status kunci (1 = terkunci, 0 = tidak terkunci)
-} else {
-  die("Error pada query batch: " . mysqli_error($conn));
-}
-
-
-$queryKunci = "SELECT kunci FROM boning WHERE idboning = $idboning";
-$resultKunci = mysqli_query($conn, $queryKunci);
-
-
-if ($resultKunci) {
-  $rowKunci = mysqli_fetch_assoc($resultKunci);
-  $is_locked = $rowKunci['kunci']; // Status kunci (1 = terkunci, 0 = tidak terkunci)
-} else {
-  die("Error pada query kunci: " . mysqli_error($conn));
-}
-
+// Info batch & kunci
+$batch = $conn->query("SELECT batchboning, kunci FROM boning WHERE idboning = $idboning LIMIT 1");
+if (!$batch) die("Error boning: " . $conn->error);
+$info = $batch->fetch_assoc();
+$is_batch  = (int)($info['batchboning'] ?? 0);
+$is_locked = (int)($info['kunci'] ?? 0);
 ?>
 <div class="content-wrapper">
-  <!-- Content Header -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-6">
-          <a href="databoning.php"><button type="button" class="btn btn-sm btn-success"><i class="fas fa-undo-alt"></i> DATA BONING</button></a>
+          <a href="databoning.php" class="btn btn-sm btn-success">
+            <i class="fas fa-undo-alt"></i> DATA BONING
+          </a>
         </div>
       </div>
     </div>
   </div>
-  <!-- Main Content -->
+
   <div class="content">
     <div class="container-fluid">
       <div class="row">
-        <?php if ($is_locked == 0): ?>
+
+        <?php if ($is_locked === 0): ?>
           <div class="col-lg-4">
-            <!-- Form Card -->
             <div class="card">
               <div class="card-body">
-                <form method="POST" action="insert_labelboning.php" onsubmit="submitForm(event)">
-                  <!-- Dropdown Barang -->
+                <form method="POST" action="insert_labelboning.php" onsubmit="submitForm && submitForm(event)">
+                  <!-- Barang -->
                   <div class="form-group">
                     <div class="input-group">
                       <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                         <?php
-                        $selectedIdbarang = $_SESSION['idbarang'] ?? ''; // Default dari session
-                        if ($selectedIdbarang) {
-                          echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
-                        } else {
-                          echo '<option value="" selected>--Pilih Item--</option>';
-                        }
-                        while ($row = mysqli_fetch_assoc($resultBarang)) {
-                          $idbarang = $row['idbarang'];
-                          $nmbarang = $row['nmbarang'];
-                          $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
-                          echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                        $selBrg = (int)($_SESSION['idbarang'] ?? 0);
+                        echo $selBrg ? '<option value="' . $selBrg . '" selected>--Pilih Item--</option>' : '<option value="" selected>--Pilih Item--</option>';
+                        while ($r = $qBarang->fetch_assoc()) {
+                          $idb = (int)$r['idbarang'];
+                          $nm  = htmlspecialchars($r['nmbarang']);
+                          $sel = $idb === $selBrg ? 'selected' : '';
+                          echo "<option value=\"$idb\" $sel>$nm</option>";
                         }
                         ?>
                       </select>
@@ -99,57 +71,33 @@ if ($resultKunci) {
                     </div>
                   </div>
 
-                  <!-- Dropdown Grade -->
+                  <!-- Grade -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <select class="form-control" name="idgrade" id="idgrade" required>
-                        <?php
-                        $selectedIdgrade = $_SESSION['idgrade'] ?? ''; // Default dari session
-                        if ($selectedIdgrade) {
-                          echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
-                        } else {
-                          echo '<option value="" selected>--Pilih Grade--</option>';
-                        }
-                        while ($row = mysqli_fetch_assoc($resultGrade)) {
-                          $idgrade = $row['idgrade'];
-                          $nmgrade = $row['nmgrade'];
-                          $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
-                          echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
-                        }
-                        ?>
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- Packed Date -->
-                  <div class="form-group">
-                    <div class="input-group">
+                    <select class="form-control" name="idgrade" id="idgrade" required>
                       <?php
-                      $packdate = $_SESSION['packdate'] ?? date('Y-m-d'); // Default: hari ini
+                      $selGrd = (int)($_SESSION['idgrade'] ?? 0);
+                      echo $selGrd ? '<option value="' . $selGrd . '" selected>--Pilih Grade--</option>' : '<option value="" selected>--Pilih Grade--</option>';
+                      while ($r = $qGrade->fetch_assoc()) {
+                        $idg = (int)$r['idgrade'];
+                        $nm  = htmlspecialchars($r['nmgrade']);
+                        $sel = $idg === $selGrd ? 'selected' : '';
+                        echo "<option value=\"$idg\" $sel>$nm</option>";
+                      }
                       ?>
-                      <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $packdate; ?>">
-                    </div>
+                    </select>
                   </div>
 
-                  <!-- Expired Date -->
+                  <!-- Tanggal -->
                   <div class="form-group">
-                    <div class="input-group">
-                      <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= $_SESSION['exp'] ?? ''; ?>">
-                    </div>
+                    <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
+                  </div>
+                  <div class="form-group">
+                    <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
                   </div>
 
+                  <input type="hidden" name="idusers" value="<?= (int)$idusers ?>">
+                  <input type="hidden" name="idboning" value="<?= (int)$idboning ?>">
 
-                  <!-- Tenderstreach -->
-                  <!-- <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?= isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
-                    <label class="form-check-label">Aktifkan Tenderstreatch</label>
-                  </div> -->
-
-                  <!-- Hidden Inputs -->
-                  <input type="hidden" name="idusers" id="idusers" value="<?= $idusers ?>">
-                  <input type="hidden" name="idboning" id="idboning" value="<?= $idboning; ?>">
-
-                  <!-- Qty Input -->
                   <div class="row">
                     <div class="col-8">
                       <div class="form-group">
@@ -158,26 +106,28 @@ if ($resultKunci) {
                     </div>
                     <div class="col">
                       <div class="form-group">
+                        <!-- detailpcs sementara tidak aktif
                         <a href="detailpcs.php?id=id" class="btn btn-warning btn-block disabled" aria-disabled="true">LabelPcs</a>
+                       -->
+
+                        <!-- diganti dengan Ph -->
+                        <input type="number" step="0.1" min="5.4" max="5.7" class="form-control" name="ph" id="ph" placeholder="PH 5.4-5.7" required value="<?= htmlspecialchars($_SESSION['ph'] ?? '', ENT_QUOTES) ?>">
                       </div>
                     </div>
                   </div>
 
-                  <!-- Submit Button -->
                   <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
                 </form>
-
               </div>
             </div>
           </div>
         <?php endif; ?>
 
-
-        <!-- Table Section -->
+        <!-- LIST -->
         <div class="col-lg">
           <div class="card">
             <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped table-sm">
+              <table id="tblLabel" class="table table-bordered table-striped table-sm w-100">
                 <thead class="text-center">
                   <tr>
                     <th>#</th>
@@ -191,80 +141,123 @@ if ($resultKunci) {
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <?php
-                  $no = 1;
-                  $queryData = "SELECT l.*, b.nmbarang, u.fullname, g.nmgrade 
-                                FROM labelboning l
-                                JOIN barang b ON l.idbarang = b.idbarang 
-                                JOIN boning bo ON l.idboning = bo.idboning
-                                JOIN grade g ON l.idgrade = g.idgrade
-                                JOIN users u ON l.iduser = u.idusers
-                                WHERE l.idboning = $idboning AND l.is_deleted = 0  -- Menambahkan kondisi untuk hanya menampilkan data yang belum dihapus
-                                ORDER BY l.idlabelboning DESC";
-                  $resultData = mysqli_query($conn, $queryData);
-
-                  while ($tampil = mysqli_fetch_assoc($resultData)) :
-                    $fullname = $tampil['fullname'];
-                    $kdbarcode = $tampil['kdbarcode'];
-                    $existsTally = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM tallydetail WHERE barcode = '$kdbarcode'"))['total'] > 0;
-                    $existsDetailBahan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM detailbahan WHERE barcode = '$kdbarcode'"))['total'] > 0;
-                  ?>
-
-                    <tr class="text-center">
-                      <td><?= $no++; ?></td>
-                      <td><?= $tampil['kdbarcode']; ?></td>
-                      <td><?= $tampil['nmgrade']; ?></td>
-                      <td class="text-left"><?= $tampil['nmbarang']; ?></td>
-                      <td><?= number_format($tampil['qty'], 2); ?></td>
-                      <td><?= $tampil['pcs']; ?></td>
-                      <td><?= $fullname; ?></td>
-                      <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
-                      <td>
-                        <?php if ($existsTally) : ?>
-                          <i class="fas fa-check-circle"></i>
-                        <?php elseif ($existsDetailBahan) : ?>
-                          <i class="fas fa-box-open text-success"></i>
-                        <?php else : ?>
-                          <?php if ($is_locked == 0): ?>
-                            <!-- <a href="edit_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>" class="text-info">
-                              <i class="fas fa-pencil-alt"></i>
-                            </a> -->
-                            <a href="hapus_labelboning.php?id=<?= $tampil['idlabelboning']; ?>&idboning=<?= $idboning; ?>&kdbarcode=<?= $tampil['kdbarcode']; ?>"
-                              class="text-danger"
-                              onclick="return confirm('Apakah anda yakin ingin menghapus label ini?');">
-                              <i class="fas fa-minus-square"></i>
-                            </a>
-
-                          <?php endif; ?>
-                        <?php endif; ?>
-                      </td>
-                    </tr>
-                  <?php endwhile; ?>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div><!-- /.content -->
+
   <script>
-    document.title = "Boning <?= $is_batch ?>";
+    document.title = "Label Boning";
     document.addEventListener('DOMContentLoaded', function() {
-      // Menggunakan event listener untuk menangkap event keydown pada elemen dengan id "idbarang"
-      document.getElementById('idbarang').addEventListener('keydown', function(e) {
-        // Jika tombol yang ditekan adalah "Tab" (kode 9)
-        if (e.keyCode === 9) {
-          // Pindahkan fokus ke elemen dengan id "qty"
-          document.getElementById('qty').focus();
-          // Mencegah perpindahan fokus bawaan yang dihasilkan oleh tombol "Tab"
+      var s = document.getElementById('idbarang');
+      if (s) s.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab' || e.keyCode === 9) {
           e.preventDefault();
+          var q = document.getElementById('qty');
+          if (q) q.focus();
         }
       });
+
+      const idboning = <?= (int)$idboning ?>;
+
+      // Inisialisasi DataTables + Buttons (gaya AdminLTE)
+      const dt = $('#tblLabel').DataTable({
+        processing: true,
+        serverSide: true,
+        deferRender: true,
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [
+          [10, 25, 50, 100, 250, 500, -1],
+          [10, 25, 50, 100, 250, 500, 'All']
+        ],
+        order: [
+          [7, 'desc']
+        ],
+        ajax: {
+          url: 'labelboning_data.php',
+          type: 'POST',
+          data: d => {
+            d.idboning = <?= (int)$idboning ?>;
+          }
+        },
+        columns: [{
+            data: 'rownum',
+            className: 'text-center'
+          },
+          {
+            data: 'kdbarcode',
+            className: 'text-center'
+          },
+          {
+            data: 'nmgrade',
+            className: 'text-center'
+          },
+          {
+            data: 'nmbarang'
+          },
+          {
+            data: 'qty',
+            className: 'text-right'
+          },
+          {
+            data: 'pcs',
+            className: 'text-center'
+          },
+          {
+            data: 'fullname',
+            className: 'text-center'
+          },
+          {
+            data: 'creatime',
+            className: 'text-center'
+          },
+          {
+            data: 'action',
+            className: 'text-center',
+            orderable: true,
+            searchable: false
+          }
+        ],
+        // ← kembalikan kontrol length 'l' + Buttons + Filter di satu baris
+        dom: "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'f>>" +
+          "<'row'<'col-sm-12'tr>>" +
+          "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        buttons: [{
+            extend: 'copyHtml5',
+            className: 'btn btn-secondary btn-sm'
+          },
+          {
+            extend: 'excelHtml5',
+            className: 'btn btn-secondary btn-sm'
+          },
+          {
+            extend: 'pdfHtml5',
+            className: 'btn btn-secondary btn-sm'
+          },
+          {
+            extend: 'print',
+            className: 'btn btn-secondary btn-sm'
+          },
+          {
+            extend: 'colvis',
+            className: 'btn btn-secondary btn-sm'
+          }
+        ]
+      });
+
+      // Tidak perlu appendTo lagi karena posisi tombol sudah diatur via 'dom'
+
+
+      // Posisikan tombol sesuai style AdminLTE (kiri atas wrapper)
+      dt.buttons().container().appendTo('#tblLabel_wrapper .col-md-6:eq(0)');
     });
   </script>
 </div>
-<?php
-require "../footer.php";
-?>
+
+<?php require "../footer.php"; ?>
