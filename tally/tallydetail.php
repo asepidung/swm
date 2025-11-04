@@ -105,14 +105,15 @@ $limit = $_SESSION['limit'];
                                  <th>Pcs</th>
                                  <th>POD</th>
                                  <th>Origin</th>
+                                 <th>pH</th>
                                  <th>Hapus</th>
-                                 <th>ScanTime</th>
+                                 <!-- <th>ScanTime</th> -->
                               </tr>
                            </thead>
                            <tbody>
                               <?php
                               $no = 1;
-                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang, grade.nmgrade
+                              $ambildata = mysqli_query($conn, "SELECT tallydetail.*, barang.nmbarang, grade.nmgrade, ph
                               FROM tallydetail
                               INNER JOIN barang ON tallydetail.idbarang = barang.idbarang
                               INNER JOIN grade ON tallydetail.idgrade = grade.idgrade
@@ -122,6 +123,7 @@ $limit = $_SESSION['limit'];
                                  $nmbarang = $tampil['nmbarang'];
                                  $nmgrade = $tampil['nmgrade'];
                                  $barcode = $tampil['barcode'];
+                                 $ph = $tampil['ph'];
                                  $pod = $tampil['pod'];
                                  $scantime = $tampil['creatime'];
                                  $podDate = new DateTime($pod);
@@ -178,14 +180,16 @@ $limit = $_SESSION['limit'];
                                        }
                                        ?>
                                     </td>
+                                    <td>
+                                       <!-- <?= date("H:i:s", strtotime($scantime)); ?> -->
+                                       <?= $ph; ?>
+                                    </td>
                                     <td class="text-center">
                                        <a href="deletetallydetail.php?iddetail=<?= $tampil['idtallydetail']; ?>&id=<?= $idtally; ?>" class="text-info" onclick="return confirm('Yakin Lu?')">
                                           <i class="far fa-times-circle"></i>
                                        </a>
                                     </td>
-                                    <td>
-                                       <?= date("H:i:s", strtotime($scantime)); ?>
-                                    </td>
+
                                  </tr>
                               <?php
                                  $no++;

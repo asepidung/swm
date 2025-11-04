@@ -35,34 +35,37 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="card">
                <div class="card-body">
                   <form method="POST" action="printlabel.php" onsubmit="submitForm(event)">
-                     <input type="hidden" name="idrepack" value="<?= $idrepack; ?>">
+                     <input type="hidden" name="idrepack" value="<?= (int)$idrepack; ?>">
+
+                     <!-- Origin -->
                      <div class="form-group">
                         <div class="input-group">
                            <select class="form-control" name="origin" id="origin" required>
                               <option value="">** Pilih Asal Barang **</option>
-                              <option value="3" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 3) ? 'selected' : ''; ?>>REPACK</option>
-                              <option value="2" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 2) ? 'selected' : ''; ?>>TRADING</option>
-                              <option value="5" <?= (isset($_SESSION['origin']) && $_SESSION['origin'] == 5) ? 'selected' : ''; ?>>IMPORT</option>
+                              <option value="3" <?= (!empty($_SESSION['origin']) && $_SESSION['origin'] == 3) ? 'selected' : ''; ?>>REPACK</option>
+                              <option value="2" <?= (!empty($_SESSION['origin']) && $_SESSION['origin'] == 2) ? 'selected' : ''; ?>>TRADING</option>
+                              <option value="5" <?= (!empty($_SESSION['origin']) && $_SESSION['origin'] == 5) ? 'selected' : ''; ?>>IMPORT</option>
                            </select>
                         </div>
                      </div>
+
+                     <!-- Item -->
                      <div class="form-group">
                         <div class="input-group">
+                           <?php $selectedIdbarang = $_SESSION['idbarang'] ?? ''; ?>
                            <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                               <?php
-                              if (isset($_SESSION['idbarang']) && $_SESSION['idbarang'] != '') {
-                                 $selectedIdbarang = $_SESSION['idbarang'];
-                                 echo "<option value=\"$selectedIdbarang\" selected>--Pilih Item--</option>";
+                              if ($selectedIdbarang !== '') {
+                                 echo "<option value=\"" . htmlspecialchars($selectedIdbarang, ENT_QUOTES) . "\" selected>--Pilih Item--</option>";
                               } else {
                                  echo '<option value="" selected>--Pilih Item--</option>';
                               }
-                              $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                              $result = mysqli_query($conn, $query);
-                              while ($row = mysqli_fetch_assoc($result)) {
-                                 $idbarang = $row['idbarang'];
-                                 $nmbarang = $row['nmbarang'];
-                                 $selected = ($idbarang == $selectedIdbarang) ? 'selected' : '';
-                                 echo "<option value=\"$idbarang\" $selected>$nmbarang</option>";
+                              $resBarang = mysqli_query($conn, "SELECT idbarang,nmbarang FROM barang ORDER BY nmbarang ASC");
+                              while ($r = mysqli_fetch_assoc($resBarang)) {
+                                 $idb = $r['idbarang'];
+                                 $nm  = $r['nmbarang'];
+                                 $sel = ($idb == $selectedIdbarang) ? 'selected' : '';
+                                 echo "<option value=\"" . $idb . "\" $sel>" . htmlspecialchars($nm, ENT_QUOTES) . "</option>";
                               }
                               ?>
                            </select>
@@ -71,61 +74,93 @@ while ($row = mysqli_fetch_assoc($result)) {
                            </div>
                         </div>
                      </div>
+
+                     <!-- Grade -->
                      <div class="form-group">
                         <div class="input-group">
+                           <?php $selectedIdgrade = $_SESSION['idgrade'] ?? ''; ?>
                            <select class="form-control" name="idgrade" id="idgrade" required>
                               <?php
-                              if (isset($_SESSION['idgrade']) && $_SESSION['idgrade'] != '') {
-                                 $selectedIdgrade = $_SESSION['idgrade'];
-                                 echo "<option value=\"$selectedIdgrade\" selected>--Pilih Grade--</option>";
+                              if ($selectedIdgrade !== '') {
+                                 echo "<option value=\"" . htmlspecialchars($selectedIdgrade, ENT_QUOTES) . "\" selected>--Pilih Grade--</option>";
                               } else {
                                  echo '<option value="" selected>--Pilih Grade--</option>';
                               }
-                              $query = "SELECT * FROM grade ORDER BY nmgrade ASC";
-                              $result = mysqli_query($conn, $query);
-                              while ($row = mysqli_fetch_assoc($result)) {
-                                 $idgrade = $row['idgrade'];
-                                 $nmgrade = $row['nmgrade'];
-                                 $selected = ($idgrade == $selectedIdgrade) ? 'selected' : '';
-                                 echo "<option value=\"$idgrade\" $selected>$nmgrade</option>";
+                              $resGrade = mysqli_query($conn, "SELECT idgrade,nmgrade FROM grade ORDER BY nmgrade ASC");
+                              while ($g = mysqli_fetch_assoc($resGrade)) {
+                                 $idg = $g['idgrade'];
+                                 $nm  = $g['nmgrade'];
+                                 $sel = ($idg == $selectedIdgrade) ? 'selected' : '';
+                                 echo "<option value=\"" . $idg . "\" $sel>" . htmlspecialchars($nm, ENT_QUOTES) . "</option>";
                               }
                               ?>
                            </select>
                         </div>
                      </div>
-                     <div class="form-group">
+                     <!-- Packdate -->
+                     <div class="form-group mini-field">
+                        <span class="mini-label">Prod</span>
                         <div class="input-group">
-                           <?php
-                           if (!isset($_SESSION['packdate']) || $_SESSION['packdate'] == '') {
-                              $_SESSION['packdate'] = date('Y-m-d');
-                           }
-                           ?>
-                           <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= $_SESSION['packdate']; ?>">
+                           <?php if (empty($_SESSION['packdate'])) $_SESSION['packdate'] = date('Y-m-d'); ?>
+                           <input type="date"
+                              class="form-control"
+                              name="packdate"
+                              id="packdate"
+                              required
+                              value="<?= htmlspecialchars($_SESSION['packdate'], ENT_QUOTES); ?>">
                         </div>
                      </div>
-                     <div class="form-group">
+
+                     <!-- Exp di baris sendiri -->
+                     <div class="form-group mini-field">
+                        <span class="mini-label">Exp</span>
                         <div class="input-group">
-                           <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Item">
+                           <?php if (!isset($_SESSION['exp'])) $_SESSION['exp'] = ''; ?>
+                           <input type="date"
+                              class="form-control"
+                              name="exp"
+                              id="exp"
+                              value="<?= htmlspecialchars($_SESSION['exp'], ENT_QUOTES); ?>">
                         </div>
                      </div>
-                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" <?php echo isset($_SESSION['tenderstreach']) && $_SESSION['tenderstreach'] ? 'checked' : ''; ?>>
-                        <label class="form-check-label">Aktifkan Tenderstreatch</label>
+
+
+                     <!-- Catatan -->
+                     <div class="form-group">
+                        <div class="input-group">
+                           <input type="text" class="form-control" name="note" id="note" placeholder="Catatan Item"
+                              value="<?= isset($_SESSION['note']) ? htmlspecialchars($_SESSION['note'], ENT_QUOTES) : '' ?>">
+                        </div>
                      </div>
-                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="pembulatan" id="pembulatan" <?php echo isset($_SESSION['pembulatan']) && $_SESSION['pembulatan'] ? 'checked' : ''; ?>>
-                        <label class="form-check-label">1 Digit Koma</label>
-                     </div>
+
+                     <!-- Qty (Weight/Pcs) + pH dalam satu baris -->
                      <div class="form-group mt-1">
-                        <div class="input-group">
-                           <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
+                        <div class="row">
+                           <div class="col-6">
+                              <input type="text"
+                                 class="form-control"
+                                 name="qty" id="qty"
+                                 placeholder="Weight / Pcs (cth: 12.34/5)"
+                                 value="<?= isset($_SESSION['qty']) ? htmlspecialchars($_SESSION['qty'], ENT_QUOTES) : '' ?>"
+                                 required>
+                           </div>
+                           <div class="col-6">
+                              <input type="number"
+                                 step="0.1" min="5.4" max="5.7"
+                                 class="form-control"
+                                 name="ph" id="ph"
+                                 placeholder="pH 5.4–5.7"
+                                 value="<?= isset($_SESSION['ph']) ? htmlspecialchars($_SESSION['ph'], ENT_QUOTES) : '' ?>">
+                           </div>
                         </div>
                      </div>
+
                      <button type="submit" class="btn btn-block bg-gradient-primary" name="submit">Print</button>
                   </form>
                </div>
             </div>
          </div>
+
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
@@ -138,7 +173,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                            <th>Kode</th>
                            <th>Qty</th>
                            <th>Pcs</th>
-                           <th>Create</th>
+                           <th>pH</th>
                            <th>Hapus</th>
                            <th>Note</th>
                         </tr>
@@ -167,7 +202,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                               }
                               ?>
                               <td><?= $pcs; ?></td>
-                              <td><?= date("H:i:s", strtotime($tampil['creatime'])); ?></td>
+                              <td>
+                                 <!-- <?= date("H:i:s", strtotime($tampil['creatime'])); ?> -->
+                                 <?= $tampil['ph']; ?>
+                              </td>
                               <td class="text-center">
                                  <?php
                                  $kdbarcode = $tampil['kdbarcode'];
@@ -313,6 +351,33 @@ while ($row = mysqli_fetch_assoc($result)) {
       });
    });
 </script>
+<style>
+   .mini-field {
+      position: relative;
+   }
+
+   .mini-field .mini-label {
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      font-size: 10px;
+      line-height: 1;
+      color: #6c757d;
+      /* abu-abu bootstrap */
+      pointer-events: none;
+      z-index: 2;
+      background: #fff;
+      /* agar kontras di atas input putih */
+      padding: 0 2px;
+      border-radius: 2px;
+   }
+
+   /* beri padding kiri agar teks input tidak tabrakan dgn label mini */
+   .mini-field input.form-control {
+      padding-left: 48px !important;
+   }
+</style>
+
 <?php
 // require "../footnote.php";
 require "../footer.php";

@@ -92,7 +92,7 @@ $is_locked = (int)($info['kunci'] ?? 0);
                     <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
                   </div>
                   <div class="form-group">
-                    <input type="date" readonly class="form-control" name="exp" id="exp" value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
+                    <input type="date" class="form-control" name="exp" id="exp" value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
                   </div>
 
                   <input type="hidden" name="idusers" value="<?= (int)$idusers ?>">

@@ -5,7 +5,7 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// Ambil user id dari session (sesuaikan dengan auth.php kamu)
+// Ambil user id dari session (diperlukan untuk submit), tapi TIDAK dipakai untuk prefill form
 $idusers = $_SESSION['idusers'] ?? null;
 
 function h($v)
@@ -29,18 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       exit;
    }
 
-   // Prepared statement: pastikan ambil data SATU baris & sesuai tally
+   // Ambil data tallydetail + barang + grade sesuai barcode & idtally
    $sql = "
-        SELECT 
-            td.*, b.nmbarang, g.nmgrade
-        FROM tallydetail td
-        LEFT JOIN barang b ON td.idbarang = b.idbarang
-        LEFT JOIN grade  g ON td.idgrade  = g.idgrade
-        WHERE td.barcode = ? AND td.idtally = ?
-        LIMIT 1
-    ";
+    SELECT 
+      td.*, b.nmbarang, g.nmgrade
+    FROM tallydetail td
+    LEFT JOIN barang b ON td.idbarang = b.idbarang
+    LEFT JOIN grade  g ON td.idgrade  = g.idgrade
+    WHERE td.barcode = ? AND td.idtally = ?
+    LIMIT 1
+  ";
    if (!$stmt = $conn->prepare($sql)) {
-      // Hindari bocor info DB ke user produksi
       die("DB Error (prepare)");
    }
    $stmt->bind_param('si', $kdbarcode, $idtally);
@@ -50,21 +49,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    $result = $stmt->get_result();
 
    if ($result->num_rows === 0) {
-      // Redirect rapi dengan pesan
       header("Location: index.php?msg=Data%20Barang%20Tidak%20Ditemukan");
       exit;
    }
 
    $row = $result->fetch_assoc();
-   // Siapkan nilai yang aman untuk ditampilkan
+
+   // Nilai untuk ditampilkan (semua dari DB, bukan dari session)
    $idtallydetail = (int)$row['idtallydetail'];
    $idbarang      = (int)$row['idbarang'];
    $idgrade       = (int)$row['idgrade'];
    $nmbarang      = $row['nmbarang'] ?? '';
    $nmgrade       = $row['nmgrade'] ?? '';
-   $pod           = $row['pod'] ?? '';      // tanggal produksi/pack on date?
-   $weight        = $row['weight'] ?? '';
-   $pcs           = $row['pcs'] ?? '';
+   $podRaw        = $row['pod'] ?? '';           // pack on date (YYYY-mm-dd di DB)
+   $packdateVal   = $podRaw ? date('Y-m-d', strtotime($podRaw)) : '';
+   $weight        = isset($row['weight']) ? (float)$row['weight'] : 0.0;
+   $pcs           = isset($row['pcs']) ? (int)$row['pcs'] : 0;
+   $phTd          = $row['ph'];                  // bisa NULL
+
+   // Prefill gabungan qty: "berat/pcs" atau "berat" jika pcs=0
+   $qtyCombined   = number_format($weight, 2, '.', '') . ($pcs > 0 ? '/' . $pcs : '');
+
+   // Prefill pH dari DB: jika NULL/kosong -> tampil kosong
+   $phValDisplay  = ($phTd === null || $phTd === '') ? '' : number_format((float)$phTd, 1, '.', '');
 ?>
    <div class="content-wrapper">
       <div class="content">
@@ -77,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                            <input type="hidden" name="idtally" value="<?= $idtally ?>">
                            <input type="hidden" name="idtallydetail" value="<?= $idtallydetail ?>">
 
+                           <!-- Barang -->
                            <div class="form-group">
                               <div class="input-group">
                                  <input type="hidden" name="idbarang" value="<?= $idbarang ?>">
@@ -84,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               </div>
                            </div>
 
+                           <!-- Grade -->
                            <div class="form-group">
                               <div class="input-group">
                                  <input type="hidden" name="idgrade" value="<?= $idgrade ?>">
@@ -91,40 +100,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               </div>
                            </div>
 
+                           <!-- Packdate & xpackdate (ikut data tallydetail.pod) -->
                            <div class="form-group">
                               <div class="input-group">
-                                 <input type="hidden" name="xpackdate" id="xpackdate" value="<?= h($pod) ?>">
-                                 <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= h($pod) ?>">
+                                 <input type="hidden" name="xpackdate" id="xpackdate" value="<?= h($packdateVal) ?>">
+                                 <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= h($packdateVal) ?>">
                               </div>
                            </div>
 
+                           <!-- Exp (optional) — TIDAK pakai session, default kosong -->
                            <div class="form-group">
                               <div class="input-group">
-                                 <input type="date" class="form-control" name="exp" id="exp">
+                                 <input type="date" class="form-control" name="exp" id="exp" value="">
                               </div>
-                           </div>
-
-                           <div class="form-check">
-                              <input class="form-check-input" type="checkbox" name="tenderstreach" id="tenderstreach" value="1">
-                              <label class="form-check-label" for="tenderstreach">Aktifkan Tenderstreatch</label>
-                           </div>
-
-                           <div class="form-check">
-                              <input class="form-check-input" type="checkbox" name="pembulatan" id="pembulatan" value="1">
-                              <label class="form-check-label" for="pembulatan">1 Digit Koma</label>
                            </div>
 
                            <input type="hidden" name="idusers" id="idusers" value="<?= h($idusers) ?>">
                            <input type="hidden" name="kdbarcode" id="kdbarcode" value="<?= h($kdbarcode) ?>">
 
+                           <!-- Qty gabungan (readonly) + pH (ikut DB) -->
                            <div class="form-group mt-2">
                               <div class="row">
                                  <div class="col-8">
-                                    <input type="text" class="form-control" name="qty" value="<?= h($weight) ?>" readonly>
+                                    <input type="text"
+                                       class="form-control"
+                                       readonly
+                                       name="qty" id="qty"
+                                       placeholder="Weight / Pcs (cth: 12.34/5)"
+                                       value="<?= h($qtyCombined) ?>"
+                                       required>
                                  </div>
                                  <div class="col">
-                                    <input type="hidden" name="xpcs" value="<?= h($pcs) ?>">
-                                    <input type="number" name="pcs" class="form-control" value="<?= h($pcs) ?>" min="0" step="1">
+                                    <!-- pH boleh kosong (akan tersimpan NULL di server kalau tidak diisi) -->
+                                    <input type="number"
+                                       step="0.1" min="5.4" max="5.7"
+                                       class="form-control"
+                                       name="ph" id="ph"
+                                       placeholder="PH 5.4-5.7"
+                                       value="<?= h($phValDisplay) ?>">
                                  </div>
                               </div>
                            </div>
@@ -141,19 +154,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    </div>
 
    <script>
-      // OPTIONAL: hitung EXP berdasarkan packdate + umur simpan (kalau ada).
-      // Jika umur simpan ada di server, lebih baik hitung di server.
-      // Berikut contoh placeholder JS (komentari kalau belum dipakai):
-      // const shelfLifeDays = null; // misal ambil dari server
-      // function updateExp() {
-      //   const pd = document.getElementById('packdate').value;
-      //   if (!pd || !shelfLifeDays) { document.getElementById('exp').value = ""; return; }
-      //   const d = new Date(pd);
-      //   d.setDate(d.getDate() + shelfLifeDays);
-      //   document.getElementById('exp').value = d.toISOString().slice(0,10);
-      // }
-      // document.getElementById('packdate').addEventListener('change', updateExp);
-      // updateExp();
+      // Tidak ada logika session; nilai di form murni dari database.
+      // Optional: jika ingin pastikan format packdate valid yyyy-mm-dd
+      (function() {
+         const pd = document.getElementById('packdate');
+         if (pd && pd.value && !/^\d{4}-\d{2}-\d{2}$/.test(pd.value)) {
+            const t = new Date(pd.value);
+            if (!isNaN(t)) pd.value = t.toISOString().slice(0, 10);
+         }
+      })();
    </script>
 
 <?php
