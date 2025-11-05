@@ -4,64 +4,94 @@ require "../konak/conn.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kdbarcode'], $_POST['idst'])) {
    $kdbarcode = trim($_POST['kdbarcode']);
-   $idst = intval($_POST['idst']);
+   $idst      = (int)$_POST['idst'];
 
-   if (empty($kdbarcode)) {
-      header("Location: starttaking.php?id=$idst&stat=invalid");
+   if ($kdbarcode === '') {
+      header("Location: starttaking.php?id={$idst}&stat=invalid");
       exit;
    }
 
-   // Gunakan Prepared Statements untuk keamanan
-   $query = $conn->prepare("SELECT idbarang, qty, pcs, pod, idgrade, origin FROM stock WHERE kdbarcode = ?");
-   $query->bind_param("s", $kdbarcode);
-   $query->execute();
-   $result = $query->get_result();
+   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-   if ($result && $result->num_rows > 0) {
-      $row = $result->fetch_assoc();
+   try {
+      // --- Ambil data dari STOCK, termasuk pH ---
+      $q = $conn->prepare(
+         "SELECT idbarang, qty, pcs, pod, idgrade, origin, ph
+             FROM stock
+             WHERE kdbarcode = ?"
+      );
+      $q->bind_param("s", $kdbarcode);
+      $q->execute();
+      $res = $q->get_result();
+      $q->close();
 
-      // Cek apakah barcode sudah ada di stocktakedetail
-      $checkDuplicateQuery = $conn->prepare("SELECT idstdetail FROM stocktakedetail WHERE kdbarcode = ? AND idst = ?");
-      $checkDuplicateQuery->bind_param("si", $kdbarcode, $idst);
-      $checkDuplicateQuery->execute();
-      $duplicateResult = $checkDuplicateQuery->get_result();
-
-      if ($duplicateResult->num_rows > 0) {
-         // Barcode sudah ada di stocktakedetail
-         header("Location: starttaking.php?id=$idst&stat=duplicate");
+      if (!$res || $res->num_rows === 0) {
+         // Tidak ada di stock → kirim balik supaya manual input
+         $_SESSION['barcode'] = $kdbarcode;
+         header("Location: starttaking.php?id={$idst}&stat=unknown");
          exit;
-      } else {
-         // Data dari tabel stock
-         $idgrade = $row['idgrade'];
-         $idbarang = $row['idbarang'];
-         $qty = $row['qty'];
-         $pcs = $row['pcs'];
-         $pod = $row['pod'];
-         $origin = $row['origin'];
-
-         // Handle nilai NULL
-         $idgradeValue = ($idgrade !== null) ? $idgrade : null;
-
-         // Insert data ke stocktakedetail
-         $insertQuery = $conn->prepare("INSERT INTO stocktakedetail (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-         $insertQuery->bind_param("issidisi", $idst, $kdbarcode, $idgradeValue, $idbarang, $qty, $pcs, $pod, $origin);
-
-         if ($insertQuery->execute()) {
-            header("Location: starttaking.php?id=$idst&stat=success");
-            exit;
-         } else {
-            error_log("Gagal insert: " . $conn->error);
-            header("Location: starttaking.php?id=$idst&stat=error");
-            exit;
-         }
       }
-   } else {
-      // Data tidak ditemukan di tabel stock
-      $_SESSION['barcode'] = $kdbarcode;
-      header("Location: starttaking.php?id=$idst&stat=unknown");
+
+      $row     = $res->fetch_assoc();
+      $idgrade = $row['idgrade'];                // bisa NULL
+      $idbarang = (int)$row['idbarang'];
+      $qty     = (float)$row['qty'];
+      $pcs     = is_null($row['pcs']) ? null : (int)$row['pcs'];
+      $pod     = $row['pod'];                    // 'YYYY-MM-DD'
+      $origin  = (int)$row['origin'];
+      $ph      = is_null($row['ph']) ? null : (float)$row['ph']; // bisa NULL
+
+      // --- Cek duplikat di stocktakedetail untuk idst yang sama ---
+      $dup = $conn->prepare(
+         "SELECT COUNT(*) FROM stocktakedetail WHERE kdbarcode = ? AND idst = ?"
+      );
+      $dup->bind_param("si", $kdbarcode, $idst);
+      $dup->execute();
+      $dup->bind_result($cnt);
+      $dup->fetch();
+      $dup->close();
+
+      if ((int)$cnt > 0) {
+         header("Location: starttaking.php?id={$idst}&stat=duplicate");
+         exit;
+      }
+
+      // --- Insert ke stocktakedetail (termasuk kolom ph) ---
+      // Urutan kolom: idst(i), kdbarcode(s), idgrade(i), idbarang(i), qty(d), pcs(i), pod(s), origin(i), ph(d)
+      $ins = $conn->prepare(
+         "INSERT INTO stocktakedetail
+             (idst, kdbarcode, idgrade, idbarang, qty, pcs, pod, origin, ph)
+             VALUES (?,?,?,?,?,?,?,?,?)"
+      );
+
+      // Tipe bind harus 9 huruf untuk 9 variabel:
+      // i s i i d i s i d  => "isiidisid"
+      $ins->bind_param(
+         "isiidisid",
+         $idst,            // i
+         $kdbarcode,       // s
+         $idgrade,         // i (nullable ok)
+         $idbarang,        // i
+         $qty,             // d
+         $pcs,             // i (nullable ok)
+         $pod,             // s
+         $origin,          // i
+         $ph               // d (nullable ok)
+      );
+      $ins->execute();
+      $ins->close();
+
+      header("Location: starttaking.php?id={$idst}&stat=success");
+      exit;
+   } catch (Throwable $e) {
+      // log internal bila perlu
+      // error_log($e->getMessage());
+      header("Location: starttaking.php?id={$idst}&stat=error");
       exit;
    }
 } else {
-   header("Location: starttaking.php?id=$idst&stat=invalid");
+   // fallback invalid
+   $redir = isset($_POST['idst']) ? (int)$_POST['idst'] : 0;
+   header("Location: starttaking.php?id={$redir}&stat=invalid");
    exit;
 }

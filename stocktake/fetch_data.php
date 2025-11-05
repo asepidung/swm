@@ -1,16 +1,17 @@
 <?php
 require "../konak/conn.php";
 
-// Ambil parameter DataTables
-$limit = isset($_POST["length"]) ? intval($_POST["length"]) : 10;
-$start = isset($_POST["start"]) ? intval($_POST["start"]) : 0;
-$search = isset($_POST["search"]["value"]) ? $_POST["search"]["value"] : "";
+// DataTables params
+$draw   = isset($_POST["draw"])   ? (int)$_POST["draw"]   : 1;
+$limit  = isset($_POST["length"]) ? (int)$_POST["length"] : 10;
+$start  = isset($_POST["start"])  ? (int)$_POST["start"]  : 0;
+$search = isset($_POST["search"]["value"]) ? trim($_POST["search"]["value"]) : "";
 
-// Pastikan ID tersedia dan valid
-$idst = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// id stock take
+$idst = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($idst <= 0) {
     echo json_encode([
-        "draw" => intval($_POST["draw"]),
+        "draw" => $draw,
         "recordsTotal" => 0,
         "recordsFiltered" => 0,
         "data" => []
@@ -18,80 +19,121 @@ if ($idst <= 0) {
     exit;
 }
 
-// Query untuk menghitung total data tanpa filter
-$count_query = "SELECT COUNT(*) FROM stocktakedetail WHERE idst = ?";
-$stmt_count = $conn->prepare($count_query);
-$stmt_count->bind_param("i", $idst);
-$stmt_count->execute();
-$total_records = $stmt_count->get_result()->fetch_row()[0];
+// total tanpa filter
+$sqlCount = "SELECT COUNT(*) FROM stocktakedetail WHERE idst = ?";
+$stmtCount = $conn->prepare($sqlCount);
+$stmtCount->bind_param("i", $idst);
+$stmtCount->execute();
+$total_records = (int)($stmtCount->get_result()->fetch_row()[0] ?? 0);
+$stmtCount->close();
 
-// Query utama dengan filter pencarian
-$query = "SELECT s.idstdetail, s.kdbarcode, b.nmbarang, g.nmgrade, s.qty, s.pcs, s.pod, s.origin 
-          FROM stocktakedetail s
-          INNER JOIN barang b ON s.idbarang = b.idbarang
-          LEFT JOIN grade g ON s.idgrade = g.idgrade
-          WHERE s.idst = ?";
-
+// query utama (ikutkan pH)
+$sql = "
+  SELECT
+    s.idstdetail,
+    s.kdbarcode,
+    b.nmbarang,
+    g.nmgrade,
+    s.qty,
+    s.pcs,
+    s.ph,
+    s.pod,
+    s.origin
+  FROM stocktakedetail s
+  INNER JOIN barang b ON s.idbarang = b.idbarang
+  LEFT  JOIN grade  g ON s.idgrade  = g.idgrade
+  WHERE s.idst = ?
+";
+$types = "i";
 $params = [$idst];
-$types = "i"; // Tipe parameter untuk idst
 
-// Tambahkan filter pencarian jika ada
-if (!empty($search)) {
-    $query .= " AND (s.kdbarcode LIKE ? OR b.nmbarang LIKE ?)";
-    $search_term = "%$search%";
-    $params[] = $search_term;
-    $params[] = $search_term;
-    $types .= "ss"; // Tambahkan tipe parameter string
+if ($search !== "") {
+    $sql .= " AND (s.kdbarcode LIKE ? OR b.nmbarang LIKE ? OR g.nmgrade LIKE ?)";
+    $like = "%{$search}%";
+    $params[] = $like;
+    $params[] = $like;
+    $params[] = $like;
+    $types   .= "sss";
 }
 
-// Tambahkan order dan limit
-$query .= " ORDER BY s.idstdetail DESC LIMIT ?, ?";
+$sql .= " ORDER BY s.idstdetail DESC LIMIT ?, ?";
 $params[] = $start;
 $params[] = $limit;
-$types .= "ii"; // Tambahkan tipe parameter integer untuk limit
+$types   .= "ii";
 
-// Eksekusi query
-$stmt = $conn->prepare($query);
+$stmt = $conn->prepare($sql);
 $stmt->bind_param($types, ...$params);
 $stmt->execute();
-$result = $stmt->get_result();
+$res = $stmt->get_result();
 
-// Proses hasil query
+// build rows
 $data = [];
-while ($row = $result->fetch_assoc()) {
+while ($r = $res->fetch_assoc()) {
+    $qty = is_null($r['qty']) ? '' : number_format((float)$r['qty'], 2);
+    $pcs = is_null($r['pcs']) ? '' : (string)(int)$r['pcs'];
+    $ph  = is_null($r['ph'])  ? '' : number_format((float)$r['ph'], 1);
+    $pod = ($r['pod'] && $r['pod'] !== '0000-00-00') ? date('d-M-y', strtotime($r['pod'])) : '';
+
+    $originMap = [
+        0 => "Unidentified",
+        1 => "BONING",
+        2 => "TRADING",
+        3 => "REPACK",
+        4 => "RELABEL",
+        5 => "IMPORT",
+        6 => "OTHER",
+        7 => "STOCKIN",
+    ];
+    $originText = $originMap[(int)$r['origin']] ?? "Unknown";
+
+    // tombol hapus (kolom terakhir)
+    $deleteHtml = '<a href="deletestdetail.php?iddetail=' . (int)$r['idstdetail'] .
+        '&id=' . (int)$idst .
+        '" class="text-danger" onclick="return confirm(\'Yakinkan Dirimu?\')">' .
+        '<i class="far fa-times-circle"></i></a>';
+
     $data[] = [
-        $row['idstdetail'],
-        htmlspecialchars($row['kdbarcode']),
-        htmlspecialchars($row['nmbarang']),
-        htmlspecialchars($row['nmgrade'] ?? "N/A"), // Jika grade kosong, tampilkan "N/A"
-        number_format($row['qty'], 2), // Format angka qty
-        intval($row['pcs']), // Pastikan pcs dalam bentuk integer
-        htmlspecialchars(date("d-M-y", strtotime($row['pod']))),
-        ["Unidentified", "BONING", "TRADING", "REPACK", "RELABEL", "IMPORT"][$row['origin']] ?? "Unknown",
-        '<a href="deletestdetail.php?iddetail=' . $row['idstdetail'] . '&id=' . $idst . '" class="text-danger" onclick="return confirm(\'Yakinkan Dirimu?\')">
-            <i class="far fa-times-circle"></i>
-        </a>'
+        (int)$r['idstdetail'],                  // 0 -> untuk nomor urut di client
+        htmlspecialchars($r['kdbarcode']),      // 1
+        htmlspecialchars($r['nmbarang']),       // 2
+        htmlspecialchars($r['nmgrade'] ?? ''),  // 3
+        $qty,                                   // 4
+        $pcs,                                   // 5
+        $ph,                                    // 6 (pH)
+        htmlspecialchars($pod),                 // 7 (POD)
+        htmlspecialchars($originText),          // 8 (Origin)
+        $deleteHtml                             // 9 (Hapus)
     ];
 }
+$stmt->close();
 
-// Query untuk menghitung jumlah data yang difilter
-$count_filtered_query = "SELECT COUNT(*) FROM stocktakedetail WHERE idst = ?";
-if (!empty($search)) {
-    $count_filtered_query .= " AND (kdbarcode LIKE ? OR idbarang IN (SELECT idbarang FROM barang WHERE nmbarang LIKE ?))";
+// filtered count
+$sqlFiltered = "
+  SELECT COUNT(*)
+  FROM stocktakedetail s
+  INNER JOIN barang b ON s.idbarang = b.idbarang
+  LEFT  JOIN grade  g ON s.idgrade  = g.idgrade
+  WHERE s.idst = ?
+";
+$typesF = "i";
+$paramsF = [$idst];
+if ($search !== "") {
+    $sqlFiltered .= " AND (s.kdbarcode LIKE ? OR b.nmbarang LIKE ? OR g.nmgrade LIKE ?)";
+    $paramsF[] = $like;
+    $paramsF[] = $like;
+    $paramsF[] = $like;
+    $typesF   .= "sss";
 }
-$stmt_count_filtered = $conn->prepare($count_filtered_query);
-if (!empty($search)) {
-    $stmt_count_filtered->bind_param("iss", $idst, $search_term, $search_term);
-} else {
-    $stmt_count_filtered->bind_param("i", $idst);
-}
-$stmt_count_filtered->execute();
-$records_filtered = $stmt_count_filtered->get_result()->fetch_row()[0];
+$stmtF = $conn->prepare($sqlFiltered);
+$stmtF->bind_param($typesF, ...$paramsF);
+$stmtF->execute();
+$records_filtered = (int)($stmtF->get_result()->fetch_row()[0] ?? 0);
+$stmtF->close();
 
-// Kirim data dalam format JSON ke DataTables
+// output
 echo json_encode([
-    "draw" => intval($_POST["draw"]),
-    "recordsTotal" => $total_records,
+    "draw" => $draw,
+    "recordsTotal"    => $total_records,
     "recordsFiltered" => $records_filtered,
-    "data" => $data
+    "data"            => $data
 ]);

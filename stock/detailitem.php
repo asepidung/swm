@@ -50,6 +50,7 @@ $conn->close();
                       <th>Grade</th>
                       <th>Qty</th>
                       <th>Pcs</th>
+                      <th>pH</th>
                       <th>P.O.D</th>
                       <th>Umur</th>
                       <th>ORIGIN</th>
@@ -91,6 +92,7 @@ $conn->close();
                           </td>
                           <td class="text-right"><?= $row['qty']; ?></td>
                           <td><?= $row['pcs']; ?></td>
+                          <td><?= $row['ph']; ?></td>
                           <td><?= date("d-M-y", strtotime($row['pod'])); ?></td>
                           <td>
                             <?= $podInterval; ?>

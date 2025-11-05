@@ -81,6 +81,7 @@ $idst = intval($_GET['id']);
                                  <th>Grade</th>
                                  <th>Weight</th>
                                  <th>Pcs</th>
+                                 <th>pH</th>
                                  <th>POD</th>
                                  <th>Origin</th>
                                  <th>Hapus</th>
@@ -188,6 +189,11 @@ $idst = intval($_GET['id']);
             },
             {
                "data": 8,
+               "className": "text-center",
+               "orderable": false
+            },
+            {
+               "data": 9,
                "className": "text-center",
                "orderable": false
             }

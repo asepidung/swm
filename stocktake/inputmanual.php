@@ -2,14 +2,12 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 include "../header.php";
-$idst = $_GET['id'];
-if (isset($_SESSION['barcode'])) {
-   $barcodeValue = $_SESSION['barcode'];
-} else {
-   $barcodeValue = ""; // Nilai default jika tidak ada dalam sesi
-}
 
-$origin = substr($barcodeValue, 0, 1);
+$idst = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Ambil barcode dari session bila ada (seperti sebelumnya)
+$barcodeValue = $_SESSION['barcode'] ?? '';
+$origin = ($barcodeValue !== '') ? substr($barcodeValue, 0, 1) : '';
 ?>
 <!-- Main content -->
 <section class="content">
@@ -19,74 +17,97 @@ $origin = substr($barcodeValue, 0, 1);
             <form method="POST" action="prosesmanual.php">
                <div class="card">
                   <div class="card-body">
-                     <div id="items-container">
-                        <!-- <div class="row"> -->
-                        <div class="col">
-                           <div class="form-group">
-                              <input type="text" class="form-control text-center" name="kdbarcode" id="kdbarcode" readonly value="<?= $barcodeValue ?>">
-                           </div>
-                        </div>
-                        <div class="col">
-                           <div class="form-group">
-                              <div class="input-group">
-                                 <select class="form-control" name="idbarang[]" id="idbarang" required>
-                                    <option value="">--Pilih Barang--</option>
-                                    <?php
-                                    $query = "SELECT * FROM barang ORDER BY nmbarang ASC";
-                                    $result = mysqli_query($conn, $query);
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                       $idbarang = $row['idbarang'];
-                                       $nmbarang = $row['nmbarang'];
-                                       echo '<option value="' . $idbarang . '">' . $nmbarang . '</option>';
-                                    }
-                                    ?>
-                                 </select>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col">
-                           <div class="form-group">
-                              <div class="input-group">
-                                 <select class="form-control" name="idgrade[]" id="idgrade">
-                                    <option value="">Pilih Grade</option>
-                                    <?php
-                                    $sql = "SELECT * FROM grade";
-                                    $result = $conn->query($sql);
-                                    // Membuat pilihan dalam select box berdasarkan data yang diambil
-                                    if ($result->num_rows > 0) {
-                                       while ($row = $result->fetch_assoc()) {
-                                          echo "<option value=\"" . $row["idgrade"] . "\">" . $row["nmgrade"] . "</option>";
-                                       }
-                                    }
-                                    ?>
-                                 </select>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col">
-                           <div class="form-group">
-                              <input type="text" placeholder="Kg" class="form-control text-center" name="qty" id="qty" required>
-                           </div>
-                        </div>
-                        <div class="col">
-                           <div class="form-group">
-                              <input type="text" placeholder="Pcs" class="form-control text-center" name="pcs" id="pcs">
-                           </div>
-                        </div>
-                        <div class="col">
-                           <div class="form-group">
-                              <input type="date" placeholder="pod" class="form-control text-center" name="pod" id="pod" required>
-                           </div>
-                        </div>
-                        <input type="hidden" name="origin" value="<?= $origin ?>">
-                        <input type="hidden" name="idst" value="<?= $idst ?>">
-                        <div class="col">
-                           <div class="form-group">
-                              <button type="submit" class="btn btn-block btn-primary">Submit</button>
-                           </div>
-                        </div>
-                        <!-- </div> -->
+
+                     <!-- BARCODE (readonly) -->
+                     <div class="form-group">
+                        <input
+                           type="text"
+                           class="form-control text-center"
+                           name="kdbarcode"
+                           id="kdbarcode"
+                           value="<?= htmlspecialchars($barcodeValue, ENT_QUOTES) ?>"
+                           readonly>
                      </div>
+
+                     <!-- ITEM -->
+                     <div class="form-group">
+                        <div class="input-group">
+                           <select class="form-control" name="idbarang[]" id="idbarang" required>
+                              <option value="">--Pilih Barang--</option>
+                              <?php
+                              $qBarang = $conn->query("SELECT idbarang, nmbarang FROM barang ORDER BY nmbarang ASC");
+                              while ($r = $qBarang->fetch_assoc()) {
+                                 $idb = (int)$r['idbarang'];
+                                 $nm  = htmlspecialchars($r['nmbarang'], ENT_QUOTES);
+                                 echo "<option value=\"$idb\">$nm</option>";
+                              }
+                              ?>
+                           </select>
+                        </div>
+                     </div>
+
+                     <!-- GRADE -->
+                     <div class="form-group">
+                        <div class="input-group">
+                           <select class="form-control" name="idgrade[]" id="idgrade" required>
+                              <option value="">--Pilih Grade--</option>
+                              <?php
+                              $qGrade = $conn->query("SELECT idgrade, nmgrade FROM grade ORDER BY nmgrade ASC");
+                              while ($r = $qGrade->fetch_assoc()) {
+                                 $idg = (int)$r['idgrade'];
+                                 $nm  = htmlspecialchars($r['nmgrade'], ENT_QUOTES);
+                                 echo "<option value=\"$idg\">$nm</option>";
+                              }
+                              ?>
+                           </select>
+                        </div>
+                     </div>
+
+                     <!-- TANGGAL POD -->
+                     <div class="form-group">
+                        <input
+                           type="date"
+                           class="form-control text-center"
+                           name="pod"
+                           id="pod"
+                           required>
+                     </div>
+
+                     <!-- QTY (Weight/Pcs) + pH -->
+                     <div class="form-group mt-1">
+                        <div class="row">
+                           <div class="col-8">
+                              <input
+                                 type="text"
+                                 class="form-control"
+                                 name="qty"
+                                 id="qty"
+                                 placeholder="Weight / Pcs (cth: 12.34/5)"
+                                 required>
+                           </div>
+                           <div class="col">
+                              <input
+                                 type="number"
+                                 step="0.1"
+                                 min="5.4"
+                                 max="5.7"
+                                 class="form-control"
+                                 name="ph"
+                                 id="ph"
+                                 placeholder="pH 5.4–5.7">
+                           </div>
+                        </div>
+                     </div>
+
+                     <!-- Hidden -->
+                     <input type="hidden" name="origin" value="<?= htmlspecialchars($origin, ENT_QUOTES) ?>">
+                     <input type="hidden" name="idst" value="<?= (int)$idst ?>">
+
+                     <!-- Submit -->
+                     <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-primary">Submit</button>
+                     </div>
+
                   </div>
                </div>
             </form>
@@ -94,8 +115,22 @@ $origin = substr($barcodeValue, 0, 1);
       </div>
    </div>
 </section>
+
 <script>
    document.title = "Manual Tally";
+   // Optional: fokus cepat ke qty setelah memilih item (TAB di select)
+   document.addEventListener('DOMContentLoaded', function() {
+      const sel = document.getElementById('idbarang');
+      if (sel) {
+         sel.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+               e.preventDefault();
+               const q = document.getElementById('qty');
+               if (q) q.focus();
+            }
+         });
+      }
+   });
 </script>
-<?php
-include "../footer.php" ?>
+
+<?php include "../footer.php"; ?>
