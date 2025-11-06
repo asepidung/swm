@@ -1,58 +1,108 @@
 <?php
 require "../verifications/auth.php";
-
-// Koneksi ke database
 require "../konak/conn.php";
 
-if (isset($_GET['id']) && isset($_GET['iddetail'])) {
-   $id = $_GET['id'];
-   $iddetail = $_GET['iddetail'];
-   $iduser = $_SESSION['idusers']; // Ambil ID user dari sesi yang aktif
+if (!isset($_GET['id'], $_GET['iddetail'])) {
+   // Parameter tidak lengkap → kembali ke halaman sebelumnya kalau ada
+   $fallback = isset($_GET['id']) ? "detailhasil.php?id=" . (int)$_GET['id'] : "index.php";
+   header("Location: {$fallback}");
+   exit;
+}
 
-   // Ambil kdbarcode dari tabel detailhasil
-   $getBarcodeQuery = "SELECT kdbarcode FROM detailhasil WHERE iddetailhasil = ?";
-   $getBarcodeStmt = $conn->prepare($getBarcodeQuery);
-   $getBarcodeStmt->bind_param('i', $iddetail);
-   $getBarcodeStmt->execute();
-   $getBarcodeResult = $getBarcodeStmt->get_result();
+$id       = (int)$_GET['id'];          // idrepack
+$iddetail = (int)$_GET['iddetail'];    // iddetailhasil
+$iduser   = (int)($_SESSION['idusers'] ?? 0);
 
-   if ($getBarcodeResult && $rowBarcode = $getBarcodeResult->fetch_assoc()) {
-      $kdbarcode = $rowBarcode['kdbarcode'];
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-      // Lakukan soft delete pada tabel detailhasil
-      $softDeleteDetailQuery = "UPDATE detailhasil SET is_deleted = 1 WHERE iddetailhasil = ?";
-      $softDeleteDetailStmt = $conn->prepare($softDeleteDetailQuery);
-      $softDeleteDetailStmt->bind_param('i', $iddetail);
-      $softDeleteDetailSuccess = $softDeleteDetailStmt->execute();
+try {
+   $conn->begin_transaction();
 
-      // Lakukan hard delete pada tabel stock
-      $hardDeleteStockQuery = "DELETE FROM stock WHERE kdbarcode = ?";
-      $hardDeleteStockStmt = $conn->prepare($hardDeleteStockQuery);
-      $hardDeleteStockStmt->bind_param('s', $kdbarcode);
-      $hardDeleteStockSuccess = $hardDeleteStockStmt->execute();
-
-      // Periksa apakah penghapusan berhasil di kedua tabel
-      if ($softDeleteDetailSuccess && $hardDeleteStockSuccess) {
-         // Catat log aktivitas setelah penghapusan berhasil
-         $event = "Hapus Hasil Repack";
-         $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
-         $logStmt = $conn->prepare($logQuery);
-         $logStmt->bind_param('iss', $iduser, $event, $kdbarcode);
-         $logStmt->execute();
-
-         // Redirect ke halaman detailhasil.php dengan status "deleted"
-         header("Location: detailhasil.php?id=$id&stat=deleted");
-         exit;
-      } else {
-         // Jika gagal, tampilkan pesan error
-         echo "<script>alert('Maaf, terjadi kesalahan saat menghapus data.'); window.location='tallydetail.php?id=$id';</script>";
-      }
-   } else {
-      // Jika tidak berhasil mendapatkan kdbarcode, tampilkan pesan error
-      echo "<script>alert('Maaf, data tidak ditemukan atau terjadi kesalahan.'); window.location='tallydetail.php?id=$id';</script>";
+   // 1) Ambil kdbarcode dari detailhasil (pastikan barisnya ada & belum soft delete)
+   $sqlGet = "SELECT kdbarcode, is_deleted FROM detailhasil WHERE iddetailhasil = ? LIMIT 1 FOR UPDATE";
+   $stmtGet = $conn->prepare($sqlGet);
+   $stmtGet->bind_param('i', $iddetail);
+   $stmtGet->execute();
+   $resGet = $stmtGet->get_result();
+   if ($resGet->num_rows === 0) {
+      // Tidak ada baris detail → batalkan
+      $conn->rollback();
+      echo "<script>alert('Data detail tidak ditemukan.'); window.location='detailhasil.php?id={$id}';</script>";
+      exit;
    }
-} else {
-   // Jika parameter tidak valid, arahkan kembali
-   header("Location: tallydetail.php?id=$id");
-   exit();
+   $rowDet    = $resGet->fetch_assoc();
+   $kdbarcode = (string)$rowDet['kdbarcode'];
+   $isDeleted = (int)$rowDet['is_deleted'];
+
+   // Kalau sudah dihapus, langsung kembali (idempotent)
+   if ($isDeleted === 1) {
+      $conn->rollback();
+      echo "<script>alert('Data sudah dihapus sebelumnya.'); window.location='detailhasil.php?id={$id}&stat=deleted';</script>";
+      exit;
+   }
+
+   // 2) Cek apakah barang masih ada di STOCK (kuncikan baris supaya konsisten)
+   $sqlChk = "SELECT COUNT(*) AS cnt FROM stock WHERE kdbarcode = ? FOR UPDATE";
+   $stmtChk = $conn->prepare($sqlChk);
+   $stmtChk->bind_param('s', $kdbarcode);
+   $stmtChk->execute();
+   $cnt = (int)$stmtChk->get_result()->fetch_assoc()['cnt'];
+
+   if ($cnt === 0) {
+      // Barang sudah pindah/dipakai proses lain → batalkan penghapusan
+      $conn->rollback();
+      echo "<script>alert('Barang sudah digunakan oleh proses lain.'); window.location='detailhasil.php?id={$id}';</script>";
+      exit;
+   }
+
+   // 3) Soft delete detailhasil
+   $sqlSoft = "UPDATE detailhasil SET is_deleted = 1 WHERE iddetailhasil = ? LIMIT 1";
+   $stmtSoft = $conn->prepare($sqlSoft);
+   $stmtSoft->bind_param('i', $iddetail);
+   $stmtSoft->execute();
+   if ($stmtSoft->affected_rows < 1) {
+      // Tidak ada baris yang berubah (harusnya ada) → batalkan
+      $conn->rollback();
+      echo "<script>alert('Gagal menghapus detail (soft delete).'); window.location='detailhasil.php?id={$id}';</script>";
+      exit;
+   }
+
+   // 4) Hard delete di stock
+   $sqlHard = "DELETE FROM stock WHERE kdbarcode = ? LIMIT 1";
+   $stmtHard = $conn->prepare($sqlHard);
+   $stmtHard->bind_param('s', $kdbarcode);
+   $stmtHard->execute();
+   if ($stmtHard->affected_rows < 1) {
+      // Baris stock tidak terhapus (harusnya ada karena barusan dicek) → batalkan
+      $conn->rollback();
+      echo "<script>alert('Gagal menghapus dari stock.'); window.location='detailhasil.php?id={$id}';</script>";
+      exit;
+   }
+
+   // 5) Catat log
+   if ($iduser > 0) {
+      $event    = "Hapus Hasil Repack";
+      $logQuery = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, NOW())";
+      $stmtLog  = $conn->prepare($logQuery);
+      $stmtLog->bind_param('iss', $iduser, $event, $kdbarcode);
+      $stmtLog->execute();
+   }
+
+   // 6) Commit dan kembali
+   $conn->commit();
+   header("Location: detailhasil.php?id={$id}&stat=deleted");
+   exit;
+} catch (Throwable $e) {
+   if ($conn->errno) {
+      // Jika koneksi masih terbuka dan dalam transaksi, rollback
+      try {
+         $conn->rollback();
+      } catch (Throwable $ignored) {
+      }
+   }
+   // Tampilkan pesan aman
+   echo "<script>alert('Terjadi kesalahan ketika menghapus data.'); window.location='detailhasil.php?id={$id}';</script>";
+   // Opsional: log error server-side
+   error_log('Delete detailhasil error: ' . $e->getMessage());
+   exit;
 }
