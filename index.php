@@ -203,8 +203,6 @@ include "notifcount.php";
                      </li>
                   <?php endif; ?>
 
-
-                  <!-- MENU STOCK DIPISAH DARI WAREHOUSE -->
                   <?php if (isset($role['stock']) && $role['stock'] == 1) : ?>
                      <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
@@ -302,9 +300,6 @@ include "notifcount.php";
                      </li>
                   <?php endif; ?>
 
-                  <!-- END MENU STOCK -->
-
-
                   <?php if ($role['distributions'] == 1) : ?>
                      <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -338,7 +333,6 @@ include "notifcount.php";
                         </ul>
                      </li>
                   <?php endif; ?>
-
 
                   <!-- requisition -->
                   <li class="nav-item">
@@ -403,6 +397,12 @@ include "notifcount.php";
                            </p>
                         </a>
                         <ul class="nav nav-treeview">
+                           <li class="nav-item">
+                              <a href="cattle/" class="nav-link">
+                                 <i class="far fa-dot-circle nav-icon"></i>
+                                 <p>Cattle</p>
+                              </a>
+                           </li>
                            <li class="nav-item">
                               <a href="pobeef/" class="nav-link">
                                  <i class="far fa-dot-circle nav-icon"></i>

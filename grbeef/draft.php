@@ -48,6 +48,9 @@ if (!$result) {
                                           <a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" title="Buat GR" href="newgr.php?id=' . $row['idpo'] . '">
                                           Proses GR <i class="fas fa-truck"></i>
                                           </a>
+                                           <a class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="bottom" title="Cancel" href="cancelgr.php?id=' . $row['idpo'] . '">
+                                                Cancel <i class="fas fa-window-close"></i>
+                                                </a>
                                        </td>
                                     </tr>';
                                     }

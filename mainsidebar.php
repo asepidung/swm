@@ -329,6 +329,12 @@ include "notifcount.php";
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="../cattle/" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>Cattle</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="../pobeef/" class="nav-link">
                   <i class="far fa-dot-circle nav-icon"></i>
                   <p>PO Daging</p>
