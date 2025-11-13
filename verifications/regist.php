@@ -72,12 +72,20 @@ require "../konak/conn.php";
                <div class="form-group">
                   <label>Pilih Menu yang Bisa Diakses:</label><br>
                   <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="cattle" value="cattle">
+                     <label class="custom-control-label" for="cattle">Cattle</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
                      <input type="checkbox" class="custom-control-input" name="menu_access[]" id="produksi" value="produksi">
                      <label class="custom-control-label" for="produksi">Produksi</label>
                   </div>
                   <div class="custom-control custom-checkbox">
                      <input type="checkbox" class="custom-control-input" name="menu_access[]" id="warehouse" value="warehouse">
                      <label class="custom-control-label" for="warehouse">Warehouse</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="stock" value="stock">
+                     <label class="custom-control-label" for="stock">Stock</label>
                   </div>
                   <div class="custom-control custom-checkbox">
                      <input type="checkbox" class="custom-control-input" name="menu_access[]" id="distributions" value="distributions">

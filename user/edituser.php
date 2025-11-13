@@ -13,9 +13,10 @@ $tampil = mysqli_fetch_assoc($ambildata);
 
 // Tambahkan role 'stock' di sini
 $roles = [
+   'cattle' => 'cattle', // 🔹 DITAMBAHKAN BARU
    'produksi' => 'Produksi',
    'warehouse' => 'Warehouse',
-   'stock' => 'Stock', // 🔹 DITAMBAHKAN BARU
+   'stock' => 'Stock',
    'distributions' => 'Distributions',
    'purchase_module' => 'Purchase Module',
    'sales' => 'Sales',

@@ -102,6 +102,38 @@ include "notifcount.php";
             <nav class="mt-2">
                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+                  <?php if ($role['cattle'] == 1) : ?>
+                     <li class="nav-item">
+                        <a href="#" class="nav-link">
+                           <i class="nav-icon fas fa-boxes"></i>
+                           <p>
+                              CATTLE
+                              <i class="right fas fa-angle-left"></i>
+                           </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                           <li class="nav-item">
+                              <a href="cattlereceive" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Penerimaan Sapi</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="cattleweighing" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Timbang Ulang</p>
+                              </a>
+                           </li>
+                           <li class="nav-item">
+                              <a href="carcase" class="nav-link">
+                                 <i class="far fa-circle nav-icon"></i>
+                                 <p>Carcase</p>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                  <?php endif; ?>
+
                   <?php if ($role['produksi'] == 1) : ?>
                      <li class="nav-item">
                         <a href="#" class="nav-link">
