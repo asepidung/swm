@@ -116,6 +116,10 @@ if (!$result) {
                                         while ($row = $result->fetch_assoc()) {
                                             $total_berat   = (float)$row['total_berat'];
                                             $total_carcase = (float)$row['total_carcase'];
+                                            $total_tails   = (float)$row['total_tails'];
+
+                                            // Offal = total carcase + total tails (tanpa hides)
+                                            $offal = $total_carcase + $total_tails;
 
                                             $carcase_percentage = 0;
                                             if ($total_berat > 0) {
@@ -129,9 +133,12 @@ if (!$result) {
                                                 <td><?= number_format($total_berat, 2) ?></td>
                                                 <td class="text-center"><?= (int)$row['total_eartag'] ?></td>
                                                 <td><?= number_format($total_carcase, 2) ?></td>
-                                                <td><?= number_format((float)$row['total_carcase_tail'], 2) ?></td>
+
+                                                <!-- kolom Offal pakai rumus baru -->
+                                                <td><?= number_format($offal, 2) ?></td>
+
                                                 <td><?= number_format((float)$row['total_hides'], 2) ?></td>
-                                                <td><?= number_format((float)$row['total_tails'], 2) ?></td>
+                                                <td><?= number_format($total_tails, 2) ?></td>
                                                 <td><?= number_format($carcase_percentage, 2) ?></td>
                                                 <td class="text-left"><?= e($row['fullname'] ?? '-') ?></td>
                                                 <td class="text-center">
