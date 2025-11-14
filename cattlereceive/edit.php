@@ -245,6 +245,11 @@ if (!empty($old['class'])) {
     </section>
 </div>
 
+
+<script>
+    document.title = "Edit Receive";
+</script>
+
 <?php include "../footer.php"; ?>
 
 <script>

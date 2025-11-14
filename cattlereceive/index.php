@@ -5,6 +5,9 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
+// (opsional, bantu debug saat dev)
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 // Helpers
 function e($s)
 {
@@ -19,7 +22,11 @@ function yn($i)
     return $i ? 'Ya' : 'Tidak';
 }
 
-// Query list cattle_receive + ringkasan detail
+/**
+ * List cattle_receive aktif + ringkasan + flag sudah ditimbang.
+ * Flag has_weigh didapat dari LEFT JOIN (SELECT DISTINCT idreceive FROM weight_cattle WHERE is_deleted=0)
+ * supaya tidak bikin hasil COUNT/SUM membengkak.
+ */
 $sql = "
 SELECT
   r.idreceive,
@@ -31,20 +38,33 @@ SELECT
   r.note,
   p.nopo,
   s.nmsupplier,
-  COALESCE(COUNT(d.idreceivedetail), 0)       AS heads,
-  COALESCE(SUM(d.weight), 0)                  AS total_weight
+
+  COALESCE(COUNT(d.idreceivedetail), 0) AS heads,
+  COALESCE(SUM(d.weight), 0)            AS total_weight,
+
+  CASE WHEN wflag.idreceive IS NULL THEN 0 ELSE 1 END AS has_weigh
 FROM cattle_receive r
-JOIN pocattle   p ON p.idpo = r.idpo
+JOIN pocattle   p ON p.idpo       = r.idpo
 JOIN supplier   s ON s.idsupplier = p.idsupplier
 LEFT JOIN cattle_receive_detail d ON d.idreceive = r.idreceive
+
+-- GANTI 'weight_cattle' DI BAWAH JIKA NAMA TABEL TIMBANGMU 'cattle_weigh'
+LEFT JOIN (
+  SELECT DISTINCT idreceive
+  FROM weight_cattle
+  /* kalau ada kolom is_deleted di tabel timbang, buka baris ini: */
+  /* WHERE is_deleted = 0 */
+) wflag ON wflag.idreceive = r.idreceive
+
 WHERE r.is_deleted = 0
-GROUP BY r.idreceive, r.idpo, r.receipt_date, r.doc_no, r.sv_ok, r.skkh_ok, r.note, p.nopo, s.nmsupplier
+GROUP BY
+  r.idreceive, r.idpo, r.receipt_date, r.doc_no, r.sv_ok, r.skkh_ok, r.note,
+  p.nopo, s.nmsupplier, wflag.idreceive
 ORDER BY r.idreceive DESC
 ";
 $res = $conn->query($sql);
 ?>
 <div class="content-wrapper">
-    <!-- Header + Tombol Draft -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -57,7 +77,6 @@ $res = $conn->query($sql);
         </div>
     </div>
 
-    <!-- List -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -85,11 +104,18 @@ $res = $conn->query($sql);
                                     if ($res && $res->num_rows) {
                                         while ($r = $res->fetch_assoc()) {
                                             $idreceive = (int)$r['idreceive'];
+                                            $locked    = ((int)$r['has_weigh'] === 1); // sudah ada timbang
+                                            $editCls   = $locked ? 'disabled' : '';
+                                            $delCls    = $locked ? 'disabled' : '';
+                                            $editTitle = $locked ? 'Tidak bisa diedit: sudah ada data timbang' : 'Edit';
+                                            $delTitle  = $locked ? 'Tidak bisa dihapus: sudah ada data timbang' : 'Delete';
+                                            $editOnClk = $locked ? 'return false;' : '';
+                                            $delOnClk  = $locked ? 'return false;' : "return confirm('Hapus data penerimaan ini?')";
                                     ?>
                                             <tr class="text-center">
                                                 <td><?= $no++; ?></td>
                                                 <td><?= tgl($r['receipt_date']); ?></td>
-                                                <td class="text-left"><?= e($r['nopo']); ?></td>
+                                                <td><?= e($r['nopo']); ?></td>
                                                 <td class="text-left"><?= e($r['nmsupplier']); ?></td>
                                                 <td class="text-left"><?= e($r['doc_no'] ?? '-'); ?></td>
                                                 <td><?= yn((int)$r['sv_ok']); ?></td>
@@ -101,12 +127,18 @@ $res = $conn->query($sql);
                                                         <a href="view.php?id=<?= $idreceive ?>" class="btn btn-info" title="View">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="edit.php?id=<?= $idreceive ?>" class="btn btn-warning" title="Edit">
+                                                        <a href="edit.php?id=<?= $idreceive ?>"
+                                                            class="btn btn-warning <?= $editCls ?>"
+                                                            title="<?= e($editTitle) ?>"
+                                                            <?= $locked ? 'tabindex="-1" aria-disabled="true"' : '' ?>
+                                                            onclick="<?= $editOnClk ?>">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="delete.php?id=<?= $idreceive ?>" class="btn btn-danger"
-                                                            onclick="return confirm('Hapus data penerimaan ini?')"
-                                                            title="Delete">
+                                                        <a href="delete.php?id=<?= $idreceive ?>"
+                                                            class="btn btn-danger <?= $delCls ?>"
+                                                            title="<?= e($delTitle) ?>"
+                                                            <?= $locked ? 'tabindex="-1" aria-disabled="true"' : '' ?>
+                                                            onclick="<?= $delOnClk ?>">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     </div>
@@ -127,5 +159,10 @@ $res = $conn->query($sql);
         </div>
     </section>
 </div>
+
+
+<script>
+    document.title = "Cattle Receive";
+</script>
 
 <?php include "../footer.php"; ?>

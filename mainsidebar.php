@@ -35,7 +35,7 @@ include "notifcount.php";
         <?php if ($role['cattle'] == 1) : ?>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-boxes"></i>
+              <i class="nav-icon fas fa-dragon"></i>
               <p>
                 CATTLE
                 <i class="right fas fa-angle-left"></i>
@@ -49,7 +49,7 @@ include "notifcount.php";
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../cattleweighing" class="nav-link">
+                <a href="../weighing" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Timbang Ulang</p>
                 </a>
@@ -67,7 +67,7 @@ include "notifcount.php";
         <?php if ($role['produksi'] == 1) : ?>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-boxes"></i>
+              <i class="nav-icon fas fa-people-carry"></i>
               <p>
                 PRODUKSI
                 <i class="right fas fa-angle-left"></i>

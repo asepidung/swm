@@ -173,6 +173,10 @@ foreach ($rows as $r) $totalWeight += (float)$r['weight'];
     </section>
 </div>
 
+<script>
+    document.title = "Cattle Receive <?= e($rcv['nopo']) ?>";
+</script>
+
 <?php include "../footer.php"; ?>
 
 <style>

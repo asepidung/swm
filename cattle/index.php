@@ -76,8 +76,8 @@ $res = $conn->query($sql);
                                     if ($res && $res->num_rows) {
                                         while ($r = $res->fetch_assoc()) {
                                             $idpo       = (int)$r['idpo'];
-                                            $canEdit    = true; // edit tidak dibatasi status
-                                            $canDelete  = empty($r['isProcessed']); // disable jika sudah ada di cattle_receive
+                                            $canDelete  = empty($r['isProcessed']);  // 1 = sudah diproses, 0/null = belum
+                                            $canEdit    = $canDelete;
                                     ?>
                                             <tr class="text-center">
                                                 <td><?= $no++; ?></td>
@@ -92,11 +92,13 @@ $res = $conn->query($sql);
                                                         <a href="view.php?id=<?= $idpo ?>" class="btn btn-info" title="View">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="edit.php?id=<?= $idpo ?>"
+
+                                                        <a href="<?= $canEdit ? 'edit.php?id=' . $idpo : 'javascript:void(0);' ?>"
                                                             class="btn btn-warning <?= $canEdit ? '' : 'disabled' ?>"
-                                                            title="<?= $canEdit ? 'Edit' : 'Tidak bisa diedit' ?>">
+                                                            title="<?= $canEdit ? 'Edit' : 'Data Sudah di Proses' ?>">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
+
                                                         <a href="delete.php?id=<?= $idpo ?>"
                                                             class="btn btn-danger <?= $canDelete ? '' : 'disabled' ?>"
                                                             onclick="return <?= $canDelete ? 'confirm(\'Hapus PO ini?\')' : 'false' ?>;"
@@ -121,5 +123,9 @@ $res = $conn->query($sql);
         </div>
     </section>
 </div>
+
+<script>
+    document.title = "PO Cattle";
+</script>
 
 <?php include "../footer.php"; ?>
