@@ -1,7 +1,7 @@
 <?php
 require "../verifications/auth.php";
 require "../konak/conn.php";
-include "weight_number.php"; // <-- di sini dibentuk $wghcattle
+include "weight_number.php"; // disini dibentuk $wghcattle
 
 function e($s)
 {
@@ -63,7 +63,7 @@ function normalizeNumber($number)
         $number = str_replace('.', '', $number);
         $number = str_replace(',', '.', $number);
     } else {
-        // Hanya titik / murni angka → biarkan, kecuali titik sebagai thousand
+        // Hanya titik / murni angka
         if (substr_count($number, '.') > 1) {
             $parts = explode('.', $number);
             $last  = array_pop($parts);
@@ -89,11 +89,19 @@ foreach ($idreceivedetail as $i => $idr) {
     $w = normalizeNumber($rawWeight);
     $noteDetail = trim($detail_notes[$i] ?? '');
 
-    if ($rawWeight === '' || $w === null || $w <= 0) {
+    // WAJIB DIISI
+    if ($rawWeight === '') {
+        $errors[] = "Berat actual baris " . ($i + 1) . " belum diisi.";
+        continue;
+    }
+
+    // 0 BOLEH. Yang dilarang hanya: bukan angka atau negatif
+    if ($w === null || $w < 0) {
         $errors[] = "Berat actual baris " . ($i + 1) . " tidak valid.";
         continue;
     }
 
+    // 0 = artinya tidak ditimbang, tetap disimpan
     $rows[] = [
         'idreceivedetail' => $idr,
         'weight'          => $w,
@@ -102,7 +110,8 @@ foreach ($idreceivedetail as $i => $idr) {
 }
 
 if (!empty($errors)) {
-    echo "<h3>Error:</h3><ul>";
+    echo "WGH-" . e($wghcattle) . "<br><br>";
+    echo "<strong>Error:</strong><ul>";
     foreach ($errors as $err) {
         echo "<li>" . e($err) . "</li>";
     }
@@ -156,8 +165,7 @@ try {
         throw new Exception("Detail penerimaan tidak ditemukan.");
     }
 
-    // Insert HEADER ke weight_cattle
-    // gunakan nomor dari weight_number.php → $wghcattle
+    // Insert HEADER ke weight_cattle (pakai nomor dari weight_number.php)
     $stmt = $conn->prepare("
         INSERT INTO weight_cattle
             (idreceive, weigh_no, weigh_date, idweigher, note, createby)
@@ -166,7 +174,7 @@ try {
     $stmt->bind_param(
         'issisi',
         $idreceive,
-        $wghcattle,   // <-- pakai nomor dari generator
+        $wghcattle,
         $weigh_date,
         $iduser,
         $note,

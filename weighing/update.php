@@ -69,7 +69,7 @@ function normalizeNumber($number)
 }
 
 // ========================
-// Validasi detail
+// Validasi detail (0 BOLEH)
 // ========================
 $rows   = [];
 $errors = [];
@@ -80,15 +80,22 @@ foreach ($idweighdetail as $i => $idwd) {
     $w          = normalizeNumber($rawWeight);
     $noteDetail = trim($detail_notes[$i] ?? '');
 
-    if ($rawWeight === '' || $w === null || $w <= 0) {
+    // wajib diisi
+    if ($rawWeight === '') {
+        $errors[] = "Berat actual baris " . ($i + 1) . " belum diisi.";
+        continue;
+    }
+
+    // 0 boleh, yang dilarang: bukan angka atau negatif
+    if ($w === null || $w < 0) {
         $errors[] = "Berat actual baris " . ($i + 1) . " tidak valid.";
         continue;
     }
 
     $rows[] = [
         'idweighdetail' => $idwd,
-        'weight'        => $w,
-        'notes'         => $noteDetail
+        'weight'        => $w,          // 0 = tidak ditimbang
+        'notes'         => $noteDetail,
     ];
 }
 
@@ -147,7 +154,7 @@ try {
     $stmt->execute();
     $stmt->close();
 
-    // Update DETAIL
+    // Update DETAIL pakai hasil validasi $rows
     $stmt = $conn->prepare("
         UPDATE weight_cattle_detail
         SET weight    = ?,
@@ -176,7 +183,6 @@ try {
 
     $conn->commit();
 
-    // Kembali ke index atau ke edit lagi terserah kamu
     header("Location: index.php");
     exit;
 } catch (Exception $ex) {

@@ -21,8 +21,8 @@ function tgl($d)
 // ====================
 // Ambil data timbang
 // ====================
-// Catatan: setelah RENAME TABLE, nama tabel = weight_cattle & weight_cattle_detail
-// tapi nama kolom tetap: idweigh, weigh_no, weigh_date, idweighdetail, dst.
+// Tambahan: isProcessed = 1 jika ADA minimal 1 eartag dari weighing ini
+// yang sudah masuk ke carcasedetail (carcase aktif, is_deleted=0).
 $sql = "
 SELECT
     w.idweigh,
@@ -34,7 +34,17 @@ SELECT
     s.nmsupplier,
     u.fullname AS weigher_name,
     COUNT(d.idweighdetail)      AS heads,
-    COALESCE(SUM(d.weight), 0)  AS total_weight
+    COALESCE(SUM(d.weight), 0)  AS total_weight,
+    EXISTS(
+        SELECT 1
+        FROM weight_cattle_detail d2
+        JOIN carcasedetail cd
+              ON cd.idweightdetail = d2.idweighdetail
+        JOIN carcase c
+              ON c.idcarcase = cd.idcarcase
+             AND c.is_deleted = 0
+        WHERE d2.idweigh = w.idweigh
+    ) AS isProcessed
 FROM weight_cattle w
 JOIN cattle_receive r
       ON r.idreceive = w.idreceive
@@ -117,8 +127,11 @@ if (!$result) {
                                         <?php
                                         $no = 1;
                                         while ($row = $result->fetch_assoc()) :
-                                            $heads        = (int)$row['heads'];
-                                            $total_weight = (float)$row['total_weight'];
+                                            $heads         = (int)$row['heads'];
+                                            $total_weight  = (float)$row['total_weight'];
+                                            $isProcessed   = !empty($row['isProcessed']); // 1 jika sudah ada di carcas
+                                            $canEdit       = !$isProcessed;
+                                            $canDelete     = !$isProcessed;
                                         ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++; ?></td>
@@ -134,14 +147,17 @@ if (!$result) {
                                                         class="btn btn-sm btn-info" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
+
                                                     <a href="edit.php?id=<?= (int)$row['idweigh']; ?>"
-                                                        class="btn btn-sm btn-warning" title="Edit">
+                                                        class="btn btn-sm btn-warning <?= $canEdit ? '' : 'disabled'; ?>"
+                                                        title="<?= $canEdit ? 'Edit' : 'Sudah diproses ke Carcas'; ?>">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
+
                                                     <a href="delete.php?id=<?= (int)$row['idweigh']; ?>"
-                                                        class="btn btn-sm btn-danger"
-                                                        title="Delete"
-                                                        onclick="return confirm('Yakin ingin menghapus data timbang ini?');">
+                                                        class="btn btn-sm btn-danger <?= $canDelete ? '' : 'disabled'; ?>"
+                                                        title="<?= $canDelete ? 'Delete' : 'Sudah diproses ke Carcas'; ?>"
+                                                        onclick="return <?= $canDelete ? "confirm('Yakin ingin menghapus data timbang ini?')" : 'false'; ?>;">
                                                         <i class="fas fa-trash"></i>
                                                     </a>
                                                 </td>

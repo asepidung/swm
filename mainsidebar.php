@@ -55,7 +55,7 @@ include "notifcount.php";
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../carcase" class="nav-link">
+                <a href="../carcas" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Carcase</p>
                 </a>
