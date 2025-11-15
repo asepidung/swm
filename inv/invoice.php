@@ -11,36 +11,64 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
-         <div class="row g-2 align-items-center">
-            <div class="col-lg-2 col-md-3 col-6">
-               <form method="GET" action="">
-                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
-            </div>
-            <div class="col-lg-2 col-md-3 col-6">
-               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
-            </div>
-            <div class="col-lg-1 col-md-2 col-12 d-grid">
-               <button type="submit" class="btn btn-sm btn-primary" name="search">
-                  <i class="fas fa-search"></i> Cari
-               </button>
-               </form>
-            </div>
-            <div class="col-lg-3 col-md-4 col-12 text-end">
-               <a href="invdraft.php" class="btn btn-sm btn-outline-primary">
-                  <span class="badge badge-danger"><?= $draftinvoice; ?></span> Draft Invoice
-               </a>
-               <a href="tf.php" class="btn btn-sm btn-outline-warning">
-                  <span class="badge badge-warning"><?= $belumTFCount; ?></span> Invoice Belum TF
-               </a>
+
+         <div class="card mb-2">
+            <div class="card-body py-2">
+               <div class="row align-items-center">
+
+                  <!-- KIRI: FILTER TANGGAL + CARI -->
+                  <div class="col-lg-6 col-md-7">
+                     <form class="form-inline" method="GET" action="">
+                        <label class="mr-2 mb-2 mb-md-0">Periode</label>
+
+                        <input type="date"
+                           class="form-control form-control-sm mr-2 mb-2 mb-md-0"
+                           name="awal"
+                           value="<?= $awal; ?>">
+
+                        <span class="mr-2 mb-2 mb-md-0">s/d</span>
+
+                        <input type="date"
+                           class="form-control form-control-sm mr-2 mb-2 mb-md-0"
+                           name="akhir"
+                           value="<?= $akhir; ?>">
+
+                        <button type="submit"
+                           class="btn btn-sm btn-primary mb-2 mb-md-0"
+                           name="search">
+                           <i class="fas fa-search mr-1"></i> Cari
+                        </button>
+                     </form>
+                  </div>
+
+                  <!-- KANAN: BUTTON-BUTTON AKSI ATAS -->
+                  <div class="col-lg-6 col-md-5 text-md-right mt-2 mt-md-0">
+                     <div class="btn-group" role="group">
+
+                        <a href="invdraft.php" class="btn btn-sm btn-outline-primary">
+                           <span class="badge badge-danger mr-1"><?= $draftinvoice; ?></span>
+                           Draft Invoice
+                        </a>
+
+                        <a href="tf.php" class="btn btn-sm btn-outline-warning">
+                           <span class="badge badge-warning mr-1"><?= $belumTFCount; ?></span>
+                           Invoice Belum TF
+                        </a>
+
+                        <!-- BUTTON BARU: DETAIL -->
+                        <a href="invoicedetail.php" class="btn btn-sm btn-outline-info">
+                           <i class="fas fa-info-circle mr-1"></i> Detail
+                        </a>
+
+                     </div>
+                  </div>
+
+               </div>
             </div>
          </div>
+
       </div>
    </div>
-
-
-
-   <!-- /.content-header -->
-
    <!-- Main content -->
    <section class="content">
       <div class="container-fluid">
@@ -91,7 +119,11 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                               <tr>
                                  <td class="text-center"><?= $no; ?></td>
                                  <td><?= $tampil['nama_customer']; ?></td>
-                                 <td class="text-center"><?= $tampil['noinvoice']; ?></td>
+                                 <td class="text-center">
+                                    <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>">
+                                       <?= $tampil['noinvoice']; ?>
+                                    </a>
+                                 </td>
                                  <td class="text-center">
                                     <a href="../do/lihatdo.php?iddo=<?= $iddo ?>">
                                        <?= substr($tampil['donumber'], -4); ?>
@@ -118,13 +150,6 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
                                     <a href="lihatinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
                                        <button type="button" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
                                     </a>
-                                    <!-- </div> -->
-                                    <!-- <div class="col"> -->
-                                    <a href="pib.php?idinvoice=<?= $tampil['idinvoice']; ?>">
-                                       <button type="button" class="btn btn-sm btn-success"><i class="fas fa-print"></i></button>
-                                    </a>
-                                    <!-- </div>
-                                       <div class="col"> -->
                                     <a href="editinvoice.php?idinvoice=<?= $tampil['idinvoice']; ?>">
                                        <button type="button" class="btn btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></button>
                                     </a>
