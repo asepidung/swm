@@ -57,15 +57,15 @@ function normalizeNumber($number)
 
     if ($lastComma !== false && $lastDot !== false) {
         if ($lastComma > $lastDot) {
-            // format: 1.234,56
+            // format: 1.234,56  -> 1234.56
             $number = str_replace('.', '', $number);
             $number = str_replace(',', '.', $number);
         } else {
-            // format: 1,234.56
+            // format: 1,234.56 -> 1234.56
             $number = str_replace(',', '', $number);
         }
     } elseif ($lastComma !== false) {
-        // hanya koma → desimal
+        // hanya koma → desimal (1.234,56 or 1234,56)
         $number = str_replace('.', '', $number);
         $number = str_replace(',', '.', $number);
     } else {
@@ -77,6 +77,7 @@ function normalizeNumber($number)
         }
     }
 
+    // final check numeric
     if (!is_numeric($number)) {
         return null;
     }
@@ -94,12 +95,13 @@ foreach ($idweighdetail as $i => $idwd) {
     $etag  = isset($eartag[$i]) ? trim($eartag[$i]) : '';
     $classRaw = isset($breed[$i]) ? strtoupper(trim($breed[$i])) : '';
 
-    // Live weight (boleh 0 / kosong)
+    // Live weight (boleh kosong)
     $rawLive = $live_weight[$i] ?? '';
     $liveVal = normalizeNumber($rawLive);
     if ($rawLive !== '' && $liveVal === null) {
         $errors[] = "Berat saat penerimaan baris " . ($i + 1) . " tidak valid.";
     }
+    // treat null as zero for live weight when needed downstream
     $beratLive = ($liveVal === null || $liveVal < 0) ? 0.0 : $liveVal;
 
     // Carcase A
@@ -126,7 +128,7 @@ foreach ($idweighdetail as $i => $idwd) {
     }
     $h = ($valH === null || $valH < 0) ? 0.0 : $valH;
 
-    // Tail (tidak menentukan dipotong atau tidak)
+    // Tail
     $rawT = $tails[$i] ?? '';
     $valT = normalizeNumber($rawT);
     if ($rawT !== '' && $valT === null) {
@@ -135,7 +137,6 @@ foreach ($idweighdetail as $i => $idwd) {
     $t = ($valT === null || $valT < 0) ? 0.0 : $valT;
 
     // Apakah sapi ini benar-benar dipotong?
-    // → minimal salah satu dari carcass A/B/hides > 0
     $isSlaughtered = ($c1 > 0 || $c2 > 0 || $h > 0);
 
     if (!$isSlaughtered) {
@@ -156,8 +157,8 @@ foreach ($idweighdetail as $i => $idwd) {
     $rows[] = [
         'idweightdetail' => $idwd,
         'eartag'         => $etag,
-        'breed'          => $classRaw,   // STEER/HEIFER/COW/BULL
-        'berat'          => $beratLive,  // live weight (boleh 0)
+        'breed'          => $classRaw,
+        'berat'          => $beratLive,
         'carcase1'       => $c1,
         'carcase2'       => $c2,
         'hides'          => $h,
@@ -191,6 +192,10 @@ try {
             (killdate, idsupplier, idweight, note, idusers, is_deleted)
         VALUES (?,?,?,?,?,0)
     ");
+    if ($stmt === false) {
+        throw new Exception("Prepare header gagal: " . $conn->error);
+    }
+
     $stmt->bind_param(
         'siisi',
         $killdate,
@@ -211,6 +216,9 @@ try {
             (idcarcase, idweightdetail, breed, berat, eartag, carcase1, carcase2, hides, tail)
         VALUES (?,?,?,?,?,?,?,?,?)
     ");
+    if ($stmt === false) {
+        throw new Exception("Prepare insert detail gagal: " . $conn->error);
+    }
 
     foreach ($rows as $r) {
         $idwd   = $r['idweightdetail'];
@@ -222,13 +230,8 @@ try {
         $h      = $r['hides'];
         $t      = $r['tail'];
 
-        // i (idcarcase)
-        // i (idweightdetail)
-        // s (breed)
-        // d (berat)
-        // s (eartag)
-        // d d d d (carcase1, carcase2, hides, tail)
-        $stmt->bind_param(
+        // tipe: i i s d s d d d d
+        $bind = $stmt->bind_param(
             'iisdsdddd',
             $idcarcase,
             $idwd,
@@ -240,6 +243,10 @@ try {
             $h,
             $t
         );
+
+        if ($bind === false) {
+            throw new Exception("Bind param gagal: " . $stmt->error);
+        }
 
         if (!$stmt->execute()) {
             throw new Exception("Gagal menyimpan detail carcas: " . $stmt->error);

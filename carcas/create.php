@@ -204,8 +204,8 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
                                             foreach ($details as $d):
                                                 $idwd     = (int)$d['idweighdetail'];
                                                 $etag     = $d['eartag'];
-                                                // sekarang pakai BERAT PENERIMAAN, bukan timbang ulang
-                                                $wReceive = (float)$d['receive_weight'];
+                                                // sekarang pakai BERAT PENERIMAAN (bila ada) sebagai default live_weight
+                                                $wReceive = $d['receive_weight'] ?? '';
                                                 $class    = strtoupper(trim($d['cattle_class'] ?? ''));
                                             ?>
                                                 <tr>
@@ -213,7 +213,9 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
                                                     <td class="text-center">
                                                         <?= e($etag); ?>
                                                         <input type="hidden" name="idweighdetail[]" value="<?= $idwd; ?>">
-                                                        <input type="hidden" name="live_weight[]" value="<?= $wLive; ?>">
+                                                        <!-- perbaikan: kirim live_weight sesuai receive_weight (atau kosong),
+                                                                     sebelumnya variabel $wLive tidak didefinisikan -->
+                                                        <input type="hidden" name="live_weight[]" value="<?= e($wReceive); ?>">
                                                         <input type="hidden" name="eartag[]" value="<?= e($etag); ?>">
                                                     </td>
                                                     <td>

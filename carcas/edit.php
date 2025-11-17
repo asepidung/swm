@@ -84,11 +84,6 @@ while ($row = $resD->fetch_assoc()) {
 }
 $stmtD->close();
 
-if (empty($details)) {
-    // Secara teori jarang terjadi, tapi biar aman
-    // tetap boleh edit header meskipun tanpa detail
-}
-
 // opsi class yang diizinkan
 $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
 ?>
@@ -185,66 +180,71 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $no = 1;
-                                            foreach ($details as $d):
-                                                $iddet = (int)$d['iddetail'];
-                                                $etag  = $d['eartag'];
-                                                $breedVal = strtoupper(trim($d['breed'] ?? ''));
-                                                $live  = (float)$d['berat'];
-                                                $c1    = (float)$d['carcase1'];
-                                                $c2    = (float)$d['carcase2'];
-                                                $h     = (float)$d['hides'];
-                                                $t     = (float)$d['tail'];
+                                            if (empty($details)):
                                             ?>
-                                                <tr>
-                                                    <td class="text-center"><?= $no++; ?></td>
-                                                    <td class="text-center">
-                                                        <?= e($etag); ?>
-                                                        <input type="hidden" name="iddetail[]" value="<?= $iddet; ?>">
-                                                    </td>
-                                                    <td>
-                                                        <select name="breed[]" class="form-control form-control-sm">
-                                                            <option value="">- Pilih Class -</option>
-                                                            <?php foreach ($breedOptions as $opt): ?>
-                                                                <option value="<?= e($opt); ?>"
-                                                                    <?= ($opt === $breedVal) ? 'selected' : ''; ?>>
-                                                                    <?= e($opt); ?>
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </td>
-                                                    <td class="text-right">
-                                                        <?= number_format($live, 2, ',', '.'); ?>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" min="0"
-                                                            name="carcase1[]" class="form-control form-control-sm text-right"
-                                                            value="<?= e($c1); ?>">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" min="0"
-                                                            name="carcase2[]" class="form-control form-control-sm text-right"
-                                                            value="<?= e($c2); ?>">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" min="0"
-                                                            name="hides[]" class="form-control form-control-sm text-right"
-                                                            value="<?= e($h); ?>">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" min="0"
-                                                            name="tails[]" class="form-control form-control-sm text-right"
-                                                            value="<?= e($t); ?>">
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                            <?php if ($no === 1): ?>
                                                 <tr>
                                                     <td colspan="8" class="text-center text-muted">
                                                         Tidak ada detail carcas untuk dokumen ini.
                                                     </td>
                                                 </tr>
-                                            <?php endif; ?>
+                                                <?php
+                                            else:
+                                                $no = 1;
+                                                foreach ($details as $d):
+                                                    $iddet = (int)$d['iddetail'];
+                                                    $etag  = $d['eartag'];
+                                                    $breedVal = strtoupper(trim($d['breed'] ?? ''));
+                                                    $live  = (float)$d['berat'];
+                                                    $c1    = (float)$d['carcase1'];
+                                                    $c2    = (float)$d['carcase2'];
+                                                    $h     = (float)$d['hides'];
+                                                    $t     = (float)$d['tail'];
+                                                ?>
+                                                    <tr>
+                                                        <td class="text-center"><?= $no++; ?></td>
+                                                        <td class="text-center">
+                                                            <?= e($etag); ?>
+                                                            <input type="hidden" name="iddetail[]" value="<?= $iddet; ?>">
+                                                        </td>
+                                                        <td>
+                                                            <select name="breed[]" class="form-control form-control-sm">
+                                                                <option value="">- Pilih Class -</option>
+                                                                <?php foreach ($breedOptions as $opt): ?>
+                                                                    <option value="<?= e($opt); ?>"
+                                                                        <?= ($opt === $breedVal) ? 'selected' : ''; ?>>
+                                                                        <?= e($opt); ?>
+                                                                    </option>
+                                                                <?php endforeach; ?>
+                                                            </select>
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <?= number_format($live, 2, ',', '.'); ?>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" min="0"
+                                                                name="carcase1[]" class="form-control form-control-sm text-right"
+                                                                value="<?= e($c1); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" min="0"
+                                                                name="carcase2[]" class="form-control form-control-sm text-right"
+                                                                value="<?= e($c2); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" min="0"
+                                                                name="hides[]" class="form-control form-control-sm text-right"
+                                                                value="<?= e($h); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" min="0"
+                                                                name="tails[]" class="form-control form-control-sm text-right"
+                                                                value="<?= e($t); ?>">
+                                                        </td>
+                                                    </tr>
+                                            <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>

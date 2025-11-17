@@ -79,7 +79,7 @@ for ($i = 0; $i < count($class); $i++) {
     $rows[] = [
         'class' => $c,
         'qty'   => (int)$qv,
-        'price' => $pv,  // string; akan di-NULLIF saat insert
+        'price' => $pv,  // string; akan di-NULLIF saat insert (NULLIF dengan COLLATE)
         'notes' => $nt,
     ];
 }
@@ -90,9 +90,12 @@ if (empty($errors)) {
     $stmt = $conn->prepare("SELECT 1 FROM pocattle WHERE nopo = ? LIMIT 1");
     $stmt->bind_param('s', $nopocattle);
     $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
+    $res = $stmt->get_result();
+    if ($res && $res->num_rows > 0) {
         $errors[] = "No. PO duplikat. Silakan submit ulang.";
     }
+    if ($res) $res->free();
+    $stmt->close();
 }
 
 if (!empty($errors)) {
@@ -114,19 +117,29 @@ try {
         throw new Exception("Gagal menyimpan header: " . $stmtH->error);
     }
     $idpo = $stmtH->insert_id;
+    $stmtH->close();
 
     // Detail
+    // PERUBAHAN: paksa COLLATE pada NULLIF agar tidak terjadi illegal mix of collations
     $sqlD = "INSERT INTO pocattledetail (idpo, class, qty, price, notes, creatime, createby)
-             VALUES (?, ?, ?, NULLIF(?,''), ?, NOW(), ?)";
+             VALUES (?, ?, ?, NULLIF(? COLLATE utf8mb4_unicode_ci, '' COLLATE utf8mb4_unicode_ci), ?, NOW(), ?)";
     $stmtD = $conn->prepare($sqlD);
+    if ($stmtD === false) {
+        throw new Exception("Prepare detail gagal: " . $conn->error);
+    }
 
     foreach ($rows as $r) {
-        $stmtD->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
+        // bind types: i (idpo), s (class), i (qty), s (price), s (notes), i (createby)
+        $bindResult = $stmtD->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
+        if ($bindResult === false) {
+            throw new Exception("Bind param gagal: " . $stmtD->error);
+        }
         if (!$stmtD->execute()) {
             throw new Exception("Gagal menyimpan detail: " . $stmtD->error);
         }
     }
 
+    $stmtD->close();
     $conn->commit();
     header("Location: index.php?msg=created");
     exit;

@@ -30,9 +30,12 @@ if ($idpo <= 0) backWithError(['PO id tidak valid.'], $_POST, $idpo);
 $cek = $conn->prepare("SELECT idpo FROM pocattle WHERE idpo=? AND is_deleted=0 LIMIT 1");
 $cek->bind_param("i", $idpo);
 $cek->execute();
-if (!$cek->get_result()->fetch_row()) {
+$resCek = $cek->get_result();
+if (!$resCek || !$resCek->fetch_row()) {
     backWithError(['PO tidak ditemukan.'], $_POST, $idpo);
 }
+$resCek->free();
+$cek->close();
 
 // Header inputs
 $podate       = trim($_POST['podate'] ?? '');
@@ -90,24 +93,34 @@ try {
                updateby=?
          WHERE idpo=? AND is_deleted=0
     ");
+    if ($up === false) throw new Exception("Prepare update header gagal: " . $conn->error);
+
     // tipe: s (podate), s (arrival), i (idsupplier), s (note), i (updateby), i (idpo)
     $up->bind_param('ssisii', $podate, $arrivalDB, $idsupplier, $note, $iduser, $idpo);
     if (!$up->execute()) throw new Exception("Gagal update header: " . $up->error);
+    $up->close();
 
     // HAPUS semua detail lama (HARD DELETE)
     $del = $conn->prepare("DELETE FROM pocattledetail WHERE idpo=?");
+    if ($del === false) throw new Exception("Prepare delete detail gagal: " . $conn->error);
     $del->bind_param("i", $idpo);
     if (!$del->execute()) throw new Exception("Gagal hapus detail lama: " . $del->error);
+    $del->close();
 
-    // INSERT ulang detail (price -> NULL jika kosong)
+    // INSERT ulang detail
+    // PERUBAHAN: paksa COLLATE pada NULLIF agar tidak terjadi illegal mix of collations
     $ins = $conn->prepare("
         INSERT INTO pocattledetail (idpo, class, qty, price, notes, creatime, createby)
-        VALUES (?, ?, ?, NULLIF(?, ''), ?, NOW(), ?)
+        VALUES (?, ?, ?, NULLIF(? COLLATE utf8mb4_unicode_ci, '' COLLATE utf8mb4_unicode_ci), ?, NOW(), ?)
     ");
+    if ($ins === false) throw new Exception("Prepare insert detail gagal: " . $conn->error);
+
     foreach ($rows as $r) {
-        $ins->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
+        $bindResult = $ins->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
+        if ($bindResult === false) throw new Exception("Bind param gagal: " . $ins->error);
         if (!$ins->execute()) throw new Exception("Gagal insert detail: " . $ins->error);
     }
+    $ins->close();
 
     $conn->commit();
     header("Location: view.php?id=" . $idpo);

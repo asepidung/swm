@@ -16,6 +16,7 @@ function tgl($d)
 }
 
 // --- query data (agregasi dari detail) ---
+// tambahkan p.note di SELECT dan GROUP BY
 $sql = "
 SELECT
   p.idpo,
@@ -23,6 +24,7 @@ SELECT
   p.podate,
   p.arrival_date,
   s.nmsupplier,
+  p.note,
   COALESCE(SUM(d.qty), 0) AS total_qty,
   GROUP_CONCAT(CONCAT(d.class, ' (', d.qty, ')') ORDER BY d.class SEPARATOR ', ') AS jenis_ringkas,
   EXISTS(
@@ -33,7 +35,7 @@ FROM pocattle p
 LEFT JOIN supplier s       ON s.idsupplier = p.idsupplier
 LEFT JOIN pocattledetail d ON d.idpo = p.idpo AND d.is_deleted = 0
 WHERE p.is_deleted = 0
-GROUP BY p.idpo
+GROUP BY p.idpo, p.nopo, p.podate, p.arrival_date, s.nmsupplier, p.note
 ORDER BY p.idpo DESC
 ";
 $res = $conn->query($sql);
@@ -67,6 +69,7 @@ $res = $conn->query($sql);
                                         <th>Suppliers</th>
                                         <th>Qty Head</th>
                                         <th>Jenis Sapi</th>
+                                        <th>Catatan</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -87,6 +90,8 @@ $res = $conn->query($sql);
                                                 <td class="text-left"><?= e($r['nmsupplier'] ?? '-'); ?></td>
                                                 <td><?= number_format((int)$r['total_qty'], 0, ',', '.'); ?></td>
                                                 <td class="text-left"><?= e($r['jenis_ringkas'] ?: '-'); ?></td>
+                                                <td class="text-left"><?= nl2br(e($r['note'] ?? '')); ?></td>
+
                                                 <td>
                                                     <div class="btn-group btn-group-sm" role="group">
                                                         <a href="view.php?id=<?= $idpo ?>" class="btn btn-info" title="View">
@@ -111,7 +116,7 @@ $res = $conn->query($sql);
                                     <?php
                                         }
                                     } else {
-                                        echo '<tr><td colspan="8" class="text-center text-muted">Belum ada data PO Cattle.</td></tr>';
+                                        echo '<tr><td colspan="9" class="text-center text-muted">Belum ada data PO Cattle.</td></tr>';
                                     }
                                     ?>
                                 </tbody>

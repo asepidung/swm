@@ -32,10 +32,6 @@ if ($idcarcase <= 0) {
 if ($idusers <= 0) {
     die("Error: Session user tidak valid.");
 }
-if (empty($iddetail)) {
-    // Masih boleh edit header tanpa detail, tapi sangat jarang
-    // Kita izinkan, tapi detail tidak diapa-apakan
-}
 
 // -----------------------------
 // Fungsi normalisasi angka
@@ -66,7 +62,6 @@ function normalizeNumber($number)
         $number = str_replace('.', '', $number);
         $number = str_replace(',', '.', $number);
     } else {
-        // hanya titik / angka
         if (substr_count($number, '.') > 1) {
             $parts = explode('.', $number);
             $last  = array_pop($parts);
@@ -163,6 +158,7 @@ try {
         WHERE idcarcase = ? AND is_deleted = 0 
         LIMIT 1
     ");
+    if ($stmt === false) throw new Exception("Prepare cek header gagal: " . $conn->error);
     $stmt->bind_param('i', $idcarcase);
     $stmt->execute();
     $stmt->bind_result($existing);
@@ -179,6 +175,7 @@ try {
             note     = ?
         WHERE idcarcase = ? AND is_deleted = 0
     ");
+    if ($stmt === false) throw new Exception("Prepare update header gagal: " . $conn->error);
     $stmt->bind_param(
         'ssi',
         $killdate,
@@ -190,7 +187,7 @@ try {
     }
     $stmt->close();
 
-    // Update DETAIL per baris
+    // Update DETAIL per baris (jika ada)
     if (!empty($rows)) {
         $stmt = $conn->prepare("
             UPDATE carcasedetail
@@ -201,6 +198,7 @@ try {
                 tail     = ?
             WHERE iddetail = ? AND idcarcase = ?
         ");
+        if ($stmt === false) throw new Exception("Prepare update detail gagal: " . $conn->error);
 
         foreach ($rows as $r) {
             $idDet = $r['iddetail'];
@@ -210,8 +208,8 @@ try {
             $h     = $r['hides'];
             $t     = $r['tail'];
 
-            // s (breed), d d d d (angka), i (iddetail), i (idcarcase)
-            $stmt->bind_param(
+            // s d d d d i i
+            $ok = $stmt->bind_param(
                 'sddddii',
                 $b,
                 $c1,
@@ -221,6 +219,7 @@ try {
                 $idDet,
                 $idcarcase
             );
+            if ($ok === false) throw new Exception("Bind param update detail gagal: " . $stmt->error);
 
             if (!$stmt->execute()) {
                 throw new Exception("Gagal mengupdate detail carcas: " . $stmt->error);
@@ -231,7 +230,6 @@ try {
 
     $conn->commit();
 
-    // Sukses → bisa balik ke view atau index, terserah kamu
     header("Location: view.php?id=" . $idcarcase);
     exit;
 } catch (Exception $ex) {

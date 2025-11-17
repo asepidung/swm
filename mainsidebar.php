@@ -432,6 +432,32 @@ include "notifcount.php";
                   <p>Piutang</p>
                 </a>
               </li>
+
+
+              <!-- CATTLE FINANCE -->
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Cattle
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../weighinglost" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Weight Loss</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../killinglost" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Killing Lost</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </li>
         <?php endif; ?>
