@@ -32,20 +32,21 @@ $csrfToken = $_SESSION['csrf_token'];
                             <?php
                             // Query list + flag has_gr (true jika sudah ada GR aktif utk idpo tsb)
                             $sql = "SELECT 
-            p.idpo, p.nopo, p.duedate, p.note, p.creatime, p.xamount, p.taxrp, p.tax, p.top,
-            r.norequest, s.nmsupplier,
-            EXISTS(
-                SELECT 1 
-                FROM grbeef g 
-                WHERE g.idpo = p.idpo 
-                  AND COALESCE(g.is_deleted,0) = 0
-                LIMIT 1
-            ) AS has_gr
-        FROM pobeef p
-        LEFT JOIN requestbeef r ON p.idrequest  = r.idrequest
-        LEFT JOIN supplier    s ON p.idsupplier = s.idsupplier
-        WHERE p.is_deleted = 0
-        ORDER BY p.idpo DESC";
+                                        p.idpo, p.nopo, p.duedate, p.note, p.creatime, p.xamount, p.taxrp, p.tax, p.top,
+                                        p.is_deleted, p.stat,
+                                        r.norequest, s.nmsupplier,
+                                        EXISTS(
+                                            SELECT 1 
+                                            FROM grbeef g 
+                                            WHERE g.idpo = p.idpo 
+                                              AND COALESCE(g.is_deleted,0) = 0
+                                            LIMIT 1
+                                        ) AS has_gr
+                                    FROM pobeef p
+                                    LEFT JOIN requestbeef r ON p.idrequest  = r.idrequest
+                                    LEFT JOIN supplier    s ON p.idsupplier = s.idsupplier
+                                    WHERE p.is_deleted = 0 OR p.is_deleted = 2
+                                    ORDER BY p.idpo DESC";
                             $stmt = $conn->prepare($sql);
                             $stmt->execute();
                             $result = $stmt->get_result();
@@ -73,6 +74,8 @@ $csrfToken = $_SESSION['csrf_token'];
                                         while ($row = $result->fetch_assoc()) {
                                             $idpo  = (int)$row['idpo'];
                                             $hasGR = !empty($row['has_gr']);
+                                            $isDeleted = isset($row['is_deleted']) ? (int)$row['is_deleted'] : 0; // 0 active, 1 deleted, 2 cancelled (your case)
+                                            $stat = isset($row['stat']) ? (int)$row['stat'] : 0;
                                     ?>
                                             <tr>
                                                 <td><?= $i ?></td>
@@ -88,15 +91,25 @@ $csrfToken = $_SESSION['csrf_token'];
                                                     <a href="view.php?id=<?= $idpo ?>" class='btn btn-info btn-sm' title="View PO">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <?php if ($hasGR): ?>
+
+                                                    <?php if ($isDeleted === 2 || $stat === 2): ?>
+                                                        <!-- PO sudah dibatalkan -->
+                                                        <button type="button"
+                                                            class="btn btn-warning btn-sm"
+                                                            title="PO sudah dibatalkan (cancel)">
+                                                            <i class="fas fa-ban"></i>
+                                                        </button>
+
+                                                    <?php elseif ($hasGR): ?>
                                                         <!-- Nonaktif: sudah ada GR -->
                                                         <button type="button"
                                                             class="btn btn-secondary btn-sm"
                                                             title="Tidak bisa hapus: PO ini sudah punya GR aktif">
                                                             <i class="fas fa-lock"></i>
                                                         </button>
+
                                                     <?php else: ?>
-                                                        <!-- Aktif: belum ada GR -->
+                                                        <!-- Aktif: belum ada GR dan tidak dibatalkan -->
                                                         <form action="delete.php" method="POST" class="d-inline"
                                                             onsubmit="return confirm('Yakin hapus PO ini?');">
                                                             <input type="hidden" name="id" value="<?= $idpo ?>">
@@ -107,6 +120,7 @@ $csrfToken = $_SESSION['csrf_token'];
                                                         </form>
                                                     <?php endif; ?>
                                                 </td>
+
                                             </tr>
                                     <?php
                                             $i++;
