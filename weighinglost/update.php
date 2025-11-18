@@ -40,7 +40,6 @@ if (count($idlossdetail) === 0) {
     die("Tidak ada data detail yang dikirim.");
 }
 
-// Siapkan data baris + hitung total
 $rows = [];
 $total_receive_weight = 0.0;
 $total_actual_weight  = 0.0;
@@ -49,24 +48,26 @@ $total_loss_cost      = 0.0;
 
 $count = count($idlossdetail);
 for ($i = 0; $i < $count; $i++) {
+
     $idl  = (int)$idlossdetail[$i];
     $idr  = (int)$idreceivedetail[$i];
     $idw  = (int)$idweighdetail[$i];
     $ear  = trim($eartagArr[$i] ?? '');
     $cls  = trim($classArr[$i] ?? '');
+
     $recv = (float)($recvArr[$i] ?? 0);
     $act  = (float)($actArr[$i] ?? 0);
 
-    // hitung ulang loss untuk jaga-jaga (bisa juga pakai $lossArr)
+    // LOSS = receive - actual  (BISA NEGATIF)
     $loss = $recv - $act;
 
-    // harga bisa kosong
+    // Price & Loss Cost
     $priceRaw = trim($priceArr[$i] ?? '');
     $price = ($priceRaw === '') ? null : (float)$priceRaw;
 
     $lossCost = null;
     if ($price !== null) {
-        $lossCost = $loss * $price;
+        $lossCost = $loss * $price;   // tetap negatif jika loss negatif
         $total_loss_cost += $lossCost;
     }
 
@@ -90,6 +91,7 @@ for ($i = 0; $i < $count; $i++) {
 
 $conn->begin_transaction();
 try {
+
     // UPDATE HEADER
     $sqlHeader = "
         UPDATE cattle_loss_receive
@@ -104,6 +106,7 @@ try {
           AND idweigh   = ?
           AND is_deleted = 0
     ";
+
     $stmtH = $conn->prepare($sqlHeader);
     $stmtH->bind_param(
         'ssddddiii',
@@ -120,7 +123,7 @@ try {
     $stmtH->execute();
     $stmtH->close();
 
-    // UPDATE DETAIL (per baris)
+    // UPDATE DETAIL
     $sqlDet = "
         UPDATE cattle_loss_receive_detail
         SET receive_weight = ?,
@@ -131,19 +134,17 @@ try {
         WHERE idlossdetail = ?
           AND idloss       = ?
     ";
+
     $stmtD = $conn->prepare($sqlDet);
 
     foreach ($rows as $row) {
-        $priceParam = $row['price_perkg']; // boleh null, akan jadi 0 kalau pakai tipe 'd'
-        $lcostParam = $row['loss_cost'];   // boleh null
-
         $stmtD->bind_param(
             'dddddii',
             $row['receive_weight'],
             $row['actual_weight'],
             $row['loss_weight'],
-            $priceParam,
-            $lcostParam,
+            $row['price_perkg'],
+            $row['loss_cost'],
             $row['idlossdetail'],
             $idloss
         );

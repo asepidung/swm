@@ -124,7 +124,6 @@ if (empty($details)) {
     die("Tidak ada detail loss untuk dokumen ini.");
 }
 
-// hitung ringkasan (opsional, selain dari header)
 $totalReceive = (float)$header['total_receive_weight'];
 $totalActual  = (float)$header['total_actual_weight'];
 $totalLoss    = (float)$header['total_loss_weight'];
@@ -133,15 +132,12 @@ $totalCost    = (float)$header['total_loss_cost'];
 
 <div class="content-wrapper">
 
-    <!-- Header -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Edit Cattle Weight Loss (Receiving)</h1>
-                    <p class="mb-0 text-muted">
-                        Dokumen: <?= e($header['loss_no']); ?>
-                    </p>
+                    <p class="mb-0 text-muted">Dokumen: <?= e($header['loss_no']); ?></p>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="index.php" class="btn btn-secondary btn-sm">
@@ -166,81 +162,63 @@ $totalCost    = (float)$header['total_loss_cost'];
                     <div class="card-header">
                         <h3 class="card-title">Header</h3>
                     </div>
+
                     <div class="card-body">
 
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label>Loss No</label>
-                                <input type="text" class="form-control"
-                                    value="<?= e($header['loss_no']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= e($header['loss_no']); ?>" readonly>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>Loss Date</label>
-                                <input type="date" name="loss_date" class="form-control"
-                                    value="<?= e($header['loss_date']); ?>" required>
+                                <input type="date" name="loss_date" class="form-control" value="<?= e($header['loss_date']); ?>" required>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>Weigh No</label>
-                                <input type="text" class="form-control"
-                                    value="<?= e($header['weigh_no']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= e($header['weigh_no']); ?>" readonly>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>Weigh Date</label>
-                                <input type="text" class="form-control"
-                                    value="<?= tgl($header['weigh_date']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= tgl($header['weigh_date']); ?>" readonly>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label>Receive Date</label>
-                                <input type="text" class="form-control"
-                                    value="<?= tgl($header['receipt_date']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= tgl($header['receipt_date']); ?>" readonly>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>Doc Receive</label>
-                                <input type="text" class="form-control"
-                                    value="<?= e($header['doc_no']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= e($header['doc_no']); ?>" readonly>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>No PO</label>
-                                <input type="text" class="form-control"
-                                    value="<?= e($header['nopo']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= e($header['nopo']); ?>" readonly>
                             </div>
+
                             <div class="form-group col-md-3">
                                 <label>Supplier</label>
-                                <input type="text" class="form-control"
-                                    value="<?= e($header['nmsupplier']); ?>" readonly>
+                                <input type="text" class="form-control" value="<?= e($header['nmsupplier']); ?>" readonly>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>Note</label>
-                            <textarea name="note" class="form-control" rows="2"
-                                placeholder="Catatan (opsional)"><?= e($header['note']); ?></textarea>
+                            <textarea name="note" class="form-control" rows="2"><?= e($header['note']); ?></textarea>
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label>Total Receive Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= n2($totalReceive); ?>" readonly>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>Total Actual Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= n2($totalActual); ?>" readonly>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>Total Loss Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= n2($totalLoss); ?>" readonly>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>Total Loss Cost (Rp)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= rupiah($totalCost); ?>" readonly>
-                            </div>
+                            <div class="form-group col-md-3"><label>Total Receive Weight (Kg)</label><input type="text" class="form-control" value="<?= n2($totalReceive); ?>" readonly></div>
+                            <div class="form-group col-md-3"><label>Total Actual Weight (Kg)</label><input type="text" class="form-control" value="<?= n2($totalActual); ?>" readonly></div>
+                            <div class="form-group col-md-3"><label>Total Loss Weight (Kg)</label><input type="text" class="form-control" value="<?= n2($totalLoss); ?>" readonly></div>
+                            <div class="form-group col-md-3"><label>Total Loss Cost (Rp)</label><input type="text" class="form-control" value="<?= rupiah($totalCost); ?>" readonly></div>
                         </div>
 
                     </div>
@@ -251,6 +229,7 @@ $totalCost    = (float)$header['total_loss_cost'];
                     <div class="card-header">
                         <h3 class="card-title mb-0">Detail per Ekor</h3>
                     </div>
+
                     <div class="card-body table-responsive p-0">
                         <table class="table table-bordered table-hover table-sm mb-0">
                             <thead class="text-center">
@@ -265,19 +244,21 @@ $totalCost    = (float)$header['total_loss_cost'];
                                     <th>Loss Cost (Rp)</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 <?php
                                 $no = 1;
                                 foreach ($details as $d):
+
                                     $recv  = (float)$d['receive_weight'];
                                     $act   = (float)$d['actual_weight'];
-                                    $lossW = (float)$d['loss_weight'];
+                                    $lossW = (float)$d['loss_weight'];   // sudah dari store → actual - receive (bisa negatif)
                                     $price = $d['price_perkg'];
                                     $lossCost = $d['loss_cost'];
-
                                     $priceVal = ($price === null ? '' : (float)$price);
                                 ?>
                                     <tr class="text-center">
+
                                         <td><?= $no; ?></td>
 
                                         <td class="text-left">
@@ -330,6 +311,7 @@ $totalCost    = (float)$header['total_loss_cost'];
                                                 ?>
                                             </span>
                                         </td>
+
                                     </tr>
                                 <?php
                                     $no++;
@@ -344,6 +326,7 @@ $totalCost    = (float)$header['total_loss_cost'];
                             <i class="fas fa-save"></i> Update Loss
                         </button>
                     </div>
+
                 </div>
 
             </form>
@@ -352,21 +335,23 @@ $totalCost    = (float)$header['total_loss_cost'];
 </div>
 
 <script>
-    // sama seperti create: update tampilan loss cost saat harga diubah
+    // Hitung ulang loss cost saat harga per kg diubah
     document.querySelectorAll('.price-input').forEach(function(el) {
         el.addEventListener('input', function() {
-            var loss = parseFloat(this.getAttribute('data-loss')) || 0;
-            var row = this.getAttribute('data-row');
-            var price = parseFloat(this.value) || 0;
-            var cost = loss * price;
 
-            var span = document.getElementById('loss_cost_row_' + row);
+            let loss = parseFloat(this.dataset.loss) || 0; // bisa negatif
+            let price = parseFloat(this.value) || 0;
+            let row = this.dataset.row;
+
+            let cost = loss * price; // negatif × positif → tetap NEGATIF jika loss negatif
+
+            let span = document.getElementById("loss_cost_row_" + row);
             if (!span) return;
 
-            if (this.value === '') {
-                span.textContent = '-';
+            if (this.value === "") {
+                span.textContent = "-";
             } else {
-                span.textContent = new Intl.NumberFormat('id-ID', {
+                span.textContent = new Intl.NumberFormat("id-ID", {
                     maximumFractionDigits: 0
                 }).format(cost);
             }

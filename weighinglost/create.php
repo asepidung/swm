@@ -1,4 +1,9 @@
 <?php
+// create.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require "../verifications/auth.php";
 require "../konak/conn.php";
 include "../header.php";
@@ -7,166 +12,16 @@ include "../mainsidebar.php";
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Helpers
-function e($s)
-{
-    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+if (!function_exists('e')) {
+    function e($s)
+    {
+        return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+    }
 }
-function tgl($d)
-{
-    return $d ? date('d/M/Y', strtotime($d)) : '-';
-}
-
-// =======================================
-// MODE SAVE (POST)
-// =======================================
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idweigh   = isset($_POST['idweigh'])   ? (int)$_POST['idweigh']   : 0;
-    $idreceive = isset($_POST['idreceive']) ? (int)$_POST['idreceive'] : 0;
-    $loss_date = $_POST['loss_date'] ?? date('Y-m-d');
-    $note      = $_POST['note'] ?? '';
-    $iduser    = $_SESSION['idusers'] ?? 0;
-
-    if ($idweigh <= 0 || $idreceive <= 0) {
-        die("Data tidak valid (idweigh/idreceive).");
-    }
-
-    // Ambil arrays detail
-    $idreceivedetail = $_POST['idreceivedetail'] ?? [];
-    $idweighdetail   = $_POST['idweighdetail']   ?? [];
-    $eartagArr       = $_POST['eartag']          ?? [];
-    $classArr        = $_POST['class']           ?? [];
-    $recvArr         = $_POST['receive_weight']  ?? [];
-    $actArr          = $_POST['actual_weight']   ?? [];
-    $priceArr        = $_POST['price_perkg']     ?? [];
-
-    if (count($idreceivedetail) === 0) {
-        die("Tidak ada data detail yang dikirim.");
-    }
-
-    // Siapkan data baris + hitung total
-    $rows = [];
-    $total_receive_weight = 0.0;
-    $total_actual_weight  = 0.0;
-    $total_loss_weight    = 0.0;
-    $total_loss_cost      = 0.0;
-
-    $count = count($idreceivedetail);
-    for ($i = 0; $i < $count; $i++) {
-        $idr  = (int)$idreceivedetail[$i];
-        $idw  = (int)$idweighdetail[$i];
-        $ear  = trim($eartagArr[$i] ?? '');
-        $cls  = trim($classArr[$i] ?? '');
-        $recv = (float)($recvArr[$i] ?? 0);
-        $act  = (float)($actArr[$i] ?? 0);
-        $loss = $recv - $act;
-
-        // harga bisa kosong
-        $priceRaw = trim($priceArr[$i] ?? '');
-        $price = ($priceRaw === '') ? null : (float)$priceRaw;
-
-        $lossCost = null;
-        if ($price !== null) {
-            $lossCost = $loss * $price;
-            $total_loss_cost += $lossCost;
-        }
-
-        $total_receive_weight += $recv;
-        $total_actual_weight  += $act;
-        $total_loss_weight    += $loss;
-
-        $rows[] = [
-            'idreceivedetail' => $idr,
-            'idweighdetail'   => $idw,
-            'eartag'          => $ear,
-            'class'           => $cls,
-            'receive_weight'  => $recv,
-            'actual_weight'   => $act,
-            'loss_weight'     => $loss,
-            'price_perkg'     => $price,
-            'loss_cost'       => $lossCost
-        ];
-    }
-
-    // Buat nomor dokumen sederhana (silakan ganti dengan generator versimu)
-    $loss_no = 'LRC-' . date('ymdHis');
-
-    // Simpan ke DB
-    $conn->begin_transaction();
-    try {
-        // Insert header
-        $sqlHeader = "
-            INSERT INTO cattle_loss_receive
-                (idreceive, idweigh, loss_no, loss_date, note,
-                 total_receive_weight, total_actual_weight, total_loss_weight, total_loss_cost,
-                 createby)
-            VALUES
-                (?,?,?,?,?,?,?,?,?,?)
-        ";
-        $stmtH = $conn->prepare($sqlHeader);
-        $stmtH->bind_param(
-            'iisssddddi',
-            $idreceive,
-            $idweigh,
-            $loss_no,
-            $loss_date,
-            $note,
-            $total_receive_weight,
-            $total_actual_weight,
-            $total_loss_weight,
-            $total_loss_cost,
-            $iduser
-        );
-        $stmtH->execute();
-        $idloss = $stmtH->insert_id;
-        $stmtH->close();
-
-        // Insert detail
-        $sqlDet = "
-            INSERT INTO cattle_loss_receive_detail
-                (idloss, idreceivedetail, idweighdetail, eartag, cattle_class,
-                 receive_weight, actual_weight, loss_weight, price_perkg, loss_cost,
-                 notes, createby)
-            VALUES
-                (?,?,?,?,?,?,?,?,?,?,?,?)
-        ";
-        $stmtD = $conn->prepare($sqlDet);
-
-        foreach ($rows as $row) {
-            $price  = $row['price_perkg'];
-            $lcost  = $row['loss_cost'];
-
-            // null handling untuk bind_param
-            $priceParam = $price;
-            $lcostParam = $lcost;
-            $notes = ''; // belum ada catatan per ekor
-
-            $stmtD->bind_param(
-                'iiissdddddsi',
-                $idloss,
-                $row['idreceivedetail'],
-                $row['idweighdetail'],
-                $row['eartag'],
-                $row['class'],
-                $row['receive_weight'],
-                $row['actual_weight'],
-                $row['loss_weight'],
-                $priceParam,
-                $lcostParam,
-                $notes,
-                $iduser
-            );
-            $stmtD->execute();
-        }
-        $stmtD->close();
-
-        $conn->commit();
-
-        header("Location: view.php?id=" . $idloss);
-        exit;
-    } catch (Exception $e) {
-        $conn->rollback();
-        die("Gagal menyimpan data loss: " . e($e->getMessage()));
+if (!function_exists('tgl')) {
+    function tgl($d)
+    {
+        return $d ? date('d/M/Y', strtotime($d)) : '-';
     }
 }
 
@@ -178,7 +33,6 @@ if ($idweigh <= 0) {
     die("Parameter idweigh tidak valid.");
 }
 
-// Ambil header weighing + receive + PO
 $sqlHead = "
 SELECT
     w.idweigh,
@@ -191,13 +45,13 @@ SELECT
     s.nmsupplier
 FROM weight_cattle w
 JOIN cattle_receive r
-      ON r.idreceive = w.idreceive
-     AND r.is_deleted = 0
+    ON r.idreceive = w.idreceive
+    AND r.is_deleted = 0
 JOIN pocattle p
-      ON p.idpo = r.idpo
-     AND p.is_deleted = 0
+    ON p.idpo = r.idpo
+    AND p.is_deleted = 0
 JOIN supplier s
-      ON s.idsupplier = p.idsupplier
+    ON s.idsupplier = p.idsupplier
 WHERE w.idweigh = ?
   AND w.is_deleted = 0
 LIMIT 1
@@ -214,7 +68,6 @@ if (!$header) {
 }
 $idreceive = (int)$header['idreceive'];
 
-// Ambil detail per ekor: receive vs timbang + harga default dari PO detail
 $sqlDet = "
 SELECT
     wd.idweighdetail,
@@ -223,20 +76,21 @@ SELECT
     rd.class,
     rd.weight AS receive_weight,
     wd.weight AS actual_weight,
-    (rd.weight - wd.weight) AS loss_weight,
+    (wd.weight - rd.weight) AS loss_weight,
     pd.price AS default_price
 FROM weight_cattle_detail wd
 JOIN cattle_receive_detail rd
-      ON rd.idreceivedetail = wd.idreceivedetail
+    ON rd.idreceivedetail = wd.idreceivedetail
 JOIN cattle_receive r
-      ON r.idreceive = rd.idreceive
-JOIN pocattledetail pd
-      ON pd.idpo = r.idpo
-     AND pd.class = rd.class
-     AND pd.is_deleted = 0
+    ON r.idreceive = rd.idreceive
+LEFT JOIN pocattledetail pd
+    ON pd.idpo = r.idpo
+    AND TRIM(LOWER(pd.class)) = TRIM(LOWER(rd.class))
+    AND pd.is_deleted = 0
 WHERE wd.idweigh = ?
 ORDER BY rd.eartag
 ";
+
 $stmt2 = $conn->prepare($sqlDet);
 $stmt2->bind_param('i', $idweigh);
 $stmt2->execute();
@@ -251,7 +105,6 @@ if (empty($details)) {
     die("Tidak ada detail timbang untuk weighing ini.");
 }
 
-// Hitung ringkasan awal untuk tampilan
 $totalReceive = 0;
 $totalActual  = 0;
 $totalLoss    = 0;
@@ -264,15 +117,11 @@ foreach ($details as $d) {
 
 <div class="content-wrapper">
 
-    <!-- Header -->
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Cattle Weight Loss (Receiving) - Create</h1>
-                    <p class="mb-0 text-muted">
-                        Hitung selisih berat kedatangan vs timbang ulang dan nilai loss-nya.
-                    </p>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="draft.php" class="btn btn-secondary btn-sm">
@@ -283,15 +132,15 @@ foreach ($details as $d) {
         </div>
     </section>
 
-    <!-- Main -->
     <section class="content">
         <div class="container-fluid">
+
+            <!-- PERBAIKAN DI SINI -->
             <form method="post" action="store.php">
 
                 <input type="hidden" name="idweigh" value="<?= (int)$header['idweigh']; ?>">
                 <input type="hidden" name="idreceive" value="<?= (int)$header['idreceive']; ?>">
 
-                <!-- CARD HEADER -->
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Header</h3>
@@ -335,36 +184,17 @@ foreach ($details as $d) {
 
                         <div class="form-group">
                             <label>Note</label>
-                            <textarea name="note" class="form-control" rows="2"
-                                placeholder="Catatan (opsional)"></textarea>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label>Total Receive Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= number_format($totalReceive, 2, ',', '.'); ?>" readonly>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Total Actual Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= number_format($totalActual, 2, ',', '.'); ?>" readonly>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Total Loss Weight (Kg)</label>
-                                <input type="text" class="form-control"
-                                    value="<?= number_format($totalLoss, 2, ',', '.'); ?>" readonly>
-                            </div>
+                            <textarea name="note" class="form-control" rows="2"></textarea>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- CARD DETAIL -->
                 <div class="card card-info">
                     <div class="card-header">
                         <h3 class="card-title mb-0">Detail per Ekor</h3>
                     </div>
+
                     <div class="card-body table-responsive p-0">
                         <table class="table table-bordered table-hover table-sm mb-0">
                             <thead class="text-center">
@@ -456,7 +286,6 @@ foreach ($details as $d) {
 </div>
 
 <script>
-    // optional: update tampilan loss cost saat harga diubah
     document.querySelectorAll('.price-input').forEach(function(el) {
         el.addEventListener('input', function() {
             var loss = parseFloat(this.getAttribute('data-loss')) || 0;

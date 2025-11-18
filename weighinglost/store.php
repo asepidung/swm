@@ -4,7 +4,6 @@ require "../konak/conn.php";
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Helper sederhana
 function e($s)
 {
     return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
@@ -25,7 +24,6 @@ if ($idweigh <= 0 || $idreceive <= 0) {
     die("Data tidak valid (idweigh/idreceive).");
 }
 
-// Ambil arrays detail
 $idreceivedetail = $_POST['idreceivedetail'] ?? [];
 $idweighdetail   = $_POST['idweighdetail']   ?? [];
 $eartagArr       = $_POST['eartag']          ?? [];
@@ -38,7 +36,6 @@ if (count($idreceivedetail) === 0) {
     die("Tidak ada data detail yang dikirim.");
 }
 
-// Siapkan data baris + hitung total
 $rows = [];
 $total_receive_weight = 0.0;
 $total_actual_weight  = 0.0;
@@ -47,15 +44,17 @@ $total_loss_cost      = 0.0;
 
 $count = count($idreceivedetail);
 for ($i = 0; $i < $count; $i++) {
+
     $idr  = (int)$idreceivedetail[$i];
     $idw  = (int)$idweighdetail[$i];
     $ear  = trim($eartagArr[$i] ?? '');
     $cls  = trim($classArr[$i] ?? '');
     $recv = (float)($recvArr[$i] ?? 0);
     $act  = (float)($actArr[$i] ?? 0);
-    $loss = $recv - $act;
 
-    // harga bisa kosong
+    // *** PERBAIKAN RUMUS LOSS ***
+    $loss = $act - $recv;
+
     $priceRaw = trim($priceArr[$i] ?? '');
     $price = ($priceRaw === '') ? null : (float)$priceRaw;
 
@@ -82,12 +81,10 @@ for ($i = 0; $i < $count; $i++) {
     ];
 }
 
-// Buat nomor dokumen sederhana (silakan ganti dengan generator versimu sendiri)
 $loss_no = 'LRC-' . date('ymdHis');
 
 $conn->begin_transaction();
 try {
-    // INSERT HEADER
     $sqlHeader = "
         INSERT INTO cattle_loss_receive
             (idreceive, idweigh, loss_no, loss_date, note,
@@ -114,7 +111,6 @@ try {
     $idloss = $stmtH->insert_id;
     $stmtH->close();
 
-    // INSERT DETAIL
     $sqlDet = "
         INSERT INTO cattle_loss_receive_detail
             (idloss, idreceivedetail, idweighdetail, eartag, cattle_class,
@@ -126,9 +122,9 @@ try {
     $stmtD = $conn->prepare($sqlDet);
 
     foreach ($rows as $row) {
-        $priceParam = $row['price_perkg']; // boleh null
-        $lcostParam = $row['loss_cost'];   // boleh null
-        $notes = '';                       // nanti kalau mau tambahin notes per ekor bisa diubah
+        $priceParam = $row['price_perkg'];
+        $lcostParam = $row['loss_cost'];
+        $notes = '';
 
         $stmtD->bind_param(
             'iiissdddddsi',
@@ -151,7 +147,7 @@ try {
 
     $conn->commit();
 
-    header("Location: view.php?id=" . $idloss);
+    header("Location: index.php");
     exit;
 } catch (Exception $e) {
     $conn->rollback();

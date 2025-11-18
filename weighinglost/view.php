@@ -5,13 +5,14 @@ require "../konak/conn.php";
 // Saat dev: munculkan error MySQLi (matikan di produksi)
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Helper (aman XSS)
+// Helper anti XSS
 if (!function_exists('e')) {
     function e($s)
     {
         return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
     }
 }
+
 if (!function_exists('tgl')) {
     function tgl($d)
     {
@@ -24,6 +25,7 @@ if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
     http_response_code(400);
     exit("Invalid loss id.");
 }
+
 $idloss = (int)$_GET['id'];
 
 // ===== HEADER LOSS =====
@@ -52,14 +54,11 @@ $stmtH = $conn->prepare("
 
     FROM cattle_loss_receive l
     JOIN weight_cattle w
-          ON w.idweigh = l.idweigh
-         AND w.is_deleted = 0
+          ON w.idweigh = l.idweigh AND w.is_deleted = 0
     JOIN cattle_receive r
-          ON r.idreceive = l.idreceive
-         AND r.is_deleted = 0
+          ON r.idreceive = l.idreceive AND r.is_deleted = 0
     JOIN pocattle p
-          ON p.idpo = r.idpo
-         AND p.is_deleted = 0
+          ON p.idpo = r.idpo AND p.is_deleted = 0
     JOIN supplier s
           ON s.idsupplier = p.idsupplier
     LEFT JOIN users u
@@ -69,6 +68,7 @@ $stmtH = $conn->prepare("
       AND l.is_deleted = 0
     LIMIT 1
 ");
+
 $stmtH->bind_param("i", $idloss);
 $stmtH->execute();
 $loss = $stmtH->get_result()->fetch_assoc();
@@ -79,11 +79,17 @@ if (!$loss) {
     exit("Loss data not found for the given id.");
 }
 
-// Ringkasan dari header
+// Ringkasan header
 $totalReceive = (float)$loss['total_receive_weight'];
 $totalActual  = (float)$loss['total_actual_weight'];
 $totalLoss    = (float)$loss['total_loss_weight'];
 $totalCost    = (float)$loss['total_loss_cost'];
+
+// ===== FIX: PERSENTASE SELALU NEGATIF =====
+$lossPercentage = 0;
+if ($totalReceive > 0) {
+    $lossPercentage = - (abs($totalLoss) / $totalReceive) * 100;
+}
 
 // ===== DETAIL LOSS =====
 $stmtD = $conn->prepare("
@@ -164,7 +170,6 @@ $heads = count($details);
         .brand .name {
             font-size: 20px;
             font-weight: 700;
-            letter-spacing: .3px;
         }
 
         .brand .tag {
@@ -183,21 +188,17 @@ $heads = count($details);
             font-size: 18px;
             font-weight: 700;
             margin: 0;
-            letter-spacing: .5px;
         }
 
         .meta {
             margin-top: 12px;
             display: grid;
             grid-template-columns: auto 1fr auto 1fr;
-            column-gap: 16px;
-            row-gap: 6px;
-            align-items: center;
+            gap: 6px 16px;
         }
 
         .meta dt {
             font-weight: 600;
-            margin: 0;
         }
 
         .meta dd {
@@ -216,14 +217,6 @@ $heads = count($details);
             font-weight: 600;
             text-align: center;
             padding: 8px;
-        }
-
-        .loss-table tfoot th,
-        .loss-table tfoot td {
-            border: 1px solid var(--line);
-            padding: 8px;
-            background: #fafafa;
-            font-weight: 600;
         }
 
         .loss-table td {
@@ -250,7 +243,6 @@ $heads = count($details);
 
         .note .label {
             font-weight: 600;
-            margin-bottom: 4px;
         }
 
         .signs {
@@ -283,18 +275,13 @@ $heads = count($details);
             .no-print {
                 display: none !important;
             }
-
-            .doc {
-                margin: 0;
-                padding: 0;
-            }
         }
     </style>
 </head>
 
 <body>
     <div class="doc">
-        <!-- Header -->
+
         <div class="header">
             <div class="brand">
                 <img src="../dist/img/logoSWM.png" alt="Logo">
@@ -312,8 +299,6 @@ $heads = count($details);
 
         <!-- Meta -->
         <dl class="meta">
-            <dt>Tgl Loss</dt>
-            <dd><?= tgl($loss['loss_date']); ?></dd>
 
             <dt>Dibuat Oleh</dt>
             <dd><?= e($loss['createuser'] ?? '-'); ?></dd>
@@ -335,13 +320,17 @@ $heads = count($details);
 
             <dt>Ekor</dt>
             <dd><?= number_format((int)$heads, 0, ',', '.'); ?></dd>
+
+            <dt>Loss Percentage</dt>
+            <dd><?= number_format($lossPercentage, 2, ',', '.') ?> %</dd>
+
         </dl>
 
         <!-- Items -->
         <table class="loss-table">
             <thead>
                 <tr>
-                    <th style="width:52px;">#</th>
+                    <th>#</th>
                     <th>Eartag</th>
                     <th>Class</th>
                     <th>Harga / Kg</th>
@@ -369,15 +358,11 @@ $heads = count($details);
                             <td class="center"><?= $no++ ?></td>
                             <td><?= e($d['eartag']) ?></td>
                             <td class="center"><?= e($d['cattle_class']) ?></td>
-                            <td class="num">
-                                <?= $price === null ? '-' : number_format((float)$price, 0, ',', '.') ?>
-                            </td>
+                            <td class="num"><?= $price === null ? '-' : number_format((float)$price, 0, ',', '.') ?></td>
                             <td class="num"><?= number_format($rw, 2, ',', '.') ?></td>
                             <td class="num"><?= number_format($aw, 2, ',', '.') ?></td>
                             <td class="num"><?= number_format($diff, 2, ',', '.') ?></td>
-                            <td class="num">
-                                <?= $cost === null ? '-' : number_format((float)$cost, 0, ',', '.') ?>
-                            </td>
+                            <td class="num"><?= $cost === null ? '-' : number_format((float)$cost, 0, ',', '.') ?></td>
                             <td><?= e($d['notes'] ?? '') ?></td>
                         </tr>
                 <?php endforeach;
@@ -402,7 +387,6 @@ $heads = count($details);
             </div>
         <?php endif; ?>
 
-        <!-- Signature -->
         <div class="signs">
             <div class="sign-card">
                 <div class="muted">Prepared By</div>
@@ -413,9 +397,7 @@ $heads = count($details);
         <!-- Actions -->
         <div class="row mt-4 justify-content-center no-print">
             <div class="col-6 col-sm-4 col-md-3 mb-2">
-                <a href="index.php" class="btn btn-success btn-block">
-                    <i class="fas fa-undo"></i>
-                </a>
+                <a href="index.php" class="btn btn-success btn-block"><i class="fas fa-undo"></i></a>
             </div>
             <div class="col-6 col-sm-4 col-md-3">
                 <button type="button" class="btn btn-warning btn-block" onclick="window.print()">
@@ -423,6 +405,7 @@ $heads = count($details);
                 </button>
             </div>
         </div>
+
     </div>
 </body>
 
