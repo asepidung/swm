@@ -89,40 +89,61 @@ foreach ($rows as $r) $totalWeight += (float)$r['weight'];
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Ringkasan -->
             <div class="card">
                 <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-2">PO Number</dt>
-                        <dd class="col-sm-4"><?= e($rcv['nopo']) ?></dd>
-                        <dt class="col-sm-2">Supplier</dt>
-                        <dd class="col-sm-4"><?= e($rcv['nmsupplier']) ?></dd>
+                    <div class="container-fluid">
+                        <!-- Row 1 -->
+                        <div class="row mb-2">
+                            <div class="col-sm-2 font-weight-bold">PO Number</div>
+                            <div class="col-sm-4"><?= e($rcv['nopo']) ?></div>
 
-                        <dt class="col-sm-2">PO Date</dt>
-                        <dd class="col-sm-4"><?= tgl($rcv['podate']) ?></dd>
-                        <dt class="col-sm-2">Plan Arrival</dt>
-                        <dd class="col-sm-4"><?= tgl($rcv['arrival_date']) ?></dd>
+                            <div class="col-sm-2 font-weight-bold">Supplier</div>
+                            <div class="col-sm-4"><?= e($rcv['nmsupplier']) ?></div>
+                        </div>
 
-                        <dt class="col-sm-2">Receipt Date</dt>
-                        <dd class="col-sm-4"><?= tgl($rcv['receipt_date']) ?></dd>
-                        <dt class="col-sm-2">Doc No</dt>
-                        <dd class="col-sm-4"><?= e($rcv['doc_no'] ?? '-') ?></dd>
+                        <!-- Row 2 -->
+                        <div class="row mb-2">
+                            <div class="col-sm-2 font-weight-bold">PO Date</div>
+                            <div class="col-sm-4"><?= tgl($rcv['podate']) ?></div>
 
-                        <dt class="col-sm-2">SV</dt>
-                        <dd class="col-sm-4"><?= $rcv['sv_ok'] ? 'Ada' : 'Tidak' ?></dd>
-                        <dt class="col-sm-2">SKKH</dt>
-                        <dd class="col-sm-4"><?= $rcv['skkh_ok'] ? 'Ada' : 'Tidak' ?></dd>
+                            <div class="col-sm-2 font-weight-bold">Receipt Date</div>
+                            <div class="col-sm-4"><?= tgl($rcv['receipt_date']) ?></div>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="row mb-2">
+                            <div class="col-sm-2 font-weight-bold">Plan Arrival</div>
+                            <div class="col-sm-4"><?= tgl($rcv['arrival_date']) ?></div>
+
+                            <div class="col-sm-2 font-weight-bold">Doc No</div>
+                            <div class="col-sm-4"><?= e($rcv['doc_no'] ?? '-') ?></div>
+                        </div>
+
+                        <!-- Row 4 -->
+                        <div class="row mb-2">
+                            <div class="col-sm-2 font-weight-bold">Created By</div>
+                            <div class="col-sm-4"><?= e($rcv['created_by'] ?? '-') ?></div>
+
+                            <div class="col-sm-2 font-weight-bold">SKKH</div>
+                            <div class="col-sm-4"><?= $rcv['skkh_ok'] ? 'Ada' : 'Tidak' ?></div>
+                        </div>
+
+                        <!-- Row 5 -->
+                        <div class="row mb-2">
+                            <div class="col-sm-2 font-weight-bold">Created At</div>
+                            <div class="col-sm-4"><?= tgl(substr($rcv['creatime'], 0, 10)) . ' ' . substr($rcv['creatime'], 11, 8) ?></div>
+
+                            <div class="col-sm-2 font-weight-bold">SV</div>
+                            <div class="col-sm-4"><?= $rcv['sv_ok'] ? 'Ada' : 'Tidak' ?></div>
+                        </div>
 
                         <?php if (!empty($rcv['note'])): ?>
-                            <dt class="col-sm-2">Note</dt>
-                            <dd class="col-sm-10"><?= nl2br(e($rcv['note'])) ?></dd>
+                            <div class="row mb-2">
+                                <div class="col-sm-2 font-weight-bold">Note</div>
+                                <div class="col-sm-10"><?= nl2br(e($rcv['note'])) ?></div>
+                            </div>
                         <?php endif; ?>
-
-                        <dt class="col-sm-2">Created At</dt>
-                        <dd class="col-sm-4"><?= tgl(substr($rcv['creatime'], 0, 10)) . ' ' . substr($rcv['creatime'], 11, 8) ?></dd>
-                        <dt class="col-sm-2">Created By</dt>
-                        <dd class="col-sm-4"><?= e($rcv['created_by'] ?? '-') ?></dd>
-                    </dl>
+                    </div>
                 </div>
             </div>
 

@@ -64,7 +64,7 @@ unset($_SESSION['form_old'], $_SESSION['form_errors']);
 
                             <div class="form-group col-md-4">
                                 <label>Arrival Date (Plan)</label>
-                                <input type="date" name="arrival_date" class="form-control"
+                                <input type="date" name="arrival_date" class="form-control" required
                                     value="<?= e($old['arrival_date'] ?? '') ?>">
                             </div>
 

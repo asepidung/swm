@@ -172,8 +172,7 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Tanggal Killing</label>
-                                            <input type="date" name="killdate" class="form-control form-control-sm"
-                                                value="<?= e(tgl($header['weigh_date'])); ?>" required>
+                                            <input type="date" name="killdate" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="col-md-9">
@@ -232,22 +231,22 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
                                                     <td>
                                                         <input type="number" step="0.01" min="0"
                                                             name="carcase1[]" class="form-control form-control-sm text-right"
-                                                            placeholder="A">
+                                                            placeholder="A" max="500">
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01" min="0"
                                                             name="carcase2[]" class="form-control form-control-sm text-right"
-                                                            placeholder="B">
+                                                            placeholder="B" max="500">
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01" min="0"
                                                             name="hides[]" class="form-control form-control-sm text-right"
-                                                            placeholder="Hides">
+                                                            placeholder="Hides" max="100">
                                                     </td>
                                                     <td>
                                                         <input type="number" step="0.01" min="0"
                                                             name="tails[]" class="form-control form-control-sm text-right"
-                                                            placeholder="Tail">
+                                                            placeholder="Tail" max="100">
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>

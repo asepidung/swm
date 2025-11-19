@@ -212,7 +212,7 @@ if (!empty($old['class'])) {
                                             <td><input type="text" name="eartag[]" class="form-control form-control-sm" maxlength="50"
                                                     value="<?= e($rw['eartag']) ?>" required></td>
                                             <td><input type="number" name="weight[]" class="form-control form-control-sm text-right"
-                                                    step="0.01" min="0.01" value="<?= e($rw['weight']) ?>" required></td>
+                                                    min="0" value="<?= e($rw['weight']) ?>" required></td>
                                             <td><input type="text" name="notes[]" class="form-control form-control-sm"
                                                     value="<?= e($rw['notes']) ?>"></td>
                                             <td class="text-center">
@@ -285,7 +285,7 @@ if (!empty($old['class'])) {
       </select>
     </td>
     <td><input type="text" name="eartag[]" class="form-control form-control-sm" maxlength="50" required></td>
-    <td><input type="number" name="weight[]" class="form-control form-control-sm text-right" step="0.01" min="0.01" required></td>
+    <td><input type="number" name="weight[]" class="form-control form-control-sm text-right" min="0" required></td>
     <td><input type="text" name="notes[]" class="form-control form-control-sm"></td>
     <td class="text-center"><button type="button" class="btn btn-danger btn-sm btnDel"><i class="fas fa-trash"></i></button></td>
   </tr>`;

@@ -82,7 +82,7 @@ unset($_SESSION['form_errors'], $_SESSION['form_old']);
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Arrival Date (Plan)</label>
-                                <input type="date" name="arrival_date" class="form-control" value="<?= e($old['arrival_date'] ?? ($po['arrival_date'] ?? '')) ?>">
+                                <input type="date" name="arrival_date" class="form-control" required value="<?= e($old['arrival_date'] ?? ($po['arrival_date'] ?? '')) ?>">
                             </div>
                         </div>
                         <div class="form-row">

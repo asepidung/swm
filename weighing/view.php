@@ -35,7 +35,7 @@ $stmtH = $conn->prepare("
         w.note,
         w.idreceive,
         r.receipt_date,
-        r.doc_no,                                       -- <- TAMBAH: doc_no
+        r.doc_no,
         p.nopo,
         s.nmsupplier,
         u.fullname AS weigher_name,
@@ -63,7 +63,7 @@ $stmtH = $conn->prepare("
         w.note,
         w.idreceive,
         r.receipt_date,
-        r.doc_no,                                    -- <- TAMBAH: doc_no ke GROUP BY
+        r.doc_no,
         p.nopo,
         s.nmsupplier,
         u.fullname
@@ -81,7 +81,8 @@ if (!$wgh) {
 
 $totalReceive = (float)$wgh['total_receive_weight'];
 $totalActual  = (float)$wgh['total_actual_weight'];
-$totalDiff    = $totalReceive - $totalActual;
+// Perbaikan: totalDiff = actual - receive (berat timbangan dikurangi berat penerimaan)
+$totalDiff    = $totalActual - $totalReceive;
 
 // ===== DETAIL =====
 $stmtD = $conn->prepare("
@@ -105,7 +106,8 @@ $details = [];
 while ($row = $resD->fetch_assoc()) {
     $rw = (float)$row['receive_weight'];
     $aw = (float)$row['actual_weight'];
-    $row['diff'] = $rw - $aw;
+    // Perbaikan: diff = actual - receive (berat timbangan dikurangi berat penerimaan)
+    $row['diff'] = $aw - $rw;
     $details[] = $row;
 }
 $stmtD->close();
@@ -340,7 +342,7 @@ $stmtD->close();
             <dt>Supplier</dt>
             <dd><?= e($wgh['nmsupplier']); ?></dd>
 
-            <dt>Doc No</dt> <!-- <- GANTI dari 'Tgl Receive' -->
+            <dt>Doc No</dt>
             <dd><?= e($wgh['doc_no'] ?? '-'); ?></dd>
 
             <dt>Ekor</dt>

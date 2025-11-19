@@ -274,8 +274,7 @@ $detail = $stmt->get_result();
                             <div class="col-md-3">
                                 <label for="weigh_date">Tanggal Timbang</label>
                                 <input type="date" name="weigh_date" id="weigh_date"
-                                    class="form-control form-control-sm"
-                                    value="<?= e($_POST['weigh_date'] ?? date('Y-m-d')); ?>" required>
+                                    class="form-control form-control-sm" required>
                             </div>
                             <div class="col-md-9">
                                 <label for="note">Catatan</label>

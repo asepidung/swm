@@ -34,7 +34,9 @@ SELECT
     s.nmsupplier,
     u.fullname AS weigher_name,
     COUNT(d.idweighdetail)      AS heads,
-    COALESCE(SUM(d.weight), 0)  AS total_weight,
+    COALESCE(SUM(d.weight), 0)  AS total_actual_weight,
+    COALESCE(SUM(crd.weight), 0) AS total_receive_weight,
+    (COALESCE(SUM(d.weight), 0) - COALESCE(SUM(crd.weight), 0)) AS total_diff,
     EXISTS(
         SELECT 1
         FROM weight_cattle_detail d2
@@ -58,6 +60,8 @@ LEFT JOIN users u
       ON u.idusers = w.idweigher
 LEFT JOIN weight_cattle_detail d
       ON d.idweigh = w.idweigh
+LEFT JOIN cattle_receive_detail crd
+      ON crd.idreceivedetail = d.idreceivedetail
 WHERE w.is_deleted = 0
 GROUP BY
     w.idweigh,
@@ -118,7 +122,7 @@ if (!$result) {
                                             <th>No PO</th>
                                             <th>Supplier</th>
                                             <th>Ekor</th>
-                                            <th>T Berat</th>
+                                            <th>Selisih (Kg)</th>
                                             <th>Petugas</th>
                                             <th style="width:10%;">Action</th>
                                         </tr>
@@ -128,7 +132,9 @@ if (!$result) {
                                         $no = 1;
                                         while ($row = $result->fetch_assoc()) :
                                             $heads         = (int)$row['heads'];
-                                            $total_weight  = (float)$row['total_weight'];
+                                            $total_actual  = (float)$row['total_actual_weight'];
+                                            $total_receive = (float)$row['total_receive_weight'];
+                                            $total_diff    = (float)$row['total_diff']; // actual - receive
                                             $isProcessed   = !empty($row['isProcessed']); // 1 jika sudah ada di carcas
                                             $canEdit       = !$isProcessed;
                                             $canDelete     = !$isProcessed;
@@ -140,7 +146,9 @@ if (!$result) {
                                                 <td class="text-center"><?= e($row['nopo']); ?></td>
                                                 <td><?= e($row['nmsupplier']); ?></td>
                                                 <td class="text-center"><?= number_format($heads, 0, ',', '.'); ?></td>
-                                                <td class="text-right"><?= number_format($total_weight, 2, ',', '.'); ?></td>
+                                                <td class="text-right">
+                                                    <?= number_format($total_diff, 2, ',', '.'); ?>
+                                                </td>
                                                 <td class="text-center"><?= e($row['weigher_name'] ?? '-'); ?></td>
                                                 <td class="text-center">
                                                     <a href="view.php?id=<?= (int)$row['idweigh']; ?>"

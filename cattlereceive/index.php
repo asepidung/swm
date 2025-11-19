@@ -25,7 +25,7 @@ function yn($i)
 /**
  * List cattle_receive aktif + ringkasan + flag sudah ditimbang.
  * Flag has_weigh didapat dari LEFT JOIN (SELECT DISTINCT idreceive FROM weight_cattle WHERE is_deleted=0)
- * supaya tidak bikin hasil COUNT/SUM membengkak.
+ * supaya tombol Edit/Delete hanya disable jika ada penimbangan yang aktif (is_deleted = 0).
  */
 $sql = "
 SELECT
@@ -48,12 +48,11 @@ JOIN pocattle   p ON p.idpo       = r.idpo
 JOIN supplier   s ON s.idsupplier = p.idsupplier
 LEFT JOIN cattle_receive_detail d ON d.idreceive = r.idreceive
 
--- GANTI 'weight_cattle' DI BAWAH JIKA NAMA TABEL TIMBANGMU 'cattle_weigh'
+-- IMPORTANT: only consider weight_cattle rows that are NOT soft-deleted
 LEFT JOIN (
   SELECT DISTINCT idreceive
   FROM weight_cattle
-  /* kalau ada kolom is_deleted di tabel timbang, buka baris ini: */
-  /* WHERE is_deleted = 0 */
+  WHERE is_deleted = 0
 ) wflag ON wflag.idreceive = r.idreceive
 
 WHERE r.is_deleted = 0
@@ -104,7 +103,8 @@ $res = $conn->query($sql);
                                     if ($res && $res->num_rows) {
                                         while ($r = $res->fetch_assoc()) {
                                             $idreceive = (int)$r['idreceive'];
-                                            $locked    = ((int)$r['has_weigh'] === 1); // sudah ada timbang
+                                            // locked hanya jika ada penimbangan aktif (is_deleted = 0)
+                                            $locked    = ((int)$r['has_weigh'] === 1);
                                             $editCls   = $locked ? 'disabled' : '';
                                             $delCls    = $locked ? 'disabled' : '';
                                             $editTitle = $locked ? 'Tidak bisa diedit: sudah ada data timbang' : 'Edit';
