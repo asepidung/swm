@@ -35,6 +35,7 @@ SELECT
     w.idweigh,
     w.weigh_no,
     w.weigh_date,
+    r.receipt_date,                -- <-- tambah receipt_date
     s.nmsupplier,
     COUNT(d.idweighdetail) AS heads
 FROM weight_cattle w
@@ -59,6 +60,7 @@ GROUP BY
     w.idweigh,
     w.weigh_no,
     w.weigh_date,
+    r.receipt_date,              -- <-- tambah ke GROUP BY
     s.nmsupplier
 HAVING
     heads > 0                   -- hanya batch yang masih punya sapi sisa
@@ -108,6 +110,7 @@ if (!$res) {
                                     <tr>
                                         <th style="width:5%;">#</th>
                                         <th>No Timbang</th>
+                                        <th>Tanggal Penerimaan</th>
                                         <th>Tanggal Timbang</th>
                                         <th>Supplier</th>
                                         <th class="text-right">Sapi Belum Dipotong (Ekor)</th>
@@ -125,6 +128,7 @@ if (!$res) {
                                             <tr>
                                                 <td class="text-center"><?= $no++; ?></td>
                                                 <td class="text-center"><?= e($r['weigh_no']); ?></td>
+                                                <td class="text-center"><?= e(tgl($r['receipt_date'])); ?></td>
                                                 <td class="text-center"><?= e(tgl($r['weigh_date'])); ?></td>
                                                 <td class="text-left"><?= e($r['nmsupplier']); ?></td>
                                                 <td class="text-right"><?= number_format($heads, 0, ',', '.'); ?></td>
@@ -139,7 +143,7 @@ if (!$res) {
                                     <?php
                                         }
                                     } else {
-                                        echo '<tr><td colspan="6" class="text-center text-muted">Tidak ada batch timbang yang masih memiliki sapi belum dipotong.</td></tr>';
+                                        echo '<tr><td colspan="7" class="text-center text-muted">Tidak ada batch timbang yang masih memiliki sapi belum dipotong.</td></tr>';
                                     }
                                     ?>
                                 </tbody>
