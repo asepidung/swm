@@ -18,6 +18,13 @@ function tgl($d)
 // ====================
 // Query utama CARCASE
 // ====================
+// Hasil mirip dengan calculatorcarcase.php lama:
+//  - total_berat       = SUM(berat)
+//  - total_eartag      = COUNT(baris) (head)
+//  - total_carcase     = SUM(carcase1 + carcase2)
+//  - total_carcase_tail= SUM(hides + tail)   -> dipakai di kolom "Offal"
+//  - total_hides       = SUM(hides)
+//  - total_tails       = SUM(tail)
 $sql = "
 SELECT
     c.idcarcase,
@@ -29,9 +36,7 @@ SELECT
     COALESCE(SUM(cd.carcase1 + cd.carcase2), 0)       AS total_carcase,
     COALESCE(SUM(cd.hides + cd.tail), 0)              AS total_carcase_tail,
     COALESCE(SUM(cd.hides), 0)                        AS total_hides,
-    COALESCE(SUM(cd.tail), 0)                         AS total_tails,
-    -- ambil PO number dari hubungan melalui carcasedetail -> weight_cattle_detail -> weight_cattle -> cattle_receive -> pocattle
-    MIN(p.nopo) AS nopo
+    COALESCE(SUM(cd.tail), 0)                         AS total_tails
 FROM carcase c
 LEFT JOIN supplier s
        ON s.idsupplier = c.idsupplier
@@ -39,17 +44,6 @@ LEFT JOIN users u
        ON u.idusers = c.idusers
 LEFT JOIN carcasedetail cd
        ON cd.idcarcase = c.idcarcase
-
--- join ke weight_cattle_detail (kemungkinan null)
-LEFT JOIN weight_cattle_detail wcd
-       ON wcd.idweighdetail = cd.idweightdetail
-LEFT JOIN weight_cattle w
-       ON w.idweigh = wcd.idweigh
-LEFT JOIN cattle_receive r
-       ON r.idreceive = w.idreceive
-LEFT JOIN pocattle p
-       ON p.idpo = r.idpo
-
 WHERE c.is_deleted = 0
 GROUP BY
     c.idcarcase,
@@ -72,12 +66,21 @@ if (!$result) {
         <div class="container-fluid">
             <div class="row mb-2">
 
+                <!-- Tombol Draft dari Weighing -->
                 <div class="col-12 col-md-2 mb-2">
                     <a href="draft.php" class="btn btn-sm btn-outline-primary btn-block">
                         <i class="fas fa-file-alt"></i> Draft from Weighing
                     </a>
                 </div>
 
+                <!-- Kalau mau, bisa tambah tombol 'Baru (manual)' di sebelahnya -->
+                <!--
+                <div class="col-12 col-md-2 mb-2">
+                    <a href="newkill.php" class="btn btn-sm btn-outline-secondary btn-block">
+                        <i class="fas fa-plus"></i> Baru (Manual)
+                    </a>
+                </div>
+                -->
             </div>
         </div>
     </div>
@@ -93,7 +96,6 @@ if (!$result) {
                                 <thead class="text-center">
                                     <tr>
                                         <th>#</th>
-                                        <th>No PO</th>
                                         <th>Killing Date</th>
                                         <th>Supplier</th>
                                         <th>Berat &Sigma;</th>
@@ -112,9 +114,9 @@ if (!$result) {
                                     if ($result->num_rows > 0) {
                                         $no = 1;
                                         while ($row = $result->fetch_assoc()) {
-                                            $total_berat   = (float)$row['total_berat'];
+                                            $total_berat = (float)$row['total_berat'];
                                             $total_carcase = (float)$row['total_carcase'];
-                                            $total_tails   = (float)$row['total_tails'];
+                                            $total_tails = (float)$row['total_tails'];
 
                                             // Offal = total carcase + total tails (tanpa hides)
                                             $offal = $total_carcase + $total_tails;
@@ -126,10 +128,6 @@ if (!$result) {
                                     ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++ ?></td>
-
-                                                <!-- tampilkan No PO, fallback '-' jika null -->
-                                                <td class="text-center"><?= e($row['nopo'] ?? '-') ?></td>
-
                                                 <td class="text-center"><?= e(tgl($row['killdate'])) ?></td>
                                                 <td class="text-left"><?= e($row['nmsupplier'] ?? '-') ?></td>
                                                 <td><?= number_format($total_berat, 2) ?></td>
@@ -158,7 +156,7 @@ if (!$result) {
                                     <?php
                                         }
                                     } else {
-                                        echo "<tr><td colspan='13' class='text-center text-muted'>Tidak ada data ditemukan</td></tr>";
+                                        echo "<tr><td colspan='12' class='text-center text-muted'>Tidak ada data ditemukan</td></tr>";
                                     }
                                     ?>
                                 </tbody>
@@ -176,6 +174,4 @@ if (!$result) {
     document.title = "Data Carcas";
 </script>
 
-<?php
-include "../footer.php";
-?>
+<?php include "../footer.php"; ?>

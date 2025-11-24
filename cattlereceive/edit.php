@@ -290,6 +290,7 @@ if (!empty($old['class'])) {
     <td class="text-center"><button type="button" class="btn btn-danger btn-sm btnDel"><i class="fas fa-trash"></i></button></td>
   </tr>`;
         document.getElementById('detailBody').insertAdjacentHTML('beforeend', tpl);
+        attachLiveCheck();
         renumber();
     }
     document.getElementById('btnAddRow').addEventListener('click', addRow);
@@ -301,11 +302,186 @@ if (!empty($old['class'])) {
                 return;
             }
             e.target.closest('tr').remove();
+            markDuplicateInForm();
             renumber();
         }
     });
     document.getElementById('detailBody').addEventListener('input', function(e) {
-        if (e.target.name === 'weight[]' || e.target.name === 'eartag[]') renumber();
+        if (e.target.name === 'weight[]' || e.target.name === 'eartag[]') {
+            renumber();
+            if (e.target.name === 'eartag[]') markDuplicateInForm();
+        }
     });
     renumber();
+</script>
+
+<script>
+    // ======= Live check eartag aktif + duplikat dalam form =======
+
+    // util
+    function normalizeTag(v) {
+        return (v || '').trim().toUpperCase();
+    }
+
+    // cache hasil cek biar hemat request
+    const tagCache = new Map(); // key: eartag, val: {active:boolean, ts:number}
+    const DEBOUNCE_MS = 300;
+
+    function setInputState(input, {
+        busy = false,
+        error = false,
+        msg = ''
+    }) {
+        input.classList.remove('is-invalid', 'is-valid');
+        if (busy) {
+            input.dataset.busy = '1';
+        } else {
+            delete input.dataset.busy;
+        }
+        if (error) {
+            input.classList.add('is-invalid');
+            input.title = msg || 'Eartag sudah aktif di sistem.';
+        } else if (input.value.trim() !== '') {
+            input.classList.add('is-valid');
+            input.title = '';
+        } else {
+            input.title = '';
+        }
+    }
+
+    async function checkTagActive(tag) {
+        if (!tag) return {
+            active: false
+        };
+        const cached = tagCache.get(tag);
+        const now = Date.now();
+        if (cached && (now - cached.ts) < 10000) return {
+            active: cached.active
+        };
+
+        // ambil idreceive dari form supaya ajax mengabaikan eartag milik receive yang sedang diedit
+        const idreceiveInput = document.querySelector('input[name="idreceive"]');
+        const idreceiveParam = idreceiveInput ? `&idreceive=${encodeURIComponent(idreceiveInput.value)}` : '';
+
+        const url = `ajax_check_eartag.php?eartag=${encodeURIComponent(tag)}${idreceiveParam}`;
+        try {
+            const res = await fetch(url, {
+                credentials: 'same-origin'
+            });
+            const json = await res.json();
+            const active = !!(json && json.active);
+            tagCache.set(tag, {
+                active,
+                ts: now
+            });
+            return {
+                active
+            };
+        } catch (e) {
+            return {
+                active: false
+            };
+        }
+    }
+
+    // duplikat di dalam form
+    function markDuplicateInForm() {
+        const inputs = Array.from(document.querySelectorAll('input[name="eartag[]"]'));
+        const seen = {};
+        inputs.forEach(inp => {
+            inp.classList.remove('is-invalid');
+            inp.title = '';
+        });
+        inputs.forEach(inp => {
+            const tag = normalizeTag(inp.value);
+            if (!tag) return;
+            if (seen[tag]) {
+                seen[tag].classList.add('is-invalid');
+                seen[tag].title = 'Eartag duplikat di form.';
+                inp.classList.add('is-invalid');
+                inp.title = 'Eartag duplikat di form.';
+            } else {
+                seen[tag] = inp;
+            }
+        });
+    }
+
+    // debouncer per-input
+    const debouncers = new WeakMap();
+
+    function debounceInput(el, fn) {
+        if (debouncers.has(el)) clearTimeout(debouncers.get(el));
+        const t = setTimeout(fn, DEBOUNCE_MS);
+        debouncers.set(el, t);
+    }
+
+    // attach ke semua input eartag
+    function attachLiveCheck() {
+        document.querySelectorAll('input[name="eartag[]"]').forEach((inp) => {
+            // normalisasi saat blur + cek aktif
+            inp.addEventListener('blur', async () => {
+                const tag = normalizeTag(inp.value);
+                inp.value = tag;
+                markDuplicateInForm();
+                if (!tag) {
+                    setInputState(inp, {
+                        error: false
+                    });
+                    return;
+                }
+                setInputState(inp, {
+                    busy: true
+                });
+                const {
+                    active
+                } = await checkTagActive(tag);
+                setInputState(inp, {
+                    busy: false,
+                    error: active,
+                    msg: 'Eartag sudah aktif di sistem.'
+                });
+            });
+            // debounce saat ketik
+            inp.addEventListener('input', () => {
+                debounceInput(inp, async () => {
+                    const tag = normalizeTag(inp.value);
+                    markDuplicateInForm();
+                    if (!tag) {
+                        setInputState(inp, {
+                            error: false
+                        });
+                        return;
+                    }
+                    const {
+                        active
+                    } = await checkTagActive(tag);
+                    setInputState(inp, {
+                        busy: false,
+                        error: active,
+                        msg: 'Eartag sudah aktif di sistem.'
+                    });
+                });
+            });
+        });
+    }
+    attachLiveCheck();
+
+    // blokir submit kalau ada masalah
+    document.querySelector('form[action="update.php"]').addEventListener('submit', function(e) {
+        markDuplicateInForm();
+        let ok = true;
+        const inputs = Array.from(document.querySelectorAll('input[name="eartag[]"]'));
+        for (const inp of inputs) {
+            const tag = normalizeTag(inp.value);
+            inp.value = tag;
+            if (!tag || inp.classList.contains('is-invalid')) {
+                ok = false;
+                break;
+            }
+        }
+        if (!ok) {
+            e.preventDefault();
+            alert('Periksa eartag: tidak boleh kosong, duplikat di form, atau sudah aktif di sistem.');
+        }
+    });
 </script>

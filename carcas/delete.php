@@ -28,24 +28,58 @@ if ($idusers <= 0) {
 }
 
 try {
-    // Soft delete → hanya set is_deleted = 1
-    $stmt = $conn->prepare("
-        UPDATE carcase
-        SET is_deleted = 1
-        WHERE idcarcase = ? AND is_deleted = 0
+    // Mulai transaksi supaya hard delete bersifat atomik
+    $conn->begin_transaction();
+
+    // 1) Hapus semua detail terkait di carcasedetail
+    $stmtDetail = $conn->prepare("
+        DELETE FROM carcasedetail
+        WHERE idcarcase = ?
     ");
-    if (!$stmt) {
-        throw new Exception("Gagal menyiapkan statement: " . $conn->error);
+    if (!$stmtDetail) {
+        throw new Exception("Gagal menyiapkan statement detail: " . $conn->error);
+    }
+    $stmtDetail->bind_param("i", $idcarcase);
+    $stmtDetail->execute();
+    // (opsional) $deletedDetails = $stmtDetail->affected_rows;
+    $stmtDetail->close();
+
+    // 2) Hapus data utama di carcase
+    $stmtCarcase = $conn->prepare("
+        DELETE FROM carcase
+        WHERE idcarcase = ?
+    ");
+    if (!$stmtCarcase) {
+        throw new Exception("Gagal menyiapkan statement carcase: " . $conn->error);
+    }
+    $stmtCarcase->bind_param("i", $idcarcase);
+    $stmtCarcase->execute();
+
+    // Pastikan baris carcase memang ada dan dihapus
+    if ($stmtCarcase->affected_rows === 0) {
+        // rollback sebelum lempar error
+        $stmtCarcase->close();
+        $conn->rollback();
+        throw new Exception("Data carcase dengan id {$idcarcase} tidak ditemukan (atau sudah dihapus).");
     }
 
-    $stmt->bind_param("i", $idcarcase);
-    $stmt->execute();
-    $stmt->close();
+    $stmtCarcase->close();
+
+    // Commit transaksi jika semua sukses
+    $conn->commit();
 
     // Selesai, kembali ke index
     header("Location: index.php");
     exit;
 } catch (Exception $ex) {
-    // Kalau ada error, tampilkan sederhana
+    // Jika terjadi error, rollback dan tampilkan pesan sederhana
+    if ($conn->connect_errno === 0) {
+        // Jika koneksi masih valid, pastikan rollback
+        try {
+            $conn->rollback();
+        } catch (Exception $e) {
+            // ignore
+        }
+    }
     die("Terjadi kesalahan saat menghapus data: " . e($ex->getMessage()));
 }

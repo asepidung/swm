@@ -60,7 +60,7 @@ $eartag = $_POST['eartag'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $notes  = $_POST['notes']  ?? [];
 
-// Validasi detail
+// Validasi detail (struktur mirip store.php)
 $rows = [];
 $allowedClass = ['STEER', 'BULL', 'HEIFER', 'COW'];
 $dupe = [];
@@ -94,7 +94,6 @@ for ($i = 0; $i < $cnt; $i++) {
     }
 
     // Weight: terima 0; cek numeric & max 2 desimal
-    // pola: angka bulat atau desimal dengan titik, max 2 desimal
     if ($wt_norm === '' || !preg_match('/^\d+(\.\d{1,2})?$/', $wt_norm) || (float)$wt_norm < 0) {
         $errors[] = "Weight baris #" . ($i + 1) . " harus angka >= 0, max 2 desimal.";
     }
@@ -124,7 +123,71 @@ if (empty($rows)) $errors[] = "Minimal satu baris detail harus diisi.";
 
 if (!empty($errors)) backWithError($errors, $_POST, $idreceive);
 
-// SIMPAN
+// ----------------------
+// SERVER-SIDE DB CHECK (anti-duplicate across other active receives)
+// ----------------------
+// Kumpulkan eartag yang disubmit (unique)
+$submitted_tags = [];
+foreach ($rows as $r) {
+    $t = strtoupper(trim($r['eartag']));
+    if ($t !== '') $submitted_tags[$t] = $t;
+}
+$submitted_tags = array_values($submitted_tags);
+
+if (!empty($submitted_tags)) {
+    // build placeholders
+    $placeholders = implode(',', array_fill(0, count($submitted_tags), '?'));
+    $types = str_repeat('s', count($submitted_tags)) . 'i'; // tags..., then idreceive (int)
+
+    $sql = "
+      SELECT DISTINCT d.eartag, r.idreceive, r.receipt_date
+      FROM cattle_receive_detail d
+      JOIN cattle_receive r ON r.idreceive = d.idreceive
+      WHERE r.is_deleted = 0
+        AND d.eartag IN ($placeholders)
+        AND d.idreceive <> ?
+    ";
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        backWithError(["Gagal memeriksa eartag (prepare error)."], $_POST, $idreceive);
+    }
+
+    // dynamic bind params: first tags, then idreceive
+    $bind_names = [];
+    $bind_names[] = $types;
+    for ($i = 0; $i < count($submitted_tags); $i++) {
+        $bindName = 'param' . $i;
+        $$bindName = $submitted_tags[$i];
+        $bind_names[] = &$$bindName;
+    }
+    $lastBindName = 'param_idreceive';
+    $$lastBindName = $idreceive;
+    $bind_names[] = &$$lastBindName;
+
+    call_user_func_array([$stmt, 'bind_param'], $bind_names);
+
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $dbFound = [];
+    while ($r = $res->fetch_assoc()) {
+        $dbFound[] = $r;
+    }
+    $stmt->close();
+
+    if (!empty($dbFound)) {
+        foreach ($dbFound as $f) {
+            $t = strtoupper(trim($f['eartag']));
+            $errors[] = "Eartag '{$t}' sudah ada di penerimaan aktif (receipt id: {$f['idreceive']}, tanggal: {$f['receipt_date']}).";
+        }
+        if (!empty($errors)) {
+            backWithError($errors, $_POST, $idreceive);
+        }
+    }
+}
+
+// ----------------------
+// SIMPAN (TRANSAC)
+// ----------------------
 try {
     $conn->begin_transaction();
 
@@ -142,7 +205,6 @@ try {
   ");
     if (!$up) throw new Exception("Prepare update header failed: " . $conn->error);
 
-    // types: receipt_date(s), doc_no(s), sv_ok(i), skkh_ok(i), note(s), updateby(i), idreceive(i)
     $up->bind_param('ssiisii', $receipt_date, $doc_no, $sv_ok, $skkh_ok, $note, $iduser, $idreceive);
     if (!$up->execute()) throw new Exception("Gagal update header: " . $up->error);
 
@@ -159,7 +221,6 @@ try {
   ");
     if (!$ins) throw new Exception("Prepare insert detail failed: " . $conn->error);
 
-    // bind types: idreceive(i), eartag(s), weight(d), class(s), notes(s), iduser(i)
     foreach ($rows as $r) {
         $idrec = $idreceive;
         $eartagVal = $r['eartag'];
