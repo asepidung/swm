@@ -534,42 +534,31 @@ include "notifcount.php";
 
                   <?php if ($role['data_report'] == 1) : ?>
                      <li class="nav-item">
-                        <a href="404.php" class="nav-link">
-                           <i class="nav-icon fas fa-table"></i>
+                        <a href="#" class="nav-link">
+                           <i class="nav-icon fas fa-chart-line"></i>
                            <p>
                               DATA REPORT
                               <i class="right fas fa-angle-left"></i>
                            </p>
                         </a>
                         <ul class="nav nav-treeview">
+                           <!-- Submenu baru: Produk Fast Moving -->
                            <li class="nav-item">
-                              <a href="sales/order" class="nav-link">
+                              <a href="reports/fast_moving.php" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Order</p>
+                                 <p>Produk Fast Moving</p>
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="404.php" class="nav-link">
+                              <a href="reports/sales.php" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Balance Sheet</p>
+                                 <p>Penjualan</p>
                               </a>
                            </li>
                            <li class="nav-item">
-                              <a href="404.php" class="nav-link">
+                              <a href="stock" class="nav-link">
                                  <i class="far fa-circle nav-icon"></i>
-                                 <p>Profit / Loss</p>
-                              </a>
-                           </li>
-                           <li class="nav-item">
-                              <a href="404.php" class="nav-link">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Detail</p>
-                              </a>
-                           </li>
-                           <li class="nav-item">
-                              <a href="log.php" class="nav-link">
-                                 <i class="far fa-circle nav-icon"></i>
-                                 <p>Log Activity</p>
+                                 <p>Stock</p>
                               </a>
                            </li>
                         </ul>

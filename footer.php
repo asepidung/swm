@@ -33,6 +33,8 @@
 <script src="../plugins/bs-stepper/js/bs-stepper.min.js"></script>
 <script src="../plugins/dropzone/min/dropzone.min.js"></script>
 
+<script src="../plugins/chart.js/Chart.min.js"></script>
+
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 
