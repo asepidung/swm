@@ -447,7 +447,9 @@ include "notifcount.php";
                   <li class="nav-item">
                     <a href="../weighinglost" class="nav-link">
                       <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Weight Loss</p>
+                      <p>Weight Loss
+                        <span class="badge badge-info right"><?= $draftloss ?></span>
+                      </p>
                     </a>
                   </li>
                   <li class="nav-item">

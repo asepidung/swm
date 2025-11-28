@@ -96,7 +96,7 @@ $res = $conn->query($sql);
                 <div class="col-12 col-md-3 mb-2">
                     <!-- tombol ke halaman draft -->
                     <a href="draft.php" class="btn btn-sm btn-outline-primary btn-block">
-                        <i class="fas fa-file-alt"></i> Draft Loss
+                        <i class="fas fa-file-alt"></i> Draft Loss <span class="badge badge-danger ml-1"><?= $draftloss; ?></span>
                     </a>
                 </div>
             </div>

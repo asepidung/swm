@@ -123,3 +123,25 @@ $queryPoBelumGR = "
 $resultPoBelumGR = mysqli_query($conn, $queryPoBelumGR);
 $rowPoBelumGR = mysqli_fetch_assoc($resultPoBelumGR);
 $poBelumGRCount = $rowPoBelumGR['poBelumGRCount'];
+
+
+
+// hitung draft loss (weighing yang belum punya cattle_loss_receive)
+$queryDraftLoss = "
+    SELECT COUNT(DISTINCT w.idweigh) AS draftloss
+    FROM weight_cattle w
+    JOIN cattle_receive r
+      ON r.idreceive = w.idreceive
+     AND r.is_deleted = 0
+    JOIN pocattle p
+      ON p.idpo = r.idpo
+     AND p.is_deleted = 0
+    LEFT JOIN cattle_loss_receive l
+      ON l.idweigh = w.idweigh
+     AND l.is_deleted = 0
+    WHERE w.is_deleted = 0
+      AND l.idloss IS NULL
+";
+$resultDraftLoss = mysqli_query($conn, $queryDraftLoss);
+$rowDraftLoss = mysqli_fetch_assoc($resultDraftLoss);
+$draftloss = (int)($rowDraftLoss['draftloss'] ?? 0);
