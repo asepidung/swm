@@ -5,7 +5,35 @@ require "../header.php";
 require "../navbar.php";
 require "../mainsidebar.php";
 
-// Validasi idboning
+/*
+|------------------------------------------------------------------
+| MULTI-TOKEN ANTI-DUPLICATE (mendukung banyak tab)
+|------------------------------------------------------------------
+*/
+if (!isset($_SESSION['label_form_tokens']) || !is_array($_SESSION['label_form_tokens'])) {
+  $_SESSION['label_form_tokens'] = [];
+}
+
+// generate token baru untuk halaman ini
+$tok = bin2hex(random_bytes(16));
+
+// simpan token dengan timestamp
+$_SESSION['label_form_tokens'][$tok] = time();
+
+// batasi maksimal 20 token tersimpan
+if (count($_SESSION['label_form_tokens']) > 20) {
+  asort($_SESSION['label_form_tokens']); // urutkan dari yang paling lama
+  while (count($_SESSION['label_form_tokens']) > 20) {
+    array_shift($_SESSION['label_form_tokens']);
+  }
+}
+
+
+/*
+|------------------------------------------------------------------
+| VALIDASI idboning + persiapan data
+|------------------------------------------------------------------
+*/
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
   die("Jalankan Dari Modul Produksi");
 }
@@ -15,6 +43,7 @@ $idusers  = $_SESSION['idusers'] ?? 0;
 // Dropdown data
 $qBarang = $conn->query("SELECT idbarang, nmbarang FROM barang ORDER BY nmbarang ASC");
 if (!$qBarang) die("Error barang: " . $conn->error);
+
 $qGrade  = $conn->query("SELECT idgrade, nmgrade FROM grade ORDER BY nmgrade ASC");
 if (!$qGrade) die("Error grade: " . $conn->error);
 
@@ -25,6 +54,7 @@ if (empty($_SESSION['packdate'])) $_SESSION['packdate'] = date('Y-m-d');
 $batch = $conn->query("SELECT batchboning, kunci FROM boning WHERE idboning = $idboning LIMIT 1");
 if (!$batch) die("Error boning: " . $conn->error);
 $info = $batch->fetch_assoc();
+
 $is_batch  = (int)($info['batchboning'] ?? 0);
 $is_locked = (int)($info['kunci'] ?? 0);
 ?>
@@ -49,14 +79,21 @@ $is_locked = (int)($info['kunci'] ?? 0);
           <div class="col-lg-4">
             <div class="card">
               <div class="card-body">
-                <form method="POST" action="insert_labelboning.php" onsubmit="submitForm && submitForm(event)">
+                <form id="labelForm" method="POST" action="insert_labelboning.php">
+
+                  <!-- token multi-tab -->
+                  <input type="hidden" name="form_token" value="<?= htmlspecialchars($tok, ENT_QUOTES) ?>">
+
                   <!-- Barang -->
                   <div class="form-group">
                     <div class="input-group">
                       <select class="form-control" name="idbarang" id="idbarang" required autofocus>
                         <?php
                         $selBrg = (int)($_SESSION['idbarang'] ?? 0);
-                        echo $selBrg ? '<option value="' . $selBrg . '" selected>--Pilih Item--</option>' : '<option value="" selected>--Pilih Item--</option>';
+                        echo $selBrg
+                          ? '<option value="' . $selBrg . '" selected>--Pilih Item--</option>'
+                          : '<option value="" selected>--Pilih Item--</option>';
+
                         while ($r = $qBarang->fetch_assoc()) {
                           $idb = (int)$r['idbarang'];
                           $nm  = htmlspecialchars($r['nmbarang']);
@@ -76,7 +113,10 @@ $is_locked = (int)($info['kunci'] ?? 0);
                     <select class="form-control" name="idgrade" id="idgrade" required>
                       <?php
                       $selGrd = (int)($_SESSION['idgrade'] ?? 0);
-                      echo $selGrd ? '<option value="' . $selGrd . '" selected>--Pilih Grade--</option>' : '<option value="" selected>--Pilih Grade--</option>';
+                      echo $selGrd
+                        ? '<option value="' . $selGrd . '" selected>--Pilih Grade--</option>'
+                        : '<option value="" selected>--Pilih Grade--</option>';
+
                       while ($r = $qGrade->fetch_assoc()) {
                         $idg = (int)$r['idgrade'];
                         $nm  = htmlspecialchars($r['nmgrade']);
@@ -89,10 +129,12 @@ $is_locked = (int)($info['kunci'] ?? 0);
 
                   <!-- Tanggal -->
                   <div class="form-group">
-                    <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
+                    <input type="date" class="form-control" name="packdate" id="packdate"
+                      required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
                   </div>
                   <div class="form-group">
-                    <input type="date" class="form-control" name="exp" id="exp" value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
+                    <input type="date" class="form-control" name="exp" id="exp"
+                      value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
                   </div>
 
                   <input type="hidden" name="idusers" value="<?= (int)$idusers ?>">
@@ -101,22 +143,22 @@ $is_locked = (int)($info['kunci'] ?? 0);
                   <div class="row">
                     <div class="col-8">
                       <div class="form-group">
-                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
+                        <input type="text" class="form-control" name="qty" id="qty"
+                          placeholder="Weight & Pcs" required>
                       </div>
                     </div>
                     <div class="col">
                       <div class="form-group">
-                        <!-- detailpcs sementara tidak aktif
-                        <a href="detailpcs.php?id=id" class="btn btn-warning btn-block disabled" aria-disabled="true">LabelPcs</a>
-                       -->
-
-                        <!-- diganti dengan Ph -->
-                        <input type="number" step="0.1" min="5.4" max="5.7" class="form-control" name="ph" id="ph" placeholder="PH 5.4-5.7" required value="<?= htmlspecialchars($_SESSION['ph'] ?? '', ENT_QUOTES) ?>">
+                        <input type="number" step="0.1" min="5.4" max="5.7"
+                          class="form-control" name="ph" id="ph"
+                          placeholder="PH 5.4-5.7" required
+                          value="<?= htmlspecialchars($_SESSION['ph'] ?? '', ENT_QUOTES) ?>">
                       </div>
                     </div>
                   </div>
 
                   <button type="submit" class="btn bg-gradient-primary btn-block" name="submit">Print</button>
+
                 </form>
               </div>
             </div>
@@ -165,7 +207,6 @@ $is_locked = (int)($info['kunci'] ?? 0);
 
       const idboning = <?= (int)$idboning ?>;
 
-      // Inisialisasi DataTables + Buttons (gaya AdminLTE)
       const dt = $('#tblLabel').DataTable({
         processing: true,
         serverSide: true,
@@ -220,11 +261,11 @@ $is_locked = (int)($info['kunci'] ?? 0);
           {
             data: 'action',
             className: 'text-center',
-            orderable: true,
+            orderable: false,
             searchable: false
           }
         ],
-        // ← kembalikan kontrol length 'l' + Buttons + Filter di satu baris
+
         dom: "<'row'<'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'f>>" +
           "<'row'<'col-sm-12'tr>>" +
           "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -251,11 +292,29 @@ $is_locked = (int)($info['kunci'] ?? 0);
         ]
       });
 
-      // Tidak perlu appendTo lagi karena posisi tombol sudah diatur via 'dom'
-
-
-      // Posisikan tombol sesuai style AdminLTE (kiri atas wrapper)
       dt.buttons().container().appendTo('#tblLabel_wrapper .col-md-6:eq(0)');
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('labelForm');
+      if (!form) return;
+
+      var btn = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', function(e) {
+        if (form.dataset.submitted === '1') {
+          e.preventDefault();
+          return false;
+        }
+
+        form.dataset.submitted = '1';
+        if (btn) {
+          try {
+            btn.disabled = true;
+            btn.innerText = 'Processing...';
+          } catch (err) {}
+        }
+      });
     });
   </script>
 </div>

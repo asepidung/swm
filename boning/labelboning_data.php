@@ -19,7 +19,7 @@ try {
     }
 
     // Mapping index kolom (urutannya mengikuti tabel di frontend)
-    // 0:#(rownum), 1:barcode, 2:grade, 3:product, 4:qty, 5:pcs, 6:author, 7:create
+    // 0:#(rownum), 1:barcode, 2:grade, 3:product, 4:qty, 5:pcs, 6:author, 7:create, 8:action
     $cols = [
         0 => 'l.idlabelboning', // klik kolom # -> gunakan id untuk stabil
         1 => 'l.kdbarcode',
@@ -29,6 +29,7 @@ try {
         5 => 'l.pcs',
         6 => 'u.fullname',
         7 => 'l.creatime',
+        // 8 => action -> tidak dipetakan karena action bukan kolom DB
     ];
     $orderIdx = (int)($order['column'] ?? 7);
     $orderDir = (strtolower($order['dir'] ?? 'desc') === 'asc') ? 'ASC' : 'DESC';
@@ -50,10 +51,18 @@ try {
     $types  = "i";
 
     if ($search !== '') {
-        $where .= " AND (l.kdbarcode LIKE ? OR b.nmbarang LIKE ? OR g.nmgrade LIKE ? OR u.fullname LIKE ?) ";
+        // tambahkan qty/pcs ke pencarian dengan CAST ke CHAR supaya LIKE cocok pada angka
+        $where .= " AND (
+            l.kdbarcode LIKE ? OR
+            b.nmbarang LIKE ? OR
+            g.nmgrade LIKE ? OR
+            u.fullname LIKE ? OR
+            CAST(l.qty AS CHAR) LIKE ? OR
+            CAST(l.pcs AS CHAR) LIKE ?
+        ) ";
         $like = "%{$search}%";
-        array_push($params, $like, $like, $like, $like);
-        $types .= "ssss";
+        array_push($params, $like, $like, $like, $like, $like, $like);
+        $types .= "ssssss";
     }
 
     // ====== TOTAL SETELAH FILTER ======
@@ -134,30 +143,21 @@ try {
             if ((int)$r['has_tally'] === 1) {
                 // Sudah masuk Tally → ikon cek
                 $action = '<i class="fas fa-check-circle" data-toggle="tooltip" title="Sudah masuk Tally"></i>';
-                // (Opsional) jadikan link ke detail tally per barcode:
-                // $action = '<a href="../tally/detail.php?barcode='.urlencode($r['kdbarcode']).'" title="Sudah masuk Tally"><i class="fas fa-check-circle"></i></a>';
             } else {
                 // Sudah masuk Bahan/Repack → ikon box hijau
                 $action = '<i class="fas fa-box-open text-success" data-toggle="tooltip" title="Sudah masuk Bahan/Repack"></i>';
-                // (Opsional) jadikan link:
-                // $action = '<a href="../repack/cari.php?barcode='.urlencode($r['kdbarcode']).'" class="text-success" title="Sudah masuk Bahan/Repack"><i class="fas fa-box-open"></i></a>';
             }
         } else {
             if ($is_locked === 0) {
                 $id   = (int)$r['idlabelboning'];
                 $kode = urlencode($r['kdbarcode']);
 
-                // (Opsional) tombol Edit seperti versi lama:
-                // $editUrl = 'edit_labelboning.php?id='.$id.'&idboning='.$idboning;
-                // $btnEdit = '<a href="'.$editUrl.'" class="text-info mr-2" data-toggle="tooltip" title="Edit"><i class="fas fa-pencil-alt"></i></a>';
-
                 $delUrl = 'hapus_labelboning.php?id=' . $id . '&idboning=' . $idboning . '&kdbarcode=' . $kode;
                 $btnDel = '<a href="' . $delUrl . '" class="text-danger" data-toggle="tooltip" title="Hapus" ' .
                     'onclick="return confirm(\'Apakah anda yakin ingin menghapus label ini?\');">' .
                     '<i class="fas fa-minus-square"></i></a>';
 
-                // Hanya delete (Edit dikomentari biar sama seperti snippet lama)
-                $action = /* $btnEdit . */ $btnDel;
+                $action = $btnDel;
             } else {
                 $action = '';
             }
