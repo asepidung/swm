@@ -1,22 +1,57 @@
 <?php
-function getRandomQuote($conn)
-{
-   $query = "SELECT isiquote FROM quotes ORDER BY RAND() LIMIT 1";
-   $result = $conn->query($query);
+// update.php - menampilkan satu quote acak beserta penulis + tombol Add + tombol Edit (bersyarat)
+// Prasyarat: session_start() dan $conn sudah aktif dari index.php
 
-   if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
-      return $row['isiquote'];
-   } else {
-      return 'No quotes available.';
-   }
+// Pastikan koneksi tersedia
+if (!isset($conn) || !$conn) {
+   echo '<div class="alert alert-warning">Database connection not available.</div>';
+   return;
 }
 
-// Mendapatkan quote acak
-$quote = getRandomQuote($conn);
+$currentUserId = $_SESSION['idusers'] ?? null;
 
-// Menutup koneksi database
-$conn->close();
+/**
+ * Ambil satu quote acak + author + id pembuat
+ */
+function getRandomQuoteWithAuthor($conn)
+{
+   $sql = "
+        SELECT 
+            q.idquote,
+            q.isiquote,
+            q.idusers AS quote_owner,
+            u.fullname
+        FROM quotes q
+        LEFT JOIN users u ON q.idusers = u.idusers
+        ORDER BY RAND()
+        LIMIT 1
+    ";
+
+   $res = $conn->query($sql);
+   if ($res && $res->num_rows > 0) {
+      return $res->fetch_assoc();
+   }
+   return null;
+}
+
+$row = getRandomQuoteWithAuthor($conn);
+
+$quote      = $row['isiquote'] ?? 'No quotes available.';
+$author     = $row['fullname'] ?? null;
+$idquote    = $row['idquote'] ?? null;
+$quoteOwner = $row['quote_owner'] ?? null;
+
+// Rule tombol Edit:
+// - admin (idusers = 1) selalu boleh edit
+// - user biasa hanya jika $quoteOwner === $currentUserId
+$showEditButton = false;
+
+if ($currentUserId == 1) {
+   $showEditButton = true;
+} elseif ($quoteOwner !== null && $quoteOwner == $currentUserId) {
+   $showEditButton = true;
+}
+
 ?>
 <div class="card card-danger shadow-lg">
    <div class="card-header">
@@ -25,8 +60,35 @@ $conn->close();
          <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
       </div>
    </div>
+
    <div class="card-body">
-      <!-- Isi quotes random -->
-      <h4><?php echo htmlspecialchars($quote); ?></h4>
+      <h4>
+         <span style="opacity:0.6; font-size:1.3em;">“</span>
+         <em><?= htmlspecialchars($quote) ?></em>
+         <span style="opacity:0.6; font-size:1.3em;">”</span>
+      </h4>
+      <?php if ($author): ?>
+         <div class="mt-2">
+            <small class="text-muted">— <?= htmlspecialchars($author, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></small>
+         </div>
+      <?php else: ?>
+         <div class="mt-2">
+            <small class="text-muted">— Unknown</small>
+         </div>
+      <?php endif; ?>
+   </div>
+
+   <div class="card-footer d-flex justify-content-between">
+      <a href="new_quotes.php" class="btn btn-sm btn-light">
+         <i class="fas fa-plus"></i> Add Your Quote
+      </a>
+
+      <?php if ($showEditButton && $idquote): ?>
+         <a href="edit_quotes.php?id=<?= intval($idquote) ?>"
+            class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
+            data-toggle="tooltip" title="Edit quote">
+            <i class="fas fa-pencil-alt mr-1"></i> Edit
+         </a>
+      <?php endif; ?>
    </div>
 </div>
