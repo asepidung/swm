@@ -707,7 +707,7 @@ include "notifcount.php";
                      </div>
                   </div>
                </div>
-               <?php include "update.php"; ?>
+               <?php include "quotes.php"; ?>
             </div>
          </section>
          <!-- /.content -->
