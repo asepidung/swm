@@ -5,16 +5,28 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
-// Query untuk mendapatkan data dari tabel po yang is_deleted = 0 dan stat = 0, join dengan tabel supplier
-$query = "SELECT p.idpo, s.nmsupplier, p.duedate AS deliveryat, p.nopo, r.norequest, p.note, p.stat
-          FROM po p
-          JOIN supplier s ON p.idsupplier = s.idsupplier
-          JOIN request r ON p.idrequest = r.idrequest
-          WHERE p.is_deleted = 0 AND p.stat = 0";
+// Query untuk mendapatkan data dari tabel po (is_deleted = 0 dan stat = 0), join dengan supplier, request dan users (requester)
+$query = "
+    SELECT 
+        p.idpo,
+        s.nmsupplier,
+        p.duedate AS deliveryat,
+        p.nopo,
+        r.norequest,
+        p.note,
+        p.stat,
+        COALESCE(u.fullname, u.userid, '') AS requester
+    FROM po p
+    JOIN supplier s ON p.idsupplier = s.idsupplier
+    JOIN request r ON p.idrequest = r.idrequest
+    LEFT JOIN users u ON r.iduser = u.idusers
+    WHERE p.is_deleted = 0 AND p.stat = 0
+    ORDER BY p.duedate ASC, p.nopo ASC
+";
 
 $result = mysqli_query($conn, $query);
 if (!$result) {
-    die("Query error: " . mysqli_error($conn));
+    die("Query error: " . htmlspecialchars(mysqli_error($conn)));
 }
 ?>
 <div class="content-wrapper">
@@ -30,6 +42,7 @@ if (!$result) {
                                     <tr>
                                         <th>#</th>
                                         <th>Supplier</th>
+                                        <th>Requester</th>
                                         <th>Receiving Date</th>
                                         <th>PO</th>
                                         <th>Request No</th>
@@ -43,6 +56,7 @@ if (!$result) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         $idpo = isset($row['idpo']) ? (int)$row['idpo'] : 0;
                                         $nmsupplier = isset($row['nmsupplier']) ? $row['nmsupplier'] : '';
+                                        $requester = isset($row['requester']) ? $row['requester'] : '';
                                         $deliveryat = isset($row['deliveryat']) ? $row['deliveryat'] : '';
                                         $nopo = isset($row['nopo']) ? $row['nopo'] : '';
                                         $norequest = isset($row['norequest']) ? $row['norequest'] : '';
@@ -50,11 +64,12 @@ if (!$result) {
                                     ?>
                                         <tr>
                                             <td class="text-center"><?php echo $counter++; ?></td>
-                                            <td><?php echo htmlspecialchars($nmsupplier); ?></td>
-                                            <td class="text-center"><?php echo htmlspecialchars($deliveryat); ?></td>
-                                            <td class="text-center"><?php echo htmlspecialchars($nopo); ?></td>
-                                            <td class="text-center"><?php echo htmlspecialchars($norequest); ?></td>
-                                            <td class="text-center"><?php echo htmlspecialchars($note); ?></td>
+                                            <td><?php echo htmlspecialchars($nmsupplier, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                            <td><?php echo htmlspecialchars($requester, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($deliveryat, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($nopo, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($norequest, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                            <td class="text-center"><?php echo htmlspecialchars($note, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
                                             <td class="text-center">
                                                 <a class="btn btn-primary btn-xs"
                                                     data-toggle="tooltip"
@@ -76,9 +91,12 @@ if (!$result) {
                                         </tr>
                                     <?php
                                     }
+                                    // jika tidak ada row, tampilkan pesan
+                                    if (mysqli_num_rows($result) === 0) {
+                                        echo "<tr><td colspan='8' class='text-center'>No data available</td></tr>";
+                                    }
                                     ?>
                                 </tbody>
-
                             </table>
                         </div>
                         <!-- /.card-body -->

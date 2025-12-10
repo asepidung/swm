@@ -32,6 +32,7 @@ include "../mainsidebar.php";
                                     <tr>
                                         <th>#</th>
                                         <th>GR Number</th>
+                                        <th>Requester</th>
                                         <th>Supplier</th>
                                         <th>PO Number</th>
                                         <th>Req Number</th>
@@ -45,60 +46,88 @@ include "../mainsidebar.php";
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    // Query untuk mengambil data dari tabel grraw dan tabel terkait
+                                    // Query: ambil requester dari tabel request (request.iduser) dan fullname pembuat GR dari grraw.idusers
                                     $query = "
-                                    SELECT grraw.*, supplier.nmsupplier, po.nopo, request.norequest, users.fullname 
-                                    FROM grraw
-                                    LEFT JOIN po ON grraw.idpo = po.idpo
-                                    LEFT JOIN request ON po.idrequest = request.idrequest
-                                    JOIN supplier ON grraw.idsupplier = supplier.idsupplier
-                                    LEFT JOIN users ON grraw.idusers = users.idusers
-                                    WHERE grraw.is_deleted = 0
-                                    ORDER BY grraw.idgr DESC";
+                                        SELECT grraw.*,
+                                               supplier.nmsupplier,
+                                               po.nopo,
+                                               request.norequest,
+                                               request.iduser AS requester_id,
+                                               um.fullname AS made_by,
+                                               ur.fullname AS requester_name
+                                        FROM grraw
+                                        LEFT JOIN po ON grraw.idpo = po.idpo
+                                        LEFT JOIN request ON po.idrequest = request.idrequest
+                                        JOIN supplier ON grraw.idsupplier = supplier.idsupplier
+                                        LEFT JOIN users um ON grraw.idusers = um.idusers        -- pembuat GR
+                                        LEFT JOIN users ur ON request.iduser = ur.idusers      -- requester
+                                        WHERE grraw.is_deleted = 0
+                                        ORDER BY grraw.idgr DESC
+                                    ";
                                     $ambildata = mysqli_query($conn, $query);
 
                                     if (!$ambildata) {
-                                        die("Query error: " . mysqli_error($conn));
+                                        die("Query error: " . htmlspecialchars(mysqli_error($conn)));
                                     }
 
-                                    while ($tampil = mysqli_fetch_array($ambildata)) {
-                                        $idgr = $tampil['idgr'];
-                                        $idpo = $tampil['idpo'];
-                                        $fullname = $tampil['fullname']; // Mengambil nama pembuat GR
+                                    if (mysqli_num_rows($ambildata) === 0) {
+                                        echo "<tr><td colspan='10' class='text-center'>No data available</td></tr>";
+                                    } else {
+                                        while ($tampil = mysqli_fetch_assoc($ambildata)) {
+                                            $idgr = isset($tampil['idgr']) ? (int)$tampil['idgr'] : 0;
+                                            $idpo = isset($tampil['idpo']) ? (int)$tampil['idpo'] : 0;
+                                            $grnumber = isset($tampil['grnumber']) ? $tampil['grnumber'] : '';
+                                            $nmsupplier = isset($tampil['nmsupplier']) ? $tampil['nmsupplier'] : '';
+                                            $nopo = isset($tampil['nopo']) ? $tampil['nopo'] : '';
+                                            $norequest = isset($tampil['norequest']) ? $tampil['norequest'] : '';
+                                            $receivedate = isset($tampil['receivedate']) ? $tampil['receivedate'] : '';
+                                            $note = isset($tampil['note']) ? $tampil['note'] : '';
+                                            $made_by = isset($tampil['made_by']) ? $tampil['made_by'] : '';
+                                            $requester_name = isset($tampil['requester_name']) ? $tampil['requester_name'] : '';
+                                            // fallback: kalau requester_name kosong, bisa tampilkan '-' atau requester_id
+                                            if ($requester_name === '' && !empty($tampil['requester_id'])) {
+                                                $requester_name = 'User ID: ' . htmlspecialchars($tampil['requester_id']);
+                                            }
                                     ?>
-                                        <tr>
-                                            <td class="text-center"><?= $no; ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($tampil['grnumber']); ?></td>
-                                            <td><?= htmlspecialchars($tampil['nmsupplier']); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($tampil['nopo']); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($tampil['norequest']); ?></td>
-                                            <td class="text-center"><?= date("d-M-y", strtotime($tampil['receivedate'])); ?></td>
-                                            <!-- <td><?= $tampil['suppcode']; ?></td> -->
-                                            <td><?= htmlspecialchars($tampil['note']); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($fullname); ?></td>
-                                            <td class="text-center">
-                                                <!-- <a href="grscan.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Scan">
+                                            <tr>
+                                                <td class="text-center"><?= $no; ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($grnumber); ?></td>
+                                                <td><?= htmlspecialchars($requester_name); ?></td>
+                                                <td><?= htmlspecialchars($nmsupplier); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($nopo); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($norequest); ?></td>
+                                                <td class="text-center">
+                                                    <?= $receivedate ? htmlspecialchars(date("d-M-y", strtotime($receivedate))) : ''; ?>
+                                                </td>
+                                                <!-- <td><?= $tampil['suppcode']; ?></td> -->
+                                                <td><?= htmlspecialchars($note); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($made_by); ?></td>
+                                                <td class="text-center">
+                                                    <!-- <a href="grscan.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Scan">
                                                     <i class="fas fa-barcode"></i>
                                                 </a> -->
-                                                <!-- <a href="grdetail.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-primary" title="Label">
+                                                    <!-- <a href="grdetail.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-primary" title="Label">
                                                     <i class="fas fa-tag"></i>
                                                 </a> -->
-                                                <a href="view.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-success" title="Lihat">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                                <a href="edit.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Edit">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
-                                                <!-- <a href="partial.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Partial">
+                                                    <a href="view.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-success" title="Lihat">
+                                                        <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <a href="edit.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Edit">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </a>
+                                                    <!-- <a href="partial.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Partial">
                                                     <i class="fas fa-pencil-alt"></i>
                                                 </a> -->
-                                                <a href="delete.php?idgr=<?= $idgr; ?> & idpo=<?= $idpo ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
-                                                    <i class="far fa-trash-alt"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php $no++;
-                                    } ?>
+                                                    <a href="delete.php?idgr=<?= $idgr; ?>&idpo=<?= $idpo ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" title="Hapus">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                            $no++;
+                                        } // end while
+                                    } // end else
+                                    ?>
                                 </tbody>
                             </table>
 

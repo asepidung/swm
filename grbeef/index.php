@@ -29,6 +29,8 @@ include "../mainsidebar.php";
                                     <tr>
                                         <th>#</th>
                                         <th>GR Number</th>
+                                        <th>Requester</th>
+                                        <th>Request No</th>
                                         <th>Receiving Date</th>
                                         <th>Supplier</th>
                                         <th>ID Number</th>
@@ -40,34 +42,67 @@ include "../mainsidebar.php";
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $ambildata = mysqli_query($conn, "
-                                        SELECT grbeef.*, supplier.nmsupplier, pobeef.idpo, users.fullname 
+                                    $sql = "
+                                        SELECT grbeef.*,
+                                               supplier.nmsupplier,
+                                               pobeef.idpo,
+                                               pobeef.nopo,
+                                               rbeef.norequest AS reqbeef_norequest,
+                                               rbeef.iduser AS reqbeef_userid,
+                                               ur.fullname AS requester_name,
+                                               um.fullname AS made_by
                                         FROM grbeef
                                         LEFT JOIN pobeef ON grbeef.idpo = pobeef.idpo
+                                        LEFT JOIN requestbeef rbeef ON pobeef.idrequest = rbeef.idrequest
                                         JOIN supplier ON grbeef.idsupplier = supplier.idsupplier
-                                        LEFT JOIN users ON grbeef.idusers = users.idusers
+                                        LEFT JOIN users um ON grbeef.idusers = um.idusers
+                                        LEFT JOIN users ur ON rbeef.iduser = ur.idusers
                                         WHERE grbeef.is_deleted = 0
                                         ORDER BY grbeef.idgr DESC
-                                    ");
+                                    ";
+
+                                    $ambildata = mysqli_query($conn, $sql);
 
                                     if (!$ambildata) {
-                                        die("Query error: " . mysqli_error($conn));
+                                        die("Query error: " . htmlspecialchars(mysqli_error($conn)));
                                     }
 
                                     if (mysqli_num_rows($ambildata) > 0) {
-                                        while ($tampil = mysqli_fetch_array($ambildata)) {
-                                            $idgr = $tampil['idgr'];
-                                            $idpo = $tampil['idpo'];
-                                            $fullname = $tampil['fullname'];
+                                        while ($tampil = mysqli_fetch_assoc($ambildata)) {
+                                            $idgr = isset($tampil['idgr']) ? (int)$tampil['idgr'] : 0;
+                                            $idpo = isset($tampil['idpo']) ? (int)$tampil['idpo'] : 0;
+                                            $grnumber = isset($tampil['grnumber']) ? $tampil['grnumber'] : '';
+                                            $receivedate = isset($tampil['receivedate']) ? $tampil['receivedate'] : '';
+                                            $nmsupplier = isset($tampil['nmsupplier']) ? $tampil['nmsupplier'] : '';
+                                            $suppcode = isset($tampil['suppcode']) ? $tampil['suppcode'] : '-';
+                                            $note = isset($tampil['note']) ? $tampil['note'] : '-';
+                                            $made_by = isset($tampil['made_by']) ? $tampil['made_by'] : '';
+                                            $requester_name = isset($tampil['requester_name']) ? $tampil['requester_name'] : '';
+                                            $reqbeef_norequest = isset($tampil['reqbeef_norequest']) ? $tampil['reqbeef_norequest'] : '';
+
+                                            // fallback requester jika fullname kosong
+                                            if ($requester_name === '' && !empty($tampil['reqbeef_userid'])) {
+                                                $requester_name = 'User ID: ' . htmlspecialchars($tampil['reqbeef_userid']);
+                                            } elseif ($requester_name === '') {
+                                                $requester_name = '-';
+                                            }
+
+                                            // format tanggal aman
+                                            $receivedate_fmt = '';
+                                            if (!empty($receivedate) && $receivedate !== '0000-00-00') {
+                                                $receivedate_fmt = htmlspecialchars(date("d-M-y", strtotime($receivedate)));
+                                            }
                                     ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++; ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($tampil['grnumber']); ?></td>
-                                                <td class="text-center"><?= htmlspecialchars(date("d-M-y", strtotime($tampil['receivedate']))); ?></td>
-                                                <td><?= htmlspecialchars($tampil['nmsupplier']); ?></td>
-                                                <td><?= htmlspecialchars($tampil['suppcode'] ?? '-'); ?></td>
-                                                <td><?= htmlspecialchars($tampil['note'] ?? '-'); ?></td>
-                                                <td class="text-center"><?= htmlspecialchars($fullname); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($grnumber); ?></td>
+                                                <td><?= htmlspecialchars($requester_name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($reqbeef_norequest); ?></td>
+                                                <td class="text-center"><?= $receivedate_fmt; ?></td>
+                                                <td><?= htmlspecialchars($nmsupplier); ?></td>
+                                                <td><?= htmlspecialchars($suppcode); ?></td>
+                                                <td><?= htmlspecialchars($note); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($made_by); ?></td>
                                                 <td class="text-center">
                                                     <a href="grscan.php?idgr=<?= $idgr; ?>" class="btn btn-sm btn-warning" title="Scan">
                                                         <i class="fas fa-barcode"></i>
@@ -86,7 +121,7 @@ include "../mainsidebar.php";
                                     <?php
                                         }
                                     } else {
-                                        echo "<tr><td colspan='8' class='text-center'>Data tidak ditemukan</td></tr>";
+                                        echo "<tr><td colspan='10' class='text-center'>Data tidak ditemukan</td></tr>";
                                     }
                                     ?>
                                 </tbody>
