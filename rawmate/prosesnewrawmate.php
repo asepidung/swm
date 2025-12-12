@@ -2,33 +2,63 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 
-// mengambil data dari form
-$kdrawmate = $_POST['kdrawmate'];
-$nmrawmate = $_POST['nmrawmate'];
-$tampilkan_stock = $_POST['tampilkan_stock'];
-$idrawcategory = $_POST['idrawcategory'];
-// Mengecek apakah nama rawmate sudah ada dalam database
-$checkQuery = "SELECT nmrawmate FROM rawmate WHERE nmrawmate = '$nmrawmate'";
-$checkResult = mysqli_query($conn, $checkQuery);
+// Ambil data dari form dan bersihkan
+$kdrawmate      = isset($_POST['kdrawmate']) ? trim($_POST['kdrawmate']) : '';
+$nmrawmate      = isset($_POST['nmrawmate']) ? trim($_POST['nmrawmate']) : '';
+$tampilkan_stock = isset($_POST['tampilkan_stock']) ? trim($_POST['tampilkan_stock']) : '';
+$idrawcategory  = isset($_POST['idrawcategory']) ? intval($_POST['idrawcategory']) : 0;
+$unit           = isset($_POST['unit']) ? trim($_POST['unit']) : '';
 
-if (mysqli_num_rows($checkResult) > 0) {
-   // Nama rawmate sudah ada dalam database, tampilkan peringatan
-   echo "<script>alert('Nama rawmate sudah ada dalam database.');</script>";
-   // Redirect atau lakukan tindakan lain sesuai kebutuhan
-   echo "<script>window.location='newrawmate.php';</script>";
-} else {
-   // Nama rawmate belum ada dalam database, lanjutkan dengan penyimpanan
-
-   // membuat query untuk menyimpan data ke database
-   $sql = "INSERT INTO rawmate (kdrawmate, nmrawmate, idrawcategory, stock) VALUES ('$kdrawmate', '$nmrawmate', '$idrawcategory', '$tampilkan_stock')";
-
-   // mengeksekusi query
-   if (mysqli_query($conn, $sql)) {
-      echo "<script>alert('Data berhasil disimpan.'); window.location='index.php';</script>";
-   } else {
-      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-   }
+// Validasi sederhana
+if ($kdrawmate === '' || $nmrawmate === '' || $idrawcategory <= 0 || $tampilkan_stock === '') {
+   echo "<script>alert('Form tidak lengkap. Pastikan semua field wajib terisi.'); window.location='newrawmate.php';</script>";
+   exit();
 }
 
-// menutup koneksi ke database
+// Konversi nama material ke UPPERCASE multibyte-safe
+$nmrawmate_upper = mb_strtoupper($nmrawmate, 'UTF-8');
+
+// Cek apakah nama rawmate sudah ada (case-insensitive menggunakan uppercase)
+$checkSql = "SELECT idrawmate FROM rawmate WHERE UPPER(nmrawmate) = ? LIMIT 1";
+if ($stmt = $conn->prepare($checkSql)) {
+   $stmt->bind_param("s", $nmrawmate_upper);
+   $stmt->execute();
+   $stmt->store_result();
+   if ($stmt->num_rows > 0) {
+      // Nama sudah ada
+      $stmt->close();
+      echo "<script>alert('Nama material sudah ada dalam database.'); window.location='newrawmate.php';</script>";
+      exit();
+   }
+   $stmt->close();
+} else {
+   // Jika prepare gagal
+   echo "<script>alert('Database error (check).'); window.location='newrawmate.php';</script>";
+   exit();
+}
+
+// Insert data baru ke tabel rawmate (termasuk unit) — simpan nama dalam UPPERCASE
+$insertSql = "INSERT INTO rawmate (kdrawmate, nmrawmate, idrawcategory, stock, unit) VALUES (?, ?, ?, ?, ?)";
+if ($stmt = $conn->prepare($insertSql)) {
+   // tipe: kdrawmate (s), nmrawmate (s), idrawcategory (i), stock (i), unit (s)
+   $stock_int = (int)$tampilkan_stock;
+   $stmt->bind_param("ssiss", $kdrawmate, $nmrawmate_upper, $idrawcategory, $stock_int, $unit);
+
+   if ($stmt->execute()) {
+      $stmt->close();
+      echo "<script>alert('Data berhasil disimpan.'); window.location='index.php';</script>";
+      exit();
+   } else {
+      $err = $stmt->error;
+      $stmt->close();
+      echo "<script>alert('Gagal menyimpan data: " . addslashes($err) . "'); window.location='newrawmate.php';</script>";
+      exit();
+   }
+} else {
+   // prepare gagal
+   echo "<script>alert('Database error (insert).'); window.location='newrawmate.php';</script>";
+   exit();
+}
+
+// Tutup koneksi (opsional)
 mysqli_close($conn);

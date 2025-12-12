@@ -33,6 +33,7 @@ include "../mainsidebar.php";
                                  <th>#</th>
                                  <th>Kode</th>
                                  <th>Nama Material</th>
+                                 <th>Satuan</th>
                                  <th>Kategori</th>
                                  <th>View In Stock</th>
                                  <th>Actions</th>
@@ -54,6 +55,7 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= $no; ?></td>
                                     <td class="text-center"><?= htmlspecialchars($tampil['kdrawmate'] ?? ''); ?></td>
                                     <td class="text-left"><?= htmlspecialchars($tampil['nmrawmate'] ?? ''); ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['unit'] ?? ''); ?></td>
                                     <td class="text-left"><?= htmlspecialchars($tampil['nmcategory'] ?? ''); ?></td>
                                     <td class="text-center"><?= $viewInStock; ?></td>
                                     <td class="text-center">
