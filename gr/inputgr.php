@@ -1,196 +1,208 @@
 <?php
+// inputgr.php (perbaikan: tidak lagi mengandalkan $_POST['submit'])
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require "../verifications/auth.php";
 require "../konak/conn.php";
-include "grnumber.php";
-include "idtransaksi.php"; // ID Transaksi di-include dari file ini
+include "grnumber.php";     // harus menghasilkan $gr
+include "idtransaksi.php";  // harus menghasilkan $idtransaksi
 
-if (isset($_POST['submit'])) {
-    $deliveryat = $_POST['deliveryat'];
-    $idsupplier = $_POST['idsupplier'];
-    $note = isset($_POST['note']) && trim($_POST['note']) !== '' ? trim($_POST['note']) : '-';
-    $idpo = $_POST['idpo']; // Sesuaikan nama kolom dengan tabel po
-    $idusers = $_SESSION['idusers'];
-    $suppcode = $_POST['suppcode'];
-    $idrawmate = $_POST['idrawmate']; // Array idrawmate
-    $received_qty = $_POST['received_qty']; // Array qty diterima
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo "Invalid request method.";
+    exit();
+}
 
-    // Pastikan idrawmate dan received_qty memiliki data yang valid
-    if (empty($idrawmate) || empty($received_qty)) {
-        echo "Error: Invalid input for rawmate or received quantities.";
-        exit();
+// ambil input dengan sanitasi dasar
+$deliveryat   = isset($_POST['deliveryat']) ? trim($_POST['deliveryat']) : null;
+$idsupplier   = isset($_POST['idsupplier']) ? intval($_POST['idsupplier']) : 0;
+$note         = isset($_POST['note']) && trim($_POST['note']) !== '' ? trim($_POST['note']) : '-';
+$idpo         = isset($_POST['idpo']) ? intval($_POST['idpo']) : 0;
+$idusers      = isset($_SESSION['idusers']) ? intval($_SESSION['idusers']) : 0;
+$suppcode     = isset($_POST['suppcode']) ? trim($_POST['suppcode']) : '';
+$idrawmate    = isset($_POST['idrawmate']) ? $_POST['idrawmate'] : [];
+$received_qty = isset($_POST['received_qty']) ? $_POST['received_qty'] : [];
+
+// cek existence $gr dan $idtransaksi
+if (!isset($gr) || $gr === '') {
+    echo "Error: GR number not provided (grnumber.php did not set \$gr).";
+    exit();
+}
+if (!isset($idtransaksi) || $idtransaksi === '') {
+    echo "Error: idtransaksi not provided (idtransaksi.php did not set \$idtransaksi).";
+    exit();
+}
+
+// validasi input penting
+if (empty($deliveryat) || $idsupplier <= 0 || $idpo <= 0 || $idusers <= 0) {
+    echo "Error: Missing required header fields.";
+    exit();
+}
+if (empty($idrawmate) || empty($received_qty) || !is_array($idrawmate) || !is_array($received_qty)) {
+    echo "Error: Invalid rawmate or received_qty data.";
+    exit();
+}
+if (count($idrawmate) !== count($received_qty)) {
+    echo "Error: Mismatch between idrawmate and received_qty counts.";
+    exit();
+}
+
+// mulai transaksi
+$conn->autocommit(false);
+
+$stmt_gr = $stmt_podetail = $stmt_grdetail = $stmt_stockraw = $stmt_update = $stmt_idrequest = $stmt_update_request = $stmtLogActivity = null;
+
+try {
+    // 1) insert ke grraw
+    $query_gr = "INSERT INTO grraw (grnumber, receivedate, idsupplier, note, idusers, idpo, suppcode) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt_gr = $conn->prepare($query_gr);
+    if ($stmt_gr === false) {
+        throw new Exception("Prepare gr failed: " . $conn->error);
+    }
+    // types: s (gr), s (date), i (idsupplier), s (note), i (idusers), i (idpo), s (suppcode)
+    $stmt_gr->bind_param("ssisiis", $gr, $deliveryat, $idsupplier, $note, $idusers, $idpo, $suppcode);
+    if (!$stmt_gr->execute()) {
+        throw new Exception("Execute gr failed: " . $stmt_gr->error);
+    }
+    $idgr = $conn->insert_id; // idgr yang baru
+
+    // 2) ambil order_qty dari podetail (map per idrawmate)
+    $query_podetail = "SELECT idrawmate, qty AS order_qty FROM podetail WHERE idpo = ?";
+    $stmt_podetail = $conn->prepare($query_podetail);
+    if ($stmt_podetail === false) {
+        throw new Exception("Prepare podetail failed: " . $conn->error);
+    }
+    $stmt_podetail->bind_param("i", $idpo);
+    if (!$stmt_podetail->execute()) {
+        throw new Exception("Execute podetail failed: " . $stmt_podetail->error);
+    }
+    $result_podetail = $stmt_podetail->get_result();
+    $order_quantities = [];
+    while ($r = $result_podetail->fetch_assoc()) {
+        $order_quantities[intval($r['idrawmate'])] = is_numeric($r['order_qty']) ? (float)$r['order_qty'] : 0.0;
     }
 
-    // Mulai transaksi
-    $conn->autocommit(false);
-
-    try {
-        // Query INSERT untuk tabel grraw
-        $query_gr = "INSERT INTO grraw (grnumber, receivedate, idsupplier, note, idusers, idpo, suppcode) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt_gr = $conn->prepare($query_gr);
-
-        if ($stmt_gr === false) {
-            throw new Exception("Error preparing insert statement: " . $conn->error);
-        }
-
-        // Bind parameter dan eksekusi
-        $stmt_gr->bind_param("ssisiis", $gr, $deliveryat, $idsupplier, $note, $idusers, $idpo, $suppcode);
-
-        if (!$stmt_gr->execute()) {
-            throw new Exception("Error executing insert statement: " . $stmt_gr->error);
-        }
-
-        // Ambil ID GR terakhir yang dimasukkan
-        $idgr = $conn->insert_id;
-
-        // Ambil Order Quantity dari tabel podetail
-        $query_podetail = "SELECT idrawmate, qty AS order_qty FROM podetail WHERE idpo = ?";
-        $stmt_podetail = $conn->prepare($query_podetail);
-
-        if ($stmt_podetail === false) {
-            throw new Exception("Error preparing podetail query: " . $conn->error);
-        }
-
-        $stmt_podetail->bind_param("i", $idpo);
-        $stmt_podetail->execute();
-        $result_podetail = $stmt_podetail->get_result();
-
-        // Buat array untuk menyimpan order_qty berdasarkan idrawmate
-        $order_quantities = [];
-        while ($row = $result_podetail->fetch_assoc()) {
-            $order_quantities[$row['idrawmate']] = $row['order_qty'];
-        }
-
-        // Loop untuk memasukkan data ke tabel grrawdetail dan stockraw
-        $query_grdetail = "INSERT INTO grrawdetail (idgr, idrawmate, qty, orderqty, idtransaksi) VALUES (?, ?, ?, ?, ?)";
-        $stmt_grdetail = $conn->prepare($query_grdetail);
-
-        if ($stmt_grdetail === false) {
-            throw new Exception("Error preparing grrawdetail statement: " . $conn->error);
-        }
-
-        $query_stockraw = "INSERT INTO stockraw (idrawmate, qty, idtransaksi) VALUES (?, ?, ?)";
-        $stmt_stockraw = $conn->prepare($query_stockraw);
-
-        if ($stmt_stockraw === false) {
-            throw new Exception("Error preparing stockraw statement: " . $conn->error);
-        }
-
-        foreach ($idrawmate as $index => $idraw) {
-            $qty_received = $received_qty[$index]; // Ambil qty diterima sesuai index
-            $order_qty = isset($order_quantities[$idraw]) ? $order_quantities[$idraw] : 0; // Ambil order_qty berdasarkan idrawmate
-
-            // Masukkan ke tabel grrawdetail
-            $stmt_grdetail->bind_param("iiidi", $idgr, $idraw, $qty_received, $order_qty, $idtransaksi);
-
-            if (!$stmt_grdetail->execute()) {
-                throw new Exception("Error inserting into grrawdetail: " . $stmt_grdetail->error);
-            }
-
-            // Masukkan ke tabel stockraw
-            $stmt_stockraw->bind_param("iis", $idraw, $qty_received, $idtransaksi);
-
-            if (!$stmt_stockraw->execute()) {
-                throw new Exception("Error inserting into stockraw: " . $stmt_stockraw->error);
-            }
-        }
-
-        // Setelah berhasil melakukan insert, lakukan update pada tabel po
-        $query_update = "UPDATE po SET stat = 1 WHERE idpo = ?";
-        $stmt_update = $conn->prepare($query_update);
-
-        if ($stmt_update === false) {
-            throw new Exception("Error preparing update statement: " . $conn->error);
-        }
-
-        $stmt_update->bind_param("i", $idpo);
-
-        if (!$stmt_update->execute()) {
-            throw new Exception("Error executing update statement: " . $stmt_update->error);
-        }
-
-        // Query untuk mendapatkan idrequest dari tabel po
-        $query_idrequest = "SELECT idrequest FROM po WHERE idpo = ?";
-        $stmt_idrequest = $conn->prepare($query_idrequest);
-
-        if ($stmt_idrequest === false) {
-            throw new Exception("Error preparing idrequest query: " . $conn->error);
-        }
-
-        $stmt_idrequest->bind_param("i", $idpo);
-        $stmt_idrequest->execute();
-        $result_idrequest = $stmt_idrequest->get_result();
-
-        if ($result_idrequest->num_rows > 0) {
-            $row = $result_idrequest->fetch_assoc();
-            $idrequest = $row['idrequest'];
-
-            // Update tabel request untuk set stat menjadi 'Completed'
-            $query_update_request = "UPDATE request SET stat = 'Completed' WHERE idrequest = ?";
-            $stmt_update_request = $conn->prepare($query_update_request);
-
-            if ($stmt_update_request === false) {
-                throw new Exception("Error preparing update request statement: " . $conn->error);
-            }
-
-            $stmt_update_request->bind_param("i", $idrequest);
-
-            if (!$stmt_update_request->execute()) {
-                throw new Exception("Error executing update request statement: " . $stmt_update_request->error);
-            }
-        } else {
-            throw new Exception("idrequest not found for the given idpo: " . $idpo);
-        }
-
-        // Insert log activity ke tabel logactivity
-        $event = "Buat GR RAW";
-        $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
-        $stmtLogActivity = $conn->prepare($queryLogActivity);
-        if (!$stmtLogActivity) {
-            throw new Exception("Error preparing log activity statement: " . $conn->error);
-        }
-
-        $stmtLogActivity->bind_param('iss', $idusers, $event, $gr);
-
-        if (!$stmtLogActivity->execute()) {
-            throw new Exception("Error executing log activity statement: " . $stmtLogActivity->error);
-        }
-
-        // Commit transaksi jika semua query berhasil dieksekusi
-        $conn->commit();
-
-        // Redirect ke halaman index jika berhasil
-        header("location: index.php");
-        exit();
-    } catch (Exception $e) {
-        // Rollback transaksi jika terjadi kesalahan
-        $conn->rollback();
-        echo "Error: " . $e->getMessage();
-    } finally {
-        $conn->autocommit(true);
-        if (isset($stmt_gr)) {
-            $stmt_gr->close();
-        }
-        if (isset($stmt_grdetail)) {
-            $stmt_grdetail->close();
-        }
-        if (isset($stmt_stockraw)) {
-            $stmt_stockraw->close();
-        }
-        if (isset($stmt_podetail)) {
-            $stmt_podetail->close();
-        }
-        if (isset($stmt_update)) {
-            $stmt_update->close();
-        }
-        if (isset($stmt_idrequest)) {
-            $stmt_idrequest->close();
-        }
-        if (isset($stmt_update_request)) {
-            $stmt_update_request->close();
-        }
-        if (isset($stmtLogActivity)) {
-            $stmtLogActivity->close();
-        }
-        $conn->close();
+    // 3) siapkan statement insert grrawdetail
+    $query_grdetail = "INSERT INTO grrawdetail (idgr, idrawmate, qty, orderqty, idtransaksi) VALUES (?, ?, ?, ?, ?)";
+    $stmt_grdetail = $conn->prepare($query_grdetail);
+    if ($stmt_grdetail === false) {
+        throw new Exception("Prepare grdetail failed: " . $conn->error);
     }
+
+    // 4) siapkan statement insert stockraw
+    $query_stockraw = "INSERT INTO stockraw (idrawmate, qty, idtransaksi) VALUES (?, ?, ?)";
+    $stmt_stockraw = $conn->prepare($query_stockraw);
+    if ($stmt_stockraw === false) {
+        throw new Exception("Prepare stockraw failed: " . $conn->error);
+    }
+
+    // loop per item
+    foreach ($idrawmate as $index => $rawid_raw) {
+        $idraw = intval($rawid_raw);
+        // pastikan index valid di received_qty
+        if (!isset($received_qty[$index])) {
+            throw new Exception("Missing received_qty for index {$index}");
+        }
+        // bersihkan qty
+        $qty_received = $received_qty[$index];
+        $qty_received = str_replace(',', '.', trim($qty_received));
+        if (!is_numeric($qty_received)) {
+            throw new Exception("Invalid qty for raw id {$idraw} at index {$index}: {$qty_received}");
+        }
+        $qty_received = (float)$qty_received;
+
+        $order_qty = isset($order_quantities[$idraw]) ? (int)$order_quantities[$idraw] : 0;
+
+        // insert ke grrawdetail
+        // bind types: i (idgr), i (idraw), d (qty_received), i (order_qty), s (idtransaksi)
+        if (!$stmt_grdetail->bind_param("iidis", $idgr, $idraw, $qty_received, $order_qty, $idtransaksi)) {
+            throw new Exception("Bind grdetail failed: " . $stmt_grdetail->error);
+        }
+        if (!$stmt_grdetail->execute()) {
+            throw new Exception("Execute grdetail failed: " . $stmt_grdetail->error);
+        }
+
+        // insert ke stockraw
+        // bind types: i (idraw), d (qty_received), s (idtransaksi)
+        if (!$stmt_stockraw->bind_param("ids", $idraw, $qty_received, $idtransaksi)) {
+            throw new Exception("Bind stockraw failed: " . $stmt_stockraw->error);
+        }
+        if (!$stmt_stockraw->execute()) {
+            throw new Exception("Execute stockraw failed: " . $stmt_stockraw->error);
+        }
+    }
+
+    // 5) update po stat = 1
+    $query_update = "UPDATE po SET stat = 1 WHERE idpo = ?";
+    $stmt_update = $conn->prepare($query_update);
+    if ($stmt_update === false) {
+        throw new Exception("Prepare update po failed: " . $conn->error);
+    }
+    $stmt_update->bind_param("i", $idpo);
+    if (!$stmt_update->execute()) {
+        throw new Exception("Execute update po failed: " . $stmt_update->error);
+    }
+
+    // 6) ambil idrequest dari po dan update request.stat = 'Completed'
+    $query_idrequest = "SELECT idrequest FROM po WHERE idpo = ?";
+    $stmt_idrequest = $conn->prepare($query_idrequest);
+    if ($stmt_idrequest === false) {
+        throw new Exception("Prepare idrequest failed: " . $conn->error);
+    }
+    $stmt_idrequest->bind_param("i", $idpo);
+    if (!$stmt_idrequest->execute()) {
+        throw new Exception("Execute idrequest failed: " . $stmt_idrequest->error);
+    }
+    $res_idreq = $stmt_idrequest->get_result();
+    if ($res_idreq->num_rows > 0) {
+        $r = $res_idreq->fetch_assoc();
+        $idrequest = intval($r['idrequest']);
+
+        $query_update_request = "UPDATE request SET stat = 'Completed' WHERE idrequest = ?";
+        $stmt_update_request = $conn->prepare($query_update_request);
+        if ($stmt_update_request === false) {
+            throw new Exception("Prepare update request failed: " . $conn->error);
+        }
+        $stmt_update_request->bind_param("i", $idrequest);
+        if (!$stmt_update_request->execute()) {
+            throw new Exception("Execute update request failed: " . $stmt_update_request->error);
+        }
+    } else {
+        throw new Exception("idrequest not found for idpo={$idpo}");
+    }
+
+    // 7) insert log activity
+    $event = "Buat GR RAW";
+    $queryLogActivity = "INSERT INTO logactivity (iduser, event, docnumb) VALUES (?, ?, ?)";
+    $stmtLogActivity = $conn->prepare($queryLogActivity);
+    if ($stmtLogActivity === false) {
+        throw new Exception("Prepare logActivity failed: " . $conn->error);
+    }
+    $stmtLogActivity->bind_param("iss", $idusers, $event, $gr);
+    if (!$stmtLogActivity->execute()) {
+        throw new Exception("Execute logActivity failed: " . $stmtLogActivity->error);
+    }
+
+    // commit
+    $conn->commit();
+
+    // redirect kalau sukses
+    header("Location: index.php");
+    exit();
+} catch (Exception $e) {
+    // rollback + tampilkan pesan error
+    $conn->rollback();
+    echo "Error: " . htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+} finally {
+    // kembalikan autocommit, tutup statement
+    $conn->autocommit(true);
+
+    $stmts = [$stmt_gr, $stmt_podetail, $stmt_grdetail, $stmt_stockraw, $stmt_update, $stmt_idrequest, $stmt_update_request, $stmtLogActivity];
+    foreach ($stmts as $s) {
+        if ($s && $s instanceof mysqli_stmt) {
+            $s->close();
+        }
+    }
+    $conn->close();
 }

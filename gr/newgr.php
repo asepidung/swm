@@ -36,7 +36,13 @@ $row = $result->fetch_assoc();
                                         <div class="form-group">
                                             <label for="deliveryat">Receiving Date <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="date" class="form-control" name="deliveryat" id="deliveryat" value="<?= htmlspecialchars($row['deliveryat']) ?>" required>
+                                                <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    name="deliveryat"
+                                                    id="deliveryat"
+                                                    value="<?= htmlspecialchars($row['deliveryat'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+                                                    required>
                                             </div>
                                         </div>
                                     </div>
@@ -44,8 +50,13 @@ $row = $result->fetch_assoc();
                                         <div class="form-group">
                                             <label for="nmsupplier">Supplier Name <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" value="<?= htmlspecialchars($row['nmsupplier']) ?>" required readonly>
-                                                <input type="hidden" name="idsupplier" id="idsupplier" value="<?= htmlspecialchars($row['idsupplier']) ?>">
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="<?= htmlspecialchars($row['nmsupplier'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+                                                    required
+                                                    readonly>
+                                                <input type="hidden" name="idsupplier" id="idsupplier" value="<?= htmlspecialchars($row['idsupplier'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -53,7 +64,7 @@ $row = $result->fetch_assoc();
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         <div class="form-group">
-                                            <label for="idnumber">Supplier Transaction Number</label>
+                                            <label for="suppcode">Supplier Transaction Number</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" name="suppcode" id="suppcode" placeholder="Biarkan Kosong Jika Tidak Ada">
                                             </div>
@@ -63,8 +74,12 @@ $row = $result->fetch_assoc();
                                         <div class="form-group">
                                             <label for="nopo">PO Number</label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" value="<?= htmlspecialchars($row['nopo']) ?>" readonly>
-                                                <input type="hidden" name="idpo" id="idpo" value="<?= htmlspecialchars($row['idpo']) ?>">
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="<?= htmlspecialchars($row['nopo'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"
+                                                    readonly>
+                                                <input type="hidden" name="idpo" id="idpo" value="<?= htmlspecialchars($row['idpo'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -87,6 +102,7 @@ $row = $result->fetch_assoc();
                                         <tr>
                                             <th>#</th>
                                             <th>Raw Material Descriptions</th>
+                                            <th>Units</th>
                                             <th>Order Quantity</th>
                                             <th>Received Quantity</th>
                                         </tr>
@@ -95,8 +111,12 @@ $row = $result->fetch_assoc();
                                         <?php
                                         $no = 1;
 
-                                        // Query untuk mengambil data dari tabel podetail berdasarkan idpo
-                                        $queryDetail = "SELECT pd.idrawmate, pd.qty AS order_qty, rm.nmrawmate 
+                                        // Query detail + satuan
+                                        $queryDetail = "SELECT 
+                                                            pd.idrawmate, 
+                                                            pd.qty AS order_qty, 
+                                                            rm.nmrawmate,
+                                                            rm.unit
                                                         FROM podetail pd 
                                                         JOIN rawmate rm ON pd.idrawmate = rm.idrawmate 
                                                         WHERE pd.idpo = ?";
@@ -105,24 +125,30 @@ $row = $result->fetch_assoc();
                                         $stmtDetail->execute();
                                         $resultDetail = $stmtDetail->get_result();
 
-                                        // Menampilkan data dari query
+                                        // Menampilkan data
                                         while ($tampil = $resultDetail->fetch_assoc()) { ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++; ?></td>
-                                                <td><?= htmlspecialchars($tampil['nmrawmate']); ?></td>
-                                                <td class="text-right"><?= number_format($tampil['order_qty'], 2); ?></td>
+                                                <td><?= htmlspecialchars($tampil['nmrawmate'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                                <td class="text-center"><?= htmlspecialchars($tampil['unit'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                                <td class="text-right"><?= number_format((float)($tampil['order_qty'] ?? 0), 2); ?></td>
                                                 <td class="text-right">
-                                                    <input type="hidden" name="idrawmate[]" value="<?= $tampil['idrawmate']; ?>">
+                                                    <input type="hidden" name="idrawmate[]" value="<?= htmlspecialchars($tampil['idrawmate'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                                                     <input type="number" step="0.01" class="form-control" name="received_qty[]" placeholder="Qty diterima" required>
                                                 </td>
                                             </tr>
-                                        <?php } ?>
+                                        <?php }
+                                        // jika tidak ada detail, tampilkan pesan
+                                        if ($resultDetail->num_rows === 0) {
+                                            echo "<tr><td colspan='5' class='text-center'>No detail items found for this PO.</td></tr>";
+                                        }
+                                        ?>
                                     </tbody>
                                 </table>
 
                                 <div class="row mt-2">
                                     <div class="col-12">
-                                        <button type="submit" class="btn btn-block bg-gradient-primary" name="submit" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')">Proses GR</button>
+                                        <button type="submit" class="btn btn-block bg-gradient-primary" onclick="return confirm('Pastikan Data Yang Diisi Sudah Benar')">Proses GR</button>
                                     </div>
                                 </div>
                             </div>

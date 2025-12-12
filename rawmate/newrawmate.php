@@ -67,6 +67,7 @@ include "../mainsidebar.php";
                                  "Kg",
                                  "Pack",
                                  "Pcs",
+                                 "Set"
                               ];
                               foreach ($units as $u) {
                                  echo "<option value='$u'>$u</option>";

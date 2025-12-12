@@ -34,7 +34,8 @@ $units = [
   "Ikat",
   "Kg",
   "Pack",
-  "Pcs"
+  "Pcs",
+  "Set"
 ];
 ?>
 

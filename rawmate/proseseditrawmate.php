@@ -10,7 +10,7 @@ $stock         = isset($_POST['stock']) ? intval($_POST['stock']) : 0;
 $unit          = isset($_POST['unit']) ? trim($_POST['unit']) : '';
 
 // Daftar unit yang valid (urut alfabet, sama dengan edit/new form)
-$valid_units = ["Box", "Ikat", "Kg", "Pack", "Pcs"];
+$valid_units = ["Box", "Ikat", "Kg", "Pack", "Pcs", "Set"];
 
 // Validasi dasar
 if ($idrawmate <= 0 || $nmrawmate === '' || $idrawcategory <= 0 || !in_array($stock, [0, 1], true)) {
