@@ -21,6 +21,7 @@ include "../mainsidebar.php";
                                             <th>#</th>
                                             <th>Kode</th>
                                             <th>Item Description</th>
+                                            <th>Units</th>
                                             <th>Category</th>
                                             <th>Stock</th>
                                         </tr>
@@ -38,6 +39,7 @@ include "../mainsidebar.php";
                                             SELECT 
                                                 rm.kdrawmate AS kode,
                                                 rm.nmrawmate AS description,
+                                                rm.unit AS unit,
                                                 rc.nmcategory AS category,
                                                 (COALESCE(msk.qty_in, 0) - COALESCE(klr.qty_out, 0)) AS stock
                                             FROM rawmate rm
@@ -61,21 +63,28 @@ include "../mainsidebar.php";
                                         $result = $conn->query($sql);
 
                                         if (!$result) {
-                                            echo "<tr><td colspan='5' class='text-center text-danger'>Query Error: " . htmlspecialchars($conn->error) . "</td></tr>";
+                                            echo "<tr><td colspan='6' class='text-center text-danger'>Query Error: " . htmlspecialchars($conn->error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</td></tr>";
                                         } elseif ($result->num_rows > 0) {
                                             $no = 1;
                                             while ($row = $result->fetch_assoc()) {
+                                                $kode = htmlspecialchars($row['kode'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                                $desc = htmlspecialchars($row['description'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                                $unit = htmlspecialchars($row['unit'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                                $category = htmlspecialchars($row['category'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                                $stock = number_format((float)($row['stock'] ?? 0), 2);
+
                                                 echo "<tr>
-                                                        <td class='text-center'>" . $no . "</td>
-                                                        <td class='text-center'>" . htmlspecialchars($row['kode']) . "</td>
-                                                        <td>" . htmlspecialchars($row['description']) . "</td>
-                                                        <td>" . htmlspecialchars($row['category']) . "</td>
-                                                        <td class='text-right'>" . number_format((float)$row['stock'], 2) . "</td>
+                                                        <td class='text-center'>{$no}</td>
+                                                        <td class='text-center'>{$kode}</td>
+                                                        <td>{$desc}</td>
+                                                        <td class='text-center'>{$unit}</td>
+                                                        <td>{$category}</td>
+                                                        <td class='text-right'>{$stock}</td>
                                                      </tr>";
                                                 $no++;
                                             }
                                         } else {
-                                            echo "<tr><td colspan='5' class='text-center'>No data available</td></tr>";
+                                            echo "<tr><td colspan='6' class='text-center'>No data available</td></tr>";
                                         }
                                         ?>
                                     </tbody>
