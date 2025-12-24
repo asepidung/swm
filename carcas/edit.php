@@ -12,25 +12,23 @@ if (!function_exists('e')) {
     }
 }
 if (!function_exists('tglinput')) {
-    // Untuk value input[type=date]
     function tglinput($d)
     {
         return $d ? date('Y-m-d', strtotime($d)) : '';
     }
 }
 
-// ================================
-// Validasi & ambil idcarcase
-// ================================
+/* ================================
+ * Validasi ID
+ * ================================ */
 if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
-    http_response_code(400);
-    exit("Invalid carcase id.");
+    die("Invalid carcase id.");
 }
 $idcarcase = (int)$_GET['id'];
 
-// ================================
-// Ambil HEADER carcase
-// ================================
+/* ================================
+ * Ambil HEADER carcase
+ * ================================ */
 $stmtH = $conn->prepare("
     SELECT 
         c.idcarcase,
@@ -42,8 +40,8 @@ $stmtH = $conn->prepare("
         w.weigh_no,
         w.weigh_date
     FROM carcase c
-    LEFT JOIN supplier s      ON s.idsupplier = c.idsupplier
-    LEFT JOIN weight_cattle w ON w.idweigh    = c.idweight
+    JOIN supplier s      ON s.idsupplier = c.idsupplier
+    JOIN weight_cattle w ON w.idweigh    = c.idweight
     WHERE c.idcarcase = ? AND c.is_deleted = 0
     LIMIT 1
 ");
@@ -53,229 +51,168 @@ $header = $stmtH->get_result()->fetch_assoc();
 $stmtH->close();
 
 if (!$header) {
-    http_response_code(404);
-    exit("Carcas not found or already deleted.");
+    die("Carcas tidak ditemukan.");
 }
 
-// ================================
-// Ambil DETAIL carcasedetail
-// ================================
+$idweight = (int)$header['idweight'];
+
+/* ================================
+ * Ambil sapi:
+ *  - milik carcase ini
+ *  - ATAU belum dipakai carcase lain
+ * ================================ */
 $stmtD = $conn->prepare("
-    SELECT 
-        cd.iddetail,
-        cd.eartag,
-        cd.breed,
-        cd.berat,
-        cd.carcase1,
-        cd.carcase2,
-        cd.hides,
-        cd.tail
-    FROM carcasedetail cd
-    WHERE cd.idcarcase = ?
-    ORDER BY cd.eartag
+    SELECT
+        d.idweighdetail,
+        d.eartag,
+        crd.weight AS live_weight,
+
+        cd_this.iddetail,
+        cd_this.breed,
+        cd_this.carcase1,
+        cd_this.carcase2,
+        cd_this.hides,
+        cd_this.tail
+
+    FROM weight_cattle_detail d
+    JOIN cattle_receive_detail crd
+        ON crd.idreceivedetail = d.idreceivedetail
+
+    /* carcasedetail untuk carcase yang sedang diedit */
+    LEFT JOIN carcasedetail cd_this
+        ON cd_this.idweightdetail = d.idweighdetail
+       AND cd_this.idcarcase = ?
+
+    /* cek apakah sapi sudah dipakai carcase LAIN */
+    LEFT JOIN carcasedetail cd_other
+        ON cd_other.idweightdetail = d.idweighdetail
+       AND cd_other.idcarcase <> ?
+
+    WHERE d.idweigh = ?
+      AND (
+            cd_this.iddetail IS NOT NULL
+         OR cd_other.iddetail IS NULL
+      )
+
+    ORDER BY d.eartag
 ");
-$stmtD->bind_param("i", $idcarcase);
+$stmtD->bind_param("iii", $idcarcase, $idcarcase, $idweight);
 $stmtD->execute();
 $resD = $stmtD->get_result();
 
-$details = [];
-while ($row = $resD->fetch_assoc()) {
-    $details[] = $row;
+$rows = [];
+while ($r = $resD->fetch_assoc()) {
+    $rows[] = $r;
 }
 $stmtD->close();
 
-// opsi class yang diizinkan
 $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
 ?>
 
 <div class="content-wrapper">
-    <!-- Header -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-12 col-md-6">
-                    <h1 class="m-0">Edit Carcas</h1>
-                    <small class="text-muted">
-                        Supplier: <?= e($header['nmsupplier'] ?? '-'); ?> | No Timbang: <?= e($header['weigh_no'] ?? '-'); ?>
-                    </small>
-                </div>
-                <div class="col-12 col-md-6 text-md-right mt-2 mt-md-0">
-                    <a href="index.php" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-undo-alt"></i> Kembali ke Data Carcas
-                    </a>
-                </div>
-            </div>
+            <h1>Edit Carcas</h1>
+            <small class="text-muted">
+                Supplier: <?= e($header['nmsupplier']); ?> |
+                No Timbang: <?= e($header['weigh_no']); ?>
+            </small>
         </div>
     </section>
 
-    <!-- Main -->
     <section class="content">
         <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
 
-            <div class="row">
-                <div class="col-12">
+                    <form action="update.php" method="post">
+                        <input type="hidden" name="idcarcase" value="<?= $idcarcase; ?>">
 
-                    <div class="card">
-                        <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label>Tanggal Killing</label>
+                                <input type="date" name="killdate" class="form-control form-control-sm"
+                                    value="<?= e(tglinput($header['killdate'])); ?>" required>
+                            </div>
+                            <div class="col-md-9">
+                                <label>Catatan</label>
+                                <input type="text" name="note" class="form-control form-control-sm"
+                                    value="<?= e($header['note']); ?>">
+                            </div>
+                        </div>
 
-                            <!-- Form Edit -->
-                            <form action="update.php" method="post">
-                                <input type="hidden" name="idcarcase" value="<?= (int)$header['idcarcase']; ?>">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Eartag</th>
+                                        <th>Class</th>
+                                        <th>Live Wt</th>
+                                        <th>Carcase A</th>
+                                        <th>Carcase B</th>
+                                        <th>Hides</th>
+                                        <th>Tail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                <!-- Header info -->
-                                <div class="row mb-3">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Tanggal Killing</label>
-                                            <input type="date" name="killdate" class="form-control form-control-sm"
-                                                value="<?= e(tglinput($header['killdate'])); ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Supplier</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                value="<?= e($header['nmsupplier'] ?? '-'); ?>" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>No Timbang</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                value="<?= e($header['weigh_no'] ?? '-'); ?>" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Tgl Timbang</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                value="<?= $header['weigh_date'] ? e(date('d-M-Y', strtotime($header['weigh_date']))) : '-'; ?>" readonly>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <?php $no = 1;
+                                    foreach ($rows as $r): ?>
+                                        <tr>
+                                            <td class="text-center"><?= $no++; ?></td>
 
-                                <div class="form-group">
-                                    <label>Catatan</label>
-                                    <input type="text" name="note" class="form-control form-control-sm"
-                                        value="<?= e($header['note'] ?? ''); ?>"
-                                        placeholder="Catatan tambahan (opsional)">
-                                </div>
+                                            <td class="text-center">
+                                                <?= e($r['eartag']); ?>
+                                                <input type="hidden" name="idweighdetail[]" value="<?= (int)$r['idweighdetail']; ?>">
+                                                <input type="hidden" name="iddetail[]" value="<?= (int)($r['iddetail'] ?? 0); ?>">
+                                                <input type="hidden" name="eartag[]" value="<?= e($r['eartag']); ?>">
+                                                <input type="hidden" name="live_weight[]" value="<?= e($r['live_weight']); ?>">
+                                            </td>
 
-                                <hr>
+                                            <td>
+                                                <select name="breed[]" class="form-control form-control-sm">
+                                                    <option value="">- Pilih -</option>
+                                                    <?php foreach ($breedOptions as $opt): ?>
+                                                        <option value="<?= $opt; ?>" <?= ($opt === $r['breed']) ? 'selected' : ''; ?>>
+                                                            <?= $opt; ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </td>
 
-                                <!-- Detail table -->
-                                <div class="table-responsive mt-3">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead class="text-center">
-                                            <tr>
-                                                <th style="width:5%;">No</th>
-                                                <th style="width:14%;">Eartag</th>
-                                                <th style="width:14%;">Class</th>
-                                                <th style="width:14%;">Live Wt (Kg)</th>
-                                                <th>Carcase A (Kg)</th>
-                                                <th>Carcase B (Kg)</th>
-                                                <th>Hides (Kg)</th>
-                                                <th>Tail (Kg)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            if (empty($details)):
-                                            ?>
-                                                <tr>
-                                                    <td colspan="8" class="text-center text-muted">
-                                                        Tidak ada detail carcas untuk dokumen ini.
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                            else:
-                                                $no = 1;
-                                                foreach ($details as $d):
-                                                    $iddet = (int)$d['iddetail'];
-                                                    $etag  = $d['eartag'];
-                                                    $breedVal = strtoupper(trim($d['breed'] ?? ''));
-                                                    $live  = (float)$d['berat'];
-                                                    $c1    = (float)$d['carcase1'];
-                                                    $c2    = (float)$d['carcase2'];
-                                                    $h     = (float)$d['hides'];
-                                                    $t     = (float)$d['tail'];
-                                                ?>
-                                                    <tr>
-                                                        <td class="text-center"><?= $no++; ?></td>
-                                                        <td class="text-center">
-                                                            <?= e($etag); ?>
-                                                            <input type="hidden" name="iddetail[]" value="<?= $iddet; ?>">
-                                                        </td>
-                                                        <td>
-                                                            <select name="breed[]" class="form-control form-control-sm">
-                                                                <option value="">- Pilih Class -</option>
-                                                                <?php foreach ($breedOptions as $opt): ?>
-                                                                    <option value="<?= e($opt); ?>"
-                                                                        <?= ($opt === $breedVal) ? 'selected' : ''; ?>>
-                                                                        <?= e($opt); ?>
-                                                                    </option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </td>
-                                                        <td class="text-right">
-                                                            <?= number_format($live, 2, ',', '.'); ?>
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" step="0.01" min="0"
-                                                                name="carcase1[]" class="form-control form-control-sm text-right"
-                                                                value="<?= e($c1); ?>">
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" step="0.01" min="0"
-                                                                name="carcase2[]" class="form-control form-control-sm text-right"
-                                                                value="<?= e($c2); ?>">
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" step="0.01" min="0"
-                                                                name="hides[]" class="form-control form-control-sm text-right"
-                                                                value="<?= e($h); ?>">
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" step="0.01" min="0"
-                                                                name="tails[]" class="form-control form-control-sm text-right"
-                                                                value="<?= e($t); ?>">
-                                                        </td>
-                                                    </tr>
-                                            <?php
-                                                endforeach;
-                                            endif;
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            <td class="text-right">
+                                                <?= number_format((float)$r['live_weight'], 2, ',', '.'); ?>
+                                            </td>
 
-                                <div class="row mt-3">
-                                    <div class="col-md-4">
-                                        <a href="index.php" class="btn btn-secondary btn-block btn-sm">
-                                            <i class="fas fa-times"></i> Batal
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <button type="submit" class="btn btn-success btn-block btn-sm">
-                                            <i class="fas fa-save"></i> Simpan Perubahan
-                                        </button>
-                                    </div>
-                                </div>
+                                            <td><input type="number" step="0.01" name="carcase1[]" class="form-control form-control-sm text-right"
+                                                    value="<?= e($r['carcase1']); ?>"></td>
 
-                            </form>
+                                            <td><input type="number" step="0.01" name="carcase2[]" class="form-control form-control-sm text-right"
+                                                    value="<?= e($r['carcase2']); ?>"></td>
 
-                        </div><!-- /.card-body -->
-                    </div><!-- /.card -->
+                                            <td><input type="number" step="0.01" name="hides[]" class="form-control form-control-sm text-right"
+                                                    value="<?= e($r['hides']); ?>"></td>
+
+                                            <td><input type="number" step="0.01" name="tails[]" class="form-control form-control-sm text-right"
+                                                    value="<?= e($r['tail']); ?>"></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-sm btn-block">
+                            <i class="fas fa-save"></i> Simpan Perubahan
+                        </button>
+
+                    </form>
 
                 </div>
             </div>
-
         </div>
     </section>
 </div>
-
-<script>
-    document.title = "Edit Carcas";
-</script>
 
 <?php include "../footer.php"; ?>

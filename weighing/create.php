@@ -357,6 +357,36 @@ $detail = $stmt->get_result();
 
 <script>
     document.title = "Input Hasil Timbang";
+
+    // ENTER di Berat Actual → turun ke Berat Actual baris berikutnya
+    const weightInputs = document.querySelectorAll('input[name="actual_weight[]"]');
+    weightInputs.forEach((input, index) => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (weightInputs[index + 1]) {
+                    weightInputs[index + 1].focus();
+                    weightInputs[index + 1].select();
+                }
+            }
+        });
+    });
+
+    // ENTER di Catatan → turun ke Catatan baris berikutnya
+    const noteInputs = document.querySelectorAll('input[name="detail_notes[]"]');
+    noteInputs.forEach((input, index) => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (noteInputs[index + 1]) {
+                    noteInputs[index + 1].focus();
+                    noteInputs[index + 1].select();
+                }
+            }
+        });
+    });
 </script>
+
+
 
 <?php include "../footer.php"; ?>

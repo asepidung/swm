@@ -80,8 +80,9 @@ $ph = $data['ph'];
          </tr>
          <tr>
             <td colspan=" 1" rowspan="2">
-               <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <span style="font-size: 30px"><strong><?= number_format($qty, 2); ?></strong></span>
+               <span style="font-size:30px; font-family: Arial, Helvetica, sans-serif;">
+                  <strong><?= number_format($qty, 2); ?></strong>
+                  <sup style="font-size:14px;">Kg</sup>
                </span>
             </td>
             <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">

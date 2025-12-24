@@ -71,6 +71,7 @@ $tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : date('Y-m-d');
                                         <th>#</th>
                                         <th>Customer</th>
                                         <th>Nomor SO</th>
+                                        <th>Nomor PO</th>
                                         <th>Tgl Kirim</th>
                                         <th>Products</th>
                                         <th>Qty</th>
@@ -85,6 +86,7 @@ $tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : date('Y-m-d');
                                             <td class="text-center"> <?= $row_number; ?> </td>
                                             <td class="text-left"> <?= $row["nama_customer"]; ?> </td>
                                             <td class="text-center"> <?= $row["sonumber"]; ?> </td>
+                                            <td class="text-center"> <?= $row["po"]; ?> </td>
                                             <td class="text-center"> <?= date("d-M-y", strtotime($row["deliverydate"])); ?> </td>
                                             <td class="text-left"> <?= $row["nmbarang"]; ?> </td>
                                             <td class="text-center"> <?= $row["qty_order"]; ?> </td>

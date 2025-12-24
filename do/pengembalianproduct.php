@@ -2,54 +2,93 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['items']) && isset($_POST['iddo']) && isset($_POST['idso'])) {
-   $items = $_POST['items'];
-   $iddo = intval($_POST['iddo']);
-   $idso = intval($_POST['idso']);
-
-   // Prepare statement for inserting into stock table
-   $stmtInsert = $conn->prepare("INSERT INTO stock (kdbarcode, idbarang, idgrade, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)");
-   if (!$stmtInsert) {
-      die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-   }
-
-   // Prepare statement for deleting from tallydetail table
-   $stmtDelete = $conn->prepare("DELETE tallydetail FROM tallydetail INNER JOIN tally ON tallydetail.idtally = tally.idtally WHERE tallydetail.barcode = ? AND tally.idso = ?");
-   if (!$stmtDelete) {
-      die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-   }
-
-   foreach ($items as $item) {
-      $item = json_decode($item, true);
-      $kdbarcode = $item['barcode'];
-      $idbarang = intval($item['idbarang']);
-      $idgrade = intval($item['idgrade']);
-      $qty = floatval($item['weight']);
-      $pcs = isset($item['pcs']) ? intval($item['pcs']) : null;
-      $pod = $item['pod'];
-      $origin = intval($item['origin']);
-
-      // Bind parameters for insert
-      $stmtInsert->bind_param("siidisi", $kdbarcode, $idbarang, $idgrade, $qty, $pcs, $pod, $origin);
-      if (!$stmtInsert->execute()) {
-         echo "Error: " . $stmtInsert->error;
-         exit();
-      }
-
-      // Bind parameters for delete
-      $stmtDelete->bind_param("si", $kdbarcode, $idso);
-      if (!$stmtDelete->execute()) {
-         echo "Error: " . $stmtDelete->error;
-         exit();
-      }
-   }
-
-   // Redirect ke halaman lain setelah selesai
-   header("location: approvedo.php?iddo=$iddo");
-   exit();
-} else {
-   echo "No items selected or missing iddo.";
-   exit();
+if (
+   $_SERVER['REQUEST_METHOD'] !== 'POST' ||
+   empty($_POST['items']) ||
+   empty($_POST['iddo'])
+) {
+   die("Data tidak lengkap");
 }
 
-$conn->close();
+$iddo = (int)$_POST['iddo'];
+$idso = isset($_POST['idso']) ? (int)$_POST['idso'] : 0;
+$items = $_POST['items']; // array idtallydetail
+
+$conn->begin_transaction();
+
+try {
+
+   /* =========================
+       PREPARE STATEMENT
+    ========================= */
+
+   // Ambil data tallydetail
+   $stmtGet = $conn->prepare("
+        SELECT barcode, idbarang, idgrade, weight, pcs, pod, origin
+        FROM tallydetail
+        WHERE idtallydetail = ?
+    ");
+
+   // Insert ke stock
+   $stmtInsert = $conn->prepare("
+        INSERT INTO stock
+        (kdbarcode, idbarang, idgrade, qty, pcs, pod, origin)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
+
+   // Delete dari tallydetail (berdasarkan idtallydetail)
+   $stmtDelete = $conn->prepare("
+        DELETE FROM tallydetail
+        WHERE idtallydetail = ?
+    ");
+
+   /* =========================
+       LOOP ITEM
+    ========================= */
+   foreach ($items as $idtallydetail) {
+
+      $idtallydetail = (int)$idtallydetail;
+
+      // Ambil data sumber
+      $stmtGet->bind_param("i", $idtallydetail);
+      $stmtGet->execute();
+      $res = $stmtGet->get_result();
+      $row = $res->fetch_assoc();
+
+      if (!$row) {
+         throw new Exception("Data tallydetail tidak ditemukan: ID $idtallydetail");
+      }
+
+      // Pastikan FK aman
+      if (empty($row['idgrade']) || empty($row['idbarang'])) {
+         throw new Exception("Data barang / grade tidak valid");
+      }
+
+      // Insert ke stock
+      $stmtInsert->bind_param(
+         "siidisi",
+         $row['barcode'],
+         $row['idbarang'],
+         $row['idgrade'],
+         $row['weight'],
+         $row['pcs'],
+         $row['pod'],
+         $row['origin']
+      );
+      $stmtInsert->execute();
+
+      // Hapus dari tallydetail
+      $stmtDelete->bind_param("i", $idtallydetail);
+      $stmtDelete->execute();
+   }
+
+   $conn->commit();
+
+   header("Location: approvedo.php?iddo=$iddo");
+   exit();
+} catch (Exception $e) {
+
+   $conn->rollback();
+   echo "ERROR: " . $e->getMessage();
+   exit();
+}

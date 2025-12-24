@@ -281,6 +281,28 @@ $breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
 
 <script>
     document.title = "Input Carcas";
+
+    function enableEnterDown(selector) {
+        const inputs = document.querySelectorAll(selector);
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (inputs[index + 1]) {
+                        inputs[index + 1].focus();
+                        inputs[index + 1].select();
+                    }
+                }
+            });
+        });
+    }
+
+    // Aktifkan ENTER turun per kolom
+    enableEnterDown('input[name="carcase1[]"]');
+    enableEnterDown('input[name="carcase2[]"]');
+    enableEnterDown('input[name="hides[]"]');
+    enableEnterDown('input[name="tails[]"]');
 </script>
+
 
 <?php include "../footer.php"; ?>

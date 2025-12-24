@@ -9,8 +9,18 @@ $currentMonth = date("m");  // Contoh: 12 untuk bulan Desember
 function angkaToRomawi($angka)
 {
    $romawi = [
-      'I', 'II', 'III', 'IV', 'V', 'VI',
-      'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
+      'I',
+      'II',
+      'III',
+      'IV',
+      'V',
+      'VI',
+      'VII',
+      'VIII',
+      'IX',
+      'X',
+      'XI',
+      'XII'
    ];
    return $angka >= 1 && $angka <= 12 ? $romawi[$angka - 1] : "Invalid";
 }
@@ -30,6 +40,3 @@ $sonumber = sprintf("%04s", $urut);
 
 // Membuat kode auto SO
 $kodeauto = "SO-SWM/" . $currentYear . "/" . $romawiMonth . "/" . $sonumber;
-
-// Output untuk debugging
-echo $kodeauto;
