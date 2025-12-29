@@ -5,66 +5,56 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
-/* Helper: bentuk URL laporan + param ret untuk balik ke halaman ini */
-function usageViewUrl(string $sumber, int $idsumber): string
-{
-    // pastikan selalu kembali ke halaman summary material
-    $ret = urlencode('../material/index.php');
-    if ($sumber === 'REPACK') {
-        return "../repack/laporan_rawusage_repack.php?id={$idsumber}&ret={$ret}";
-    } elseif ($sumber === 'LAINNYA') {
-        return "laporan_rawusage_other.php?id={$idsumber}&ret={$ret}";
-    } else { // BONING
-        return "../boning/laporan_rawusage.php?id={$idsumber}&ret={$ret}";
-    }
-}
-
-/* Ringkasan gabungan dari raw_usage */
+/* ================================
+   Ambil data stock out (aktif)
+================================ */
 $sql = "
-  SELECT 
-    ru.sumber,
-    ru.idsumber,
-    COALESCE(
-      CASE WHEN ru.sumber='REPACK'  THEN r.tglrepack  END,
-      CASE WHEN ru.sumber='BONING'  THEN b.tglboning  END,
-      CASE WHEN ru.sumber='LAINNYA' THEN u.tgl        END
-    ) AS tgl_proses,
-    COALESCE(
-      CASE WHEN ru.sumber='REPACK'  THEN r.norepack   END,
-      CASE WHEN ru.sumber='BONING'  THEN CONCAT('BN', LPAD(b.idboning,4,'0')) END,
-      CASE WHEN ru.sumber='LAINNYA' THEN u.noother    END
-    ) AS notrans,
-    SUM(ru.qty) AS total_qty,
-    COUNT(DISTINCT ru.idrawmate) AS jml_material
-  FROM raw_usage ru
-  LEFT JOIN repack      r ON ru.sumber='REPACK'  AND r.idrepack = ru.idsumber
-  LEFT JOIN boning      b ON ru.sumber='BONING'  AND b.idboning = ru.idsumber
-  LEFT JOIN usage_other u ON ru.sumber='LAINNYA' AND u.idother  = ru.idsumber
-  GROUP BY ru.sumber, ru.idsumber, tgl_proses, notrans
-  ORDER BY tgl_proses DESC, ru.sumber, ru.idsumber DESC
+    SELECT 
+        so.idstockout,
+        so.nostockout,
+        so.tgl,
+        so.kegiatan,
+        so.ref_no,
+        so.kegiatan_note,
+        COUNT(DISTINCT sod.idrawmate) AS jml_material,
+        COALESCE(SUM(sod.qty),0) AS total_qty
+    FROM raw_stock_out so
+    LEFT JOIN raw_stock_out_detail sod 
+        ON sod.idstockout = so.idstockout
+    WHERE so.is_deleted = 0
+    GROUP BY 
+        so.idstockout,
+        so.nostockout,
+        so.tgl,
+        so.kegiatan,
+        so.ref_no,
+        so.kegiatan_note
+    ORDER BY so.tgl DESC, so.idstockout DESC
 ";
+
 $res = mysqli_query($conn, $sql);
 
 $msg = $_GET['msg'] ?? '';
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
-                    <h4><i class="fas fa-clipboard-list"></i> Ringkasan Pemakaian Material (Semua Sumber)</h4>
+                    <h4><i class="fas fa-box-open"></i> Pengeluaran Material Pendukung</h4>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <a href="other_usage_new.php" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus-circle"></i> Tambah (Pengeluaran Lainnya)
-                    </a>
-                    <a href="javascript:history.back();" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-undo-alt"></i> Kembali
+                    <a href="create.php" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus-circle"></i> Tambah Pengeluaran
                     </a>
                 </div>
             </div>
+
             <?php if ($msg): ?>
-                <div class="alert alert-success py-2"><?= htmlspecialchars($msg) ?></div>
+                <div class="alert alert-success py-2">
+                    <?= htmlspecialchars($msg, ENT_QUOTES) ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>
@@ -73,17 +63,19 @@ $msg = $_GET['msg'] ?? '';
         <div class="container-fluid">
             <div class="card card-dark shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">Tabel Ringkasan</h3>
+                    <h3 class="card-title">Daftar Pengeluaran Material</h3>
                 </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="summaryAll" class="table table-bordered table-striped table-sm">
+                        <table id="stockOutTable" class="table table-bordered table-striped table-sm">
                             <thead class="text-center">
                                 <tr>
                                     <th>#</th>
                                     <th>Tanggal</th>
-                                    <th>ID Transaksi</th>
-                                    <th>Proses</th>
+                                    <th>No Dokumen</th>
+                                    <th>Kegiatan</th>
+                                    <th>Referensi</th>
                                     <th>Jml Material</th>
                                     <th>Total Qty</th>
                                     <th>Aksi</th>
@@ -91,43 +83,78 @@ $msg = $_GET['msg'] ?? '';
                             </thead>
                             <tbody>
                                 <?php $no = 1;
-                                while ($r = mysqli_fetch_assoc($res)):
-                                    $sumber   = $r['sumber'];
-                                    $idsumber = (int)$r['idsumber'];
-                                    $viewUrl  = usageViewUrl($sumber, $idsumber);
-                                ?>
+                                while ($r = mysqli_fetch_assoc($res)): ?>
                                     <tr class="align-middle">
                                         <td class="text-center"><?= $no++ ?></td>
+
                                         <td class="text-center">
-                                            <?= htmlspecialchars(date('d-M-y', strtotime($r['tgl_proses'] ?? date('Y-m-d')))) ?>
+                                            <?= htmlspecialchars(date('d-M-y', strtotime($r['tgl']))) ?>
                                         </td>
-                                        <td><?= htmlspecialchars($r['notrans'] ?? "{$sumber}-{$idsumber}") ?></td>
+
+                                        <td>
+                                            <?= htmlspecialchars($r['nostockout']) ?>
+                                        </td>
+
                                         <td class="text-center">
-                                            <?php if ($sumber === 'BONING'): ?>
+                                            <?php if ($r['kegiatan'] === 'BONING'): ?>
                                                 <span class="badge badge-info">BONING</span>
-                                            <?php elseif ($sumber === 'REPACK'): ?>
+                                            <?php elseif ($r['kegiatan'] === 'REPACK'): ?>
                                                 <span class="badge badge-success">REPACK</span>
                                             <?php else: ?>
                                                 <span class="badge badge-secondary">LAINNYA</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="text-center"><?= (int)$r['jml_material'] ?></td>
-                                        <td class="text-right"><?= number_format((float)$r['total_qty'], 2) ?></td>
+
+                                        <td>
+                                            <?php
+                                            if ($r['kegiatan'] === 'LAINNYA') {
+                                                echo htmlspecialchars($r['kegiatan_note']);
+                                            } else {
+                                                echo htmlspecialchars($r['ref_no']);
+                                            }
+                                            ?>
+                                        </td>
+
                                         <td class="text-center">
-                                            <a href="<?= htmlspecialchars($viewUrl) ?>" class="btn btn-outline-info btn-sm" title="Lihat">
+                                            <?= (int)$r['jml_material'] ?>
+                                        </td>
+
+                                        <td class="text-right">
+                                            <?= number_format((float)$r['total_qty'], 2) ?>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <a href="view.php?id=<?= (int)$r['idstockout'] ?>"
+                                                class="btn btn-outline-info btn-sm" title="Lihat">
                                                 <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="edit.php?id=<?= (int)$r['idstockout'] ?>"
+                                                class="btn btn-outline-warning btn-sm" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="delete.php?id=<?= (int)$r['idstockout'] ?>"
+                                                class="btn btn-outline-danger btn-sm"
+                                                onclick="return confirm('Yakin ingin menghapus data ini?')"
+                                                title="Hapus">
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
+
                             <tfoot>
                                 <?php
-                                $qGrand = mysqli_query($conn, "SELECT COALESCE(SUM(qty),0) AS gqty FROM raw_usage");
-                                $grand  = mysqli_fetch_assoc($qGrand)['gqty'] ?? 0;
+                                $qGrand = mysqli_query($conn, "
+                                    SELECT COALESCE(SUM(qty),0) AS gqty
+                                    FROM raw_stock_out_detail d
+                                    JOIN raw_stock_out h ON h.idstockout = d.idstockout
+                                    WHERE h.is_deleted = 0
+                                ");
+                                $grand = mysqli_fetch_assoc($qGrand)['gqty'] ?? 0;
                                 ?>
                                 <tr>
-                                    <th colspan="5" class="text-right">GRAND TOTAL QTY</th>
+                                    <th colspan="6" class="text-right">GRAND TOTAL QTY</th>
                                     <th class="text-right"><?= number_format((float)$grand, 2) ?></th>
                                     <th></th>
                                 </tr>
@@ -135,15 +162,17 @@ $msg = $_GET['msg'] ?? '';
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 </div>
 
 <script>
-    document.title = "Ringkasan Pemakaian Material (All)";
+    document.title = "Pengeluaran Material Pendukung";
+
     $(function() {
-        $("#summaryAll").DataTable({
+        $("#stockOutTable").DataTable({
             responsive: true,
             lengthChange: false,
             autoWidth: false,
@@ -153,7 +182,7 @@ $msg = $_GET['msg'] ?? '';
             searching: true,
             info: true,
             buttons: ["copy", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#summaryAll_wrapper .col-md-6:eq(0)');
+        }).buttons().container().appendTo('#stockOutTable_wrapper .col-md-6:eq(0)');
     });
 </script>
 

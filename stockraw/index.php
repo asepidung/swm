@@ -7,7 +7,6 @@ include "../mainsidebar.php";
 ?>
 
 <div class="content-wrapper">
-    <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -29,10 +28,19 @@ include "../mainsidebar.php";
                                     <tbody>
                                         <?php
                                         /*
-                                         * Stok = total masuk (GR) - total keluar (Raw Usage)
-                                         * - Masuk: grrawdetail.qty (hanya yang tidak dihapus + header aktif)
-                                         * - Keluar: raw_usage.qty (asumsi belum ada is_deleted; tambahkan filter jika nanti ada)
-                                         * - Tampilkan HANYA bahan dengan rm.stock = 1
+                                         * STOK FINAL:
+                                         * Stok = TOTAL GR - TOTAL STOCK OUT (is_deleted = 0)
+                                         *
+                                         * Masuk :
+                                         * - grrawdetail.qty
+                                         * - grraw.is_deleted = 0
+                                         * - grrawdetail.is_deleted = 0
+                                         *
+                                         * Keluar :
+                                         * - raw_stock_out_detail.qty
+                                         * - raw_stock_out.is_deleted = 0
+                                         *
+                                         * Tampilkan hanya rawmate.stock = 1
                                          */
 
                                         $sql = "
@@ -41,21 +49,46 @@ include "../mainsidebar.php";
                                                 rm.nmrawmate AS description,
                                                 rm.unit AS unit,
                                                 rc.nmcategory AS category,
-                                                (COALESCE(msk.qty_in, 0) - COALESCE(klr.qty_out, 0)) AS stock
+                                                (
+                                                    COALESCE(msk.qty_in, 0) 
+                                                    - COALESCE(klr.qty_out, 0)
+                                                ) AS stock
                                             FROM rawmate rm
-                                            JOIN rawcategory rc ON rc.idrawcategory = rm.idrawcategory
+                                            JOIN rawcategory rc 
+                                                ON rc.idrawcategory = rm.idrawcategory
+
+                                            /* ===============================
+                                               TOTAL MASUK (GR)
+                                            =============================== */
                                             LEFT JOIN (
-                                                SELECT gd.idrawmate, SUM(gd.qty) AS qty_in
+                                                SELECT 
+                                                    gd.idrawmate, 
+                                                    SUM(gd.qty) AS qty_in
                                                 FROM grrawdetail gd
-                                                JOIN grraw g ON g.idgr = gd.idgr
-                                                WHERE gd.is_deleted = 0 AND g.is_deleted = 0
+                                                JOIN grraw g 
+                                                    ON g.idgr = gd.idgr
+                                                WHERE 
+                                                    gd.is_deleted = 0
+                                                    AND g.is_deleted = 0
                                                 GROUP BY gd.idrawmate
-                                            ) msk ON msk.idrawmate = rm.idrawmate
+                                            ) msk 
+                                                ON msk.idrawmate = rm.idrawmate
+
+                                            /* ===============================
+                                               TOTAL KELUAR (STOCK OUT)
+                                            =============================== */
                                             LEFT JOIN (
-                                                SELECT ru.idrawmate, SUM(ru.qty) AS qty_out
-                                                FROM raw_usage ru
-                                                GROUP BY ru.idrawmate
-                                            ) klr ON klr.idrawmate = rm.idrawmate
+                                                SELECT 
+                                                    d.idrawmate,
+                                                    SUM(d.qty) AS qty_out
+                                                FROM raw_stock_out_detail d
+                                                JOIN raw_stock_out h 
+                                                    ON h.idstockout = d.idstockout
+                                                WHERE h.is_deleted = 0
+                                                GROUP BY d.idrawmate
+                                            ) klr 
+                                                ON klr.idrawmate = rm.idrawmate
+
                                             WHERE rm.stock = 1
                                             ORDER BY rm.nmrawmate ASC
                                         ";
@@ -63,28 +96,28 @@ include "../mainsidebar.php";
                                         $result = $conn->query($sql);
 
                                         if (!$result) {
-                                            echo "<tr><td colspan='6' class='text-center text-danger'>Query Error: " . htmlspecialchars($conn->error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</td></tr>";
+                                            echo "<tr>
+                                                    <td colspan='6' class='text-center text-danger'>
+                                                        Query Error: " . htmlspecialchars($conn->error, ENT_QUOTES) . "
+                                                    </td>
+                                                  </tr>";
                                         } elseif ($result->num_rows > 0) {
                                             $no = 1;
                                             while ($row = $result->fetch_assoc()) {
-                                                $kode = htmlspecialchars($row['kode'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                                                $desc = htmlspecialchars($row['description'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                                                $unit = htmlspecialchars($row['unit'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                                                $category = htmlspecialchars($row['category'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                                                $stock = number_format((float)($row['stock'] ?? 0), 2);
-
                                                 echo "<tr>
                                                         <td class='text-center'>{$no}</td>
-                                                        <td class='text-center'>{$kode}</td>
-                                                        <td>{$desc}</td>
-                                                        <td class='text-center'>{$unit}</td>
-                                                        <td>{$category}</td>
-                                                        <td class='text-right'>{$stock}</td>
-                                                     </tr>";
+                                                        <td class='text-center'>" . htmlspecialchars((string)($row['kode'] ?? '')) . "</td>
+                                                        <td>" . htmlspecialchars((string)($row['description'] ?? '')) . "</td>
+                                                        <td class='text-center'>" . htmlspecialchars((string)($row['unit'] ?? '')) . "</td>
+                                                        <td>" . htmlspecialchars((string)($row['category'] ?? '')) . "</td>
+                                                        <td class='text-right'>" . number_format((float)($row['stock'] ?? 0), 2) . "</td>
+                                                    </tr>";
                                                 $no++;
                                             }
                                         } else {
-                                            echo "<tr><td colspan='6' class='text-center'>No data available</td></tr>";
+                                            echo "<tr>
+                                                    <td colspan='6' class='text-center'>No data available</td>
+                                                  </tr>";
                                         }
                                         ?>
                                     </tbody>
