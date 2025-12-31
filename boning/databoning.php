@@ -8,15 +8,14 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
+
+  <!-- Header -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <a href="newboning.php">
-            <button type="button" class="btn btn-info">
-              <i class="fas fa-plus-circle"></i> Baru
-            </button>
+          <a href="newboning.php" class="btn btn-info">
+            <i class="fas fa-plus-circle"></i> Baru
           </a>
         </div>
       </div>
@@ -30,6 +29,7 @@ include "../mainsidebar.php";
         <div class="col">
           <div class="card">
             <div class="card-body">
+
               <table id="example1" class="table table-bordered table-striped table-sm">
                 <thead class="text-center">
                   <tr>
@@ -48,99 +48,99 @@ include "../mainsidebar.php";
                   <?php
                   $no = 1;
                   $ambildata = mysqli_query($conn, "
-                    SELECT b.*, p.nmsupplier 
-                    FROM boning b 
-                    JOIN supplier p ON b.idsupplier = p.idsupplier 
-                    WHERE b.is_deleted = 0 
+                    SELECT b.*, p.nmsupplier
+                    FROM boning b
+                    JOIN supplier p ON b.idsupplier = p.idsupplier
+                    WHERE b.is_deleted = 0
                     ORDER BY b.batchboning DESC
                   ");
-                  while ($tampil = mysqli_fetch_array($ambildata)) {
+
+                  while ($tampil = mysqli_fetch_assoc($ambildata)) {
 
                     $idboning = (int)$tampil['idboning'];
 
-                    // Hitung total berat dari labelboning
-                    $query_total_weight = "
-                      SELECT SUM(qty) AS total_weight 
-                      FROM labelboning 
-                      WHERE idboning = $idboning AND is_deleted = 0";
-                    $result_total_weight = mysqli_query($conn, $query_total_weight);
-                    $row_total_weight = mysqli_fetch_assoc($result_total_weight);
-                    $total_weight = $row_total_weight['total_weight'] ?? 0;
+                    // Total berat produksi
+                    $qWeight = mysqli_query($conn, "
+                      SELECT SUM(qty) AS total_weight
+                      FROM labelboning
+                      WHERE idboning = $idboning AND is_deleted = 0
+                    ");
+                    $rw = mysqli_fetch_assoc($qWeight);
+                    $total_weight = (float)($rw['total_weight'] ?? 0);
 
-                    // Rata-rata berat per sapi
-                    $avg_weight_per_sapi = 0;
-                    if ($tampil['qtysapi'] > 0) {
-                      $avg_weight_per_sapi = $total_weight / $tampil['qtysapi'];
+                    // MBR
+                    $avg_weight = 0;
+                    if ((int)$tampil['qtysapi'] > 0) {
+                      $avg_weight = $total_weight / (int)$tampil['qtysapi'];
                     }
 
-                    // Cek apakah sudah ada data raw_usage
-                    $cekRaw = $conn->query("SELECT COUNT(*) AS jml FROM raw_usage WHERE sumber='BONING' AND idsumber=$idboning");
-                    $adaRaw = $cekRaw && ($cekRaw->fetch_assoc()['jml'] > 0);
+                    $isLocked = (int)$tampil['kunci'];
                   ?>
                     <tr class="text-center">
-                      <td><?= $no; ?></td>
+                      <td><?= $no++; ?></td>
 
-                      <!-- Batch Number link ke laporan -->
+                      <!-- Batch Number: selalu link ke laporan -->
                       <td>
-                        <?php if ($adaRaw): ?>
-                          <a href="laporan_rawusage.php?id=<?= $idboning; ?>"
-                            class="text-primary font-weight-bold"
-                            title="Lihat Laporan Pemakaian Rawmate">
-                            <?= htmlspecialchars($tampil['batchboning']); ?>
-                          </a>
-                        <?php else: ?>
-                          <span class="text-muted"><?= htmlspecialchars($tampil['batchboning']); ?></span>
-                        <?php endif; ?>
+                        <a href="laporan_rawusage.php?id=<?= $idboning; ?>"
+                          class="text-primary font-weight-bold"
+                          title="Lihat Laporan Pemakaian Bahan (HPP)">
+                          <?= htmlspecialchars($tampil['batchboning']); ?>
+                        </a>
                       </td>
 
                       <td><?= date("d-M-Y", strtotime($tampil['tglboning'])); ?></td>
-                      <td class="text-left"><?= $tampil['nmsupplier']; ?></td>
-                      <td><?= $tampil['qtysapi']; ?></td>
+                      <td class="text-left"><?= htmlspecialchars($tampil['nmsupplier']); ?></td>
+                      <td><?= (int)$tampil['qtysapi']; ?></td>
                       <td class="text-right"><?= number_format($total_weight, 2); ?></td>
-                      <td class="text-right"><?= number_format($avg_weight_per_sapi, 2); ?></td>
-                      <td class="text-left"><?= $tampil['keterangan']; ?></td>
+                      <td class="text-right"><?= number_format($avg_weight, 2); ?></td>
+                      <td class="text-left"><?= htmlspecialchars($tampil['keterangan']); ?></td>
 
-                      <td>
-                        <?php
-                        if (isset($idusers) && ($idusers == 1 || $idusers == 9)) {
-                          $is_locked = (int)$tampil['kunci'];
-                        ?>
-                          <!-- Tombol Lock / Unlock -->
-                          <a class="btn btn-sm <?= $is_locked == 1 ? 'btn-danger' : 'btn-secondary'; ?>"
-                            data-toggle="tooltip"
-                            data-placement="bottom"
-                            title="<?= $is_locked == 1 ? 'Unlock' : 'Lock'; ?>"
-                            href="javascript:void(0);"
-                            onclick="handleLock(<?= $idboning; ?>, <?= $is_locked == 1 ? 0 : 1; ?>, <?= $adaRaw ? 'true' : 'false'; ?>)">
-                            <i class="fas <?= $is_locked == 1 ? 'fa-lock' : 'fa-lock-open fa-spin'; ?>"></i>
+                      <td class="text-nowrap">
+
+                        <?php if ($idusers == 1 || $idusers == 9): ?>
+                          <!-- Lock / Unlock -->
+                          <a class="btn btn-sm <?= $isLocked ? 'btn-danger' : 'btn-secondary'; ?>"
+                            title="<?= $isLocked ? 'Unlock' : 'Lock'; ?>"
+                            href="togglekunci.php?idboning=<?= $idboning; ?>&kunci=<?= $isLocked ? 0 : 1; ?>"
+                            onclick="return confirm('Apakah yakin ingin <?= $isLocked ? 'membuka kunci' : 'mengunci'; ?> boning ini?')">
+                            <i class="fas <?= $isLocked ? 'fa-lock' : 'fa-lock-open'; ?>"></i>
                           </a>
-                        <?php } ?>
+                        <?php endif; ?>
 
-                        <!-- Tombol lainnya -->
-                        <a class="btn btn-warning btn-sm" title="Buat Label"
-                          onclick="window.location.href='labelboning.php?id=<?= $idboning; ?>'">
+                        <!-- Label -->
+                        <a class="btn btn-warning btn-sm"
+                          title="Buat Label"
+                          href="labelboning.php?id=<?= $idboning; ?>">
                           <i class="fas fa-barcode"></i>
                         </a>
-                        <a class="btn btn-success btn-sm" title="Lihat Hasil Boning"
-                          onclick="window.location.href='boningdetail.php?id=<?= $idboning; ?>'">
+
+                        <!-- Detail -->
+                        <a class="btn btn-success btn-sm"
+                          title="Lihat Hasil Boning"
+                          href="boningdetail.php?id=<?= $idboning; ?>">
                           <i class="fas fa-eye"></i>
                         </a>
-                        <a class="btn btn-info btn-sm" href="editdataboning.php?idboning=<?= $idboning; ?>">
+
+                        <!-- Edit -->
+                        <a class="btn btn-info btn-sm"
+                          title="Edit Boning"
+                          href="editdataboning.php?idboning=<?= $idboning; ?>">
                           <i class="fas fa-pencil-alt"></i>
                         </a>
 
-                        <?php $isLocked = $tampil['kunci'] == 1; ?>
+                        <!-- Delete (disable jika terkunci) -->
                         <a class="btn btn-danger btn-sm <?= $isLocked ? 'disabled' : ''; ?>"
-                          href="<?= !$isLocked ? '#' : ''; ?>"
-                          <?= $isLocked ? 'aria-disabled="true" tabindex="-1"' : 'onclick="return confirmDelete(event, ' . $idboning . ')"'; ?>>
+                          href="<?= $isLocked ? 'javascript:void(0)' : 'deletedataboning.php?idboning=' . $idboning; ?>"
+                          onclick="<?= $isLocked ? '' : 'return confirm(\'Yakin ingin menghapus data boning ini?\')'; ?>">
                           <i class="fas fa-minus-circle"></i>
                         </a>
+
                       </td>
                     </tr>
-                  <?php $no++;
-                  } ?>
+                  <?php } ?>
                 </tbody>
               </table>
+
             </div>
           </div>
         </div>
@@ -150,29 +150,20 @@ include "../mainsidebar.php";
 </div>
 
 <script>
-  // Handle lock tombol (cek apakah sudah ada data raw_usage)
-  function handleLock(idboning, kunci, adaRaw) {
-    if (!adaRaw && kunci === 1) {
-      alert("Tidak dapat mengunci. Data pemakaian bahan (raw usage) belum ada untuk boning ini.");
-      return;
-    }
-    if (confirm('Apakah kamu yakin ingin ' + (kunci === 1 ? 'mengunci' : 'membuka kunci') + ' batch boning ini?')) {
-      window.location.href = 'togglekunci.php?idboning=' + idboning + '&kunci=' + kunci;
-    }
-  }
-
-  // Hapus data boning (double konfirmasi)
-  function confirmDelete(event, idboning) {
-    var firstConfirm = confirm("Apakah kamu yakin ingin menghapus data boning ini?");
-    if (firstConfirm) {
-      var secondConfirm = confirm("PERINGATAN !!! Semua data termasuk data stock akan terhapus, Lanjutkan?");
-      if (secondConfirm) {
-        window.location.href = "deletedataboning.php?idboning=" + idboning;
-      } else event.preventDefault();
-    } else event.preventDefault();
-  }
-
   document.title = "Data Boning";
+  $(function() {
+    $("#example1").DataTable({
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      ordering: false,
+      paging: true,
+      pageLength: 25,
+      searching: true,
+      info: true,
+      buttons: ["copy", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+  });
 </script>
 
 <?php include "../footer.php"; ?>

@@ -98,7 +98,7 @@ if (empty($details)) {
 }
 
 // opsi class yang diizinkan
-$breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL'];
+$breedOptions = ['STEER', 'HEIFER', 'COW', 'BULL', 'PREMIUM', 'NONPREMIUM'];
 ?>
 
 <div class="content-wrapper">

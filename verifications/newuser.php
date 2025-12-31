@@ -90,7 +90,7 @@ if (mysqli_stmt_execute($stmt)) {
 
    if (mysqli_stmt_execute($stmt_role)) {
       // Kalau ini form khusus admin tambah user, enak diarahkan ke daftar user
-      echo "<script>alert('Data berhasil disimpan.'); window.location='index.php';</script>";
+      echo "<script>alert('Data berhasil disimpan.'); window.location='../index.php';</script>";
    } else {
       echo "Error saat menyimpan role: " . mysqli_error($conn);
    }

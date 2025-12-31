@@ -184,7 +184,7 @@ if (!empty($old['class'])) {
                                 </thead>
                                 <tbody id="detailBody">
                                     <?php
-                                    $classes = ['STEER', 'BULL', 'HEIFER', 'COW'];
+                                    $classes = ['STEER', 'BULL', 'HEIFER', 'COW', 'PREMIUM', 'NONPREMIUM'];
                                     $rows = $old_rows;
                                     if (empty($rows)) $rows[] = ['class' => '', 'eartag' => '', 'weight' => '', 'notes' => ''];
                                     foreach ($rows as $rw): ?>
@@ -274,7 +274,12 @@ if (!empty($old['class'])) {
     <td>
       <select name="class[]" class="form-control form-control-sm" required>
         <option value="">-- pilih --</option>
-        <option>STEER</option><option>BULL</option><option>HEIFER</option><option>COW</option>
+        <option>STEER</option>
+        <option>BULL</option>
+        <option>HEIFER</option>
+        <option>COW</option>
+        <option>PREMIUM</option>
+        <option>NONPREMIUM</option>
       </select>
     </td>
     <td><input type="text" name="eartag[]" class="form-control form-control-sm" maxlength="50" required></td>

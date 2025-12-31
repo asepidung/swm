@@ -132,6 +132,8 @@ unset($_SESSION['form_old'], $_SESSION['form_errors']);
                                                     <option <?= $c === 'BULL' ? 'selected' : '' ?>>BULL</option>
                                                     <option <?= $c === 'HEIFER' ? 'selected' : '' ?>>HEIFER</option>
                                                     <option <?= $c === 'COW' ? 'selected' : '' ?>>COW</option>
+                                                    <option <?= $c === 'PREMIUM' ? 'selected' : '' ?>>PREMIUM</option>
+                                                    <option <?= $c === 'NonPREMIUM' ? 'selected' : '' ?>>NonPREMIUM</option>
                                                 </select>
                                             </td>
                                             <td><input type="number" min="1" step="1" name="qty[]" class="form-control form-control-sm text-right" value="<?= $q ?>"></td>
@@ -209,6 +211,8 @@ unset($_SESSION['form_old'], $_SESSION['form_errors']);
             <option>BULL</option>
             <option>HEIFER</option>
             <option>COW</option>
+            <option>PREMIUM</option>
+            <option>NonPREMIUM</option>
           </select>
         </td>
         <td><input type="number" min="1" step="1" name="qty[]" class="form-control form-control-sm text-right"></td>

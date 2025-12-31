@@ -2,24 +2,45 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 
+/* =========================
+   Ambil input
+========================= */
 $tipebarang = $_POST['tipebarang'] ?? '';
 $nmbarang   = strtoupper(trim($_POST['nmbarang'] ?? ''));
 $cut        = $_POST['cut'] ?? '';
-$kodeinduk  = isset($_POST['kodeinduk']) ? intval($_POST['kodeinduk']) : null;
+$kodeinduk  = isset($_POST['kodeinduk']) && $_POST['kodeinduk'] !== ''
+   ? (int)$_POST['kodeinduk']
+   : null;
 
-// tambahan field baru
-$karton  = strtoupper(trim($_POST['karton'] ?? ''));
-$drylog  = trim($_POST['drylog'] ?? '');
-$plastik = strtoupper(trim($_POST['plastik'] ?? ''));
-
-// validasi dasar
+/* =========================
+   Validasi dasar
+========================= */
 if (!$tipebarang || !$nmbarang || !$cut) {
    echo "<script>alert('Mohon lengkapi data wajib diisi.'); window.history.back();</script>";
    exit;
 }
 
+/* =========================
+   CEK DUPLIKAT NAMA
+========================= */
+$cek = $conn->prepare("SELECT 1 FROM barang WHERE nmbarang = ?");
+$cek->bind_param("s", $nmbarang);
+$cek->execute();
+$cek->store_result();
+if ($cek->num_rows > 0) {
+   echo "<script>alert('Nama barang sudah ada dalam database.'); window.history.back();</script>";
+   $cek->close();
+   $conn->close();
+   exit;
+}
+$cek->close();
+
+/* =========================
+   BARANG UTAMA
+========================= */
 if ($tipebarang === 'utama') {
-   // Ambil digit kategori dari idcut
+
+   // Ambil digit kategori (idcut)
    $stmt = $conn->prepare("SELECT idcut FROM cuts WHERE idcut = ?");
    $stmt->bind_param("i", $cut);
    $stmt->execute();
@@ -27,8 +48,12 @@ if ($tipebarang === 'utama') {
    $stmt->fetch();
    $stmt->close();
 
-   // Cari semua kdbarang di kategori ini
-   $stmt = $conn->prepare("SELECT kdbarang FROM barang WHERE idcut = ? AND kodeinduk IS NULL");
+   // Cari urutan terbesar di kategori ini
+   $stmt = $conn->prepare("
+      SELECT kdbarang 
+      FROM barang 
+      WHERE idcut = ? AND kodeinduk IS NULL
+   ");
    $stmt->bind_param("i", $cut);
    $stmt->execute();
    $result = $stmt->get_result();
@@ -36,59 +61,43 @@ if ($tipebarang === 'utama') {
    $maxUrut = 0;
    while ($row = $result->fetch_assoc()) {
       $kode = str_pad($row['kdbarang'], 6, "0", STR_PAD_LEFT);
-      $urut = intval(substr($kode, 1, 3));
-      if ($urut > $maxUrut) $maxUrut = $urut;
+      $urut = (int)substr($kode, 1, 3);
+      if ($urut > $maxUrut) {
+         $maxUrut = $urut;
+      }
    }
    $stmt->close();
 
    // Nomor urut baru
-   $nomorUrut = $maxUrut + 1;
+   $nomorUrut  = $maxUrut + 1;
    $kdbarang_db = ($kategoriDigit * 100000) + ($nomorUrut * 100);
 
-   // Cek duplikat nama
-   $stmt = $conn->prepare("SELECT 1 FROM barang WHERE nmbarang = ?");
-   $stmt->bind_param("s", $nmbarang);
-   $stmt->execute();
-   $stmt->store_result();
-   if ($stmt->num_rows > 0) {
-      echo "<script>alert('Nama barang sudah ada dalam database.'); window.history.back();</script>";
-      $stmt->close();
-      $conn->close();
-      exit;
-   }
-   $stmt->close();
-
-   // Simpan barang utama (dengan 3 field tambahan)
+   // Insert barang utama
    $stmt = $conn->prepare("
-      INSERT INTO barang (kdbarang, nmbarang, idcut, kodeinduk, karton, drylog, plastik)
-      VALUES (?, ?, ?, NULL, ?, ?, ?)
+      INSERT INTO barang (kdbarang, nmbarang, idcut, kodeinduk)
+      VALUES (?, ?, ?, NULL)
    ");
-   $stmt->bind_param("isisss", $kdbarang_db, $nmbarang, $cut, $karton, $drylog, $plastik);
+   $stmt->bind_param("isi", $kdbarang_db, $nmbarang, $cut);
 
    if ($stmt->execute()) {
-      echo "<script>alert('Barang utama berhasil disimpan dengan kode: $kdbarang_db'); window.location='barang.php';</script>";
+      echo "<script>
+         alert('Barang utama berhasil disimpan dengan kode: $kdbarang_db');
+         window.location='barang.php';
+      </script>";
    } else {
       echo "<script>alert('Gagal menyimpan barang utama.'); window.history.back();</script>";
    }
    $stmt->close();
+
+   /* =========================
+   BARANG TURUNAN
+========================= */
 } elseif ($tipebarang === 'turunan') {
+
    if (!$kodeinduk) {
       echo "<script>alert('Barang induk harus dipilih untuk produk turunan.'); window.history.back();</script>";
       exit;
    }
-
-   // Cek duplikat nama
-   $stmt = $conn->prepare("SELECT 1 FROM barang WHERE nmbarang = ?");
-   $stmt->bind_param("s", $nmbarang);
-   $stmt->execute();
-   $stmt->store_result();
-   if ($stmt->num_rows > 0) {
-      echo "<script>alert('Nama barang sudah ada dalam database.'); window.history.back();</script>";
-      $stmt->close();
-      $conn->close();
-      exit;
-   }
-   $stmt->close();
 
    // Hitung jumlah turunan dari induk
    $stmt = $conn->prepare("SELECT COUNT(*) FROM barang WHERE kodeinduk = ?");
@@ -100,28 +109,31 @@ if ($tipebarang === 'utama') {
 
    $kdbarang_db = $kodeinduk + $jumlahTurunan + 1;
 
-   // Cek kode sudah dipakai atau belum
-   $stmt = $conn->prepare("SELECT 1 FROM barang WHERE kdbarang = ?");
-   $stmt->bind_param("i", $kdbarang_db);
-   $stmt->execute();
-   $stmt->store_result();
-   if ($stmt->num_rows > 0) {
+   // Pastikan kode belum dipakai
+   $cekKode = $conn->prepare("SELECT 1 FROM barang WHERE kdbarang = ?");
+   $cekKode->bind_param("i", $kdbarang_db);
+   $cekKode->execute();
+   $cekKode->store_result();
+   if ($cekKode->num_rows > 0) {
       echo "<script>alert('Kode barang turunan sudah ada, silakan ulangi proses.'); window.history.back();</script>";
-      $stmt->close();
+      $cekKode->close();
       $conn->close();
       exit;
    }
-   $stmt->close();
+   $cekKode->close();
 
-   // Simpan barang turunan (dengan 3 field tambahan)
+   // Insert barang turunan
    $stmt = $conn->prepare("
-      INSERT INTO barang (kdbarang, nmbarang, idcut, kodeinduk, karton, drylog, plastik)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO barang (kdbarang, nmbarang, idcut, kodeinduk)
+      VALUES (?, ?, ?, ?)
    ");
-   $stmt->bind_param("isiiiss", $kdbarang_db, $nmbarang, $cut, $kodeinduk, $karton, $drylog, $plastik);
+   $stmt->bind_param("isii", $kdbarang_db, $nmbarang, $cut, $kodeinduk);
 
    if ($stmt->execute()) {
-      echo "<script>alert('Barang turunan berhasil disimpan dengan kode: $kdbarang_db'); window.location='barang.php';</script>";
+      echo "<script>
+         alert('Barang turunan berhasil disimpan dengan kode: $kdbarang_db');
+         window.location='barang.php';
+      </script>";
    } else {
       echo "<script>alert('Gagal menyimpan barang turunan.'); window.history.back();</script>";
    }

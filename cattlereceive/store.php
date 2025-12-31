@@ -66,7 +66,7 @@ $notes  = $_POST['notes']  ?? [];
 
 // Validasi detail
 $rows = [];
-$allowedClass = ['STEER', 'BULL', 'HEIFER', 'COW'];
+$allowedClass = ['STEER', 'BULL', 'HEIFER', 'COW', 'PREMIUM', 'NONPREMIUM'];
 $dupeCheck = [];
 
 $cnt = max(count($class), count($eartag), count($weight), count($notes));
