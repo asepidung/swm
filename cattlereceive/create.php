@@ -184,9 +184,18 @@ if (!empty($old['class'])) {
                                 </thead>
                                 <tbody id="detailBody">
                                     <?php
-                                    $classes = ['STEER', 'BULL', 'HEIFER', 'COW', 'PREMIUM', 'NONPREMIUM'];
+                                    // ambil class dari tabel cattle_class
+                                    $classes = [];
+                                    $qClass = mysqli_query($conn, "SELECT class_name FROM cattle_class ORDER BY idclass ASC");
+                                    while ($r = mysqli_fetch_assoc($qClass)) {
+                                        $classes[] = $r['class_name'];
+                                    }
+
                                     $rows = $old_rows;
-                                    if (empty($rows)) $rows[] = ['class' => '', 'eartag' => '', 'weight' => '', 'notes' => ''];
+                                    if (empty($rows)) {
+                                        $rows[] = ['class' => '', 'eartag' => '', 'weight' => '', 'notes' => ''];
+                                    }
+
                                     foreach ($rows as $rw): ?>
                                         <tr>
                                             <td class="text-center rownum"></td>
@@ -194,7 +203,10 @@ if (!empty($old['class'])) {
                                                 <select name="class[]" class="form-control form-control-sm" required>
                                                     <option value="">-- pilih --</option>
                                                     <?php foreach ($classes as $c): ?>
-                                                        <option value="<?= $c ?>" <?= (strtoupper($rw['class']) === $c ? 'selected' : '') ?>><?= $c ?></option>
+                                                        <option value="<?= e($c) ?>"
+                                                            <?= (strtoupper($rw['class']) === strtoupper($c) ? 'selected' : '') ?>>
+                                                            <?= e($c) ?>
+                                                        </option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
@@ -206,13 +218,19 @@ if (!empty($old['class'])) {
                                                 <input type="number" name="weight[]" class="form-control form-control-sm text-right"
                                                     min="0" value="<?= e($rw['weight']) ?>" required>
                                             </td>
-                                            <td><input type="text" name="notes[]" class="form-control form-control-sm" value="<?= e($rw['notes']) ?>"></td>
+                                            <td>
+                                                <input type="text" name="notes[]" class="form-control form-control-sm"
+                                                    value="<?= e($rw['notes']) ?>">
+                                            </td>
                                             <td class="text-center">
-                                                <button type="button" class="btn btn-danger btn-sm btnDel"><i class="fas fa-trash"></i></button>
+                                                <button type="button" class="btn btn-danger btn-sm btnDel">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
+
                                 <tfoot>
                                     <tr>
                                         <th colspan="2" class="text-right">Total Head</th>
@@ -267,27 +285,17 @@ if (!empty($old['class'])) {
         }).format(w);
     }
 
+
     function addRow() {
-        const tpl = `
-  <tr>
-    <td class="text-center rownum"></td>
-    <td>
-      <select name="class[]" class="form-control form-control-sm" required>
-        <option value="">-- pilih --</option>
-        <option>STEER</option>
-        <option>BULL</option>
-        <option>HEIFER</option>
-        <option>COW</option>
-        <option>PREMIUM</option>
-        <option>NONPREMIUM</option>
-      </select>
-    </td>
-    <td><input type="text" name="eartag[]" class="form-control form-control-sm" maxlength="50" required></td>
-    <td><input type="number" name="weight[]" class="form-control form-control-sm text-right" min="0" required></td>
-    <td><input type="text" name="notes[]" class="form-control form-control-sm"></td>
-    <td class="text-center"><button type="button" class="btn btn-danger btn-sm btnDel"><i class="fas fa-trash"></i></button></td>
-  </tr>`;
-        document.getElementById('detailBody').insertAdjacentHTML('beforeend', tpl);
+        const body = document.getElementById('detailBody');
+        const firstRow = body.querySelector('tr');
+        const newRow = firstRow.cloneNode(true);
+
+        // reset value input
+        newRow.querySelectorAll('input').forEach(inp => inp.value = '');
+        newRow.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
+
+        body.appendChild(newRow);
         attachLiveCheck();
         renumber();
     }

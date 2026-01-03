@@ -18,35 +18,42 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// CSRF
+// ================= CSRF =================
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
     backWithError(['Invalid CSRF token.'], $_POST, (int)($_POST['idreceive'] ?? 0));
 }
 
+// ================= HEADER INPUT =================
 $idreceive    = (int)($_POST['idreceive'] ?? 0);
 $idpo         = (int)($_POST['idpo'] ?? 0);
 $receipt_date = trim($_POST['receipt_date'] ?? '');
 $doc_no       = trim($_POST['doc_no'] ?? '');
-$sv_ok        = (isset($_POST['sv_ok']) && $_POST['sv_ok'] == '1') ? 1 : 0;
-$skkh_ok      = (isset($_POST['skkh_ok']) && $_POST['skkh_ok'] == '1') ? 1 : 0;
+$sv_ok        = (!empty($_POST['sv_ok']) && $_POST['sv_ok'] == '1') ? 1 : 0;
+$skkh_ok      = (!empty($_POST['skkh_ok']) && $_POST['skkh_ok'] == '1') ? 1 : 0;
 $note         = trim($_POST['note'] ?? '');
 $iduser       = isset($_SESSION['idusers']) ? (int)$_SESSION['idusers'] : null;
 
-// Basic header validation
+// ================= VALIDASI HEADER =================
 if ($idreceive <= 0) $errors[] = "Receive id tidak valid.";
 if ($idpo <= 0)      $errors[] = "PO tidak valid.";
-if ($receipt_date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $receipt_date))
-    $errors[] = "Receipt Date tidak valid (YYYY-MM-DD).";
-if ($doc_no !== '' && mb_strlen($doc_no) > 50)  $errors[] = "Doc No maksimal 50 karakter.";
-if (mb_strlen($note) > 255)                     $errors[] = "Note maksimal 255 karakter.";
 
-// Pastikan record ada & cocok dengan idpo
+if ($receipt_date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $receipt_date)) {
+    $errors[] = "Receipt Date tidak valid (YYYY-MM-DD).";
+}
+if ($doc_no !== '' && mb_strlen($doc_no) > 50) {
+    $errors[] = "Doc No maksimal 50 karakter.";
+}
+if (mb_strlen($note) > 255) {
+    $errors[] = "Note maksimal 255 karakter.";
+}
+
+// ================= CEK RECEIVE =================
 if (empty($errors)) {
     $cek = $conn->prepare("SELECT idpo FROM cattle_receive WHERE idreceive=? AND is_deleted=0 LIMIT 1");
-    if (!$cek) backWithError(["DB error."], $_POST, $idreceive);
     $cek->bind_param("i", $idreceive);
     $cek->execute();
     $row = $cek->get_result()->fetch_assoc();
+
     if (!$row) {
         $errors[] = "Receive tidak ditemukan.";
     } elseif ((int)$row['idpo'] !== $idpo) {
@@ -54,181 +61,162 @@ if (empty($errors)) {
     }
 }
 
-// Detail arrays
+// ================= DETAIL INPUT =================
 $class  = $_POST['class']  ?? [];
 $eartag = $_POST['eartag'] ?? [];
 $weight = $_POST['weight'] ?? [];
 $notes  = $_POST['notes']  ?? [];
 
-// Validasi detail (struktur mirip store.php)
 $rows = [];
-$allowedClass = ['STEER', 'BULL', 'HEIFER', 'COW'];
 $dupe = [];
 
 $cnt = max(count($class), count($eartag), count($weight), count($notes));
 for ($i = 0; $i < $cnt; $i++) {
-    $c_raw  = $class[$i]  ?? '';
-    $et_raw = $eartag[$i] ?? '';
+
+    $c  = trim($class[$i] ?? '');
+    $et = trim($eartag[$i] ?? '');
     $wt_raw = trim((string)($weight[$i] ?? ''));
-    $nt_raw = $notes[$i]  ?? '';
+    $nt = trim($notes[$i] ?? '');
 
-    $c  = strtoupper(trim($c_raw));
-    $et = trim($et_raw);
-    $nt = trim($nt_raw);
-
-    // lewati baris kosong total
+    // skip baris kosong total
     if ($c === '' && $et === '' && $wt_raw === '' && $nt === '') continue;
 
-    // normalisasi eartag
-    $et_norm = strtoupper($et);
-
-    // normalisasi desimal: koma -> titik
-    $wt_norm = str_replace(',', '.', $wt_raw);
-
-    // Validasi field
-    if ($c === '' || !in_array($c, $allowedClass, true)) {
-        $errors[] = "Class baris #" . ($i + 1) . " wajib/invalid.";
+    if ($c === '') {
+        $errors[] = "Class baris #" . ($i + 1) . " wajib.";
     }
-    if ($et_norm === '') {
+
+    if ($et === '') {
         $errors[] = "Eartag baris #" . ($i + 1) . " wajib.";
     }
 
-    // Weight: terima 0; cek numeric & max 2 desimal
+    $et_norm = strtoupper($et);
+    $wt_norm = str_replace(',', '.', $wt_raw);
+
     if ($wt_norm === '' || !preg_match('/^\d+(\.\d{1,2})?$/', $wt_norm) || (float)$wt_norm < 0) {
-        $errors[] = "Weight baris #" . ($i + 1) . " harus angka >= 0, max 2 desimal.";
+        $errors[] = "Weight baris #" . ($i + 1) . " harus angka >= 0.";
     }
 
     if (mb_strlen($nt) > 255) {
         $errors[] = "Notes baris #" . ($i + 1) . " maksimal 255 karakter.";
     }
 
-    // simpan baris (round 2 desimal)
+    // cek duplikat di form
+    $key = strtolower($et_norm);
+    if (isset($dupe[$key])) {
+        $errors[] = "Eartag duplikat di baris #" . $dupe[$key] . " dan #" . ($i + 1);
+    } else {
+        $dupe[$key] = $i + 1;
+    }
+
     $rows[] = [
-        'class'  => $c,
+        'class'  => $c,                 // SIMPAN APA ADANYA
         'eartag' => $et_norm,
         'weight' => round((float)$wt_norm, 2),
         'notes'  => $nt,
     ];
-
-    // cek duplikat eartag (case-insensitive)
-    $k = strtolower($et_norm);
-    if (isset($dupe[$k])) {
-        $errors[] = "Eartag duplikat di baris #" . $dupe[$k] . " dan #" . ($i + 1) . ".";
-    } else {
-        $dupe[$k] = $i + 1;
-    }
 }
 
-if (empty($rows)) $errors[] = "Minimal satu baris detail harus diisi.";
+if (empty($rows)) {
+    $errors[] = "Minimal satu baris detail harus diisi.";
+}
 
-if (!empty($errors)) backWithError($errors, $_POST, $idreceive);
+if (!empty($errors)) {
+    backWithError($errors, $_POST, $idreceive);
+}
 
-// ----------------------
-// SERVER-SIDE DB CHECK (anti-duplicate across other active receives)
-// ----------------------
-// Kumpulkan eartag yang disubmit (unique)
-$submitted_tags = [];
+// ================= DB DUPLICATE CHECK =================
+$tags = [];
 foreach ($rows as $r) {
-    $t = strtoupper(trim($r['eartag']));
-    if ($t !== '') $submitted_tags[$t] = $t;
+    $tags[$r['eartag']] = $r['eartag'];
 }
-$submitted_tags = array_values($submitted_tags);
+$tags = array_values($tags);
 
-if (!empty($submitted_tags)) {
-    // build placeholders
-    $placeholders = implode(',', array_fill(0, count($submitted_tags), '?'));
-    $types = str_repeat('s', count($submitted_tags)) . 'i'; // tags..., then idreceive (int)
+if (!empty($tags)) {
+    $ph = implode(',', array_fill(0, count($tags), '?'));
+    $types = str_repeat('s', count($tags)) . 'i';
 
     $sql = "
-      SELECT DISTINCT d.eartag, r.idreceive, r.receipt_date
-      FROM cattle_receive_detail d
-      JOIN cattle_receive r ON r.idreceive = d.idreceive
-      WHERE r.is_deleted = 0
-        AND d.eartag IN ($placeholders)
-        AND d.idreceive <> ?
+        SELECT d.eartag, r.idreceive, r.receipt_date
+        FROM cattle_receive_detail d
+        JOIN cattle_receive r ON r.idreceive = d.idreceive
+        WHERE r.is_deleted = 0
+          AND d.eartag IN ($ph)
+          AND d.idreceive <> ?
     ";
+
     $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        backWithError(["Gagal memeriksa eartag (prepare error)."], $_POST, $idreceive);
+    $bind = [];
+    $bind[] = $types;
+
+    foreach ($tags as $k => $v) {
+        $bind[] = &$tags[$k];
     }
+    $bind[] = &$idreceive;
 
-    // dynamic bind params: first tags, then idreceive
-    $bind_names = [];
-    $bind_names[] = $types;
-    for ($i = 0; $i < count($submitted_tags); $i++) {
-        $bindName = 'param' . $i;
-        $$bindName = $submitted_tags[$i];
-        $bind_names[] = &$$bindName;
-    }
-    $lastBindName = 'param_idreceive';
-    $$lastBindName = $idreceive;
-    $bind_names[] = &$$lastBindName;
-
-    call_user_func_array([$stmt, 'bind_param'], $bind_names);
-
+    call_user_func_array([$stmt, 'bind_param'], $bind);
     $stmt->execute();
     $res = $stmt->get_result();
-    $dbFound = [];
-    while ($r = $res->fetch_assoc()) {
-        $dbFound[] = $r;
-    }
-    $stmt->close();
 
-    if (!empty($dbFound)) {
-        foreach ($dbFound as $f) {
-            $t = strtoupper(trim($f['eartag']));
-            $errors[] = "Eartag '{$t}' sudah ada di penerimaan aktif (receipt id: {$f['idreceive']}, tanggal: {$f['receipt_date']}).";
-        }
-        if (!empty($errors)) {
-            backWithError($errors, $_POST, $idreceive);
-        }
+    while ($r = $res->fetch_assoc()) {
+        $errors[] = "Eartag '{$r['eartag']}' sudah ada (receipt {$r['idreceive']}, {$r['receipt_date']})";
+    }
+
+    if (!empty($errors)) {
+        backWithError($errors, $_POST, $idreceive);
     }
 }
 
-// ----------------------
-// SIMPAN (TRANSAC)
-// ----------------------
+// ================= SIMPAN =================
 try {
     $conn->begin_transaction();
 
-    // Update header
+    // update header
     $up = $conn->prepare("
-    UPDATE cattle_receive
-       SET receipt_date=?,
-           doc_no=?,
-           sv_ok=?,
-           skkh_ok=?,
-           note=?,
-           updatetime=NOW(),
-           updateby=?
-     WHERE idreceive=? AND is_deleted=0
-  ");
-    if (!$up) throw new Exception("Prepare update header failed: " . $conn->error);
+        UPDATE cattle_receive
+           SET receipt_date=?,
+               doc_no=?,
+               sv_ok=?,
+               skkh_ok=?,
+               note=?,
+               updatetime=NOW(),
+               updateby=?
+         WHERE idreceive=? AND is_deleted=0
+    ");
+    $up->bind_param(
+        "ssiisii",
+        $receipt_date,
+        $doc_no,
+        $sv_ok,
+        $skkh_ok,
+        $note,
+        $iduser,
+        $idreceive
+    );
+    $up->execute();
 
-    $up->bind_param('ssiisii', $receipt_date, $doc_no, $sv_ok, $skkh_ok, $note, $iduser, $idreceive);
-    if (!$up->execute()) throw new Exception("Gagal update header: " . $up->error);
-
-    // Hapus semua detail lama
+    // hapus detail lama
     $del = $conn->prepare("DELETE FROM cattle_receive_detail WHERE idreceive=?");
-    if (!$del) throw new Exception("Prepare delete failed: " . $conn->error);
     $del->bind_param("i", $idreceive);
-    if (!$del->execute()) throw new Exception("Gagal hapus detail: " . $del->error);
+    $del->execute();
 
-    // Insert ulang detail
+    // insert ulang detail
     $ins = $conn->prepare("
-    INSERT INTO cattle_receive_detail (idreceive, eartag, weight, class, notes, creatime, createby)
-    VALUES (?,?,?,?,?,NOW(),?)
-  ");
-    if (!$ins) throw new Exception("Prepare insert detail failed: " . $conn->error);
+        INSERT INTO cattle_receive_detail
+        (idreceive, eartag, weight, class, notes, creatime, createby)
+        VALUES (?,?,?,?,?,NOW(),?)
+    ");
 
     foreach ($rows as $r) {
-        $idrec = $idreceive;
-        $eartagVal = $r['eartag'];
-        $weightVal = $r['weight']; // float/double
-        $classVal = $r['class'];
-        $notesVal = $r['notes'];
-        $ins->bind_param('isdssi', $idrec, $eartagVal, $weightVal, $classVal, $notesVal, $iduser);
-        if (!$ins->execute()) throw new Exception("Gagal insert detail: " . $ins->error);
+        $ins->bind_param(
+            "isdssi",
+            $idreceive,
+            $r['eartag'],
+            $r['weight'],
+            $r['class'],
+            $r['notes'],
+            $iduser
+        );
+        $ins->execute();
     }
 
     $conn->commit();

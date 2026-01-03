@@ -26,37 +26,63 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_to
 $idpo = (int)($_POST['idpo'] ?? 0);
 if ($idpo <= 0) backWithError(['PO id tidak valid.'], $_POST, $idpo);
 
-// Pastikan PO ada (tanpa cek status)
+// Pastikan PO ada
 $cek = $conn->prepare("SELECT idpo FROM pocattle WHERE idpo=? AND is_deleted=0 LIMIT 1");
 $cek->bind_param("i", $idpo);
 $cek->execute();
-$resCek = $cek->get_result();
-if (!$resCek || !$resCek->fetch_row()) {
+if (!$cek->get_result()->fetch_row()) {
     backWithError(['PO tidak ditemukan.'], $_POST, $idpo);
 }
-$resCek->free();
 $cek->close();
 
-// Header inputs
+/* =========================
+   INPUT HEADER
+========================= */
 $podate       = trim($_POST['podate'] ?? '');
 $arrival_date = trim($_POST['arrival_date'] ?? '');
 $idsupplier   = $_POST['idsupplier'] ?? '';
 $note         = trim($_POST['note'] ?? '');
 $iduser       = $_SESSION['idusers'] ?? null;
 
-// Detail arrays
+/* =========================
+   INPUT DETAIL
+========================= */
 $class  = $_POST['class']  ?? [];
 $qty    = $_POST['qty']    ?? [];
 $price  = $_POST['price']  ?? [];
 $notes  = $_POST['notes']  ?? [];
 
-// Validasi header
-if ($podate === '')        $errors[] = "Tanggal PO wajib.";
-if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $podate)) $errors[] = "Format PO Date tidak valid (YYYY-MM-DD).";
-if ($arrival_date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival_date)) $errors[] = "Format Arrival Date tidak valid.";
-if ($idsupplier === '' || !ctype_digit((string)$idsupplier)) $errors[] = "Supplier wajib.";
+/* =========================
+   VALIDASI HEADER
+========================= */
+if ($podate === '') $errors[] = "Tanggal PO wajib.";
+if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $podate)) {
+    $errors[] = "Format PO Date tidak valid (YYYY-MM-DD).";
+}
+if ($arrival_date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival_date)) {
+    $errors[] = "Format Arrival Date tidak valid.";
+}
+if ($idsupplier === '' || !ctype_digit((string)$idsupplier)) {
+    $errors[] = "Supplier wajib.";
+}
 
-// Validasi detail (minimal 1)
+/* =========================
+   AMBIL MASTER CLASS
+========================= */
+$classMaster = [];
+$qm = $conn->query("SELECT class_name FROM cattle_class");
+if ($qm) {
+    while ($r = $qm->fetch_assoc()) {
+        $classMaster[$r['class_name']] = true;
+    }
+}
+if (empty($classMaster)) {
+    $errors[] = "Master cattle class belum tersedia.";
+}
+
+/* =========================
+   VALIDASI DETAIL
+========================= */
 $rows = [];
 for ($i = 0; $i < count($class); $i++) {
     $c  = trim($class[$i] ?? '');
@@ -64,24 +90,52 @@ for ($i = 0; $i < count($class); $i++) {
     $pv = trim((string)($price[$i] ?? ''));
     $nt = trim($notes[$i] ?? '');
 
-    // lewati baris yang benar-benar kosong
+    // lewati baris kosong total
     if ($c === '' && $qv === '' && $pv === '' && $nt === '') continue;
 
-    if ($c === '') $errors[] = "Cattle Class baris #" . ($i + 1) . " wajib.";
-    if ($qv === '' || !ctype_digit($qv) || (int)$qv <= 0) $errors[] = "Qty baris #" . ($i + 1) . " harus angka bulat > 0.";
-    if ($pv !== '' && !preg_match('/^\d+(\.\d{1,2})?$/', $pv)) $errors[] = "Price baris #" . ($i + 1) . " tidak valid (pakai titik desimal, max 2).";
+    // blokir opsi "Tambah Class Baru"
+    if ($c === '__NEW__') {
+        $errors[] = "Cattle Class baris #" . ($i + 1) . " tidak valid.";
+        continue;
+    }
 
-    $rows[] = ['class' => $c, 'qty' => (int)$qv, 'price' => $pv, 'notes' => $nt];
+    if ($c === '') {
+        $errors[] = "Cattle Class baris #" . ($i + 1) . " wajib.";
+    } elseif (!isset($classMaster[$c])) {
+        $errors[] = "Cattle Class baris #" . ($i + 1) . " tidak terdaftar.";
+    }
+
+    if ($qv === '' || !ctype_digit($qv) || (int)$qv <= 0) {
+        $errors[] = "Qty baris #" . ($i + 1) . " harus angka bulat > 0.";
+    }
+
+    if ($pv !== '' && !preg_match('/^\d+(\.\d{1,2})?$/', $pv)) {
+        $errors[] = "Price baris #" . ($i + 1) . " tidak valid (max 2 desimal).";
+    }
+
+    $rows[] = [
+        'class' => $c,
+        'qty'   => (int)$qv,
+        'price' => $pv,
+        'notes' => $nt
+    ];
 }
-if (empty($rows)) $errors[] = "Minimal satu baris detail harus diisi.";
 
-if (!empty($errors)) backWithError($errors, $_POST, $idpo);
+if (empty($rows)) {
+    $errors[] = "Minimal satu baris detail harus diisi.";
+}
 
-// SIMPAN (DELETE ALL → INSERT)
+if (!empty($errors)) {
+    backWithError($errors, $_POST, $idpo);
+}
+
+/* =========================
+   SIMPAN (TRANSAKSI)
+========================= */
 try {
     $conn->begin_transaction();
 
-    // Update header
+    // UPDATE HEADER
     $arrivalDB = ($arrival_date === '' ? null : $arrival_date);
     $up = $conn->prepare("
         UPDATE pocattle
@@ -93,32 +147,38 @@ try {
                updateby=?
          WHERE idpo=? AND is_deleted=0
     ");
-    if ($up === false) throw new Exception("Prepare update header gagal: " . $conn->error);
+    if ($up === false) throw new Exception($conn->error);
 
-    // tipe: s (podate), s (arrival), i (idsupplier), s (note), i (updateby), i (idpo)
     $up->bind_param('ssisii', $podate, $arrivalDB, $idsupplier, $note, $iduser, $idpo);
-    if (!$up->execute()) throw new Exception("Gagal update header: " . $up->error);
+    if (!$up->execute()) throw new Exception($up->error);
     $up->close();
 
-    // HAPUS semua detail lama (HARD DELETE)
+    // HAPUS DETAIL LAMA
     $del = $conn->prepare("DELETE FROM pocattledetail WHERE idpo=?");
-    if ($del === false) throw new Exception("Prepare delete detail gagal: " . $conn->error);
+    if ($del === false) throw new Exception($conn->error);
     $del->bind_param("i", $idpo);
-    if (!$del->execute()) throw new Exception("Gagal hapus detail lama: " . $del->error);
+    if (!$del->execute()) throw new Exception($del->error);
     $del->close();
 
-    // INSERT ulang detail
-    // PERUBAHAN: paksa COLLATE pada NULLIF agar tidak terjadi illegal mix of collations
+    // INSERT DETAIL BARU
     $ins = $conn->prepare("
-        INSERT INTO pocattledetail (idpo, class, qty, price, notes, creatime, createby)
+        INSERT INTO pocattledetail
+        (idpo, class, qty, price, notes, creatime, createby)
         VALUES (?, ?, ?, NULLIF(? COLLATE utf8mb4_unicode_ci, '' COLLATE utf8mb4_unicode_ci), ?, NOW(), ?)
     ");
-    if ($ins === false) throw new Exception("Prepare insert detail gagal: " . $conn->error);
+    if ($ins === false) throw new Exception($conn->error);
 
     foreach ($rows as $r) {
-        $bindResult = $ins->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
-        if ($bindResult === false) throw new Exception("Bind param gagal: " . $ins->error);
-        if (!$ins->execute()) throw new Exception("Gagal insert detail: " . $ins->error);
+        $ins->bind_param(
+            'isissi',
+            $idpo,
+            $r['class'],
+            $r['qty'],
+            $r['price'],
+            $r['notes'],
+            $iduser
+        );
+        if (!$ins->execute()) throw new Exception($ins->error);
     }
     $ins->close();
 

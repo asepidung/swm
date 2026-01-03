@@ -6,22 +6,27 @@ include "../navbar.php";
 include "../mainsidebar.php";
 
 /* =========================
-   Input & helper "Back"
-   ========================= */
-$idrepack = intval($_GET['id'] ?? 0);
-if ($idrepack <= 0) die("Jalankan dari modul Repack yang valid.");
+   Validasi input
+========================= */
+$idrepack = (int)($_GET['id'] ?? 0);
+if ($idrepack <= 0) {
+    die("Jalankan dari modul Repack yang valid.");
+}
 
+/* =========================
+   Helper back URL
+========================= */
 function back_target(string $default): string
 {
     $ret = $_GET['ret'] ?? '';
-    // izinkan hanya URL relatif internal (tanpa protokol & tanpa newline)
     if (
-        $ret !== '' && strpos($ret, "\n") === false && strpos($ret, "\r") === false
-        && !preg_match('~^(?:https?:)?//~i', $ret)
+        $ret !== '' &&
+        strpos($ret, "\n") === false &&
+        strpos($ret, "\r") === false &&
+        !preg_match('~^(?:https?:)?//~i', $ret)
     ) {
         return $ret;
     }
-    // fallback referer jika 1 host
     $ref = $_SERVER['HTTP_REFERER'] ?? '';
     if ($ref) {
         $hostRef = parse_url($ref, PHP_URL_HOST);
@@ -33,43 +38,132 @@ function back_target(string $default): string
 $backUrl = back_target('index.php');
 
 /* =========================
-   Ambil nomor Repack
-   ========================= */
+   Ambil No Repack
+========================= */
 $stmtRep = $conn->prepare("SELECT norepack FROM repack WHERE idrepack = ? LIMIT 1");
 $stmtRep->bind_param("i", $idrepack);
 $stmtRep->execute();
-$drep = $stmtRep->get_result()->fetch_assoc();
+$rep = $stmtRep->get_result()->fetch_assoc();
 $stmtRep->close();
 
-$norepack = $drep['norepack'] ?? "RPC-???";
+$norepack = $rep['norepack'] ?? 'RPC-???';
 
 /* =========================
-   Query ringkasan material
-   ========================= */
-$sql = "
-  SELECT 
-      ru.idrawmate,
-      COALESCE(rm.nmrawmate, CONCAT('ID#', ru.idrawmate)) AS nmrawmate,
-      SUM(ru.qty) AS total_qty
-  FROM raw_usage ru
-  LEFT JOIN rawmate rm ON rm.idrawmate = ru.idrawmate
-  WHERE ru.sumber = 'REPACK'
-    AND ru.idsumber = ?
-  GROUP BY ru.idrawmate
-  ORDER BY nmrawmate ASC
-";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idrepack);
-$stmt->execute();
-$res = $stmt->get_result();
+   1. Ambil HASIL PRODUKSI
+========================= */
+$qHasil = $conn->prepare("
+    SELECT idbarang, qty, pcs
+    FROM detailhasil
+    WHERE idrepack = ? AND is_deleted = 0
+");
+$qHasil->bind_param("i", $idrepack);
+$qHasil->execute();
+$resHasil = $qHasil->get_result();
 
-$rows = [];
-$grand = 0.0;
-while ($r = $res->fetch_assoc()) {
-    $rows[] = $r;
-    $grand += (float)$r['total_qty'];
+/* =========================
+   Hitung BOX & PCS per BARANG
+========================= */
+$produk = [];
+while ($r = $resHasil->fetch_assoc()) {
+    $idbarang = (int)$r['idbarang'];
+    $pcs = (int)($r['pcs'] ?? 0);
+
+    if (!isset($produk[$idbarang])) {
+        $produk[$idbarang] = [
+            'box' => 1,
+            'pcs' => $pcs
+        ];
+    } else {
+        $produk[$idbarang]['box']++;
+        $produk[$idbarang]['pcs'] += $pcs;
+    }
 }
-$stmt->close();
+$qHasil->close();
+
+/* =========================
+   2. Hitung PEMAKAIAN BAHAN
+========================= */
+$usage = []; // idrawmate => qty
+
+foreach ($produk as $idbarang => $p) {
+
+    $box = $p['box'];
+    $pcs = $p['pcs'];
+
+    $qBom = $conn->query("
+        SELECT r.idrawmate, r.idrawcategory, r.nmrawmate
+        FROM bom_rawmate b
+        JOIN rawmate r ON r.idrawmate = b.idrawmate
+        WHERE b.idbarang = $idbarang
+          AND b.is_active = 1
+    ");
+
+    while ($rb = $qBom->fetch_assoc()) {
+        $idraw = (int)$rb['idrawmate'];
+        $cat   = (int)$rb['idrawcategory'];
+        $nm    = strtoupper($rb['nmrawmate']);
+
+        $qty = 0;
+
+        // === ATURAN KONVERSI ===
+        // Karton
+        if ($cat === 2) {
+            $qty = $box;
+        }
+        // Plastik
+        elseif ($cat === 3) {
+            if (strpos($nm, 'LINIER') !== false) {
+                $qty = $box;
+            } else {
+                $qty = $pcs;
+            }
+        }
+        // Karung
+        elseif ($cat === 21) {
+            $qty = $box;
+        }
+        // Tray
+        elseif ($cat === 22 || strpos($nm, 'TRAY') !== false) {
+            $qty = $pcs;
+        }
+
+        if ($qty > 0) {
+            if (!isset($usage[$idraw])) {
+                $usage[$idraw] = $qty;
+            } else {
+                $usage[$idraw] += $qty;
+            }
+        }
+    }
+}
+
+/* =========================
+   3. Ambil NAMA RAWMATE
+========================= */
+$rows = [];
+$grand = 0;
+
+if (!empty($usage)) {
+    $ids = implode(',', array_keys($usage));
+    $qName = $conn->query("
+        SELECT idrawmate, nmrawmate
+        FROM rawmate
+        WHERE idrawmate IN ($ids)
+    ");
+
+    $names = [];
+    while ($n = $qName->fetch_assoc()) {
+        $names[$n['idrawmate']] = $n['nmrawmate'];
+    }
+
+    foreach ($usage as $idraw => $qty) {
+        $rows[] = [
+            'nmrawmate' => $names[$idraw] ?? 'ID#' . $idraw,
+            'qty' => $qty
+        ];
+        $grand += $qty;
+    }
+}
 ?>
 
 <div class="content-wrapper">
@@ -78,7 +172,7 @@ $stmt->close();
             <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
                     <h4><i class="fas fa-clipboard-list"></i> Laporan Pemakaian Bahan - <?= htmlspecialchars($norepack) ?></h4>
-                    <div class="small text-muted">Ringkasan per material untuk proses REPACK ini.</div>
+                    <div class="small text-muted">Perhitungan otomatis berdasarkan hasil REPACK & BOM.</div>
                 </div>
                 <div class="col-sm-6 text-right">
                     <a href="<?= htmlspecialchars($backUrl) ?>" class="btn btn-secondary btn-sm">
@@ -111,7 +205,7 @@ $stmt->close();
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td><?= htmlspecialchars($r['nmrawmate']) ?></td>
-                                        <td class="text-right"><?= number_format((float)$r['total_qty'], 2) ?></td>
+                                        <td class="text-right"><?= number_format($r['qty'], 2) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -130,7 +224,7 @@ $stmt->close();
 </div>
 
 <script>
-    document.title = "Laporan Raw Usage <?= htmlspecialchars($norepack) ?>";
+    document.title = "Laporan Pemakaian Bahan <?= htmlspecialchars($norepack) ?>";
     $(function() {
         $("#usageReport").DataTable({
             responsive: true,

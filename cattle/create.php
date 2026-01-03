@@ -24,16 +24,14 @@ if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_to
 }
 
 /**
- * ===== NOMOR PO dari ponumber.php =====
- * Pastikan file ponumber.php MENGISI variabel $nopocattle dan TIDAK echo.
- * Jika ponumber.php masih echo, kita buang output dengan buffer agar halaman tetap bersih.
+ * ===== NOMOR PO =====
  */
 ob_start();
 include "ponumber.php";   // harus set $nopocattle
 ob_end_clean();
 
 if (empty($nopocattle)) {
-    backWithError(['Nomor PO gagal dibuat. Pastikan ponumber.php mengeset $nopocattle.'], $_POST);
+    backWithError(['Nomor PO gagal dibuat.'], $_POST);
 }
 
 // ===== INPUT HEADER =====
@@ -43,19 +41,41 @@ $idsupplier   = $_POST['idsupplier'] ?? '';
 $note         = trim($_POST['note'] ?? '');
 $iduser       = $_SESSION['idusers'] ?? null;
 
-// ===== INPUT DETAIL (ARRAY) =====
+// ===== INPUT DETAIL =====
 $class  = $_POST['class']  ?? [];
 $qty    = $_POST['qty']    ?? [];
 $price  = $_POST['price']  ?? [];
 $notes  = $_POST['notes']  ?? [];
 
 // ===== VALIDASI HEADER =====
-if ($podate === '')        $errors[] = "Tanggal PO wajib.";
-if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $podate)) $errors[] = "Format PO Date tidak valid (YYYY-MM-DD).";
-if ($arrival_date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival_date)) $errors[] = "Format Arrival Date tidak valid.";
-if ($idsupplier === '' || !ctype_digit((string)$idsupplier)) $errors[] = "Supplier wajib.";
+if ($podate === '') $errors[] = "Tanggal PO wajib.";
+if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $podate)) {
+    $errors[] = "Format PO Date tidak valid (YYYY-MM-DD).";
+}
+if ($arrival_date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival_date)) {
+    $errors[] = "Format Arrival Date tidak valid.";
+}
+if ($idsupplier === '' || !ctype_digit((string)$idsupplier)) {
+    $errors[] = "Supplier wajib.";
+}
 
-// ===== VALIDASI DETAIL =====
+/* =========================
+   AMBIL MASTER CLASS
+========================= */
+$classMaster = [];
+$qm = $conn->query("SELECT class_name FROM cattle_class");
+if ($qm) {
+    while ($r = $qm->fetch_assoc()) {
+        $classMaster[$r['class_name']] = true;
+    }
+}
+if (empty($classMaster)) {
+    $errors[] = "Master cattle class belum tersedia.";
+}
+
+/* =========================
+   VALIDASI DETAIL
+========================= */
 $rows = [];
 for ($i = 0; $i < count($class); $i++) {
     $c  = trim($class[$i] ?? '');
@@ -63,38 +83,51 @@ for ($i = 0; $i < count($class); $i++) {
     $pv = trim((string)($price[$i] ?? ''));
     $nt = trim($notes[$i] ?? '');
 
-    // lewati baris yang benar-benar kosong
+    // lewati baris kosong total
     if ($c === '' && $qv === '' && $pv === '' && $nt === '') continue;
+
+    // blokir opsi "Tambah Class Baru"
+    if ($c === '__NEW__') {
+        $errors[] = "Cattle Class baris #" . ($i + 1) . " tidak valid.";
+        continue;
+    }
 
     if ($c === '') {
         $errors[] = "Cattle Class baris #" . ($i + 1) . " wajib.";
+    } elseif (!isset($classMaster[$c])) {
+        $errors[] = "Cattle Class baris #" . ($i + 1) . " tidak terdaftar.";
     }
+
     if ($qv === '' || !ctype_digit($qv) || (int)$qv <= 0) {
         $errors[] = "Qty baris #" . ($i + 1) . " harus angka bulat > 0.";
     }
+
     if ($pv !== '' && !preg_match('/^\d+(\.\d{1,2})?$/', $pv)) {
-        $errors[] = "Price baris #" . ($i + 1) . " tidak valid. Gunakan titik desimal, max 2 angka desimal.";
+        $errors[] = "Price baris #" . ($i + 1) . " tidak valid (max 2 desimal).";
     }
 
     $rows[] = [
         'class' => $c,
         'qty'   => (int)$qv,
-        'price' => $pv,  // string; akan di-NULLIF saat insert (NULLIF dengan COLLATE)
+        'price' => $pv,
         'notes' => $nt,
     ];
 }
-if (empty($rows)) $errors[] = "Minimal satu baris detail harus diisi.";
 
-// Cek unik NOPO (jaga-jaga kalau ponumber dipakai bersamaan user lain)
+if (empty($rows)) {
+    $errors[] = "Minimal satu baris detail harus diisi.";
+}
+
+/* =========================
+   CEK DUPLIKAT NOPO
+========================= */
 if (empty($errors)) {
-    $stmt = $conn->prepare("SELECT 1 FROM pocattle WHERE nopo = ? LIMIT 1");
+    $stmt = $conn->prepare("SELECT 1 FROM pocattle WHERE nopo=? LIMIT 1");
     $stmt->bind_param('s', $nopocattle);
     $stmt->execute();
-    $res = $stmt->get_result();
-    if ($res && $res->num_rows > 0) {
+    if ($stmt->get_result()->num_rows > 0) {
         $errors[] = "No. PO duplikat. Silakan submit ulang.";
     }
-    if ($res) $res->free();
     $stmt->close();
 }
 
@@ -102,40 +135,44 @@ if (!empty($errors)) {
     backWithError($errors, $_POST);
 }
 
-// ===== SIMPAN (TRANSAKSI) =====
+/* =========================
+   SIMPAN (TRANSAKSI)
+========================= */
 try {
     $conn->begin_transaction();
 
     $arrivalDB = ($arrival_date === '' ? null : $arrival_date);
 
-    // Header (TANPA kolom status)
-    $sqlH = "INSERT INTO pocattle (nopo, podate, arrival_date, idsupplier, note, creatime, createby)
+    // HEADER
+    $sqlH = "INSERT INTO pocattle
+             (nopo, podate, arrival_date, idsupplier, note, creatime, createby)
              VALUES (?, ?, ?, ?, ?, NOW(), ?)";
     $stmtH = $conn->prepare($sqlH);
     $stmtH->bind_param('sssisi', $nopocattle, $podate, $arrivalDB, $idsupplier, $note, $iduser);
     if (!$stmtH->execute()) {
-        throw new Exception("Gagal menyimpan header: " . $stmtH->error);
+        throw new Exception($stmtH->error);
     }
     $idpo = $stmtH->insert_id;
     $stmtH->close();
 
-    // Detail
-    // PERUBAHAN: paksa COLLATE pada NULLIF agar tidak terjadi illegal mix of collations
-    $sqlD = "INSERT INTO pocattledetail (idpo, class, qty, price, notes, creatime, createby)
+    // DETAIL
+    $sqlD = "INSERT INTO pocattledetail
+             (idpo, class, qty, price, notes, creatime, createby)
              VALUES (?, ?, ?, NULLIF(? COLLATE utf8mb4_unicode_ci, '' COLLATE utf8mb4_unicode_ci), ?, NOW(), ?)";
     $stmtD = $conn->prepare($sqlD);
-    if ($stmtD === false) {
-        throw new Exception("Prepare detail gagal: " . $conn->error);
-    }
 
     foreach ($rows as $r) {
-        // bind types: i (idpo), s (class), i (qty), s (price), s (notes), i (createby)
-        $bindResult = $stmtD->bind_param('isissi', $idpo, $r['class'], $r['qty'], $r['price'], $r['notes'], $iduser);
-        if ($bindResult === false) {
-            throw new Exception("Bind param gagal: " . $stmtD->error);
-        }
+        $stmtD->bind_param(
+            'isissi',
+            $idpo,
+            $r['class'],
+            $r['qty'],
+            $r['price'],
+            $r['notes'],
+            $iduser
+        );
         if (!$stmtD->execute()) {
-            throw new Exception("Gagal menyimpan detail: " . $stmtD->error);
+            throw new Exception($stmtD->error);
         }
     }
 

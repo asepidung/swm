@@ -22,7 +22,7 @@ if (isset($_POST['barcode'])) {
          $idbarang = $row['idbarang'];
          $idgrade = $row['idgrade'];
          $qty = $row['qty'];
-         $pcs = $row['pcs'];
+         $pcs = ($row['pcs'] === null || $row['pcs'] === '') ? 0 : (int)$row['pcs'];
          $pod = $row['pod'];
          $origin = $row['origin'];
 
