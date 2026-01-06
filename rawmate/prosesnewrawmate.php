@@ -2,63 +2,116 @@
 require "../verifications/auth.php";
 require "../konak/conn.php";
 
-// Ambil data dari form dan bersihkan
-$kdrawmate      = isset($_POST['kdrawmate']) ? trim($_POST['kdrawmate']) : '';
-$nmrawmate      = isset($_POST['nmrawmate']) ? trim($_POST['nmrawmate']) : '';
+// =======================
+// Ambil & bersihkan input
+// =======================
+$kdrawmate       = isset($_POST['kdrawmate']) ? trim($_POST['kdrawmate']) : '';
+$nmrawmate       = isset($_POST['nmrawmate']) ? trim($_POST['nmrawmate']) : '';
 $tampilkan_stock = isset($_POST['tampilkan_stock']) ? trim($_POST['tampilkan_stock']) : '';
-$idrawcategory  = isset($_POST['idrawcategory']) ? intval($_POST['idrawcategory']) : 0;
-$unit           = isset($_POST['unit']) ? trim($_POST['unit']) : '';
+$idrawcategory   = isset($_POST['idrawcategory']) ? (int)$_POST['idrawcategory'] : 0;
+$unit            = isset($_POST['unit']) ? trim($_POST['unit']) : '';
+$barmin_input    = isset($_POST['barmin']) ? trim($_POST['barmin']) : '';
 
-// Validasi sederhana
-if ($kdrawmate === '' || $nmrawmate === '' || $idrawcategory <= 0 || $tampilkan_stock === '') {
-   echo "<script>alert('Form tidak lengkap. Pastikan semua field wajib terisi.'); window.location='newrawmate.php';</script>";
+// =======================
+// Normalisasi BARMIN
+// - boleh kosong
+// - default 0
+// =======================
+if ($barmin_input === '') {
+   $barmin = 0;
+} else {
+   $barmin = (int)$barmin_input;
+   if ($barmin < 0) $barmin = 0;
+}
+
+// =======================
+// Validasi field wajib
+// =======================
+if (
+   $kdrawmate === '' ||
+   $nmrawmate === '' ||
+   $idrawcategory <= 0 ||
+   $tampilkan_stock === '' ||
+   $unit === ''
+) {
+   echo "<script>
+      alert('Form tidak lengkap. Pastikan semua field wajib terisi.');
+      window.location='newrawmate.php';
+   </script>";
    exit();
 }
 
-// Konversi nama material ke UPPERCASE multibyte-safe
+// =======================
+// Uppercase nama material
+// =======================
 $nmrawmate_upper = mb_strtoupper($nmrawmate, 'UTF-8');
 
-// Cek apakah nama rawmate sudah ada (case-insensitive menggunakan uppercase)
+// =======================
+// Cek duplikasi nama
+// =======================
 $checkSql = "SELECT idrawmate FROM rawmate WHERE UPPER(nmrawmate) = ? LIMIT 1";
-if ($stmt = $conn->prepare($checkSql)) {
-   $stmt->bind_param("s", $nmrawmate_upper);
-   $stmt->execute();
-   $stmt->store_result();
-   if ($stmt->num_rows > 0) {
-      // Nama sudah ada
-      $stmt->close();
-      echo "<script>alert('Nama material sudah ada dalam database.'); window.location='newrawmate.php';</script>";
-      exit();
-   }
+$stmt = $conn->prepare($checkSql);
+if (!$stmt) {
+   echo "<script>alert('Database error (prepare check).'); window.location='newrawmate.php';</script>";
+   exit();
+}
+
+$stmt->bind_param("s", $nmrawmate_upper);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
    $stmt->close();
-} else {
-   // Jika prepare gagal
-   echo "<script>alert('Database error (check).'); window.location='newrawmate.php';</script>";
+   echo "<script>
+      alert('Nama material sudah ada dalam database.');
+      window.location='newrawmate.php';
+   </script>";
+   exit();
+}
+$stmt->close();
+
+// =======================
+// Insert data rawmate
+// =======================
+$insertSql = "
+   INSERT INTO rawmate
+   (kdrawmate, nmrawmate, idrawcategory, stock, unit, barmin)
+   VALUES (?, ?, ?, ?, ?, ?)
+";
+
+$stmt = $conn->prepare($insertSql);
+if (!$stmt) {
+   echo "<script>alert('Database error (prepare insert).'); window.location='newrawmate.php';</script>";
    exit();
 }
 
-// Insert data baru ke tabel rawmate (termasuk unit) — simpan nama dalam UPPERCASE
-$insertSql = "INSERT INTO rawmate (kdrawmate, nmrawmate, idrawcategory, stock, unit) VALUES (?, ?, ?, ?, ?)";
-if ($stmt = $conn->prepare($insertSql)) {
-   // tipe: kdrawmate (s), nmrawmate (s), idrawcategory (i), stock (i), unit (s)
-   $stock_int = (int)$tampilkan_stock;
-   $stmt->bind_param("ssiss", $kdrawmate, $nmrawmate_upper, $idrawcategory, $stock_int, $unit);
+$stock_int = (int)$tampilkan_stock;
+$stmt->bind_param(
+   "ssissi",
+   $kdrawmate,
+   $nmrawmate_upper,
+   $idrawcategory,
+   $stock_int,
+   $unit,
+   $barmin
+);
 
-   if ($stmt->execute()) {
-      $stmt->close();
-      echo "<script>alert('Data berhasil disimpan.'); window.location='index.php';</script>";
-      exit();
-   } else {
-      $err = $stmt->error;
-      $stmt->close();
-      echo "<script>alert('Gagal menyimpan data: " . addslashes($err) . "'); window.location='newrawmate.php';</script>";
-      exit();
-   }
+if ($stmt->execute()) {
+   $stmt->close();
+   echo "<script>
+      alert('Data berhasil disimpan.');
+      window.location='index.php';
+   </script>";
+   exit();
 } else {
-   // prepare gagal
-   echo "<script>alert('Database error (insert).'); window.location='newrawmate.php';</script>";
+   $err = addslashes($stmt->error);
+   $stmt->close();
+   echo "<script>
+      alert('Gagal menyimpan data: {$err}');
+      window.location='newrawmate.php';
+   </script>";
    exit();
 }
 
-// Tutup koneksi (opsional)
+// =======================
 mysqli_close($conn);

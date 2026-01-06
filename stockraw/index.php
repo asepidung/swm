@@ -20,35 +20,21 @@ include "../mainsidebar.php";
                                             <th>#</th>
                                             <th>Kode</th>
                                             <th>Item Description</th>
-                                            <th>Units</th>
-                                            <th>Category</th>
+                                            <th>Unit</th>
+                                            <th>Barmin</th>
                                             <th>Stock</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        /*
-                                         * STOK FINAL:
-                                         * Stok = TOTAL GR - TOTAL STOCK OUT (is_deleted = 0)
-                                         *
-                                         * Masuk :
-                                         * - grrawdetail.qty
-                                         * - grraw.is_deleted = 0
-                                         * - grrawdetail.is_deleted = 0
-                                         *
-                                         * Keluar :
-                                         * - raw_stock_out_detail.qty
-                                         * - raw_stock_out.is_deleted = 0
-                                         *
-                                         * Tampilkan hanya rawmate.stock = 1
-                                         */
-
                                         $sql = "
                                             SELECT 
+                                                rc.idrawcategory,
+                                                rc.nmcategory,
                                                 rm.kdrawmate AS kode,
                                                 rm.nmrawmate AS description,
-                                                rm.unit AS unit,
-                                                rc.nmcategory AS category,
+                                                rm.unit,
+                                                rm.barmin,
                                                 (
                                                     COALESCE(msk.qty_in, 0) 
                                                     - COALESCE(klr.qty_out, 0)
@@ -57,9 +43,6 @@ include "../mainsidebar.php";
                                             JOIN rawcategory rc 
                                                 ON rc.idrawcategory = rm.idrawcategory
 
-                                            /* ===============================
-                                               TOTAL MASUK (GR)
-                                            =============================== */
                                             LEFT JOIN (
                                                 SELECT 
                                                     gd.idrawmate, 
@@ -67,16 +50,12 @@ include "../mainsidebar.php";
                                                 FROM grrawdetail gd
                                                 JOIN grraw g 
                                                     ON g.idgr = gd.idgr
-                                                WHERE 
-                                                    gd.is_deleted = 0
-                                                    AND g.is_deleted = 0
+                                                WHERE gd.is_deleted = 0
+                                                  AND g.is_deleted = 0
                                                 GROUP BY gd.idrawmate
                                             ) msk 
                                                 ON msk.idrawmate = rm.idrawmate
 
-                                            /* ===============================
-                                               TOTAL KELUAR (STOCK OUT)
-                                            =============================== */
                                             LEFT JOIN (
                                                 SELECT 
                                                     d.idrawmate,
@@ -90,7 +69,7 @@ include "../mainsidebar.php";
                                                 ON klr.idrawmate = rm.idrawmate
 
                                             WHERE rm.stock = 1
-                                            ORDER BY rm.nmrawmate ASC
+                                            ORDER BY rc.nmcategory ASC, rm.nmrawmate ASC
                                         ";
 
                                         $result = $conn->query($sql);
@@ -98,20 +77,57 @@ include "../mainsidebar.php";
                                         if (!$result) {
                                             echo "<tr>
                                                     <td colspan='6' class='text-center text-danger'>
-                                                        Query Error: " . htmlspecialchars($conn->error, ENT_QUOTES) . "
+                                                        Query Error: " . htmlspecialchars($conn->error) . "
                                                     </td>
                                                   </tr>";
                                         } elseif ($result->num_rows > 0) {
+
                                             $no = 1;
+                                            $lastCategory = null;
+
                                             while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>
+
+                                                if ($lastCategory !== $row['idrawcategory']) {
+                                                    echo "
+                                                        <tr style='background:#6c757d;color:#fff;font-weight:bold'>
+                                                            <td colspan='6'>
+                                                                " . htmlspecialchars($row['nmcategory']) . "
+                                                            </td>
+                                                        </tr>
+                                                    ";
+                                                    $lastCategory = $row['idrawcategory'];
+                                                    $no = 1;
+                                                }
+
+                                                $stockVal = (float)$row['stock'];
+                                                $barmin   = (int)$row['barmin'];
+
+                                                // =========================
+                                                // Warna stock
+                                                // =========================
+                                                if ($stockVal < 0) {
+                                                    // Minus → UNGU
+                                                    $stockStyle = "style='color:#6f42c1;font-weight:bold'";
+                                                } elseif ($stockVal <= $barmin && $barmin > 0) {
+                                                    // <= barmin → MERAH
+                                                    $stockStyle = "style='color:#dc3545;font-weight:bold'";
+                                                } else {
+                                                    $stockStyle = "";
+                                                }
+
+                                                echo "
+                                                    <tr>
                                                         <td class='text-center'>{$no}</td>
-                                                        <td class='text-center'>" . htmlspecialchars((string)($row['kode'] ?? '')) . "</td>
-                                                        <td>" . htmlspecialchars((string)($row['description'] ?? '')) . "</td>
-                                                        <td class='text-center'>" . htmlspecialchars((string)($row['unit'] ?? '')) . "</td>
-                                                        <td>" . htmlspecialchars((string)($row['category'] ?? '')) . "</td>
-                                                        <td class='text-right'>" . number_format((float)($row['stock'] ?? 0), 2) . "</td>
-                                                    </tr>";
+                                                        <td class='text-center'>" . htmlspecialchars($row['kode']) . "</td>
+                                                        <td>" . htmlspecialchars($row['description']) . "</td>
+                                                        <td class='text-center'>" . htmlspecialchars((string)($row['unit'] ?? '-')) . "</td>
+                                                        <td class='text-center'>" . ($barmin > 0 ? $barmin : '-') . "</td>
+                                                        <td class='text-right' {$stockStyle}>
+                                                            " . number_format($stockVal, 2) . "
+                                                        </td>
+                                                    </tr>
+                                                ";
+
                                                 $no++;
                                             }
                                         } else {

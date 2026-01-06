@@ -36,6 +36,7 @@ include "../mainsidebar.php";
                                  <th>Satuan</th>
                                  <th>Kategori</th>
                                  <th>View In Stock</th>
+                                 <th>BMS</th>
                                  <th>Actions</th>
                               </tr>
                            </thead>
@@ -58,6 +59,7 @@ include "../mainsidebar.php";
                                     <td class="text-center"><?= htmlspecialchars($tampil['unit'] ?? ''); ?></td>
                                     <td class="text-left"><?= htmlspecialchars($tampil['nmcategory'] ?? ''); ?></td>
                                     <td class="text-center"><?= $viewInStock; ?></td>
+                                    <td class="text-center"><?= htmlspecialchars($tampil['barmin'] ?? ''); ?></td>
                                     <td class="text-center">
                                        <a href="editrawmate.php?idrawmate=<?= $tampil['idrawmate']; ?>" class="btn btn-sm btn-warning mx-1" title="Edit">
                                           <i class="fas fa-edit"></i>
