@@ -59,19 +59,32 @@ $result = mysqli_stmt_get_result($stmt);
 
 <div class="content-header">
    <div class="container-fluid">
-      <div class="row">
-         <div class="col">
-            <h4 class="text-info">
-               Pilih Item Yang Akan Dikembalikan Ke Stock<br>
-               <small><?= htmlspecialchars($nama_customer); ?></small>
-            </h4>
-         </div>
-      </div>
+      <h4 class="text-info">
+         Pilih Item Yang Akan Dikembalikan Ke Stock<br>
+         <small><?= htmlspecialchars($nama_customer); ?></small>
+      </h4>
    </div>
 </div>
 
 <section class="content">
    <div class="container-fluid">
+
+      <!-- INPUT SCAN -->
+      <div class="card mb-2">
+         <div class="card-body p-2">
+            <div class="row align-items-center">
+               <div class="col-md-6">
+                  <input type="text" id="barcode_scan"
+                     class="form-control form-control-sm"
+                     placeholder="SCAN BARCODE DI SINI (auto enter)" autofocus>
+               </div>
+               <div class="col-md-6 text-right small text-info">
+                  Total dipilih: <b><span id="total-selected">0</span></b> item
+               </div>
+            </div>
+         </div>
+      </div>
+
       <form method="POST" action="pengembalianproduct.php">
          <input type="hidden" name="iddo" value="<?= $iddo; ?>">
          <input type="hidden" name="idso" value="<?= $idso; ?>">
@@ -79,7 +92,7 @@ $result = mysqli_stmt_get_result($stmt);
 
          <div class="card">
             <div class="card-body">
-               <table id="example1" class="table table-bordered table-striped table-sm">
+               <table class="table table-bordered table-striped table-sm">
                   <thead class="text-center">
                      <tr>
                         <th>#</th>
@@ -96,55 +109,52 @@ $result = mysqli_stmt_get_result($stmt);
                   <tbody>
                      <?php
                      $no = 1;
-                     if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
+                     while ($row = mysqli_fetch_assoc($result)) {
 
-                           switch ($row['origin']) {
-                              case 1:
-                                 $origin = 'BONING';
-                                 break;
-                              case 2:
-                                 $origin = 'TRADING';
-                                 break;
-                              case 3:
-                                 $origin = 'REPACK';
-                                 break;
-                              case 4:
-                                 $origin = 'RELABEL';
-                                 break;
-                              case 5:
-                                 $origin = 'IMPORT';
-                                 break;
-                              case 6:
-                                 $origin = 'RTN';
-                                 break;
-                              default:
-                                 $origin = 'UNKNOWN';
-                           }
-                     ?>
-                           <tr class="text-center">
-                              <td><?= $no++; ?></td>
-                              <td><?= htmlspecialchars($row['barcode']); ?></td>
-                              <td class="text-left"><?= htmlspecialchars($row['nmbarang']); ?></td>
-                              <td><?= htmlspecialchars($row['nmgrade']); ?></td>
-                              <td><?= number_format($row['weight'], 2); ?></td>
-                              <td><?= $row['pcs'] > 0 ? $row['pcs'] : ''; ?></td>
-                              <td><?= date('d-M-Y', strtotime($row['pod'])); ?></td>
-                              <td><?= $origin; ?></td>
-                              <td>
-                                 <input type="checkbox" name="items[]" value="<?= $row['idtallydetail']; ?>">
-                              </td>
-                           </tr>
-                     <?php
+                        switch ($row['origin']) {
+                           case 1:
+                              $origin = 'BONING';
+                              break;
+                           case 2:
+                              $origin = 'TRADING';
+                              break;
+                           case 3:
+                              $origin = 'REPACK';
+                              break;
+                           case 4:
+                              $origin = 'RELABEL';
+                              break;
+                           case 5:
+                              $origin = 'IMPORT';
+                              break;
+                           case 6:
+                              $origin = 'RTN';
+                              break;
+                           default:
+                              $origin = 'UNKNOWN';
                         }
-                     } else {
-                        echo "<tr><td colspan='9' class='text-center text-muted'>Tidak ada data</td></tr>";
-                     }
                      ?>
+                        <tr data-barcode="<?= htmlspecialchars($row['barcode']); ?>" class="text-center">
+                           <td><?= $no++; ?></td>
+                           <td><?= htmlspecialchars($row['barcode']); ?></td>
+                           <td class="text-left"><?= htmlspecialchars($row['nmbarang']); ?></td>
+                           <td><?= htmlspecialchars($row['nmgrade']); ?></td>
+                           <td><?= number_format((float)$row['weight'], 2); ?></td>
+                           <td><?= $row['pcs'] ?: ''; ?></td>
+                           <td><?= $row['pod'] ? date('d-M-Y', strtotime($row['pod'])) : ''; ?></td>
+                           <td><?= $origin; ?></td>
+                           <td>
+                              <input type="checkbox"
+                                 class="chk-item"
+                                 name="items[]"
+                                 value="<?= $row['idtallydetail']; ?>">
+                           </td>
+                        </tr>
+                     <?php } ?>
                   </tbody>
                </table>
 
-               <button type="button" class="btn btn-success btn-sm" id="check-all">
+               <button type="button" id="check-all" class="btn btn-success btn-sm">
                   <i class="fas fa-check-double"></i> Check All
                </button>
             </div>
@@ -152,23 +162,68 @@ $result = mysqli_stmt_get_result($stmt);
 
          <a href="approvedo.php?iddo=<?= $iddo; ?>" class="btn btn-warning">Cancel</a>
          <button type="submit" class="btn btn-primary">
-            Proses Pengembalian <i class="fas fa-arrow-circle-right"></i>
+            Proses Pengembalian
          </button>
       </form>
+
    </div>
 </section>
 
 <script>
    document.title = "Tally <?= addslashes($nama_customer); ?>";
 
-   document.getElementById('check-all').addEventListener('click', function() {
-      const boxes = document.querySelectorAll('input[name="items[]"]');
-      let allChecked = true;
+   // ================= COUNTER =================
+   function updateCounter() {
+      const total = document.querySelectorAll('.chk-item:checked').length;
+      document.getElementById('total-selected').innerText = total;
+   }
 
-      boxes.forEach(b => {
-         if (!b.checked) allChecked = false;
-      });
+   document.querySelectorAll('.chk-item').forEach(chk => {
+      chk.addEventListener('change', updateCounter);
+   });
+
+   // ================= CHECK ALL =================
+   document.getElementById('check-all').addEventListener('click', function() {
+      const boxes = document.querySelectorAll('.chk-item');
+      const allChecked = [...boxes].every(b => b.checked);
       boxes.forEach(b => b.checked = !allChecked);
+      updateCounter();
+   });
+
+   // ================= SCAN BARCODE =================
+   document.getElementById('barcode_scan').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+         e.preventDefault();
+         const code = this.value.trim();
+         if (!code) return;
+
+         const row = document.querySelector('tr[data-barcode="' + code + '"]');
+
+         if (!row) {
+            alert('Barcode tidak ditemukan: ' + code);
+            this.value = '';
+            return;
+         }
+
+         const chk = row.querySelector('.chk-item');
+
+         // 🔒 ANTI DOUBLE SCAN
+         if (chk.checked) {
+            row.classList.remove('table-success');
+            row.classList.add('table-warning');
+            setTimeout(() => row.classList.remove('table-warning'), 600);
+         } else {
+            chk.checked = true;
+            row.classList.add('table-success');
+            row.scrollIntoView({
+               behavior: 'smooth',
+               block: 'center'
+            });
+            updateCounter();
+         }
+
+         this.value = '';
+      }
    });
 </script>
 

@@ -3,13 +3,15 @@ require "../verifications/auth.php";
 require "../konak/conn.php";
 // include "../header.php";
 
-$idrepack = $_GET['id'];
+$idrepack = (int)$_GET['id'];
 
-$query = "SELECT * FROM repack
-WHERE idrepack = $idrepack";
-
+// =====================
+// HEADER REPACK
+// =====================
+$query = "SELECT * FROM repack WHERE idrepack = $idrepack";
 $result = mysqli_query($conn, $query);
 $tampil = mysqli_fetch_assoc($result);
+
 include "hitungtotal.php";
 ?>
 <!DOCTYPE html>
@@ -37,6 +39,7 @@ include "hitungtotal.php";
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="../plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+
     <style>
         .floatingButtonContainer {
             position: fixed;
@@ -68,15 +71,19 @@ include "hitungtotal.php";
         }
     </style>
 </head>
+
 <div class="wrapper">
 
     <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
         <div class="container">
+
             <div class="col text-center">
                 <h4 class="mb-n1">Laporan Hasil Repack</h4>
                 <span><strong>No : <?= $tampil['norepack']; ?></strong></span>
             </div>
+
             <hr>
+
             <div class="row mt-2">
                 <div class="col-md">
                     <table class="table table-responsive table-borderless table-sm">
@@ -93,7 +100,12 @@ include "hitungtotal.php";
                     </table>
                 </div>
             </div>
+
             <div class="row">
+
+                <!-- =====================
+                     BAHAN
+                ====================== -->
                 <div class="col-4">
                     <table class="table table-sm table-striped table-bordered">
                         <thead class="text-center">
@@ -107,21 +119,35 @@ include "hitungtotal.php";
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT detailbahan.idbarang, barang.nmbarang, SUM(detailbahan.qty) AS total_qty
-                              FROM detailbahan
-                              INNER JOIN barang ON detailbahan.idbarang = barang.idbarang
-                              WHERE detailbahan.idrepack = $idrepack
-                              GROUP BY detailbahan.idbarang, barang.nmbarang";
+                            $query = "
+                                SELECT 
+                                    detailbahan.idbarang,
+                                    barang.nmbarang,
+                                    SUM(detailbahan.qty) AS total_qty
+                                FROM detailbahan
+                                INNER JOIN barang 
+                                    ON detailbahan.idbarang = barang.idbarang
+                                WHERE 
+                                    detailbahan.idrepack = $idrepack
+                                GROUP BY 
+                                    detailbahan.idbarang,
+                                    barang.nmbarang
+                            ";
                             $result = mysqli_query($conn, $query);
-                            while ($tampil = mysqli_fetch_assoc($result)) { ?>
+                            while ($row = mysqli_fetch_assoc($result)) {
+                            ?>
                                 <tr>
-                                    <td><?= $tampil['nmbarang'] ?></td>
-                                    <td class="text-right"><?= number_format($tampil['total_qty'], 2) ?></td>
+                                    <td><?= $row['nmbarang']; ?></td>
+                                    <td class="text-right"><?= number_format($row['total_qty'], 2); ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- =====================
+                     HASIL (FIX is_deleted)
+                ====================== -->
                 <div class="col-4">
                     <table class="table table-sm table-striped table-bordered">
                         <thead class="text-center">
@@ -135,21 +161,36 @@ include "hitungtotal.php";
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT detailhasil.idbarang, barang.nmbarang, SUM(detailhasil.qty) AS total_hasil
-                     FROM detailhasil
-                     INNER JOIN barang ON detailhasil.idbarang = barang.idbarang
-                     WHERE detailhasil.idrepack = $idrepack
-                     GROUP BY detailhasil.idbarang, barang.nmbarang";
+                            $query = "
+                                SELECT 
+                                    detailhasil.idbarang,
+                                    barang.nmbarang,
+                                    SUM(detailhasil.qty) AS total_hasil
+                                FROM detailhasil
+                                INNER JOIN barang 
+                                    ON detailhasil.idbarang = barang.idbarang
+                                WHERE 
+                                    detailhasil.idrepack = $idrepack
+                                    AND detailhasil.is_deleted = 0
+                                GROUP BY 
+                                    detailhasil.idbarang,
+                                    barang.nmbarang
+                            ";
                             $result = mysqli_query($conn, $query);
-                            while ($tampil = mysqli_fetch_assoc($result)) { ?>
+                            while ($row = mysqli_fetch_assoc($result)) {
+                            ?>
                                 <tr>
-                                    <td><?= $tampil['nmbarang'] ?></td>
-                                    <td class="text-right"><?= number_format($tampil['total_hasil'], 2) ?></td>
+                                    <td><?= $row['nmbarang']; ?></td>
+                                    <td class="text-right"><?= number_format($row['total_hasil'], 2); ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- =====================
+                     SUSUT
+                ====================== -->
                 <div class="col-4">
                     <table class="table table-sm table-striped table-bordered">
                         <thead class="text-center">
@@ -159,24 +200,24 @@ include "hitungtotal.php";
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-right"><?= $lost; ?></td>
+                                <td class="text-right"><?= number_format($lost, 2); ?></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="row">
-                </div>
+
             </div>
+        </div>
     </body>
+
     <div class="floatingButtonContainer">
         <button class="floatingButton" onclick="window.history.back();">Kembali</button>
         <button class="floatingButton" onclick="window.print();">Print</button>
     </div>
 </div>
-<script>
-    document.title = "LAPORAN REPACK"
-</script>
-<?php
 
-include "../footer.php"
-?>
+<script>
+    document.title = "LAPORAN REPACK";
+</script>
+
+<?php include "../footer.php"; ?>

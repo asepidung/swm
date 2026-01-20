@@ -24,7 +24,7 @@ include "../mainsidebar.php";
                            <div class="form-group">
                               <label for="gudang">Gudang</label>
                               <select class="form-control" name="gudang" id="gudang">
-                                 <option value="">Pilih Gudang</option>
+                                 <option value="">Gudang Tujuan</option>
                                  <option value="PERUM">PERUM</option>
                                  <option value="JONGGOL">JONGGOL</option>
                               </select>

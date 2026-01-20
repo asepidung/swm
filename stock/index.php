@@ -31,10 +31,11 @@ $sql = "SELECT
             b.nmbarang,
             c.idcut,
             c.nmcut,
-            COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS chill_jonggol,
-            COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS frozen_jonggol,
-            COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS chill_perum,
-            COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS frozen_perum,
+            COALESCE(SUM(CASE WHEN s.idgrade IN (1) THEN s.qty ELSE 0 END), 0) AS chill_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (2) THEN s.qty ELSE 0 END), 0) AS frozen_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (3) THEN s.qty ELSE 0 END), 0) AS chill_perum,
+COALESCE(SUM(CASE WHEN s.idgrade IN (4) THEN s.qty ELSE 0 END), 0) AS frozen_perum,
+
             COALESCE(SUM(s.qty), 0) AS total_qty
         FROM cuts c
         JOIN barang b ON b.idcut = c.idcut
@@ -51,10 +52,11 @@ $result = $conn->query($sql);
 $totalCutSql = "SELECT
     c.idcut,
     c.nmcut,
-    COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
-    COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
-    COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
-    COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+    COALESCE(SUM(CASE WHEN s.idgrade IN (1) THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (2) THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (3) THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
+COALESCE(SUM(CASE WHEN s.idgrade IN (4) THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+
     COALESCE(SUM(s.qty), 0) AS total_qty
 FROM cuts c
 JOIN barang b ON b.idcut = c.idcut
@@ -72,10 +74,11 @@ while ($totalRow = $totalCutResult->fetch_assoc()) {
  * GRAND TOTAL
  */
 $totalGradeSql = "SELECT
-    COALESCE(SUM(CASE WHEN s.idgrade = 1 THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
-    COALESCE(SUM(CASE WHEN s.idgrade = 2 THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
-    COALESCE(SUM(CASE WHEN s.idgrade = 3 THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
-    COALESCE(SUM(CASE WHEN s.idgrade = 4 THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+    COALESCE(SUM(CASE WHEN s.idgrade IN (1) THEN s.qty ELSE 0 END), 0) AS total_chill_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (2) THEN s.qty ELSE 0 END), 0) AS total_frozen_jonggol,
+COALESCE(SUM(CASE WHEN s.idgrade IN (3) THEN s.qty ELSE 0 END), 0) AS total_chill_perum,
+COALESCE(SUM(CASE WHEN s.idgrade IN (4) THEN s.qty ELSE 0 END), 0) AS total_frozen_perum,
+
     COALESCE(SUM(s.qty), 0) AS total_qty
 FROM barang b
 LEFT JOIN stock s ON s.idbarang = b.idbarang

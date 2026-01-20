@@ -25,4 +25,3 @@ $kodeauto = $prefix . $seriallabel;
 
 // Menampilkan nomor auto-generated (opsional untuk debugging)
 // echo $kodeauto;
-?>

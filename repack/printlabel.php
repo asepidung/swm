@@ -183,7 +183,10 @@ if (!empty($idbarang)) {
                   <?php if (!empty($pembulatan)) { ?>
                      <span style="font-size:30px"><strong><?= number_format((float)$qty, 1); ?></strong></span>
                   <?php } else { ?>
-                     <span style="font-size:30px"><strong><?= number_format((float)$qty, 2); ?></strong></span>
+                     <span style="font-size:30px; font-family: Arial, Helvetica, sans-serif;">
+                        <strong><?= number_format($qty, 2); ?></strong>
+                        <sup style="font-size:14px;">Kg</sup>
+                     </span>
                   <?php } ?>
                </span>
             </td>

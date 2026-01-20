@@ -150,7 +150,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                  class="form-control"
                                  name="ph" id="ph"
                                  placeholder="pH 5.4–5.7"
-                                 value="<?= isset($_SESSION['ph']) ? htmlspecialchars($_SESSION['ph'], ENT_QUOTES) : '' ?>">
+                                 value="<?= isset($_SESSION['ph']) ? htmlspecialchars($_SESSION['ph'], ENT_QUOTES) : '' ?>" required>
                            </div>
                         </div>
                      </div>

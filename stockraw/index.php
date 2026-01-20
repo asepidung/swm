@@ -6,12 +6,45 @@ include "../navbar.php";
 include "../mainsidebar.php";
 ?>
 
+<style>
+    /* =========================
+   PRINT STYLE
+   ========================= */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        .content-wrapper,
+        .content-wrapper * {
+            visibility: visible;
+        }
+
+        .content-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .btn-print {
+            display: none;
+        }
+    }
+</style>
+
 <div class="content-wrapper">
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 mt-2">
                     <div class="card">
+                        <div class="card-header d-flex justify-content-end">
+                            <button onclick="window.print()" class="btn btn-sm btn-primary btn-print">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </div>
+
                         <div class="card-body">
                             <div class="col">
                                 <table id="example1" class="table table-bordered table-striped table-sm">
@@ -21,7 +54,7 @@ include "../mainsidebar.php";
                                             <th>Kode</th>
                                             <th>Item Description</th>
                                             <th>Unit</th>
-                                            <th>Barmin</th>
+                                            <th>BSM</th>
                                             <th>Stock</th>
                                         </tr>
                                     </thead>
@@ -102,14 +135,9 @@ include "../mainsidebar.php";
                                                 $stockVal = (float)$row['stock'];
                                                 $barmin   = (int)$row['barmin'];
 
-                                                // =========================
-                                                // Warna stock
-                                                // =========================
                                                 if ($stockVal < 0) {
-                                                    // Minus → UNGU
                                                     $stockStyle = "style='color:#6f42c1;font-weight:bold'";
                                                 } elseif ($stockVal <= $barmin && $barmin > 0) {
-                                                    // <= barmin → MERAH
                                                     $stockStyle = "style='color:#dc3545;font-weight:bold'";
                                                 } else {
                                                     $stockStyle = "";
@@ -140,6 +168,7 @@ include "../mainsidebar.php";
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                        class="form-control"
                                        name="ph" id="ph"
                                        placeholder="PH 5.4-5.7"
-                                       value="<?= h($phValDisplay) ?>">
+                                       value="<?= h($phValDisplay) ?>" required>
                                  </div>
                               </div>
                            </div>

@@ -30,12 +30,12 @@ if ($id <= 0) {
                            <div class="input-group">
                               <input type="hidden" name="idmutasi" value="<?= $id ?>">
                               <select class="form-control" name="tindakan" id="tindakan">
-                                 <option value="1">Mutasi Ke <strong>J01</strong></option>
-                                 <option value="2">Mutasi Ke <strong>J02</strong></option>
-                                 <option value="5">Mutasi Ke <strong>J03</strong></option>
-                                 <option value="3">Mutasi Ke <strong>P01</strong></option>
-                                 <option value="4">Mutasi Ke <strong>P02</strong></option>
-                                 <option value="6">Mutasi Ke <strong>P03</strong></option>
+                                 <option value="1">Mutasi Ke <strong> CHILL JONGGOL</strong> (J01)</option>
+                                 <option value="2">Mutasi Ke <strong> FROZEN JONGGOL</strong> (J02)</option>
+                                 <option value="5">Mutasi Ke <strong> GRADE JONGGOL</strong> (J03)</option>
+                                 <option value="3">Mutasi Ke <strong> CHILL PERUM</strong> (P01)</option>
+                                 <option value="4">Mutasi Ke <strong> FROZEN PERUM</strong> (P02)</option>
+                                 <option value="6">Mutasi Ke <strong> GRADE PERUM</strong> (P03)</option>
                               </select>
                            </div>
                         </div>

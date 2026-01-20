@@ -82,12 +82,15 @@ $conn->close();
                           <td><?= $row['kdbarcode']; ?></td>
                           <td class="text-left"><?= $row['nmbarang']; ?></td>
                           <td>
-                            <?php if ($row['nmgrade'] == "J01") {
+                            <?php
+                            if (in_array($row['nmgrade'], ['J01', 'P01'])) {
                               echo "CHILL";
                             } else {
                               echo "FROZEN";
-                            } ?>
+                            }
+                            ?>
                           </td>
+
                           <td class="text-center"><?= $row['nmgrade']; ?>
                           </td>
                           <td class="text-right"><?= $row['qty']; ?></td>

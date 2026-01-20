@@ -11,26 +11,47 @@ $akhir = isset($_GET['akhir']) ? $_GET['akhir'] : date('Y-m-d');
    <!-- Content Header (Page header) -->
    <div class="content-header">
       <div class="container-fluid">
-         <div class="row">
-            <div class="col-2">
-               <form method="GET" action="">
-                  <input type="date" class="form-control form-control-sm" name="awal" value="<?= $awal; ?>">
-            </div>
-            <div class="col-2">
-               <input type="date" class="form-control form-control-sm" name="akhir" value="<?= $akhir; ?>">
-            </div>
-            <div class="col">
-               <button type="submit" class="btn btn-sm btn-primary" name="search"><i class="fas fa-search"></i></button>
+         <div class="row align-items-center mb-2">
+
+            <!-- FILTER PERIODE -->
+            <div class="col-sm-9 col-12">
+               <form method="GET" class="form-inline flex-wrap">
+
+                  <label class="mr-2 font-weight-bold d-none d-sm-inline">Periode</label>
+
+                  <input type="date"
+                     name="awal"
+                     value="<?= $awal; ?>"
+                     class="form-control form-control-sm mr-sm-2 mb-1">
+
+                  <span class="mr-sm-2 mb-1">s/d</span>
+
+                  <input type="date"
+                     name="akhir"
+                     value="<?= $akhir; ?>"
+                     class="form-control form-control-sm mr-sm-2 mb-1">
+
+                  <button type="submit"
+                     class="btn btn-sm btn-primary mb-1"
+                     name="search">
+                     <i class="fas fa-search"></i> Cari
+                  </button>
+
                </form>
             </div>
-            <div class="col-1">
-               <a href="javascript:history.back()" class="btn btn-sm btn-outline-primary float-right">
+
+            <!-- BACK -->
+            <div class="col-sm-3 col-12 text-sm-right mt-2 mt-sm-0">
+               <a href="javascript:history.back()"
+                  class="btn btn-sm btn-outline-primary btn-block btn-sm-inline">
                   <i class="fas fa-arrow-left"></i> Back
                </a>
             </div>
+
          </div>
-      </div><!-- /.container-fluid -->
+      </div>
    </div>
+
    <!-- /.content-header -->
 
    <!-- Main content -->

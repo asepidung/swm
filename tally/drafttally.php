@@ -48,8 +48,17 @@ include "../mainsidebar.php";
                                     </a>
                                  </td>
                                  <td><?= $tampil['note']; ?></td>
-                                 <td class="text-center text-primary">
-                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>" class="btn btn-sm btn-primary">Buat Tally <i class="fas fa-arrow-circle-right"></i></a>
+                                 <td class="text-center">
+                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>"
+                                       class="btn btn-sm btn-primary mb-1">
+                                       Buat Tally <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+
+                                    <a href="cancel_so.php?idso=<?= $tampil['idso']; ?>"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Yakin SO ini dibatalkan?')">
+                                       Cancel
+                                    </a>
                                  </td>
                               </tr>
                            <?php
