@@ -2,7 +2,8 @@
 
 function terbilang($angka)
 {
-   $angka = floor(floatval($angka)); // Pastikan angka adalah integer
+   $angka = intval($angka);
+
    $bilangan = array(
       '',
       'Satu',
@@ -23,52 +24,38 @@ function terbilang($angka)
    } elseif ($angka < 20) {
       return $bilangan[$angka - 10] . ' Belas';
    } elseif ($angka < 100) {
-      $puluh = intval($angka / 10);
-      $sisa = $angka % 10;
-      return $bilangan[$puluh] . ' Puluh ' . $bilangan[$sisa];
+      return $bilangan[intval($angka / 10)] . ' Puluh ' . terbilang($angka % 10);
    } elseif ($angka < 200) {
       return 'Seratus ' . terbilang($angka - 100);
    } elseif ($angka < 1000) {
-      $ratusan = intval($angka / 100);
-      $sisa = $angka % 100;
-      return $bilangan[$ratusan] . ' Ratus ' . terbilang($sisa);
+      return $bilangan[intval($angka / 100)] . ' Ratus ' . terbilang($angka % 100);
    } elseif ($angka < 2000) {
       return 'Seribu ' . terbilang($angka - 1000);
    } elseif ($angka < 1000000) {
-      $ribuan = intval($angka / 1000);
-      $sisa = $angka % 1000;
-      return terbilang($ribuan) . ' Ribu ' . terbilang($sisa);
+      return terbilang(intval($angka / 1000)) . ' Ribu ' . terbilang($angka % 1000);
    } elseif ($angka < 1000000000) {
-      $jutaan = intval($angka / 1000000);
-      $sisa = $angka % 1000000;
-      return terbilang($jutaan) . ' Juta ' . terbilang($sisa);
+      return terbilang(intval($angka / 1000000)) . ' Juta ' . terbilang($angka % 1000000);
    } elseif ($angka < 1000000000000) {
-      $miliar = intval($angka / 1000000000);
-      $sisa = $angka % 1000000000;
-      return terbilang($miliar) . ' Miliar ' . terbilang($sisa);
-   } elseif ($angka < 1000000000000000) {
-      $triliun = intval($angka / 1000000000000);
-      $sisa = $angka % 1000000000000;
-      return terbilang($triliun) . ' Triliun ' . terbilang($sisa);
+      return terbilang(intval($angka / 1000000000)) . ' Miliar ' . terbilang($angka % 1000000000);
    } else {
-      return 'Maaf, fungsi ini hanya berlaku untuk angka sampai dengan 999 Triliun.';
+      return 'Angka terlalu besar';
    }
 }
 
 function terbilang_desimal($angka)
 {
-   $angka_arr = explode(".", (string)$angka); // Pastikan angka berupa string untuk pemisahan desimal
-   $desimal = "";
+   $angka = number_format((float)$angka, 2, '.', '');
+   list($bilangan_bulat, $desimal) = explode('.', $angka);
 
-   // Tangani bagian desimal (jika ada)
-   if (count($angka_arr) > 1) {
-      $desimal = " koma ";
-      $desimal_arr = str_split($angka_arr[1]); // Pecah angka desimal ke dalam array
-      foreach ($desimal_arr as $digit) {
-         $desimal .= $digit == "0" ? "nol " : terbilang($digit) . " ";
+   $hasil = trim(terbilang($bilangan_bulat));
+
+   // cek apakah desimal ada nilai selain nol
+   if ((int)$desimal > 0) {
+      $hasil .= ' Koma ';
+      foreach (str_split($desimal) as $digit) {
+         $hasil .= ($digit == '0') ? 'Nol ' : terbilang($digit) . ' ';
       }
    }
 
-   // Gabungkan bagian integer dengan bagian desimal
-   return terbilang($angka_arr[0]) . $desimal . "Rupiah";
+   return trim($hasil) . ' Rupiah';
 }

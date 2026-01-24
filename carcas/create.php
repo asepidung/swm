@@ -209,10 +209,10 @@ while ($r = $qClass->fetch_assoc()) {
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
-                                            <td><input type="number" step="0.01" name="carcase1[]" class="form-control form-control-sm text-right"></td>
-                                            <td><input type="number" step="0.01" name="carcase2[]" class="form-control form-control-sm text-right"></td>
-                                            <td><input type="number" step="0.01" name="hides[]" class="form-control form-control-sm text-right"></td>
-                                            <td><input type="number" step="0.01" name="tails[]" class="form-control form-control-sm text-right"></td>
+                                            <td><input type="number" step="0.01" name="carcase1[]" class="form-control form-control-sm text-right" max="300"></td>
+                                            <td><input type="number" step="0.01" name="carcase2[]" class="form-control form-control-sm text-right" max="300"></td>
+                                            <td><input type="number" step="0.01" name="hides[]" class="form-control form-control-sm text-right" max="70"></td>
+                                            <td><input type="number" step="0.01" name="tails[]" class="form-control form-control-sm text-right" max="150"></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
