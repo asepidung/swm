@@ -75,8 +75,8 @@ unset($_SESSION['form_old'], $_SESSION['form_errors']);
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label>PO Date</label>
-                                <input type="date" name="podate" class="form-control" required
-                                    value="<?= e($old['podate'] ?? date('Y-m-d')) ?>">
+                                <input type="date" name="podate" class="form-control"
+                                    value="<?= e($old['podate'] ?? date('Y-m-d')) ?>" readonly>
                             </div>
 
                             <div class="form-group col-md-4">
@@ -193,6 +193,7 @@ unset($_SESSION['form_old'], $_SESSION['form_errors']);
 <?php include "../footer.php"; ?>
 
 <script>
+    document.title = "New Cattle PO";
     /* ======================
    UTIL
 ====================== */
