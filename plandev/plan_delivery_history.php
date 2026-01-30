@@ -4,6 +4,10 @@ require "../konak/conn.php";
 include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
+
+/* Default filter tanggal */
+$startDate = $_GET['start'] ?? date('Y-m-01');
+$endDate   = $_GET['end']   ?? date('Y-m-d');
 ?>
 
 <div class="content-wrapper">
@@ -11,11 +15,11 @@ include "../mainsidebar.php";
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Plan Delivery</h1>
+                    <h1 class="m-0">Plan Delivery History</h1>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <a href="plan_delivery_history.php" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-history"></i> History
+                    <a href="index.php" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                 </div>
             </div>
@@ -24,9 +28,26 @@ include "../mainsidebar.php";
 
     <section class="content">
         <div class="container-fluid">
+
+            <!-- FILTER TANGGAL -->
+            <div class="card mb-2">
+                <div class="card-body p-2">
+                    <form method="GET" class="form-inline">
+                        <label class="mr-2">Periode</label>
+                        <input type="date" name="start" class="form-control form-control-sm mr-2"
+                            value="<?= $startDate; ?>">
+                        <span class="mr-2">s/d</span>
+                        <input type="date" name="end" class="form-control form-control-sm mr-2"
+                            value="<?= $endDate; ?>">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            Tampilkan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-body table-responsive">
-
 
                     <table id="example1" class="table table-bordered table-striped table-sm">
                         <thead class="text-center">
@@ -40,7 +61,7 @@ include "../mainsidebar.php";
                                 <th>Armada</th>
                                 <th>Jam</th>
                                 <th>Note</th>
-                                <th>Aksi</th>
+                                <!-- <th>Status</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -49,29 +70,32 @@ include "../mainsidebar.php";
 
                             $query = "
                             SELECT
-                                so.idcustomer,
+                                dpd.idcustomer,
                                 c.nama_customer,
-                                so.deliverydate,
-                                COUNT(DISTINCT so.idso) AS total_po,
+                                dpd.deliverydate,
+                                COUNT(DISTINCT dpd.idso) AS total_po,
                                 SUM(sod.weight) AS total_qty,
                                 MAX(dpd.driver) AS driver,
                                 MAX(dpd.armada) AS armada,
                                 MAX(dpd.loadtime) AS loadtime,
-                                GROUP_CONCAT(DISTINCT dpd.note SEPARATOR ' | ') AS notes
-                            FROM salesorder so
-                            JOIN salesorderdetail sod ON so.idso = sod.idso
-                            JOIN customers c ON so.idcustomer = c.idcustomer
-                            LEFT JOIN delivery_plan_detail dpd ON dpd.idso = so.idso
+                                GROUP_CONCAT(DISTINCT dpd.note SEPARATOR ' | ') AS notes,
+                                MAX(so.progress) AS progress
+                            FROM delivery_plan_detail dpd
+                            JOIN salesorder so 
+                                ON dpd.idso = so.idso
+                            JOIN salesorderdetail sod 
+                                ON so.idso = sod.idso
+                            JOIN customers c 
+                                ON dpd.idcustomer = c.idcustomer
                             WHERE
-                                so.deliverydate >= CURDATE()
-                                AND so.progress IN ('Waiting', 'DRAFT')
+                                dpd.deliverydate BETWEEN '$startDate' AND '$endDate'
                                 AND so.is_deleted = 0
                                 AND (c.idgroup IS NULL OR c.idgroup != 21)
                             GROUP BY
-                                so.idcustomer,
-                                so.deliverydate
+                                dpd.idcustomer,
+                                dpd.deliverydate
                             ORDER BY
-                                so.deliverydate ASC,
+                                dpd.deliverydate DESC,
                                 c.nama_customer ASC
                         ";
 
@@ -92,35 +116,19 @@ include "../mainsidebar.php";
 
                                     <td class="text-right"><?= number_format($row['total_qty']); ?></td>
 
-                                    <td><?= $row['driver'] ?? ''; ?></td>
+                                    <td><?= $row['driver']; ?></td>
 
-                                    <td><?= $row['armada'] ?? ''; ?></td>
+                                    <td><?= $row['armada']; ?></td>
 
                                     <td class="text-center">
                                         <?= $row['loadtime'] ? date("H:i", strtotime($row['loadtime'])) : ''; ?>
                                     </td>
 
-                                    <td><?= $row['notes'] ?? ''; ?></td>
-
+                                    <td><?= $row['notes']; ?></td>
+                                    <!-- 
                                     <td class="text-center">
-                                        <?php if (empty($row['driver'])) { ?>
-                                            <!-- BELUM ADA → CREATE -->
-                                            <a
-                                                href="delivery_detail.php?idcustomer=<?= $row['idcustomer']; ?>&deliverydate=<?= $row['deliverydate']; ?>"
-                                                class="btn btn-xs btn-primary"
-                                                title="Isi Pengiriman">
-                                                <i class="fas fa-truck"></i>
-                                            </a>
-                                        <?php } else { ?>
-                                            <!-- SUDAH ADA → EDIT -->
-                                            <a
-                                                href="edit_delivery_detail.php?idcustomer=<?= $row['idcustomer']; ?>&deliverydate=<?= $row['deliverydate']; ?>"
-                                                class="btn btn-xs btn-warning"
-                                                title="Edit Pengiriman">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        <?php } ?>
-                                    </td>
+                                        <?= $row['progress']; ?>
+                                    </td> -->
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -128,12 +136,13 @@ include "../mainsidebar.php";
 
                 </div>
             </div>
+
         </div>
     </section>
 </div>
 
 <script>
-    document.title = "Plan Delivery";
+    document.title = "Plan Delivery History";
 </script>
 
 <?php include "../footer.php"; ?>

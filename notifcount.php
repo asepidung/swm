@@ -69,18 +69,31 @@ $rowInvoiceBelumTF = mysqli_fetch_assoc($resultInvoiceBelumTF);
 $belumTFCount = $rowInvoiceBelumTF['belumTFCount'];
 
 
-// plan delivery
+// ================================
+// NOTIFIKASI PLAN DELIVERY
+// ================================
+
 $queryFutureDeliveries = "
-    SELECT COUNT(*) AS futureDeliveryCount
+    SELECT 
+        COUNT(DISTINCT so.idcustomer, so.deliverydate) AS futureDeliveryCount
     FROM salesorder so
     JOIN customers c ON so.idcustomer = c.idcustomer
-    WHERE so.deliverydate >= CURDATE() + INTERVAL 1 DAY 
-      AND so.is_deleted = 0
-      AND c.idgroup != 21
+    WHERE 
+        so.deliverydate >= CURDATE()
+        AND so.progress IN ('Waiting','DRAFT')
+        AND so.is_deleted = 0
+        AND (c.idgroup IS NULL OR c.idgroup != 21)
 ";
+
+
 $resultFutureDeliveries = mysqli_query($conn, $queryFutureDeliveries);
-$rowFutureDeliveries = mysqli_fetch_assoc($resultFutureDeliveries);
-$futureDeliveryCount = $rowFutureDeliveries['futureDeliveryCount'];
+
+$futureDeliveryCount = 0;
+if ($resultFutureDeliveries) {
+    $rowFutureDeliveries = mysqli_fetch_assoc($resultFutureDeliveries);
+    $futureDeliveryCount = (int) $rowFutureDeliveries['futureDeliveryCount'];
+}
+
 
 
 // plan kedatangan
