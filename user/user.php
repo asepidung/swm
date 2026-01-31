@@ -19,6 +19,9 @@ include "../mainsidebar.php";
                               <th>Userid</th>
                               <th>Nama Lengkap</th>
                               <th>Status</th>
+                              <?php if ($_SESSION['idusers'] == 1) { ?>
+                                 <th>Reset</th>
+                              <?php } ?>
                            </tr>
                         </thead>
                         <tbody>
@@ -41,6 +44,15 @@ include "../mainsidebar.php";
                                        <a href="aktifkan.php?id=<?= $tampil['idusers'] ?>" class="text-danger"><?= $status; ?></a>
                                     <?php } ?>
                                  </td>
+                                 <?php if ($_SESSION['idusers'] == 1) { ?>
+                                    <td class="text-center">
+                                       <a href="reset_password.php?id=<?= $tampil['idusers']; ?>"
+                                          class="btn btn-sm btn-warning"
+                                          onclick="return confirm('Reset password user ini?')">
+                                          Reset
+                                       </a>
+                                    </td>
+                                 <?php } ?>
                               </tr>
                            <?php $no++;
                            } ?>
