@@ -75,13 +75,21 @@ foreach ($rows as $r) $totalWeight += (float)$r['weight'];
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Cattle Receive <small class="text-muted">(<?= e($rcv['nopo']) ?>)</small></h1>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <a href="index.php" class="btn btn-secondary btn-sm"><i class="fas fa-undo-alt"></i> Kembali</a>
-                    <button class="btn btn-warning btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
-                </div>
+               <div class="col-sm-6 text-right">
+    <a href="index.php" class="btn btn-secondary btn-sm">
+        <i class="fas fa-undo-alt"></i> Kembali
+    </a>
+
+    <a href="summary.php?idreceive=<?= $idreceive ?>" 
+       class="btn btn-info btn-sm">
+        <i class="fas fa-chart-pie"></i> Summary
+    </a>
+
+    <button class="btn btn-warning btn-sm" onclick="window.print()">
+        <i class="fas fa-print"></i> Print
+    </button>
+</div>
+
             </div>
         </div>
     </div>
