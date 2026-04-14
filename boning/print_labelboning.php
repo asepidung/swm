@@ -18,13 +18,12 @@ $query = "SELECT lb.*, b.nmbarang
 $result = mysqli_query($conn, $query);
 $data = mysqli_fetch_assoc($result);
 
-// Pastikan data ditemukan
 if (!$data) {
    header("Location: labelboning.php?id=$idboning");
    exit;
 }
 
-// Variabel untuk digunakan di halaman cetak
+// Variabel
 $nmbarang = $data['nmbarang'];
 $qty = $data['qty'];
 $pcs = $data['pcs'];
@@ -39,144 +38,121 @@ $ph = $data['ph'];
 
 <head>
    <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Label</title>
+   <title>Label Print</title>
+   <style>
+      /* 1. Atur Font Global ke Arial biar selaras */
+      * {
+         font-family: Arial, Helvetica, sans-serif !important;
+         color: #000000;
+      }
+
+      body {
+         margin: 0;
+         padding: 0;
+      }
+
+      /* 2. Setting Kertas 100x75mm */
+      @media print {
+         @page {
+            size: 100mm 75mm;
+            margin: 0;
+         }
+      }
+
+      /* 3. Container Margin (Sama kayak Laravel) */
+      .print-area {
+         width: 100mm;
+         height: 75mm;
+         padding: 3mm;
+         /* Ini yang bikin margin lu aman */
+         box-sizing: border-box;
+         overflow: hidden;
+      }
+
+      /* 4. Paksa tabel lu tetep di ukurannya tapi ngikut container */
+      .legacy-table {
+         width: 100%;
+         height: 100%;
+         border-collapse: collapse;
+      }
+
+      /* Styling Barcode biar gak meluber */
+      .barcode-img img {
+         max-width: 100%;
+         height: 50px !important;
+      }
+   </style>
 </head>
 
 <body>
-   <table width="365" height="270" cellpadding="0">
-      <tbody>
-         <tr>
-            <td height="23" colspan="4">
-               <span style="font-size: 18px; color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <strong>*YP*</strong>
-               </span>
-            </td>
-         </tr>
-         <tr>
-            <td height="21" colspan="4">
-               <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif; font-size: 14px;">
-                  <strong>Prod By: PT. SANTI WIJAYA MEAT</strong>
-               </span>
-            </td>
-         </tr>
-         <tr>
-            <td height="20" colspan="4">
-               <span style="color: #000000; font-size: 10px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna Kec. Jonggol Kab. Bogor
-               </span>
-            </td>
-         </tr>
-         <tr>
-            <td height="20" colspan="2">
-               <span style="font-size: 18px; color: #000000;  font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <strong><?= $nmbarang; ?></strong>
-               </span>
-            </td>
-            <td colspan="2" rowspan="5" align="center" valign="middle">
-               <img src=" ../dist/img/halal.png" alt="HALAL" height="100" align="absmiddle">
-            </td>
-         </tr>
-         <tr>
-            <td colspan=" 1" rowspan="2">
-               <span style="font-size:30px; font-family: Arial, Helvetica, sans-serif;">
-                  <strong><?= number_format($qty, 2); ?></strong>
-                  <sup style="font-size:14px;">Kg</sup>
-               </span>
-            </td>
-            <td height="20" style="font-size: 12px font-family 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               <?php if ($pcs > 0) { ?>
-                  <strong><i><?= $pcs . "-Pcs"; ?></i></strong>
-               <?php } ?>
-            </td>
-         </tr>
-         <tr>
-            <td height="20" style="font-style: normal; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-
-               <!-- sementara tenderstreatch tidak aktif -->
-               <!-- <?php if ($tenderstreachActive && (strpos($nmbarang, 'TENDERLOIN') !== false || strpos($nmbarang, 'SHORTLOIN') !== false || strpos($nmbarang, 'STRIPLOIN') !== false || strpos($nmbarang, 'RUMP') !== false || strpos($nmbarang, 'CUBEROLL') !== false || strpos($nmbarang, 'OPERIB') !== false)) { ?><strong><i>Tenderstreach</i></strong>
-               <?php } else { ?>
-                  &nbsp;
-               <?php } ?> -->
-
-
-               <!-- diganti dengan Ph -->
-               <span style="font-size: 12px">pH <?= number_format($ph, 1); ?></span>
-            </td>
-         </tr>
-         <tr>
-            <td height="20" style="font-size: 11px">
-               <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">Packed Date&nbsp; :</span>
-            </td>
-            <td style="font-size: 11px">
-               <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;"><?= date('d-M-Y', strtotime($packdate)); ?></span>
-            </td>
-         </tr>
-         <?php if ($exp == null) { ?>
+   <div class="print-area">
+      <table class="legacy-table" cellpadding="0" border="0">
+         <tbody>
             <tr>
-               <td style="font-size: 11px">
-                  <span style="color: #000000; ">&nbsp;</span>
-               </td>
-               <td style="font-size: 11px">
-                  <span style="color: #000000; ">&nbsp;</span>
+               <td height="23" colspan="4"><span style="font-size: 18px;"><strong>*YP*</strong></span></td>
+            </tr>
+            <tr>
+               <td height="21" colspan="4"><span style="font-size: 14px;"><strong>Prod By: PT. SANTI WIJAYA MEAT</strong></span></td>
+            </tr>
+            <tr>
+               <td height="20" colspan="4"><span style="font-size: 10px;">Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna Kec. Jonggol Kab. Bogor</span></td>
+            </tr>
+            <tr>
+               <td height="20" colspan="2"><span style="font-size: 18px;"><strong><?= strtoupper($nmbarang); ?></strong></span></td>
+               <td colspan="2" rowspan="5" align="center" valign="middle">
+                  <img src="../dist/img/halal.png" alt="HALAL" height="90">
                </td>
             </tr>
-         <?php } else { ?>
             <tr>
-               <td style="font-size: 11px">
-                  <span style="color: #000000; ">Expired Date :</span>
+               <td colspan="1" rowspan="2">
+                  <span style="font-size:30px;"><strong><?= number_format($qty, 2); ?></strong><sup style="font-size:14px;">Kg</sup></span>
                </td>
-               <td style="font-size: 11px">
-                  <span style="color: #000000; "><?= date('d-M-Y', strtotime($exp)); ?></span>
+               <td height="20" style="font-size: 12px;">
+                  <?php if ($pcs > 1) {
+                     echo "<strong><i>$pcs-Pcs</i></strong>";
+                  } else {
+                     echo "&nbsp;";
+                  } ?>
                </td>
             </tr>
-         <?php }  ?>
-         <tr>
-            <td height="20" colspan="2">
-               <span style="color: #000000; font-size: 12px; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <strong>
-                     <?php
-                     if ($idgrade == 1 or $idgrade == 3) {
-                        echo "KEEP CHILL 0°C";
-                     } else {
-                        echo "KEEP FROZEN -18°C";
-                     }
-                     ?>
-                  </strong>
-               </span>
-            </td>
-            <td style="font-size: 10px; text-align: center; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-               ID00110015321510124<br>RPHR 3201170-027
-            </td>
-         </tr>
-         <tr>
-            <!-- <td colspan="3">&nbsp;</td> -->
-         </tr>
-         <tr>
-            <td height="20" colspan="4" align="center" valign="middle">
-               <?php
-               $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-               $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
-               echo '<img src="data:image/jpeg;base64,' . base64_encode($barcode) . '" alt="Barcode">';
-               // echo $kdbarcode;
-               ?>
-            </td>
-         </tr>
-         <tr>
-            <td colspan="4" align="center">
-               <span style="color: #000000; font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
-                  <?= $kdbarcode; ?>
-               </span>
-            </td>
-         </tr>
-      </tbody>
-   </table>
+            <tr>
+               <td height="20" style="font-size: 12px;">pH <?= number_format($ph, 1); ?></td>
+            </tr>
+            <tr>
+               <td height="20" style="font-size: 11px;">Packed Date :</td>
+               <td style="font-size: 11px;"><?= date('d-M-Y', strtotime($packdate)); ?></td>
+            </tr>
+            <tr>
+               <td style="font-size: 11px;"><?= $exp ? "Expired Date :" : "&nbsp;"; ?></td>
+               <td style="font-size: 11px;"><?= $exp ? date('d-M-Y', strtotime($exp)) : "&nbsp;"; ?></td>
+            </tr>
+            <tr>
+               <td height="20" colspan="2">
+                  <span style="font-size: 12px;"><strong><?= ($idgrade == 1 || $idgrade == 3) ? "KEEP CHILL 0°C" : "KEEP FROZEN -18°C"; ?></strong></span>
+               </td>
+               <td style="font-size: 9px; text-align: center;">ID00110015321510124<br>RPHR 3201170-027</td>
+            </tr>
+            <tr>
+               <td height="55" colspan="4" align="center" valign="middle" class="barcode-img">
+                  <?php
+                  $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+                  $barcode = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
+                  echo '<img src="data:image/jpeg;base64,' . base64_encode($barcode) . '" alt="Barcode">';
+                  ?>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4" align="center"><span style="font-size: 12px;"><?= $kdbarcode; ?></span></td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+
    <script>
       window.onload = function() {
          window.print();
          window.onafterprint = function() {
-            window.location.href = 'labelboning.php?id=<?php echo $idboning; ?>';
+            window.location.href = 'labelboning.php?id=<?= $idboning; ?>';
          };
          setTimeout(function() {
             window.close();

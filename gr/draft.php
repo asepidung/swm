@@ -5,6 +5,7 @@ include "../header.php";
 include "../navbar.php";
 include "../mainsidebar.php";
 
+// Mengambil data PO dari database
 $query = "
     SELECT 
         p.idpo,
@@ -36,78 +37,81 @@ if (!$result) {
                 <div class="col-12">
                     <div class="card mt-3">
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped table-sm">
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Supplier</th>
-                                        <th>Requester</th>
-                                        <th>Receiving Date</th>
-                                        <th>PO</th>
-                                        <th>Request No</th>
-                                        <th>Note</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $counter = 1;
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        $idpo       = (int)$row['idpo'];
-                                        $nmsupplier = $row['nmsupplier'] ?? '';
-                                        $requester  = $row['requester'] ?? '';
-                                        $deliveryat = $row['deliveryat'] ?? '';
-                                        $nopo       = $row['nopo'] ?? '';
-                                        $norequest  = $row['norequest'] ?? '';
-                                        $note       = $row['note'] ?? '';
-                                        $stat       = (int)$row['stat'];
-
-                                        // label & style berdasarkan status
-                                        if ($stat === 3) {
-                                            $btnText  = "Lanjutkan GR";
-                                            $btnClass = "btn-warning";
-                                            $title    = "GR Partial";
-                                        } else { // stat = 0
-                                            $btnText  = "Proses GR";
-                                            $btnClass = "btn-primary";
-                                            $title    = "Buat GR";
-                                        }
-                                    ?>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped table-sm">
+                                    <thead class="text-center text-nowrap">
                                         <tr>
-                                            <td class="text-center"><?= $counter++; ?></td>
-                                            <td><?= htmlspecialchars($nmsupplier); ?></td>
-                                            <td><?= htmlspecialchars($requester); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($deliveryat); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($nopo); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($norequest); ?></td>
-                                            <td class="text-center"><?= htmlspecialchars($note); ?></td>
-                                            <td class="text-center">
-                                                <a class="btn <?= $btnClass ?> btn-xs"
-                                                    data-toggle="tooltip"
-                                                    data-placement="bottom"
-                                                    title="<?= $title ?>"
-                                                    href="newgr.php?id=<?= $idpo ?>">
-                                                    <?= $btnText ?> <i class="fas fa-truck"></i>
-                                                </a>
-
-                                                <a class="btn btn-danger btn-xs"
-                                                    data-toggle="tooltip"
-                                                    data-placement="bottom"
-                                                    title="Cancel"
-                                                    href="cancel.php?id=<?= $idpo ?>"
-                                                    onclick="return confirm('Apa Kamu Yakin Ingin Menolak PO ini?');">
-                                                    Cancel <i class="fas fa-window-close"></i>
-                                                </a>
-                                            </td>
+                                            <th>#</th>
+                                            <th>Supplier</th>
+                                            <th>Requester</th>
+                                            <th>Receiving Date</th>
+                                            <th>PO</th>
+                                            <th>Request No</th>
+                                            <th>Note</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    if (mysqli_num_rows($result) === 0) {
-                                        echo "<tr><td colspan='8' class='text-center'>No data available</td></tr>";
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $counter = 1;
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            $idpo       = (int)$row['idpo'];
+                                            $nmsupplier = $row['nmsupplier'] ?? '';
+                                            $requester  = $row['requester'] ?? '';
+                                            $deliveryat = $row['deliveryat'] ?? '';
+                                            $nopo       = $row['nopo'] ?? '';
+                                            $norequest  = $row['norequest'] ?? '';
+                                            $note       = $row['note'] ?? '';
+                                            $stat       = (int)$row['stat'];
+
+                                            // Menentukan label dan style berdasarkan status
+                                            if ($stat === 3) {
+                                                $btnText  = "Lanjutkan GR";
+                                                $btnClass = "btn-warning";
+                                                $title    = "GR Partial";
+                                            } else {
+                                                $btnText  = "Proses GR";
+                                                $btnClass = "btn-primary";
+                                                $title    = "Buat GR";
+                                            }
+                                        ?>
+                                            <tr>
+                                                <td class="text-center"><?= $counter++; ?></td>
+                                                <td><?= htmlspecialchars($nmsupplier); ?></td>
+                                                <td><?= htmlspecialchars($requester); ?></td>
+                                                <td class="text-center text-nowrap"><?= htmlspecialchars($deliveryat); ?></td>
+                                                <td class="text-center text-nowrap"><?= htmlspecialchars($nopo); ?></td>
+                                                <td class="text-center text-nowrap"><?= htmlspecialchars($norequest); ?></td>
+                                                <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= htmlspecialchars($note); ?>">
+                                                    <?= htmlspecialchars($note); ?>
+                                                </td>
+                                                <td class="text-center text-nowrap">
+                                                    <a class="btn <?= $btnClass ?> btn-xs mb-1"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="<?= $title ?>"
+                                                        href="newgr.php?id=<?= $idpo ?>">
+                                                        <?= $btnText ?> <i class="fas fa-truck"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs mb-1"
+                                                        data-toggle="tooltip"
+                                                        data-placement="bottom"
+                                                        title="Cancel"
+                                                        href="cancel.php?id=<?= $idpo ?>"
+                                                        onclick="return confirm('Apa Kamu Yakin Ingin Menolak PO ini?');">
+                                                        Cancel <i class="fas fa-window-close"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        if (mysqli_num_rows($result) === 0) {
+                                            echo "<tr><td colspan='8' class='text-center'>No data available</td></tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,6 +122,12 @@ if (!$result) {
 
 <script>
     document.title = "DRAFT GR";
+    // Mengaktifkan tooltip bawaan Bootstrap
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof $ !== 'undefined') {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
 </script>
 
 <?php include "../footer.php"; ?>

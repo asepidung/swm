@@ -32,7 +32,7 @@ if (mysqli_stmt_execute($stmt)) {
    // Ambil idusers yang baru saja dimasukkan
    $idusers = mysqli_insert_id($conn);
 
-   // ==== 2. Siapkan default role (semua 0) termasuk cattle & stock ====
+   // ==== 2. Siapkan default role (semua 0) termasuk penambahan role qc ====
    $access = [
       'cattle' => 0,
       'produksi' => 0,
@@ -43,7 +43,8 @@ if (mysqli_stmt_execute($stmt)) {
       'sales' => 0,
       'finance' => 0,
       'data_report' => 0,
-      'master_data' => 0
+      'master_data' => 0,
+      'qc' => 0 // Tambahan inisialisasi default QC
    ];
 
    // Update nilai role berdasarkan checkbox yang dicentang
@@ -67,14 +68,15 @@ if (mysqli_stmt_execute($stmt)) {
          sales,
          finance,
          data_report,
-         master_data
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+         master_data,
+         qc
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" // Menambahkan satu parameter (?) untuk QC
    );
 
-   // Semua integer (idusers + 10 kolom role)
+   // Menyesuaikan bind_param dengan menambahkan format 'i' (menjadi 12) dan variabel $access['qc']
    mysqli_stmt_bind_param(
       $stmt_role,
-      "iiiiiiiiiii",
+      "iiiiiiiiiiii",
       $idusers,
       $access['cattle'],
       $access['produksi'],
@@ -85,7 +87,8 @@ if (mysqli_stmt_execute($stmt)) {
       $access['sales'],
       $access['finance'],
       $access['data_report'],
-      $access['master_data']
+      $access['master_data'],
+      $access['qc'] // Parameter binding untuk QC
    );
 
    if (mysqli_stmt_execute($stmt_role)) {

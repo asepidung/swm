@@ -159,6 +159,26 @@ include "notifcount.php";
           </li>
         <?php endif; ?>
 
+        <?php if ($role['qc'] == 1) : ?>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-check-double"></i>
+              <p>
+                QC/QA Monitoring
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../monitoring_produksi/" class="nav-link">
+                  <i class="far fa-dot-circle nav-icon"></i>
+                  <p>Monitoring</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        <?php endif; ?>
+
         <!-- MENU STOCK DIPISAH -->
         <?php if (isset($role['stock']) && $role['stock'] == 1) : ?>
           <li class="nav-item has-treeview">

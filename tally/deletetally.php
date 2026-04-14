@@ -30,7 +30,7 @@ if (isset($_GET['id']) && isset($_GET['idso']) && is_numeric($_GET['id']) && is_
         $stmt_tallydetail->execute();
         $result_tallydetail = $stmt_tallydetail->get_result();
 
-        // Pindahkan data ke tabel stock
+        // Pindahkan data kembali ke tabel stock
         $query_insert_stock = "INSERT INTO stock (kdbarcode, idgrade, idbarang, qty, pcs, pod, origin) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt_insert_stock = $conn->prepare($query_insert_stock);
 
@@ -65,37 +65,44 @@ if (isset($_GET['id']) && isset($_GET['idso']) && is_numeric($_GET['id']) && is_
         $stmt_soft_delete_tally->execute();
         $stmt_soft_delete_tally->close();
 
-        // Update data di tabel salesorder
+        // Update status di tabel salesorder kembali ke Waiting
         $query_update_salesorder = "UPDATE salesorder SET progress = 'Waiting' WHERE idso = ?";
         $stmt_update_salesorder = $conn->prepare($query_update_salesorder);
         $stmt_update_salesorder->bind_param("i", $idso);
         $stmt_update_salesorder->execute();
         $stmt_update_salesorder->close();
 
+        // Soft delete data monitoring_produksi terkait SO ini
+        $query_delete_monitoring = "UPDATE monitoring_produksi SET is_deleted = 1 WHERE idso = ?";
+        $stmt_delete_monitoring = $conn->prepare($query_delete_monitoring);
+        $stmt_delete_monitoring->bind_param("i", $idso);
+        $stmt_delete_monitoring->execute();
+        $stmt_delete_monitoring->close();
+
         // Masukkan log ke tabel logactivity
         $iduser = $_SESSION['idusers'];
-        $event = "Soft Delete Data Tally";
+        $event = "Soft Delete Data Tally & Monitoring";
         $query_insert_log = "INSERT INTO logactivity (iduser, event, docnumb, waktu) VALUES (?, ?, ?, CURRENT_TIMESTAMP())";
         $stmt_insert_log = $conn->prepare($query_insert_log);
         $stmt_insert_log->bind_param("iss", $iduser, $event, $notally);
         $stmt_insert_log->execute();
         $stmt_insert_log->close();
 
-        // Commit transaksi
+        // Commit semua perubahan jika berhasil
         mysqli_commit($conn);
 
-        // Redirect ke halaman index setelah penghapusan
+        // Redirect ke halaman index dengan status sukses
         header("location: index.php?stat=soft_deleted");
         exit();
     } catch (Exception $e) {
-        // Rollback transaksi jika terjadi kesalahan
+        // Batalkan semua perubahan jika terjadi kesalahan
         mysqli_rollback($conn);
 
-        // Tampilkan pesan error untuk debugging
-        die("Terjadi kesalahan: " . $e->getMessage());
+        // Tampilkan pesan error
+        die("Terjadi kesalahan sistem: " . $e->getMessage());
     }
 } else {
-    // Jika parameter tidak valid, arahkan ke halaman error atau kembali ke index
+    // Redirect jika parameter URL tidak lengkap atau tidak valid
     header("location: index.php?stat=invalid_params");
     exit();
 }

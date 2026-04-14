@@ -12,9 +12,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       exit();
    }
 
-   $sql = "SELECT idusers, userid, passuser, fullname, status 
-            FROM users 
-            WHERE userid = ? 
+   // MODIFIKASI: Melakukan JOIN ke tabel role untuk mengambil semua hak akses
+   $sql = "SELECT u.idusers, u.userid, u.passuser, u.fullname, u.status, 
+                  r.cattle, r.produksi, r.warehouse, r.stock, r.distributions, 
+                  r.purchase_module, r.sales, r.finance, r.data_report, r.master_data, r.qc
+            FROM users u
+            LEFT JOIN role r ON u.idusers = r.idusers
+            WHERE u.userid = ? 
             LIMIT 1";
 
    $stmt = mysqli_prepare($conn, $sql);
@@ -50,6 +54,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $_SESSION['userid']   = $row['userid'];
       $_SESSION['idusers']  = $row['idusers'];
       $_SESSION['fullname'] = $row['fullname'];
+
+      // MODIFIKASI: Menyimpan semua role ke dalam session
+      $_SESSION['role'] = [
+         'cattle'          => $row['cattle'],
+         'produksi'        => $row['produksi'],
+         'warehouse'       => $row['warehouse'],
+         'stock'           => $row['stock'],
+         'distributions'   => $row['distributions'],
+         'purchase_module' => $row['purchase_module'],
+         'sales'           => $row['sales'],
+         'finance'         => $row['finance'],
+         'data_report'     => $row['data_report'],
+         'master_data'     => $row['master_data'],
+         'qc'              => $row['qc'] // Role QC tersimpan di session
+      ];
 
       // Catat log login
       $logSql = "INSERT INTO logactivity (iduser, event) VALUES (?, 'Login')";

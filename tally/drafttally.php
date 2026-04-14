@@ -49,10 +49,9 @@ include "../mainsidebar.php";
                                  </td>
                                  <td><?= $tampil['note']; ?></td>
                                  <td class="text-center">
-                                    <a href="newtally.php?idso=<?= $tampil['idso']; ?>"
-                                       class="btn btn-sm btn-primary mb-1">
+                                    <button type="button" class="btn btn-sm btn-primary mb-1" onclick="pilihProses(<?= $tampil['idso']; ?>)">
                                        Buat Tally <i class="fas fa-arrow-circle-right"></i>
-                                    </a>
+                                    </button>
 
                                     <a href="cancel_so.php?idso=<?= $tampil['idso']; ?>"
                                        class="btn btn-sm btn-danger"
@@ -82,7 +81,30 @@ include "../mainsidebar.php";
 </div>
 <!-- /.content-wrapper -->
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+   function pilihProses(idso) {
+      Swal.fire({
+         title: 'Konfirmasi Alur Kerja',
+         text: "Apakah SO ini memerlukan Monitoring Produksi?",
+         icon: 'question',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6', // Warna tombol Ya
+         cancelButtonColor: '#aaa', // Warna tombol Tidak
+         confirmButtonText: 'Ya, Buat',
+         cancelButtonText: 'Tidak'
+      }).then((result) => {
+         if (result.isConfirmed) {
+            // Jika pilih Ya: Arahkan ke file proses khusus (yang akan kita buat nanti)
+            window.location.href = "proses_spk.php?idso=" + idso;
+         } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Jika pilih Tidak: Langsung ke newtally seperti biasa
+            window.location.href = "newtally.php?idso=" + idso;
+         }
+      })
+   }
+
    // Mengubah judul halaman web
    document.title = "DRAFT TALLY";
 </script>

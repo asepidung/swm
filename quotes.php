@@ -1,5 +1,5 @@
 <?php
-// update.php - menampilkan satu quote acak beserta penulis + tombol Add + tombol Edit (bersyarat)
+// update.php - menampilkan satu quote acak beserta penulis, waktu, + tombol Add + tombol Edit (bersyarat)
 // Prasyarat: session_start() dan $conn sudah aktif dari index.php
 
 // Pastikan koneksi tersedia
@@ -11,7 +11,7 @@ if (!isset($conn) || !$conn) {
 $currentUserId = $_SESSION['idusers'] ?? null;
 
 /**
- * Ambil satu quote acak + author + id pembuat
+ * Ambil satu quote acak + author + id pembuat + waktu pembuatan
  */
 function getRandomQuoteWithAuthor($conn)
 {
@@ -20,6 +20,7 @@ function getRandomQuoteWithAuthor($conn)
             q.idquote,
             q.isiquote,
             q.idusers AS quote_owner,
+            q.created_at,
             u.fullname
         FROM quotes q
         LEFT JOIN users u ON q.idusers = u.idusers
@@ -36,10 +37,11 @@ function getRandomQuoteWithAuthor($conn)
 
 $row = getRandomQuoteWithAuthor($conn);
 
-$quote      = $row['isiquote'] ?? 'No quotes available.';
-$author     = $row['fullname'] ?? null;
-$idquote    = $row['idquote'] ?? null;
-$quoteOwner = $row['quote_owner'] ?? null;
+$quote       = $row['isiquote'] ?? 'No quotes available.';
+$author      = $row['fullname'] ?? null;
+$idquote     = $row['idquote'] ?? null;
+$quoteOwner  = $row['quote_owner'] ?? null;
+$createdAt   = $row['created_at'] ?? null;
 
 // Rule tombol Edit:
 // - admin (idusers = 1) selalu boleh edit
@@ -67,15 +69,17 @@ if ($currentUserId == 1) {
          <em><?= htmlspecialchars($quote) ?></em>
          <span style="opacity:0.6; font-size:1.3em;">”</span>
       </h4>
-      <?php if ($author): ?>
-         <div class="mt-2">
-            <small class="text-muted">— <?= htmlspecialchars($author, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></small>
-         </div>
-      <?php else: ?>
-         <div class="mt-2">
-            <small class="text-muted">— Unknown</small>
-         </div>
-      <?php endif; ?>
+
+      <div class="mt-2">
+         <small class="text-muted">
+            — <?= $author ? htmlspecialchars($author, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : 'Unknown' ?>
+            <?php if ($createdAt): ?>
+               <span class="ml-1" style="font-size: 0.85em;">
+                  (<?= date('d M Y, H:i', strtotime($createdAt)) ?>)
+               </span>
+            <?php endif; ?>
+         </small>
+      </div>
    </div>
 
    <div class="card-footer d-flex justify-content-between">

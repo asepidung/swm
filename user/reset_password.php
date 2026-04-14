@@ -14,7 +14,7 @@ if (!isset($_GET['id'])) {
 $idusers = (int) $_GET['id'];
 
 // password default = 123
-$password_default = password_hash("123", PASSWORD_DEFAULT);
+$password_default = password_hash("1234", PASSWORD_DEFAULT);
 
 $query = "UPDATE users 
           SET passuser = '$password_default' 

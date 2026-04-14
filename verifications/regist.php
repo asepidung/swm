@@ -17,13 +17,9 @@ require "../konak/conn.php";
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>Daftar User</title>
    <link rel="icon" href="../dist/img/favicon.png" type="image/x-icon">
-   <!-- Google Font: Source Sans Pro -->
    <link rel="stylesheet" href="../https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-   <!-- Font Awesome -->
    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-   <!-- icheck bootstrap -->
    <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-   <!-- Theme style -->
    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
 </head>
 
@@ -111,20 +107,20 @@ require "../konak/conn.php";
                      <input type="checkbox" class="custom-control-input" name="menu_access[]" id="master_data" value="master_data">
                      <label class="custom-control-label" for="master_data">Master Data</label>
                   </div>
+                  <div class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" name="menu_access[]" id="qc" value="qc">
+                     <label class="custom-control-label" for="qc">QC</label>
+                  </div>
                </div>
                <div class="row">
-                  <!-- /.col -->
                   <div class="col-4">
                      <button type="submit" class="btn btn-primary btn-block">Register</button>
                   </div>
-                  <!-- /.col -->
                </div>
             </form>
          </div>
-         <!-- /.form-box -->
-      </div><!-- /.card -->
+      </div>
    </div>
-   <!-- /.register-box -->
    <script>
       var password = document.getElementById("password");
       var password2 = document.getElementById("password2");
@@ -140,13 +136,9 @@ require "../konak/conn.php";
       password.onchange = validatePassword;
       password2.onkeyup = validatePassword;
    </script>
-   <!-- jQuery -->
    <script src="../plugins/jquery/jquery.min.js"></script>
-   <!-- Bootstrap 4 -->
    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-   <!-- AdminLTE App -->
    <script src="../dist/js/adminlte.min.js"></script>
 </body>
-
 
 </html>
