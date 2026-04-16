@@ -158,3 +158,9 @@ $queryDraftLoss = "
 $resultDraftLoss = mysqli_query($conn, $queryDraftLoss);
 $rowDraftLoss = mysqli_fetch_assoc($resultDraftLoss);
 $draftloss = (int)($rowDraftLoss['draftloss'] ?? 0);
+
+
+$queryPendingQC = "SELECT COUNT(*) AS pendingQC FROM monitoring_produksi WHERE status_qc = 'Pending' AND is_deleted = 0";
+$resultPendingQC = mysqli_query($conn, $queryPendingQC);
+$rowPendingQC = mysqli_fetch_assoc($resultPendingQC);
+$pendingQC = $rowPendingQC['pendingQC'];

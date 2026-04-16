@@ -236,13 +236,17 @@ include "notifcount.php";
                            <p>
                               QC/QA Monitoring
                               <i class="right fas fa-angle-left"></i>
+                              <?php if ($pendingQC > 0): ?>
+                                 <span class="badge badge-danger"><?= $pendingQC ?></span>
+                              <?php endif; ?>
                            </p>
                         </a>
                         <ul class="nav nav-treeview">
                            <li class="nav-item">
                               <a href="monitoring_produksi/" class="nav-link">
                                  <i class="far fa-dot-circle nav-icon"></i>
-                                 <p>Monitoring</p>
+                                 <p>Monitoring
+                                 </p>
                               </a>
                            </li>
                         </ul>
