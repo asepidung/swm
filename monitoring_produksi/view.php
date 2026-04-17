@@ -90,7 +90,7 @@ $totalWeight = 0;
                         <tr>
                             <td>Status QC</td>
                             <td>:</td>
-                            <th><span class="badge badge-info p-2"><?= $row['status_qc']; ?></span></th>
+                            <th><?= $row['status_qc']; ?></th>
                         </tr>
                     </table>
                 </div>

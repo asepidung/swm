@@ -18,6 +18,7 @@ include "../mainsidebar.php";
                                 <th>Customer</th>
                                 <th>No SO</th>
                                 <th>Status</th>
+                                <th>Catatan</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -46,6 +47,15 @@ include "../mainsidebar.php";
                                         elseif ($status == 'In Progress') echo '<span class="badge badge-info">In Progress</span>';
                                         elseif ($status == 'Passed') echo '<span class="badge badge-success">Passed</span>';
                                         else echo '<span class="badge badge-danger">Rejected</span>';
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if ($row['catatan_qc']) {
+                                            echo '<span class="text-muted">' . htmlspecialchars($row['catatan_qc']) . '</span>';
+                                        } else {
+                                            echo '<span class="text-muted">-</span>';
+                                        }
                                         ?>
                                     </td>
                                     <td class="text-center">
