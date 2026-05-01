@@ -100,18 +100,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               </div>
                            </div>
 
-                           <!-- Packdate & xpackdate (ikut data tallydetail.pod) -->
-                           <div class="form-group">
-                              <div class="input-group">
-                                 <input type="hidden" name="xpackdate" id="xpackdate" value="<?= h($packdateVal) ?>">
-                                 <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= h($packdateVal) ?>">
+                           <!-- Packdate & Checkbox Expired -->
+                           <!-- Packdate & Checkbox Expired -->
+                           <div class="row">
+                              <div class="col-8">
+                                 <div class="form-group">
+                                    <input type="hidden" name="xpackdate" id="xpackdate" value="<?= h($packdateVal) ?>">
+                                    <!-- Atribut readonly sudah DIBUANG, sekarang bebas diedit -->
+                                    <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= h($packdateVal) ?>">
+                                 </div>
                               </div>
-                           </div>
-
-                           <!-- Exp (optional) — TIDAK pakai session, default kosong -->
-                           <div class="form-group">
-                              <div class="input-group">
-                                 <input type="date" class="form-control" name="exp" id="exp" value="">
+                              <div class="col">
+                                 <div class="form-group mt-2">
+                                    <div class="custom-control custom-checkbox mb-0">
+                                       <?php
+                                       // Cek memori session dari labelboning
+                                       $is_exp_checked = (isset($_SESSION['print_exp']) && $_SESSION['print_exp'] == 1) ? 'checked' : '';
+                                       ?>
+                                       <input type="checkbox" class="custom-control-input" name="print_exp" id="print_exp" value="1" <?= $is_exp_checked ?>>
+                                       <label class="custom-control-label text-nowrap" for="print_exp">Show Expired</label>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
 

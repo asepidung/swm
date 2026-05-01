@@ -126,33 +126,40 @@ $is_locked = (int)($info['kunci'] ?? 0);
                       ?>
                     </select>
                   </div>
-
-                  <!-- Tanggal -->
-                  <div class="form-group">
-                    <input type="date" class="form-control" name="packdate" id="packdate"
-                      required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
-                  </div>
-                  <div class="form-group">
-                    <input type="date" class="form-control" name="exp" id="exp"
-                      value="<?= htmlspecialchars($_SESSION['exp'] ?? '') ?>">
+                  <!-- Tanggal & Checkbox Expired (Mengikuti Grid QTY & PH) -->
+                  <div class="row">
+                    <div class="col-8">
+                      <div class="form-group">
+                        <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= htmlspecialchars($_SESSION['packdate']) ?>">
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group mt-2">
+                        <div class="custom-control custom-checkbox mb-0">
+                          <?php
+                          // Cek memori session, kalau nilainya 1 berarti sebelumnya dicentang
+                          $is_exp_checked = (isset($_SESSION['print_exp']) && $_SESSION['print_exp'] == 1) ? 'checked' : '';
+                          ?>
+                          <input type="checkbox" class="custom-control-input" name="print_exp" id="print_exp" value="1" <?= $is_exp_checked ?>>
+                          <label class="custom-control-label text-nowrap" for="print_exp">Show Expired</label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <input type="hidden" name="idusers" value="<?= (int)$idusers ?>">
                   <input type="hidden" name="idboning" value="<?= (int)$idboning ?>">
 
+                  <!-- Qty & PH -->
                   <div class="row">
                     <div class="col-8">
                       <div class="form-group">
-                        <input type="text" class="form-control" name="qty" id="qty"
-                          placeholder="Weight & Pcs" required>
+                        <input type="text" class="form-control" name="qty" id="qty" placeholder="Weight & Pcs" required>
                       </div>
                     </div>
                     <div class="col">
                       <div class="form-group">
-                        <input type="number" step="0.1" min="5.4" max="5.7"
-                          class="form-control" name="ph" id="ph"
-                          placeholder="PH 5.4-5.7" required
-                          value="<?= htmlspecialchars($_SESSION['ph'] ?? '', ENT_QUOTES) ?>">
+                        <input type="number" step="0.1" min="5.4" max="5.7" class="form-control" name="ph" id="ph" placeholder="PH 5.4-5.7" required value="<?= htmlspecialchars($_SESSION['ph'] ?? '', ENT_QUOTES) ?>">
                       </div>
                     </div>
                   </div>

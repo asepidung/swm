@@ -32,6 +32,7 @@ $exp = $data['exp'];
 $idgrade = $data['idgrade'];
 $kdbarcode = $data['kdbarcode'];
 $ph = $data['ph'];
+$show_exp = (!empty($exp) && $exp !== '0000-00-00');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,8 +124,8 @@ $ph = $data['ph'];
                <td style="font-size: 11px;"><?= date('d-M-Y', strtotime($packdate)); ?></td>
             </tr>
             <tr>
-               <td style="font-size: 11px;"><?= $exp ? "Expired Date :" : "&nbsp;"; ?></td>
-               <td style="font-size: 11px;"><?= $exp ? date('d-M-Y', strtotime($exp)) : "&nbsp;"; ?></td>
+               <td style="font-size: 11px;"><?= $show_exp ? "Expired Date :" : "&nbsp;"; ?></td>
+               <td style="font-size: 11px;"><?= $show_exp ? date('d-M-Y', strtotime($exp)) : "&nbsp;"; ?></td>
             </tr>
             <tr>
                <td height="20" colspan="2">

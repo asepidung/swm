@@ -97,33 +97,26 @@ while ($row = mysqli_fetch_assoc($result)) {
                            </select>
                         </div>
                      </div>
-                     <!-- Packdate -->
-                     <div class="form-group mini-field">
-                        <span class="mini-label">Prod</span>
-                        <div class="input-group">
-                           <?php if (empty($_SESSION['packdate'])) $_SESSION['packdate'] = date('Y-m-d'); ?>
-                           <input type="date"
-                              class="form-control"
-                              name="packdate"
-                              id="packdate"
-                              required
-                              value="<?= htmlspecialchars($_SESSION['packdate'], ENT_QUOTES); ?>">
+
+                     <!-- Packdate & Checkbox Expired -->
+                     <?php if (empty($_SESSION['packdate'])) $_SESSION['packdate'] = date('Y-m-d'); ?>
+                     <div class="form-group">
+                        <div class="row align-items-center">
+                           <div class="col-7">
+                              <input type="date" class="form-control" name="packdate" id="packdate" required value="<?= htmlspecialchars($_SESSION['packdate'], ENT_QUOTES) ?>">
+                           </div>
+                           <div class="col-5">
+                              <div class="custom-control custom-checkbox mb-0">
+                                 <?php
+                                 // Cek memori session dari checkbox exp
+                                 $is_exp_checked = (isset($_SESSION['print_exp']) && $_SESSION['print_exp'] == 1) ? 'checked' : '';
+                                 ?>
+                                 <input type="checkbox" class="custom-control-input" name="print_exp" id="print_exp" value="1" <?= $is_exp_checked ?>>
+                                 <label class="custom-control-label" style="font-size: 14px; padding-top: 2px;" for="print_exp">Show Expired</label>
+                              </div>
+                           </div>
                         </div>
                      </div>
-
-                     <!-- Exp di baris sendiri -->
-                     <div class="form-group mini-field">
-                        <span class="mini-label">Exp</span>
-                        <div class="input-group">
-                           <?php if (!isset($_SESSION['exp'])) $_SESSION['exp'] = ''; ?>
-                           <input type="date"
-                              class="form-control"
-                              name="exp"
-                              id="exp"
-                              value="<?= htmlspecialchars($_SESSION['exp'], ENT_QUOTES); ?>">
-                        </div>
-                     </div>
-
 
                      <!-- Catatan -->
                      <div class="form-group">
@@ -351,32 +344,6 @@ while ($row = mysqli_fetch_assoc($result)) {
       });
    });
 </script>
-<style>
-   .mini-field {
-      position: relative;
-   }
-
-   .mini-field .mini-label {
-      position: absolute;
-      left: 10px;
-      top: 6px;
-      font-size: 10px;
-      line-height: 1;
-      color: #6c757d;
-      /* abu-abu bootstrap */
-      pointer-events: none;
-      z-index: 2;
-      background: #fff;
-      /* agar kontras di atas input putih */
-      padding: 0 2px;
-      border-radius: 2px;
-   }
-
-   /* beri padding kiri agar teks input tidak tabrakan dgn label mini */
-   .mini-field input.form-control {
-      padding-left: 48px !important;
-   }
-</style>
 
 <?php
 // require "../footnote.php";

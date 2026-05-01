@@ -13,17 +13,19 @@ $idusers       = (int)($_SESSION['idusers'] ?? 0);
 $kdbarcode     = trim($_POST['kdbarcode'] ?? '');
 $idtally       = (int)($_POST['idtally'] ?? 0);
 $idtallydetail = (int)($_POST['idtallydetail'] ?? 0);
-$packdate      = $_POST['packdate'] ?? null;     // yyyy-mm-dd
-$xpackdate     = $_POST['xpackdate'] ?? null;    // pod lama (opsional)
-$exp_input     = $_POST['exp'] ?? null;          // yyyy-mm-dd atau kosong
-$ph_input      = $_POST['ph'] ?? null;           // "5.4" .. "5.7" atau kosong
+$packdate      = $_POST['packdate'] ?? null;    // yyyy-mm-dd
+$xpackdate     = $_POST['xpackdate'] ?? null;   // pod lama (opsional)
+$ph_input      = $_POST['ph'] ?? null;          // "5.4" .. "5.7" atau kosong
 
-$tenderstreachActive = isset($_POST['tenderstreach']);
-$pembulatan          = isset($_POST['pembulatan']);
+// Ambil status checkbox Print Exp
+$print_exp = isset($_POST['print_exp']) ? 1 : 0;
 
 if ($idusers <= 0 || $kdbarcode === '' || $idtally <= 0 || $idtallydetail <= 0 || !$packdate) {
    exit('Parameter tidak lengkap.');
 }
+
+// Simpan preferensi checkbox ke session agar diingat sistem
+$_SESSION['print_exp'] = $print_exp;
 
 // --- Ambil record resmi dari tallydetail (kebenaran data) ---
 $sql = "
@@ -49,9 +51,21 @@ $nmbarang = (string)($rec['nmbarang'] ?? '');
 $qty      = (float)$rec['weight'];   // DECIMAL(6,2)
 $xpcs     = (int)$rec['pcs'];        // pcs lama (xpcs)
 
-// --- Normalisasi nilai input yang boleh berubah: exp & ph ---
-$exp = ($exp_input !== null && $exp_input !== '') ? $exp_input : null;
+// --- Logic Perhitungan Expired Date ---
+$exp = null;
+if ($print_exp === 1) {
+   $dateObj = new DateTime($packdate);
+   // Jika Grade J01 (id 1) atau P01 (id 3) = 3 Bulan
+   if ($idgrade === 1 || $idgrade === 3) {
+      $dateObj->modify('+3 months');
+   } else {
+      // Selain itu = 1 Tahun
+      $dateObj->modify('+1 year');
+   }
+   $exp = $dateObj->format('Y-m-d');
+}
 
+// --- Normalisasi input pH ---
 $phFloat = null; // NULL jika dikosongkan
 if ($ph_input !== null && $ph_input !== '') {
    $rawPh = str_replace(',', '.', (string)$ph_input);
@@ -71,12 +85,12 @@ if (is_null($phFloat)) {
    // pH kosong -> set NULL
    $upd = $conn->prepare("UPDATE tallydetail SET pod = ?, ph = NULL, exp = ? WHERE idtallydetail = ? LIMIT 1");
    if (!$upd) exit('Gagal prepare update tallydetail (NULL ph): ' . $conn->error);
-   $upd->bind_param('ssi', $packdate, $exp, $idtallydetail); // $exp bisa NULL
+   $upd->bind_param('ssi', $packdate, $exp, $idtallydetail);
 } else {
    // pH ada -> simpan angka 1 desimal
    $upd = $conn->prepare("UPDATE tallydetail SET pod = ?, ph = ?, exp = ? WHERE idtallydetail = ? LIMIT 1");
    if (!$upd) exit('Gagal prepare update tallydetail (ph angka): ' . $conn->error);
-   $upd->bind_param('sdsi', $packdate, $phFloat, $exp, $idtallydetail); // $exp bisa NULL
+   $upd->bind_param('sdsi', $packdate, $phFloat, $exp, $idtallydetail);
 }
 if (!$upd->execute()) exit('Gagal update tallydetail: ' . $upd->error);
 $upd->close();
@@ -114,144 +128,132 @@ function h($v)
    return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 }
 
-// --- Tenderstreach (opsional) ---
-$keywords   = ['TENDERLOIN', 'SHORTLOIN', 'STRIPLOIN', 'RUMP', 'CUBE ROLL', 'OPERIB'];
-$showTender = $tenderstreachActive && preg_match('/(' . implode('|', array_map('preg_quote', $keywords)) . ')/i', $nmbarang);
-
+// Validasi extra untuk render table
+$show_exp = (!empty($exp) && $exp !== '0000-00-00');
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
    <meta charset="UTF-8">
-   <title>Label</title>
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Label Print</title>
+   <style>
+      /* 1. Atur Font Global ke Arial biar selaras */
+      * {
+         font-family: Arial, Helvetica, sans-serif !important;
+         color: #000000;
+      }
+
+      body {
+         margin: 0;
+         padding: 0;
+      }
+
+      /* 2. Setting Kertas 100x75mm */
+      @media print {
+         @page {
+            size: 100mm 75mm;
+            margin: 0;
+         }
+      }
+
+      /* 3. Container Margin */
+      .print-area {
+         width: 100mm;
+         height: 75mm;
+         padding: 3mm;
+         box-sizing: border-box;
+         overflow: hidden;
+      }
+
+      /* 4. Paksa tabel lu tetep di ukurannya tapi ngikut container */
+      .legacy-table {
+         width: 100%;
+         height: 100%;
+         border-collapse: collapse;
+      }
+
+      /* Styling Barcode biar gak meluber */
+      .barcode-img img {
+         max-width: 100%;
+         height: 50px !important;
+      }
+   </style>
 </head>
 
 <body>
-   <!-- === LAYOUT TETAP === -->
-   <table width="365" height="270" cellpadding="0">
-      <tbody>
-         <tr>
-            <td height="23" colspan="4">
-               <span style="font-size:18px;color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  <strong>*YP*</strong>
-               </span>
-            </td>
-         </tr>
-         <tr>
-            <td height="21" colspan="4">
-               <span style="color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;font-size:14px;">
-                  <strong>Prod By: PT. SANTI WIJAYA MEAT</strong>
-               </span>
-            </td>
-         </tr>
-         <tr>
-            <td height="20" colspan="4">
-               <span style="color:#000;font-size:10px;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna Kec. Jonggol Kab. Bogor
-               </span>
-            </td>
-         </tr>
-
-         <tr>
-            <td height="20" colspan="2">
-               <span style="font-size:18px;color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  <strong><?= h($nmbarang); ?></strong>
-               </span>
-            </td>
-            <td colspan="2" rowspan="5" align="center" valign="middle">
-               <img src="../dist/img/halal.png" alt="HALAL" height="100" align="absmiddle">
-            </td>
-         </tr>
-
-         <tr>
-            <td colspan="1" rowspan="2">
-               <span style="font-size:30px; font-family: Arial, Helvetica, sans-serif;">
-                  <strong><?= number_format($qty, 2); ?></strong>
-                  <sup style="font-size:14px;">Kg</sup>
-               </span>
-            </td>
-            <td height="20" style="font-size:12px;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-               <?php if ($xpcs > 0): ?>
-                  <strong><i><?= (int)$xpcs; ?>-Pcs</i></strong>
-               <?php endif; ?>
-            </td>
-         </tr>
-
-         <tr>
-            <td height="20" style="font-style:normal;font-size:12px;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-               <?php if ($phFloat !== null): ?>
-                  <span style="font-size:12px">pH <?= number_format($phFloat, 1); ?></span>
-               <?php else: ?>
-                  &nbsp;
-               <?php endif; ?>
-               <?php /* Jika ingin tampil Tenderstreach juga:
-          <?php if ($showTender): ?><strong><i>&nbsp;Tenderstreach</i></strong><?php endif; ?>
-          */ ?>
-            </td>
-         </tr>
-
-         <tr>
-            <td height="20" style="font-size:11px">
-               <span style="color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">Packed Date&nbsp; :</span>
-            </td>
-            <td style="font-size:11px">
-               <span style="color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  <?= date('d-M-Y', strtotime($packdate)); ?>
-               </span>
-            </td>
-         </tr>
-
-         <?php if (!empty($exp)): ?>
+   <div class="print-area">
+      <table class="legacy-table" cellpadding="0" border="0">
+         <tbody>
             <tr>
-               <td style="font-size:11px"><span style="color:#000;">Expired Date :</span></td>
-               <td style="font-size:11px"><span style="color:#000;"><?= date('d-M-Y', strtotime($exp)); ?></span></td>
+               <td height="23" colspan="4"><span style="font-size: 18px;"><strong>*YP*</strong></span></td>
             </tr>
-         <?php else: ?>
             <tr>
-               <td style="font-size:11px"><span style="color:#000;">&nbsp;</span></td>
-               <td style="font-size:11px"><span style="color:#000;">&nbsp;</span></td>
+               <td height="21" colspan="4"><span style="font-size: 14px;"><strong>Prod By: PT. SANTI WIJAYA MEAT</strong></span></td>
             </tr>
-         <?php endif; ?>
-
-         <tr>
-            <td height="20" colspan="2">
-               <span style="color:#000;font-size:12px;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  <strong><?= in_array($idgrade, [1, 3], true) ? "KEEP CHILL 0°C" : "KEEP FROZEN -18°C"; ?></strong>
-               </span>
-            </td>
-            <td style="font-size:10px;text-align:center;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-               ID00110015321510124<br>RPHR 3201170-027
-            </td>
-         </tr>
-
-         <tr></tr>
-
-         <tr>
-            <td height="20" colspan="4" align="center" valign="middle">
-               <?php
-               try {
-                  $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-                  $barcodeImg = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
-                  echo '<img src="data:image/jpeg;base64,' . base64_encode($barcodeImg) . '" alt="Barcode">';
-               } catch (Throwable $e) {
-                  echo '<small>Barcode tidak tersedia.</small>';
-               }
-               ?>
-            </td>
-         </tr>
-
-         <tr>
-            <td colspan="4" align="center">
-               <span style="color:#000;font-family:'Gill Sans','Gill Sans MT','Myriad Pro','DejaVu Sans Condensed',Helvetica,Arial,sans-serif;">
-                  <?= h($kdbarcode); ?>
-               </span>
-            </td>
-         </tr>
-      </tbody>
-   </table>
+            <tr>
+               <td height="20" colspan="4"><span style="font-size: 10px;">Perum Asabri Blok B No 20 Rt. 01/05 Ds. Sukasirna Kec. Jonggol Kab. Bogor</span></td>
+            </tr>
+            <tr>
+               <td height="20" colspan="2"><span style="font-size: 18px;"><strong><?= strtoupper(h($nmbarang)); ?></strong></span></td>
+               <td colspan="2" rowspan="5" align="center" valign="middle">
+                  <img src="../dist/img/halal.png" alt="HALAL" height="90">
+               </td>
+            </tr>
+            <tr>
+               <td colspan="1" rowspan="2">
+                  <span style="font-size:30px;"><strong><?= number_format($qty, 2); ?></strong><sup style="font-size:14px;">Kg</sup></span>
+               </td>
+               <td height="20" style="font-size: 12px;">
+                  <?php if ($xpcs > 1) {
+                     echo "<strong><i>" . (int)$xpcs . "-Pcs</i></strong>";
+                  } else {
+                     echo "&nbsp;";
+                  } ?>
+               </td>
+            </tr>
+            <tr>
+               <td height="20" style="font-size: 12px;">
+                  <?php if ($phFloat !== null): ?>
+                     pH <?= number_format($phFloat, 1); ?>
+                  <?php else: ?>
+                     &nbsp;
+                  <?php endif; ?>
+               </td>
+            </tr>
+            <tr>
+               <td height="20" style="font-size: 11px;">Packed Date :</td>
+               <td style="font-size: 11px;"><?= date('d-M-Y', strtotime($packdate)); ?></td>
+            </tr>
+            <tr>
+               <td style="font-size: 11px;"><?= $show_exp ? "Expired Date :" : "&nbsp;"; ?></td>
+               <td style="font-size: 11px;"><?= $show_exp ? date('d-M-Y', strtotime($exp)) : "&nbsp;"; ?></td>
+            </tr>
+            <tr>
+               <td height="20" colspan="2">
+                  <span style="font-size: 12px;"><strong><?= ($idgrade == 1 || $idgrade == 3) ? "KEEP CHILL 0°C" : "KEEP FROZEN -18°C"; ?></strong></span>
+               </td>
+               <td style="font-size: 9px; text-align: center;">ID00110015321510124<br>RPHR 3201170-027</td>
+            </tr>
+            <tr>
+               <td height="55" colspan="4" align="center" valign="middle" class="barcode-img">
+                  <?php
+                  try {
+                     $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+                     $barcodeImg = $generator->getBarcode($kdbarcode, $generator::TYPE_CODE_128);
+                     echo '<img src="data:image/jpeg;base64,' . base64_encode($barcodeImg) . '" alt="Barcode">';
+                  } catch (Throwable $e) {
+                     echo '<small>Barcode error</small>';
+                  }
+                  ?>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="4" align="center"><span style="font-size: 12px;"><?= h($kdbarcode); ?></span></td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
 
    <script>
       window.onload = function() {

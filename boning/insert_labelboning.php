@@ -52,10 +52,11 @@ $idusers  = (int)($_SESSION['idusers'] ?? 0);
 $idbarang = (int)($_POST['idbarang'] ?? 0);
 $idgrade  = (int)($_POST['idgrade'] ?? 0);
 $packdate = trim($_POST['packdate'] ?? '');
-$exp      = trim($_POST['exp'] ?? '');
 $idboning = (int)($_POST['idboning'] ?? 0);
 $qtyPcsInput = trim($_POST['qty'] ?? '');
-$tenderstreachActive = isset($_POST['tenderstreach']);
+
+// Ambil status checkbox Print Exp
+$print_exp = isset($_POST['print_exp']) ? 1 : 0;
 
 // cek input minimal
 if ($idusers <= 0 || $idboning <= 0 || $idbarang <= 0 || $idgrade <= 0) {
@@ -64,6 +65,23 @@ if ($idusers <= 0 || $idboning <= 0 || $idbarang <= 0 || $idgrade <= 0) {
 if ($packdate === '') {
     die('Tanggal pack belum diisi.');
 }
+
+// --- LOGIC PERHITUNGAN EXPIRED DATE ---
+$exp_val = "NULL"; // Default ke NULL jika checkbox tidak dicentang
+
+if ($print_exp === 1) {
+    $dateObj = new DateTime($packdate);
+    // Jika Grade J01 (id 1) atau P01 (id 3) = 3 Bulan
+    if ($idgrade === 1 || $idgrade === 3) {
+        $dateObj->modify('+3 months');
+    } else {
+        // Selain itu = 1 Tahun
+        $dateObj->modify('+1 year');
+    }
+    // Siapkan format SQL
+    $exp_val = "'" . $conn->real_escape_string($dateObj->format('Y-m-d')) . "'";
+}
+// ---------------------------------------
 
 // PH
 $ph_raw = filter_input(INPUT_POST, 'ph', FILTER_VALIDATE_FLOAT);
@@ -90,7 +108,6 @@ $pcs_sql = ($pcs === null) ? "NULL" : (int)$pcs;
 
 // Escape strings
 $packdate_esc = $conn->real_escape_string($packdate);
-$exp_esc = $conn->real_escape_string($exp);
 $ph_esc = $conn->real_escape_string($ph);
 
 // -----------------------------
@@ -146,7 +163,6 @@ if ($existsId !== null && $existsId > 0) {
         'matched_id' => $existsId
     ];
 
-    // ambil baris matched untuk context (safety: lakukan query singkat jika tidak ada $rowD)
     if ($rowD) {
         $dbg['matched_row'] = $rowD;
     } else {
@@ -159,7 +175,6 @@ if ($existsId !== null && $existsId > 0) {
 
     error_log("DEDUP_LABELBONING: " . json_encode($dbg));
 
-    // Redirect ke cetak label yang sudah ada
     header("Location: print_labelboning.php?idlabelboning={$existsId}&idboning={$idboning}");
     exit;
 }
@@ -168,10 +183,9 @@ if ($existsId !== null && $existsId > 0) {
 // 4) Prepare kdbarcode via $kodeauto (seriallabelboning.php must set it)
 // -----------------------------
 if (empty($kodeauto)) {
-    // fallback (seharusnya tidak terjadi)
     $kodeauto = date('ymd') . date('His') . mt_rand(100, 999);
 }
-// Susun kdbarcode (format lama dipertahankan)
+// Susun kdbarcode
 $kdbarcode = "1" . $idboning . $kodeauto;
 $kdbarcode_esc = $conn->real_escape_string($kdbarcode);
 
@@ -181,16 +195,17 @@ $kdbarcode_esc = $conn->real_escape_string($kdbarcode);
 $conn->begin_transaction();
 
 try {
-    // Insert labelboning
+    // FIX: Menambahkan kolom `exp` ke dalam query INSERT
     $queryInsertLabel = "
         INSERT INTO labelboning
-            (idboning, idbarang, qty, pcs, packdate, kdbarcode, iduser, idgrade, ph, creatime)
+            (idboning, idbarang, qty, pcs, packdate, exp, kdbarcode, iduser, idgrade, ph, creatime)
         VALUES
             (" . (int)$idboning . ",
              " . (int)$idbarang . ",
              " . $conn->real_escape_string($qty) . ",
              " . $pcs_sql . ",
              '" . $packdate_esc . "',
+             " . $exp_val . ",
              '" . $kdbarcode_esc . "',
              " . (int)$idusers . ",
              " . (int)$idgrade . ",
@@ -200,10 +215,8 @@ try {
     ";
 
     if (!$conn->query($queryInsertLabel)) {
-        // kemungkinan duplicate kdbarcode atau error lain
         $err = $conn->error;
 
-        // --- DEBUG LOG saat insert gagal ---
         $dbgErr = [
             'ts' => date('c'),
             'event' => 'insert_label_failed',
@@ -225,10 +238,8 @@ try {
         error_log("INSERT_LABEL_ERROR: " . json_encode($dbgErr));
 
         $conn->rollback();
-        // Jika duplicate kdbarcode, coba log dan tampilkan pesan spesifik
         if (stripos($err, 'Duplicate') !== false) {
             error_log("insert_labelboning: Duplicate kdbarcode '{$kdbarcode_esc}' - " . $err);
-            // coba fallback sederhana: redirect ke daftar dan minta user coba lagi
             die('Gagal menyimpan label: kode barcode bentrok. Silakan coba lagi.');
         }
         die('Gagal simpan labelboning: ' . $err);
@@ -257,8 +268,8 @@ try {
     $_SESSION['idbarang'] = $_POST['idbarang'] ?? '';
     $_SESSION['idgrade']  = $_POST['idgrade'] ?? '';
     $_SESSION['packdate'] = $_POST['packdate'] ?? '';
-    $_SESSION['exp']      = $_POST['exp'] ?? '';
     $_SESSION['ph']       = $ph;
+    $_SESSION['print_exp'] = $print_exp;
 
     // Redirect ke cetak
     header("Location: print_labelboning.php?idlabelboning={$idlabelboning}&idboning={$idboning}");
