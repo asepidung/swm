@@ -19,9 +19,14 @@ $currentUserId = isset($_SESSION['idusers']) ? (int)$_SESSION['idusers'] : 0;
    <div class="content-header">
       <div class="container-fluid">
          <div class="row">
-            <div class="col-12 col-sm-2">
+            <div class="col-12 col-sm-2 mb-2">
                <a href="request.php" class="btn btn-block btn-sm btn-outline-primary">
                   <i class="fas fa-plus"></i> Request
+               </a>
+            </div>
+            <div class="col-12 col-sm-2 mb-2">
+               <a href="detail.php" class="btn btn-block btn-sm btn-outline-info">
+                  <i class="fas fa-list"></i> Detail
                </a>
             </div>
          </div>
